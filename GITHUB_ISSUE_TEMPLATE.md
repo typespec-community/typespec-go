@@ -80,7 +80,7 @@ typespec-go/
 ### **Package Structure**
 ```toml
 # mise.toml
-min_version = "2024.9.5"
+min_version = "2025.11.2"
 
 [env]
 NODE_ENV = "{{ env.NODE_ENV | default(value='development') }}"
