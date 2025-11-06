@@ -33,16 +33,14 @@ typespec-go/
 │   │   └── go-decorators.ts # Go-specific decorators
 │   └── types/
 │       └── go-types.ts      # Type definitions
-├── test/
+├── tests/
 │   ├── basic.test.ts
 │   ├── models.test.ts
 │   ├── enums.test.ts
-│   └── examples/
-│       └── *.tsp
-├── examples/
-│   ├── petstore/
-│   │   └── main.tsp
-│   └── generated/            # Test output
+│   └── fixtures/
+│       ├── petstore/
+│       │   └── main.tsp
+│       └── generated/            # Test output
 ├── mise-tasks/              # Executable task scripts
 │   ├── build
 │   ├── test
