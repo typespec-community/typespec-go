@@ -1,0 +1,7 @@
+emit:
+  - "@typespec-community/typespec-go"
+options:
+  "@typespec-community/typespec-go":
+    module-path: "github.com/typespec-community/typespec-go/examples/basic/out"
+    emitter-output-dir: "{output-dir}/out"
+output-dir: "{project-root}"

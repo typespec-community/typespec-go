@@ -1,0 +1,25 @@
+[settings]
+quiet = true
+
+[tools]
+node = "25.1.0"
+"aqua:pnpm/pnpm" = "10.20.0"
+"npm:@typespec/compiler" = "1.5.0"
+watchexec = "2.3.2"
+
+[tasks.build]
+description = "Build the emitter"
+run = ["npx alloy build"]
+
+[tasks.test]
+description = "Run tests"
+run = ["node --test 'dist/test**/*.test.js'"]
+
+[tasks.dev]
+description = "Run the development servers and workers"
+depends = ["dev:main"]
+
+[tasks."dev:main"]
+hide = true
+run = ["mise watch --watch=./src --watch=./lib --stop-signal=SIGKILL --stop-timeout=0 --restart build"]
+
