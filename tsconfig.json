@@ -10,7 +10,8 @@
     "declaration": true,
     "sourceMap": true,
     "declarationMap": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@alloy-js/core",
     "outDir": "dist"
   },
   "include": ["src", "test"]
