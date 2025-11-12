@@ -1,16 +1,16 @@
 import { createTypeSpecLibrary, type JSONSchemaType } from "@typespec/compiler";
 
 export interface EmitterOptions {
-	"module-path": string;
+	"module-path"?: string;
 }
 
 const emitterOptionsSchema: JSONSchemaType<EmitterOptions> = {
 	type: "object",
 	additionalProperties: false,
 	properties: {
-		"module-path": { type: "string" },
+		"module-path": { type: "string", nullable: true },
 	},
-	required: ["module-path"],
+	required: [],
 };
 
 export const $lib = createTypeSpecLibrary({

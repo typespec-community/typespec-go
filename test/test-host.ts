@@ -30,14 +30,42 @@ export async function emitWithDiagnostics(
   await runner.compileAndDiagnose(code, {
     outputDir: "tsp-output",
   });
-  const emitterOutputDir = "./tsp-output/typespec-go";
-  const files = await runner.program.host.readDir(emitterOutputDir);
-
-  const result: Record<string, string> = {};
-  for (const file of files) {
-    result[file] = (await runner.program.host.readFile(resolvePath(emitterOutputDir, file))).text;
+  
+  // Try to find any files that were created
+  try {
+    const rootFiles = await runner.program.host.readDir("./tsp-output");
+    console.log("Root output files:", rootFiles);
+    
+    const result: Record<string, string> = {};
+    
+    // Recursively search for files
+    async function collectFiles(dir: string, prefix: string = "") {
+      try {
+        const files = await runner.program.host.readDir(dir);
+        for (const file of files) {
+          const fullPath = `${dir}/${file}`;
+          const relativePath = prefix ? `${prefix}/${file}` : file;
+          
+          try {
+            // Try to read as file
+            const content = await runner.program.host.readFile(fullPath);
+            result[relativePath] = content.text;
+          } catch {
+            // It's a directory, recurse
+            await collectFiles(fullPath, relativePath);
+          }
+        }
+      } catch (error) {
+        console.log(`Could not read directory ${dir}:`, error);
+      }
+    }
+    
+    await collectFiles("./tsp-output");
+    return [result, runner.program.diagnostics];
+  } catch (error: any) {
+    console.log("Directory read error:", error.message);
+    return [{}, runner.program.diagnostics];
   }
-  return [result, runner.program.diagnostics];
 }
 
 export async function emit(code: string): Promise<Record<string, string>> {
