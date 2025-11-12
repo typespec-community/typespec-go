@@ -7,6 +7,8 @@ describe("TypeSpec Go Emitter - Model Generation", () => {
     const results = await emit(`model Test { name: string; }`);
     const content = results["@typespec-community/typespec-go/api/models.go"];
     
+    console.log("Generated content:\n", content);
+    
     strictEqual(content?.includes("package api"), true);
     strictEqual(content?.includes("type Test struct"), true);
     strictEqual(content?.includes('Name string `json:"name"`'), true);
@@ -23,8 +25,10 @@ describe("TypeSpec Go Emitter - Model Generation", () => {
     `);
     const content = results["@typespec-community/typespec-go/api/models.go"];
     
+    console.log("Generated User model:\n", content);
+    
     strictEqual(content?.includes("type User struct"), true);
-    strictEqual(content?.includes('Id int32 `json:"id"`'), true);
+    strictEqual(content?.includes('ID int32 `json:"id"`'), true);
     strictEqual(content?.includes('Name string `json:"name"`'), true);
     strictEqual(content?.includes('Active bool `json:"active"`'), true);
     strictEqual(content?.includes('Score float64 `json:"score"`'), true);
@@ -36,6 +40,8 @@ describe("TypeSpec Go Emitter - Model Generation", () => {
       model Post { title: string; }
     `);
     const content = results["@typespec-community/typespec-go/api/models.go"];
+    
+    console.log("Generated multiple models:\n", content);
     
     strictEqual(content?.includes("type User struct"), true);
     strictEqual(content?.includes("type Post struct"), true);

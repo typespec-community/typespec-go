@@ -71,15 +71,31 @@ export class PropertyTransformer {
     // Determine if field should be optional (pointer type)
     const isOptional = prop.optional || false;
     
+    // Generate Go type (pointer for optional, non-pointer for required)
+    const goType = this.generateGoType(mappedGoType, isOptional);
+    
     return {
       name: fieldName,
-      type: isOptional ? `*${mappedGoType.name}` : mappedGoType.name,
+      type: goType,
       exported: true, // JSON fields should always be exported
       jsonTag,
       optional: isOptional,
       requiresImport: mappedGoType.requiresImport,
       importPath: mappedGoType.importPath,
     };
+  }
+
+  /**
+   * Generate Go type with optional handling
+   */
+  private static generateGoType(mappedType: MappedGoType, isOptional: boolean): string {
+    // Use pointer for optional if type supports it
+    if (isOptional && mappedType.usePointerForOptional) {
+      return `*${mappedType.name}`;
+    }
+    
+    // Don't use pointer for non-optional or types that don't support pointers
+    return mappedType.name;
   }
 
   /**

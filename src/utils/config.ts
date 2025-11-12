@@ -238,10 +238,10 @@ export class EmitterConfigFactory {
       const parsed = JSON.parse(mappings);
       for (const [typeSpecType, mapping] of Object.entries(parsed)) {
         result.set(typeSpecType, {
-          goType: mapping.goType,
-          importPath: mapping.importPath,
-          usePointerForOptional: mapping.usePointerForOptional !== false,
-          validation: mapping.validation,
+          goType: (mapping as any).goType,
+          importPath: (mapping as any).importPath,
+          usePointerForOptional: (mapping as any).usePointerForOptional !== false,
+          validation: (mapping as any).validation,
         });
       }
     } catch (error) {

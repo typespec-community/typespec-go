@@ -330,6 +330,7 @@ export class EmitterErrorFactory {
     message: string;
     cause?: Error;
     sourceLocation?: Partial<SourceLocation>;
+    resolution?: string;
   }): EmitterError {
     return {
       category: ErrorCategory.GoGeneration,
@@ -554,7 +555,7 @@ export class ErrorManager {
    * Get error summary
    */
   static getErrorSummary(): Record<string, number> {
-    return ErrorManager.collector.getErrorSummary();
+    return (ErrorManager.collector as any).getErrorSummary?.() || {};
   }
 
   /**
