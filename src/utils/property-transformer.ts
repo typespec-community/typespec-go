@@ -80,7 +80,7 @@ export class PropertyTransformer {
       exported: true, // JSON fields should always be exported
       jsonTag,
       optional: isOptional,
-      requiresImport: mappedGoType.requiresImport,
+      requiresImport: mappedGoType.requiresImport ?? false,
       importPath: mappedGoType.importPath,
     };
   }
@@ -90,12 +90,12 @@ export class PropertyTransformer {
    */
   private static generateGoType(mappedType: MappedGoType, isOptional: boolean): string {
     // Use pointer for optional if type supports it
-    if (isOptional && mappedType.usePointerForOptional) {
+    if (isOptional && (mappedType.usePointerForOptional ?? false)) {
       return `*${mappedType.name}`;
     }
     
     // Don't use pointer for non-optional or types that don't support pointers
-    return mappedType.name;
+    return mappedType.name || "interface{}";
   }
 
   /**
