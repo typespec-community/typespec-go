@@ -1,4 +1,3 @@
-"use strict";
 /**
  * TypeSpec-Go Emitter Error System
  *
@@ -7,21 +6,10 @@
  *
  * @fileoverview Comprehensive error management system
  */
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ErrorManager = exports.InMemoryErrorCollector = exports.DefaultErrorHandler = exports.EmitterErrorFactory = exports.ErrorCategory = exports.ErrorSeverity = void 0;
 /**
  * Error severity levels
  */
-var ErrorSeverity;
+export var ErrorSeverity;
 (function (ErrorSeverity) {
     /** Warning: continue processing but notify user */
     ErrorSeverity["Warning"] = "warning";
@@ -29,11 +17,11 @@ var ErrorSeverity;
     ErrorSeverity["Error"] = "error";
     /** Critical: stop all processing */
     ErrorSeverity["Critical"] = "critical";
-})(ErrorSeverity || (exports.ErrorSeverity = ErrorSeverity = {}));
+})(ErrorSeverity || (ErrorSeverity = {}));
 /**
  * Error categories for proper handling
  */
-var ErrorCategory;
+export var ErrorCategory;
 (function (ErrorCategory) {
     /** Type mapping and conversion errors */
     ErrorCategory["TypeMapping"] = "type-mapping";
@@ -49,17 +37,15 @@ var ErrorCategory;
     ErrorCategory["TypeSpecCompiler"] = "typespec-compiler";
     /** Go code generation errors */
     ErrorCategory["GoGeneration"] = "go-generation";
-})(ErrorCategory || (exports.ErrorCategory = ErrorCategory = {}));
+})(ErrorCategory || (ErrorCategory = {}));
 /**
  * Emitter error factory
  */
-var EmitterErrorFactory = /** @class */ (function () {
-    function EmitterErrorFactory() {
-    }
+export class EmitterErrorFactory {
     /**
      * Create type mapping error
      */
-    EmitterErrorFactory.createTypeMappingError = function (config) {
+    static createTypeMappingError(config) {
         var _a, _b, _c, _d;
         return {
             category: ErrorCategory.TypeMapping,
@@ -84,11 +70,11 @@ var EmitterErrorFactory = /** @class */ (function () {
             resolution: config.resolution || "Check custom type mappings or update type conversion logic",
             timestamp: new Date(),
         };
-    };
+    }
     /**
      * Create property transformation error
      */
-    EmitterErrorFactory.createPropertyTransformationError = function (config) {
+    static createPropertyTransformationError(config) {
         var _a, _b, _c, _d;
         return {
             category: ErrorCategory.PropertyTransformation,
@@ -113,11 +99,11 @@ var EmitterErrorFactory = /** @class */ (function () {
             resolution: config.resolution || "Check property naming and type mapping rules",
             timestamp: new Date(),
         };
-    };
+    }
     /**
      * Create model generation error
      */
-    EmitterErrorFactory.createModelGenerationError = function (config) {
+    static createModelGenerationError(config) {
         var _a, _b, _c, _d;
         return {
             category: ErrorCategory.ModelGeneration,
@@ -141,11 +127,11 @@ var EmitterErrorFactory = /** @class */ (function () {
             resolution: config.resolution || "Check model structure and naming conventions",
             timestamp: new Date(),
         };
-    };
+    }
     /**
      * Create file system error
      */
-    EmitterErrorFactory.createFileSystemError = function (config) {
+    static createFileSystemError(config) {
         return {
             category: ErrorCategory.FileSystem,
             severity: ErrorSeverity.Critical,
@@ -168,11 +154,11 @@ var EmitterErrorFactory = /** @class */ (function () {
             resolution: config.resolution || "Check file permissions and disk space",
             timestamp: new Date(),
         };
-    };
+    }
     /**
      * Create configuration error
      */
-    EmitterErrorFactory.createConfigurationError = function (config) {
+    static createConfigurationError(config) {
         return {
             category: ErrorCategory.Configuration,
             severity: ErrorSeverity.Critical,
@@ -196,16 +182,16 @@ var EmitterErrorFactory = /** @class */ (function () {
             resolution: config.resolution || "Check emitter configuration documentation",
             timestamp: new Date(),
         };
-    };
+    }
     /**
      * Create generic error for unexpected cases
      */
-    EmitterErrorFactory.createUnexpectedError = function (config) {
+    static createUnexpectedError(config) {
         var _a, _b, _c, _d;
         return {
             category: ErrorCategory.GoGeneration,
             severity: ErrorSeverity.Critical,
-            message: "Unexpected error: ".concat(config.message),
+            message: `Unexpected error: ${config.message}`,
             code: "TS_GO_UNEXPECTED_999",
             sourceLocation: {
                 file: ((_a = config.sourceLocation) === null || _a === void 0 ? void 0 : _a.file) || "unknown",
@@ -222,20 +208,16 @@ var EmitterErrorFactory = /** @class */ (function () {
             resolution: config.resolution || "Report this as a bug with full context",
             timestamp: new Date(),
         };
-    };
-    return EmitterErrorFactory;
-}());
-exports.EmitterErrorFactory = EmitterErrorFactory;
+    }
+}
 /**
  * Default error handler implementation
  */
-var DefaultErrorHandler = /** @class */ (function () {
-    function DefaultErrorHandler() {
-    }
+export class DefaultErrorHandler {
     /**
      * Handle error by logging and returning continue/stop decision
      */
-    DefaultErrorHandler.prototype.handleError = function (error) {
+    handleError(error) {
         // Log error to console
         this.logError(error);
         // Critical errors stop processing
@@ -248,180 +230,171 @@ var DefaultErrorHandler = /** @class */ (function () {
         }
         // Other errors continue processing
         return true; // Continue processing
-    };
+    }
     /**
      * Log error with appropriate formatting
      */
-    DefaultErrorHandler.prototype.logError = function (error) {
-        var severity = error.severity.toUpperCase();
-        var category = error.category.replace(/-/g, " ").toUpperCase();
-        console.error("\n[".concat(severity, "] ").concat(category, ": ").concat(error.message));
-        console.error("Code: ".concat(error.code));
+    logError(error) {
+        const severity = error.severity.toUpperCase();
+        const category = error.category.replace(/-/g, " ").toUpperCase();
+        console.error(`\n[${severity}] ${category}: ${error.message}`);
+        console.error(`Code: ${error.code}`);
         if (error.sourceLocation.file !== "unknown") {
-            console.error("Location: ".concat(error.sourceLocation.file, ":").concat(error.sourceLocation.line, ":").concat(error.sourceLocation.column));
+            console.error(`Location: ${error.sourceLocation.file}:${error.sourceLocation.line}:${error.sourceLocation.column}`);
         }
         if (error.resolution) {
-            console.error("Resolution: ".concat(error.resolution));
+            console.error(`Resolution: ${error.resolution}`);
         }
         if (process.env.NODE_ENV === "development" && error.cause) {
-            console.error("Cause: ".concat(error.cause.message));
+            console.error(`Cause: ${error.cause.message}`);
         }
-    };
-    return DefaultErrorHandler;
-}());
-exports.DefaultErrorHandler = DefaultErrorHandler;
+    }
+}
 /**
  * In-memory error collector implementation
  */
-var InMemoryErrorCollector = /** @class */ (function () {
-    function InMemoryErrorCollector() {
+export class InMemoryErrorCollector {
+    constructor() {
         this.errors = [];
     }
     /**
      * Add error to collection
      */
-    InMemoryErrorCollector.prototype.addError = function (error) {
+    addError(error) {
         this.errors.push(error);
-    };
+    }
     /**
      * Get all collected errors
      */
-    InMemoryErrorCollector.prototype.getErrors = function () {
-        return __spreadArray([], this.errors, true);
-    };
+    getErrors() {
+        return [...this.errors];
+    }
     /**
      * Get errors by category
      */
-    InMemoryErrorCollector.prototype.getErrorsByCategory = function (category) {
-        return this.errors.filter(function (error) { return error.category === category; });
-    };
+    getErrorsByCategory(category) {
+        return this.errors.filter(error => error.category === category);
+    }
     /**
      * Get errors by severity
      */
-    InMemoryErrorCollector.prototype.getErrorsBySeverity = function (severity) {
-        return this.errors.filter(function (error) { return error.severity === severity; });
-    };
+    getErrorsBySeverity(severity) {
+        return this.errors.filter(error => error.severity === severity);
+    }
     /**
      * Check if any errors of given severity exist
      */
-    InMemoryErrorCollector.prototype.hasErrorsOfSeverity = function (severity) {
-        return this.errors.some(function (error) { return error.severity === severity; });
-    };
+    hasErrorsOfSeverity(severity) {
+        return this.errors.some(error => error.severity === severity);
+    }
     /**
      * Clear all errors
      */
-    InMemoryErrorCollector.prototype.clearErrors = function () {
+    clearErrors() {
         this.errors = [];
-    };
+    }
     /**
      * Get summary statistics
      */
-    InMemoryErrorCollector.prototype.getErrorSummary = function () {
-        var summary = {};
-        for (var _i = 0, _a = this.errors; _i < _a.length; _i++) {
-            var error = _a[_i];
-            var key = "".concat(error.category, ":").concat(error.severity);
+    getErrorSummary() {
+        const summary = {};
+        for (const error of this.errors) {
+            const key = `${error.category}:${error.severity}`;
             summary[key] = (summary[key] || 0) + 1;
         }
         return summary;
-    };
-    return InMemoryErrorCollector;
-}());
-exports.InMemoryErrorCollector = InMemoryErrorCollector;
+    }
+}
 /**
  * Global error management
  */
-var ErrorManager = /** @class */ (function () {
-    function ErrorManager() {
-    }
+export class ErrorManager {
     /**
      * Set global error handler
      */
-    ErrorManager.setHandler = function (handler) {
+    static setHandler(handler) {
         ErrorManager.handler = handler;
-    };
+    }
     /**
      * Set global error collector
      */
-    ErrorManager.setCollector = function (collector) {
+    static setCollector(collector) {
         ErrorManager.collector = collector;
-    };
+    }
     /**
      * Handle error through global system
      */
-    ErrorManager.handleError = function (error) {
+    static handleError(error) {
         ErrorManager.collector.addError(error);
         return ErrorManager.handler.handleError(error);
-    };
+    }
     /**
      * Create and handle type mapping error
      */
-    ErrorManager.handleTypeMappingError = function (config) {
-        var error = EmitterErrorFactory.createTypeMappingError(config);
+    static handleTypeMappingError(config) {
+        const error = EmitterErrorFactory.createTypeMappingError(config);
         return ErrorManager.handleError(error);
-    };
+    }
     /**
      * Create and handle property transformation error
      */
-    ErrorManager.handlePropertyTransformationError = function (config) {
-        var error = EmitterErrorFactory.createPropertyTransformationError(config);
+    static handlePropertyTransformationError(config) {
+        const error = EmitterErrorFactory.createPropertyTransformationError(config);
         return ErrorManager.handleError(error);
-    };
+    }
     /**
      * Create and handle model generation error
      */
-    ErrorManager.handleModelGenerationError = function (config) {
-        var error = EmitterErrorFactory.createModelGenerationError(config);
+    static handleModelGenerationError(config) {
+        const error = EmitterErrorFactory.createModelGenerationError(config);
         return ErrorManager.handleError(error);
-    };
+    }
     /**
      * Create and handle file system error
      */
-    ErrorManager.handleFileSystemError = function (config) {
-        var error = EmitterErrorFactory.createFileSystemError(config);
+    static handleFileSystemError(config) {
+        const error = EmitterErrorFactory.createFileSystemError(config);
         return ErrorManager.handleError(error);
-    };
+    }
     /**
      * Create and handle configuration error
      */
-    ErrorManager.handleConfigurationError = function (config) {
-        var error = EmitterErrorFactory.createConfigurationError(config);
+    static handleConfigurationError(config) {
+        const error = EmitterErrorFactory.createConfigurationError(config);
         return ErrorManager.handleError(error);
-    };
+    }
     /**
      * Create and handle unexpected error
      */
-    ErrorManager.handleUnexpectedError = function (config) {
-        var error = EmitterErrorFactory.createUnexpectedError(config);
+    static handleUnexpectedError(config) {
+        const error = EmitterErrorFactory.createUnexpectedError(config);
         return ErrorManager.handleError(error);
-    };
+    }
     /**
      * Get all collected errors
      */
-    ErrorManager.getErrors = function () {
+    static getErrors() {
         return ErrorManager.collector.getErrors();
-    };
+    }
     /**
      * Get error summary
      */
-    ErrorManager.getErrorSummary = function () {
+    static getErrorSummary() {
         var _a, _b;
         return ((_b = (_a = ErrorManager.collector).getErrorSummary) === null || _b === void 0 ? void 0 : _b.call(_a)) || {};
-    };
+    }
     /**
      * Clear all errors
      */
-    ErrorManager.clearErrors = function () {
+    static clearErrors() {
         ErrorManager.collector.clearErrors();
-    };
+    }
     /**
      * Check if processing should stop
      */
-    ErrorManager.shouldStopProcessing = function () {
+    static shouldStopProcessing() {
         return ErrorManager.collector.hasErrorsOfSeverity(ErrorSeverity.Critical);
-    };
-    ErrorManager.handler = new DefaultErrorHandler();
-    ErrorManager.collector = new InMemoryErrorCollector();
-    return ErrorManager;
-}());
-exports.ErrorManager = ErrorManager;
+    }
+}
+ErrorManager.handler = new DefaultErrorHandler();
+ErrorManager.collector = new InMemoryErrorCollector();
