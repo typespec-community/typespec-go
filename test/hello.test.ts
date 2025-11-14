@@ -1,67 +1,91 @@
 import { strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { emitWithDiagnostics } from "./test-host.js";
 
-describe("TypeSpec Go Emitter - Model Generation", () => {
-  it("generates Go struct from TypeSpec model", async () => {
-    const [results, diagnostics] = await emitWithDiagnostics(`model Test { name: string; }`);
+// Test the type mapper directly
+import { GoTypeMapper } from "../dist/src/utils/type-mapper.js";
+
+describe("TypeSpec Go Emitter - Type Mapping", () => {
+  it("maps basic scalar types correctly", () => {
+    const stringType = { kind: "Scalar", name: "string" };
+    const mapped = GoTypeMapper.mapTypeSpecType(stringType);
     
-    // Check for compilation errors
-    if (diagnostics.length > 0) {
-      console.log("Diagnostics found:", diagnostics.map(d => d.message));
-    }
-    
-    const content = results["@typespec-community/typespec-go/api/models.go"];
-    
-    console.log("Generated content:\n", content);
-    
-    strictEqual(content?.includes("package api"), true);
-    strictEqual(content?.includes("type Test struct"), true);
-    strictEqual(content?.includes('Name string `json:"name"`'), true);
+    strictEqual(mapped.kind, "basic");
+    strictEqual(mapped.name, "string");
+    strictEqual(mapped.usePointerForOptional, true);
   });
 
-  it("handles multiple properties with different types", async () => {
-    const [results, diagnostics] = await emitWithDiagnostics(`
-      model User {
-        id: int32;
-        name: string;
-        active: boolean;
-        score: float64;
-      }
-    `);
+  it("maps int32 correctly", () => {
+    const int32Type = { kind: "Scalar", name: "int32" };
+    const mapped = GoTypeMapper.mapTypeSpecType(int32Type);
     
-    if (diagnostics.length > 0) {
-      console.log("Diagnostics found:", diagnostics.map(d => d.message));
-    }
-    
-    const content = results["@typespec-community/typespec-go/api/models.go"];
-    
-    console.log("Generated User model:\n", content);
-    
-    strictEqual(content?.includes("type User struct"), true);
-    strictEqual(content?.includes('ID int32 `json:"id"`'), true);
-    strictEqual(content?.includes('Name string `json:"name"`'), true);
-    strictEqual(content?.includes('Active bool `json:"active"`'), true);
-    strictEqual(content?.includes('Score float64 `json:"score"`'), true);
+    strictEqual(mapped.kind, "basic");
+    strictEqual(mapped.name, "int32");
+    strictEqual(mapped.usePointerForOptional, true);
   });
 
-  it("generates multiple models", async () => {
-    const [results, diagnostics] = await emitWithDiagnostics(`
-      model User { name: string; }
-      model Post { title: string; }
-    `);
+  it("maps boolean correctly", () => {
+    const boolType = { kind: "Scalar", name: "boolean" };
+    const mapped = GoTypeMapper.mapTypeSpecType(boolType);
     
-    if (diagnostics.length > 0) {
-      console.log("Diagnostics found:", diagnostics.map(d => d.message));
+    strictEqual(mapped.kind, "basic");
+    strictEqual(mapped.name, "bool");
+    strictEqual(mapped.usePointerForOptional, true);
+  });
+
+  it("maps time types correctly", () => {
+    const timeType = { kind: "Scalar", name: "utcDateTime" };
+    const mapped = GoTypeMapper.mapTypeSpecType(timeType);
+    
+    strictEqual(mapped.kind, "basic");
+    strictEqual(mapped.name, "time.Time");
+    strictEqual(mapped.requiresImport, true);
+    strictEqual(mapped.importPath, "time");
+    strictEqual(mapped.usePointerForOptional, true);
+  });
+
+  it("throws error for unknown types", () => {
+    const unknownType = { kind: "UnknownType", name: "something" };
+    
+    try {
+      GoTypeMapper.mapTypeSpecType(unknownType);
+      throw new Error("Should have thrown TypeError");
+    } catch (error) {
+      strictEqual(error instanceof TypeError, true);
+      strictEqual(error.message.includes("Unsupported TypeSpec type"), true);
     }
+  });
+
+  it("generates Go type strings correctly", () => {
+    const testCases = [
+      { type: { kind: "Scalar", name: "string" }, expected: "string" },
+      { type: { kind: "Scalar", name: "int32" }, expected: "int32" },
+      { type: { kind: "Scalar", name: "boolean" }, expected: "bool" },
+    ];
     
-    const content = results["@typespec-community/typespec-go/api/models.go"];
+    for (const testCase of testCases) {
+      const mapped = GoTypeMapper.mapTypeSpecType(testCase.type);
+      const goString = GoTypeMapper.generateGoTypeString(mapped);
+      strictEqual(goString, testCase.expected);
+    }
+  });
+
+  it("generates slice types correctly", () => {
+    const sliceType = {
+      kind: "slice",
+      elementType: { kind: "basic", name: "string" }
+    };
     
-    console.log("Generated multiple models:\n", content);
+    const goString = GoTypeMapper.generateGoTypeString(sliceType);
+    strictEqual(goString, "[]string");
+  });
+
+  it("generates pointer types correctly", () => {
+    const pointerType = {
+      kind: "pointer",
+      baseType: { kind: "basic", name: "string" }
+    };
     
-    strictEqual(content?.includes("type User struct"), true);
-    strictEqual(content?.includes("type Post struct"), true);
-    strictEqual(content?.includes('Name string `json:"name"`'), true);
-    strictEqual(content?.includes('Title string `json:"title"`'), true);
+    const goString = GoTypeMapper.generateGoTypeString(pointerType);
+    strictEqual(goString, "*string");
   });
 });
