@@ -15,6 +15,7 @@ import type {
   Enum as TypeSpecEnum,
   Union as TypeSpecUnion,
 } from "@typespec/compiler";
+import { isArrayModelType } from "@typespec/compiler";
 
 /**
  * Mapped Go type information with comprehensive type support
@@ -108,11 +109,15 @@ export class GoTypeMapper {
   /**
    * Map TypeSpec type to Go type
    */
-  static mapTypeSpecType(typeSpecType: TypeSpecType): MappedGoType {
+  static mapTypeSpecType(typeSpecType: TypeSpecType, program?: any): MappedGoType {
     switch (typeSpecType.kind) {
       case "Scalar":
         return this.mapScalar(typeSpecType);
       case "Model":
+        // Check if it's an array model
+        if (program && isArrayModelType(program, typeSpecType)) {
+          return this.mapArray(typeSpecType);
+        }
         return this.mapModel(typeSpecType);
       case "Enum":
         return this.mapEnum(typeSpecType);
@@ -179,13 +184,13 @@ export class GoTypeMapper {
   }
 
   /**
-   * Map TypeSpec array to Go slice (temporary stub)
+   * Map TypeSpec array to Go slice
    */
-  private static mapArray(arrayType: any): MappedGoType {
-    // For now, treat as slice - will implement proper array handling later
+  private static mapArray(arrayType: TypeSpecModel): MappedGoType {
+    const elementType = this.mapTypeSpecType(arrayType.indexer!.value);
     return {
       kind: "slice",
-      elementType: { kind: "basic", name: "interface{}" },
+      elementType,
       requiresImport: false,
       usePointerForOptional: false,
     };
@@ -193,15 +198,12 @@ export class GoTypeMapper {
 
   /**
    * Create fallback type for unknown TypeSpec types
+   * No more interface{} fallbacks - we throw errors for unknown types
    */
-  private static createFallbackType(unknownType: any): MappedGoType {
-    console.warn(`Unknown TypeSpec type kind: ${(unknownType as any)?.kind || 'undefined'}, using 'interface{}'`);
-    return {
-      kind: "basic",
-      name: "interface{}",
-      requiresImport: false,
-      usePointerForOptional: false,
-    };
+  private static createFallbackType(unknownType: TypeSpecType): never {
+    const typeName = "name" in unknownType ? String(unknownType.name) : "unknown";
+    const kind = unknownType.kind || "undefined";
+    throw new TypeError(`Unsupported TypeSpec type '${typeName}' (${kind}). Supported types: Scalar, Model, Enum, Union, Array.`);
   }
 
   /**

@@ -58,7 +58,7 @@ function GoModule({ context, config }: { context: EmitContext; config: typeof DE
   
   // Collect all types and their imports
   const allModels = Array.from(globalNamespace.models.values());
-  const requiredImports = collectRequiredImports(allModels);
+  const requiredImports = collectRequiredImports(allModels, context);
   
   return (
     <go.ModuleDirectory name="example.com/output">
@@ -85,7 +85,7 @@ function GoModule({ context, config }: { context: EmitContext; config: typeof DE
               if (!modelName || model.properties.size === 0) {
                 return null;
               }
-              return <GoStructDeclaration model={model} />;
+              return <GoStructDeclaration model={model} context={context} />;
             })
           } />
         </go.SourceFile>
@@ -97,12 +97,12 @@ function GoModule({ context, config }: { context: EmitContext; config: typeof DE
 /**
  * Collect required imports for all models
  */
-function collectRequiredImports(models: Model[]): string[] {
+function collectRequiredImports(models: Model[], context: EmitContext): string[] {
   const imports = new Set<string>();
   
   for (const model of models) {
     for (const property of model.properties.values()) {
-      const goType = GoTypeMapper.mapTypeSpecType(property.type);
+      const goType = GoTypeMapper.mapTypeSpecType(property.type, context.program);
       collectTypeImports(goType, imports);
     }
   }
@@ -130,10 +130,10 @@ function collectTypeImports(mappedType: any, imports: Set<string>): void {
 /**
  * Individual type declaration component
  */
-function GoTypeDeclaration({ type }: { type: Type }) {
+function GoTypeDeclaration({ type, context }: { type: Type; context: EmitContext }) {
   switch (type.kind) {
     case "Model":
-      return <GoStructDeclaration model={type} />;
+      return <GoStructDeclaration model={type} context={context} />;
     
     default:
       // Log unsupported types
@@ -156,14 +156,14 @@ function GoTypeDeclaration({ type }: { type: Type }) {
 /**
  * Go struct declaration component using proper Alloy Go components
  */
-function GoStructDeclaration({ model }: { model: Model }) {
+function GoStructDeclaration({ model, context }: { model: Model; context: EmitContext }) {
   const properties = Array.from(model.properties.values());
   const modelName = String(model.name);
   
   return (
     <go.StructTypeDeclaration name={modelName}>
       {properties.map((property) => (
-        <GoStructMember property={property} />
+        <GoStructMember property={property} context={context} />
       ))}
     </go.StructTypeDeclaration>
   );
@@ -172,8 +172,8 @@ function GoStructDeclaration({ model }: { model: Model }) {
 /**
  * Individual struct field component using proper Alloy Go components
  */
-function GoStructMember({ property }: { property: ModelProperty }) {
-  const goType = GoTypeMapper.mapTypeSpecType(property.type);
+function GoStructMember({ property, context }: { property: ModelProperty; context: EmitContext }) {
+  const goType = GoTypeMapper.mapTypeSpecType(property.type, context.program);
   const propertyName = String(property.name);
   
   // Generate field name (PascalCase for Go)
