@@ -79,15 +79,15 @@ function GoModule({ context, config }: { context: EmitContext; config: typeof DE
             <go.LineComment children={`TODO: Add imports: ${requiredImports.join(", ")}`} />
           )}
           
-          <go.TypeDeclarationGroup>
-            {allModels.map((model) => {
+          <go.TypeDeclarationGroup children={
+            allModels.map((model) => {
               const modelName = String(model.name);
               if (!modelName || model.properties.size === 0) {
                 return null;
               }
               return <GoStructDeclaration model={model} />;
-            })}
-          </go.TypeDeclarationGroup>
+            })
+          } />
         </go.SourceFile>
       </go.SourceDirectory>
     </go.ModuleDirectory>
@@ -163,7 +163,7 @@ function GoStructDeclaration({ model }: { model: Model }) {
   return (
     <go.StructTypeDeclaration name={modelName}>
       {properties.map((property) => (
-        <GoStructMember key={String(property.name)} property={property} />
+        <GoStructMember property={property} />
       ))}
     </go.StructTypeDeclaration>
   );

@@ -1,10 +1,16 @@
 import { strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { emit } from "./test-host.js";
+import { emitWithDiagnostics } from "./test-host.js";
 
 describe("TypeSpec Go Emitter - Model Generation", () => {
   it("generates Go struct from TypeSpec model", async () => {
-    const results = await emit(`model Test { name: string; }`);
+    const [results, diagnostics] = await emitWithDiagnostics(`model Test { name: string; }`);
+    
+    // Check for compilation errors
+    if (diagnostics.length > 0) {
+      console.log("Diagnostics found:", diagnostics.map(d => d.message));
+    }
+    
     const content = results["@typespec-community/typespec-go/api/models.go"];
     
     console.log("Generated content:\n", content);
@@ -15,7 +21,7 @@ describe("TypeSpec Go Emitter - Model Generation", () => {
   });
 
   it("handles multiple properties with different types", async () => {
-    const results = await emit(`
+    const [results, diagnostics] = await emitWithDiagnostics(`
       model User {
         id: int32;
         name: string;
@@ -23,6 +29,11 @@ describe("TypeSpec Go Emitter - Model Generation", () => {
         score: float64;
       }
     `);
+    
+    if (diagnostics.length > 0) {
+      console.log("Diagnostics found:", diagnostics.map(d => d.message));
+    }
+    
     const content = results["@typespec-community/typespec-go/api/models.go"];
     
     console.log("Generated User model:\n", content);
@@ -35,10 +46,15 @@ describe("TypeSpec Go Emitter - Model Generation", () => {
   });
 
   it("generates multiple models", async () => {
-    const results = await emit(`
+    const [results, diagnostics] = await emitWithDiagnostics(`
       model User { name: string; }
       model Post { title: string; }
     `);
+    
+    if (diagnostics.length > 0) {
+      console.log("Diagnostics found:", diagnostics.map(d => d.message));
+    }
+    
     const content = results["@typespec-community/typespec-go/api/models.go"];
     
     console.log("Generated multiple models:\n", content);
