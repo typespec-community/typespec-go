@@ -11,6 +11,7 @@
     "sourceMap": true,
     "declarationMap": true,
     "jsx": "preserve",
+    "jsxFactory": "h",
     "outDir": "dist"
   },
   "include": ["src", "test"]
