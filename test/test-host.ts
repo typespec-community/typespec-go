@@ -20,8 +20,6 @@ export async function createTypespecGoTestRunner() {
       noEmit: false,
       emit: ["@typespec-community/typespec-go"],
     },
-    // Add proper file resolution
-    mainFile: "main.tsp",
   });
 }
 

@@ -15,27 +15,27 @@
 		}
 	},
 	"peerDependencies": {
-		"@alloy-js/core": "^0.21.0",
-		"@alloy-js/typescript": "^0.21.0",
-		"@typespec/compiler": "1.5.0",
-		"@typespec/emitter-framework": "^0.12.0",
-		"@typespec/http": "1.5.0"
+		"@alloy-js/core": "^0.22.0-dev.3",
+		"@alloy-js/typescript": "^0.22.0-dev.2",
+		"@typespec/compiler": "1.7.0-dev.2",
+		"@typespec/emitter-framework": "^0.14.0-dev.0",
+		"@typespec/http": "1.7.0-dev.1"
 	},
 	"devDependencies": {
-		"@alloy-js/cli": "^0.21.0",
-		"@alloy-js/core": "^0.21.0",
-		"@alloy-js/go": "^0.1.0",
+		"@alloy-js/cli": "^0.22.0-dev.0",
+		"@alloy-js/core": "^0.22.0-dev.3",
+		"@alloy-js/go": "^0.2.0-dev.1",
 		"@types/node": "latest",
-		"@typescript-eslint/eslint-plugin": "^8.46.4",
-		"@typescript-eslint/parser": "^8.46.4",
-		"@typespec/compiler": "1.5.0",
-		"@typespec/emitter-framework": "^0.12.0",
-		"@typespec/http": "1.5.0",
+		"@typescript-eslint/eslint-plugin": "^8.46.5-alpha.4",
+		"@typescript-eslint/parser": "^8.46.5-alpha.4",
+		"@typespec/compiler": "1.7.0-dev.2",
+		"@typespec/emitter-framework": "^0.14.0-dev.0",
+		"@typespec/http": "1.7.0-dev.1",
 		"eslint": "^9.39.1",
-		"prettier": "^3.6.2",
-		"react": "^19.2.0",
+		"prettier": "^4.0.0-alpha.12",
+		"react": "^19.3.0-canary-fa50caf5-20251107",
 		"react-jsx": "^1.0.0",
-		"typescript": "^5.9.3"
+		"typescript": "^6.0.0-dev.20251114"
 	},
 	"scripts": {
 		"lint": "eslint src/ test/ --report-unused-disable-directives --max-warnings=0",

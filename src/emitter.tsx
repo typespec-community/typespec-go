@@ -1,5 +1,5 @@
 import { createTypeSpecLibrary } from "@typespec/compiler";
-import { Output } from "@alloy-js/core";
+import { Output, createComponent } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
 import { isArrayModelType } from "@typespec/compiler";
 import type { EmitContext, Type, Model, Enum, Union, Namespace, ModelProperty } from "@typespec/compiler";
