@@ -1,11 +1,11 @@
 import { fileURLToPath } from "node:url";
-import { resolvePath } from "@typespec/compiler";
 import {
+	findTestPackageRoot,
 	createTestLibrary,
 	type TypeSpecTestLibrary,
 } from "@typespec/compiler/testing";
 
 export const TypespecGoTestLibrary: TypeSpecTestLibrary = createTestLibrary({
-	name: "typespec-go",
-	packageRoot: resolvePath(fileURLToPath(import.meta.url), "../../../../"),
+	name: "@typespec-community/typespec-go", // Match package.json name
+	packageRoot: await findTestPackageRoot(import.meta.url),
 });

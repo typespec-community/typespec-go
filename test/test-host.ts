@@ -18,7 +18,7 @@ export async function createTypespecGoTestRunner() {
   return createTestWrapper(host, {
     compilerOptions: {
       noEmit: false,
-      emit: ["typespec-go"],
+      emit: ["@typespec-community/typespec-go"],
     },
   });
 }

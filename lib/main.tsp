@@ -1,5 +1,3 @@
-import "./dist/src/index.js";
-
 using TypeSpec.Reflection;
 
 namespace TypeSpec.Go;
