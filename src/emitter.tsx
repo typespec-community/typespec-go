@@ -1,6 +1,7 @@
 import { createTypeSpecLibrary } from "@typespec/compiler";
 import { Output } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
+import { isArrayModelType } from "@typespec/compiler";
 import type { EmitContext, Type, Model, Enum, Union, Namespace, ModelProperty } from "@typespec/compiler";
 import { GoTypeMapper } from "./utils/type-mapper.js";
 import { EmitterConfigFactory, DEFAULT_EMITTER_CONFIG } from "./utils/config.js";
@@ -133,7 +134,14 @@ function collectTypeImports(mappedType: any, imports: Set<string>): void {
 function GoTypeDeclaration({ type, context }: { type: Type; context: EmitContext }) {
   switch (type.kind) {
     case "Model":
+      // Check if it's an array model
+      if (isArrayModelType(context.program, type)) {
+        return <GoArrayDeclaration arrayType={type} />;
+      }
       return <GoStructDeclaration model={type} context={context} />;
+    
+    case "Enum":
+      return <GoEnumDeclaration enumType={type} />;
     
     default:
       // Log unsupported types
@@ -147,10 +155,48 @@ function GoTypeDeclaration({ type, context }: { type: Type; context: EmitContext
           column: 0,
           function: "GoTypeDeclaration",
         },
-        resolution: "Currently only Model types are supported",
+        resolution: "Currently only Model, Enum, and Array types are supported",
       });
       return null;
   }
+}
+
+/**
+ * Go array declaration component using proper Alloy Go components
+ */
+function GoArrayDeclaration({ arrayType }: { arrayType: Model }) {
+  const elementType = GoTypeMapper.mapTypeSpecType(arrayType.indexer!.value);
+  const elementTypeName = GoTypeMapper.generateGoTypeString(elementType);
+  const arrayName = String(arrayType.name);
+  
+  return (
+    <go.TypeDeclaration name={arrayName}>
+      []{elementTypeName}
+    </go.TypeDeclaration>
+  );
+}
+
+/**
+ * Go enum declaration component using proper Alloy Go components
+ */
+function GoEnumDeclaration({ enumType }: { enumType: Enum }) {
+  const enumName = String(enumType.name);
+  const members = Array.from(enumType.members.values());
+  
+  return (
+    <go.TypeDeclarationGroup children={[
+      <go.TypeDeclaration name={enumName}>
+        string
+      </go.TypeDeclaration>,
+      <go.VariableDeclarationGroup const children={
+        members.map((member) => (
+          <go.VariableDeclaration name={`${enumName}${String(member.name)}`} type={enumName}>
+            {`"${String(member.name)}"`}
+          </go.VariableDeclaration>
+        ))
+      } />
+    ]} />
+  );
 }
 
 /**
