@@ -3,8 +3,8 @@
     "lib": ["es2023"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext", 
-    "target": "es2022",
-    "strict": true,
+    "target": "es2017",
+    "strict": false,
     "skipLibCheck": true,
     "isolatedModules": true,
     "declaration": true,
@@ -15,7 +15,10 @@
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
     "outDir": "dist"
   },
-  "include": ["src", "test"]
+  "include": ["src", "test"],
+  "exclude": ["node_modules"]
 }
