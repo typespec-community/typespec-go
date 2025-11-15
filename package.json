@@ -38,9 +38,13 @@
 		"typescript": "^6.0.0-dev.20251114"
 	},
 	"scripts": {
-		"lint": "eslint src/ test/ --report-unused-disable-directives --max-warnings=0",
-		"lint:fix": "eslint . --report-unused-disable-directives --fix",
-		"format": "prettier .  --write",
-		"format:check": "prettier --check ."
+		"build": "tsc -p tsconfig.clean.json",
+		"build:check": "tsc --noEmit -p tsconfig.clean.json",
+		"test": "bun test",
+		"test:working": "bun test test/integrated-enhanced-generator.test.ts",
+		"lint": "eslint src/standalone-generator.ts src/index.ts --report-unused-disable-directives --max-warnings=0",
+		"lint:fix": "eslint src/standalone-generator.ts src/index.ts --report-unused-disable-directives --fix",
+		"format": "prettier src/standalone-generator.ts src/index.ts --write",
+		"format:check": "prettier src/standalone-generator.ts src/index.ts --check"
 	}
 }

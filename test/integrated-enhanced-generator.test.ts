@@ -193,7 +193,7 @@ describe("Enhanced Generator - Integrated Type Safety", () => {
       producesWorkingGoCode: goCode.length > 0 && goCode.includes("type UserProfile struct"),
       hasAllRequiredFields: goCode.includes("UserId") && goCode.includes("Username") && goCode.includes("Email"),
       handlesOptionalsCorrectly: goCode.includes("Email *string") && goCode.includes("LastLogin *int64"),
-      hasProperJsonTags: goCode.includes('json:"userId"') && goCode.includes('json:"email",omitempty') // Check actual generated tags
+      hasProperJsonTags: goCode.includes('json:"userId"') && goCode.includes('json:"email",omitempty'), // Check actual generated tags
       isCompilableGo: goCode.includes("package") && goCode.includes("struct") && !goCode.includes("interface{}")
     };
     
