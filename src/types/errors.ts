@@ -20,7 +20,7 @@ export type ErrorId = string & { readonly __brand: "ErrorId" };
  * Type-Safe Error Creators
  * ZERO 'ANY' TYPES: Type-safe error creation
  */
-namespace TypeSpecEntities {
+export namespace TypeSpecEntities {
   export const createTypeSpecId = (id: string): TypeSpecId => id as TypeSpecId;
   export const createModelName = (name: string): ModelName => name as ModelName;
   export const createPropertyName = (name: string): PropertyName => name as PropertyName;

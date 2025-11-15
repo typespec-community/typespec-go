@@ -1,10 +1,9 @@
 import { findTestPackageRoot, createTestLibrary } from "@typespec/compiler/testing";
 
 /**
- * TypeSpec Go Emitter Test Library
+ * TypeSpec Go Emitter Test Library Factory
  * 
- * This creates a test library that can be used by the TypeSpec compiler
- * for testing purposes. It exports the library as a function that returns
+ * This creates a test library factory function that returns
  * a promise resolving to the TypeSpecTestLibrary object.
  */
 export async function TypespecGoTestLibrary() {

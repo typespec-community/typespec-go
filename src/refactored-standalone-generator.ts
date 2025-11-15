@@ -8,9 +8,9 @@
  * DOMAIN-DRIVEN DESIGN: Clear bounded context and use case orchestration
  */
 
-import { GeneratorError, GeneratorErrorFactory, GenerationContext, InvalidModelReason, TypeSpecId } from '../types/errors';
-import { GoStructGenerator } from '../generators/go-generator';
-import { TypeSpecPropertyNode, TypeSpecTypeMapper } from '../mappers/type-mapper-fixed';
+import { GeneratorError, GeneratorErrorFactory, GenerationContext, InvalidModelReason, TypeSpecId } from './types/errors.js';
+import { GoStructGenerator } from './generators/go-generator.js';
+import { TypeSpecPropertyNode, TypeSpecTypeMapper } from './mappers/type-mapper.js';
 
 /**
  * TypeSpec Model Interface

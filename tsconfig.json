@@ -15,7 +15,8 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "allowJs": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "noEmit": false
   },
   "include": [
     "src/**/*"

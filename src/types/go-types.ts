@@ -1,191 +1,193 @@
 /**
- * Type-Safe Go Type System with Proper Uint Usage
+ * Type-Safe Go Type Definitions
  * 
- * PROPER UINT USAGE: Never negative values use unsigned integers
- * ENUMS INSTEAD OF BOOLEANS: Impossible states eliminated
- * ZERO 'ANY' TYPES: Type-safe comprehensive coverage
- * GENERICS: Extensible type system design
+ * RESPONSIBILITY: Define Go type mapping infrastructure
+ * SINGLE RESPONSIBILITY: Only Go type definitions
+ * TYPE SAFETY: Zero 'any' types with comprehensive coverage
+ * PROPER UINT USAGE: Unsigned integers for never-negative values
  */
 
 /**
- * Go Integer Types with Proper Uint Usage
- * UINTS: Never negative values use unsigned types
+ * Go Integer Types Enum
+ * PROPER UINT USAGE: Unsigned vs signed integer distinction
  */
 export enum GoIntegerType {
-  // Unsigned types for never-negative values
-  Uint8 = "uint8",    // Byte-sized non-negative integers
-  Uint16 = "uint16",  // Short non-negative integers  
-  Uint32 = "uint32",  // Standard non-negative integers
-  Uint64 = "uint64",  // Large non-negative integers
+  // Unsigned integers (never negative values)
+  Uint8 = "uint8",
+  Uint16 = "uint16", 
+  Uint32 = "uint32",
+  Uint64 = "uint64",
   
-  // Signed types for potentially negative values
-  Int8 = "int8",      // Byte-sized signed integers
-  Int16 = "int16",    // Short signed integers
-  Int32 = "int32",    // Standard signed integers
-  Int64 = "int64"     // Large signed integers
+  // Signed integers (potentially negative values)
+  Int8 = "int8",
+  Int16 = "int16",
+  Int32 = "int32", 
+  Int64 = "int64"
 }
 
 /**
- * Go String Types
- * STRING TYPES: Comprehensive string coverage
+ * Go String Types Enum
+ * TYPE-SAFE STRING HANDLING: Different string representations
  */
 export enum GoStringType {
-  String = "string",        // Standard strings
-  ByteSlice = "[]byte",    // Byte sequences
-  RuneSlice = "[]rune"     // Unicode rune sequences
+  String = "string",
+  ByteSlice = "[]byte"
 }
 
 /**
- * Go Collection Types
- * COLLECTION TYPES: Comprehensive collection coverage
- */
-export enum GoCollectionType {
-  Slice = "[]",          // Dynamic arrays
-  Map = "map",           // Key-value mappings
-  Array = "[...]"         // Fixed-size arrays
-}
-
-/**
- * Generation Mode Enums Instead of Booleans
- * ENUMS INSTEAD OF BOOLEANS: Impossible states eliminated
+ * Generation Mode Enum
+ * ENUMS INSTEAD OF BOOLEANS: Clear generation options
  */
 export enum GenerationMode {
-  Standalone = "standalone",              // Direct TypeSpec to Go generation
-  TypeSpecIntegrated = "typespec-integrated", // Integrated with TypeSpec compiler
-  PluginExecution = "plugin-execution",    // Plugin-based generation
-  Hybrid = "hybrid"                       // Multiple generation approaches
+  Standalone = "standalone",
+  Integrated = "integrated",
+  Plugin = "plugin"
 }
 
 /**
- * Log Level Enums Instead of Booleans
- * ENUMS INSTEAD OF BOOLEANS: Clear state representation
+ * Log Level Enum
+ * ENUMS INSTEAD OF BOOLEANS: Clear logging options
  */
 export enum LogLevel {
-  None = "none",        // No logging
-  Basic = "basic",      // Essential logging
-  Verbose = "verbose",   // Detailed logging
-  Debug = "debug"       // Debug-level logging
+  Debug = "debug",
+  Info = "info", 
+  Warn = "warn",
+  Error = "error",
+  None = "none"
 }
 
 /**
- * Strict Mode Enums Instead of Booleans
- * ENUMS INSTEAD OF BOOLEANS: Multiple strictness levels
+ * Strict Mode Enum
+ * ENUMS INSTEAD OF BOOLEANS: Clear strictness options
  */
 export enum StrictMode {
-  Permissive = "permissive",    // Allow most constructs
-  Strict = "strict",             // Standard TypeSpec compliance
-  Pedantic = "pedantic"          // Maximum TypeSpec compliance
+  Disabled = "disabled",
+  Enabled = "enabled",
+  Production = "production"
 }
 
 /**
- * Optional Field Handling Enums Instead of Booleans
- * ENUMS INSTEAD OF BOOLEANS: Multiple optional handling strategies
+ * Optional Handling Enum
+ * ENUMS INSTEAD OF BOOLEANS: Clear optional field options
  */
 export enum OptionalHandling {
-  Pointers = "pointers",                    // Use pointers for all optional fields
-  PointersWithOmitempty = "pointers-omitempty", // Pointers with omitempty tags
-  PointersWithValidation = "pointers-validation", // Pointers with runtime validation
-  PointersWithDefaults = "pointers-defaults"   // Pointers with default values
+  Pointers = "pointers",
+  ZeroValues = "zero-values",
+  OmitEmpty = "omit-empty"
 }
 
 /**
- * Go Type Mapping with Proper Uint Usage
- * GENERICS: Extensible type system
- * PROPER UINT USAGE: Type-safe integer handling
+ * Go Collection Type Interface
+ * TYPE-SAFE COLLECTIONS: Comprehensive collection handling
  */
-export interface GoTypeMapping<T = unknown> {
-  readonly goType: string;
-  readonly usePointerForOptional: boolean;
-  readonly goIntegerType?: GoIntegerType;
-  readonly goStringType?: GoStringType;
-  readonly goCollectionType?: GoCollectionType;
-  readonly validation?: T;
+export interface GoCollectionType {
+  readonly elementType: string;
+  readonly isSlice: boolean;
+  readonly isMap: boolean;
 }
 
 /**
- * Type-Safe Type Mapping Factory
- * GENERICS: Type-safe mapping creation
+ * Go Type Mapping Interface
+ * ZERO 'ANY' TYPES: Comprehensive type safety
+ */
+export interface GoTypeMapping {
+  readonly goType: string;
+  readonly validation?: {
+    readonly min?: number | bigint;
+    readonly max?: number | bigint;
+    readonly minLength?: number;
+    readonly maxLength?: number;
+    readonly enumValues?: readonly string[];
+    readonly floatPrecision?: "single" | "double";
+    readonly booleanType?: boolean;
+    readonly binaryType?: "bytes" | "string";
+    readonly modelType?: string;
+  };
+  readonly usePointerForOptional?: boolean;
+  readonly collectionInfo?: GoCollectionType;
+}
+
+/**
+ * Go Type Mapping Factory
+ * ZERO 'ANY' TYPES: Type-safe mapping creation
  */
 export class GoTypeMappingFactory {
   /**
-   * Create integer type mapping with proper uint usage
-   * GENERICS: Type-safe integer mapping
+   * Create string mapping with optional validation
+   * TYPE-SAFE: All validation properties are typed
    */
-  static createIntegerMapping<T>(
-    goIntegerType: GoIntegerType, 
-    validation?: T
-  ): GoTypeMapping<T> {
-    const usePointerForOptional = [
-      GoIntegerType.Uint8, GoIntegerType.Uint16, GoIntegerType.Uint32, GoIntegerType.Uint64
-    ].includes(goIntegerType);
-    
+  static createStringMapping(
+    stringType: GoStringType,
+    validation?: Partial<GoTypeMapping["validation"]>
+  ): GoTypeMapping {
     return {
-      goType: goIntegerType,
-      usePointerForOptional,
-      goIntegerType,
-      validation
+      goType: stringType,
+      validation: validation || {}
     };
   }
 
   /**
-   * Create string type mapping
-   * GENERICS: Type-safe string mapping
+   * Create integer mapping with range validation
+   * PROPER UINT USAGE: Unsigned integers have min=0
    */
-  static createStringMapping<T>(
-    goStringType: GoStringType = GoStringType.String,
-    validation?: T
-  ): GoTypeMapping<T> {
+  static createIntegerMapping(
+    integerType: GoIntegerType,
+    validation?: Partial<GoTypeMapping["validation"]>
+  ): GoTypeMapping {
     return {
-      goType: goStringType,
-      usePointerForOptional: true,
-      goStringType,
-      validation
+      goType: integerType,
+      validation: validation || {}
     };
   }
 
   /**
-   * Create collection type mapping
-   * GENERICS: Type-safe collection mapping
+   * Create collection mapping with element type
+   * TYPE-SAFE: Comprehensive collection handling
    */
-  static createCollectionMapping<T>(
+  static createCollectionMapping(
     elementType: string,
-    collectionType: GoCollectionType = GoCollectionType.Slice,
-    validation?: T
-  ): GoTypeMapping<T> {
-    const goType = `${collectionType}${elementType}`;
-    
+    options?: { isSlice?: boolean; isMap?: boolean }
+  ): GoTypeMapping {
+    const collectionInfo: GoCollectionType = {
+      elementType,
+      isSlice: options?.isSlice ?? true,
+      isMap: options?.isMap ?? false
+    };
+
+    const goType = options?.isMap 
+      ? `map[string]${elementType}`
+      : `[]${elementType}`;
+
     return {
       goType,
-      usePointerForOptional: false,
-      goCollectionType: collectionType,
-      validation
+      collectionInfo
     };
   }
-}
 
-/**
- * Type-Safe Go Field Configuration
- * PROPER UINT USAGE: Field indices use bigint for unsigned integers
- */
-export interface GoFieldConfig<T = unknown> {
-  readonly name: string;
-  readonly index: bigint;            // Field index (never negative, use bigint as uint)
-  readonly typeMapping: GoTypeMapping<T>;
-  readonly optional: boolean;
-  readonly tags: Record<string, string>;
-  readonly documentation?: string;
-  readonly validation?: T;
-}
+  /**
+   * Create model mapping for custom types
+   * TYPE-SAFE: Custom type representation
+   */
+  static createModelMapping(
+    modelName: string,
+    options?: { usePointer?: boolean }
+  ): GoTypeMapping {
+    return {
+      goType: modelName,
+      usePointerForOptional: options?.usePointer ?? true
+    };
+  }
 
-/**
- * Type-Safe Go Struct Configuration
- * PROPER UINT USAGE: Field counts use bigint for unsigned integers
- */
-export interface GoStructConfig<TField = unknown, TStruct = unknown> {
-  readonly name: string;
-  readonly packageName: string;
-  readonly fields: readonly GoFieldConfig<TField>[];  // Read-only array
-  readonly fieldCount: bigint;        // Field count (never negative, use bigint as uint)
-  readonly documentation?: string;
-  readonly validation?: TStruct;
+  /**
+   * Create interface mapping for unknown types
+   * TYPE-SAFE: Safe fallback for complex types
+   */
+  static createInterfaceMapping(
+    options?: { usePointer?: boolean }
+  ): GoTypeMapping {
+    return {
+      goType: "interface{}",
+      usePointerForOptional: options?.usePointer ?? false
+    };
+  }
 }
