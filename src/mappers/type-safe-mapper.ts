@@ -39,7 +39,7 @@ export const TYPE_SPEC_MAPPINGS = {
   Float32: { goType: "float32", usePointerForOptional: true },
   Float64: { goType: "float64", usePointerForOptional: true },
   
-  // Boolean and other types
+  // Boolean and other types (FIX: Remove duplicate Bool)
   Boolean: { goType: "bool", usePointerForOptional: true },
   Bytes: { goType: "[]byte", usePointerForOptional: true },
   
