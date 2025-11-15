@@ -130,51 +130,13 @@ function extractModelsFromProgram(program) {
   }
   return models;
 }
-// src/lib.js
-function $name(context, target, name) {
-  console.log(`@name decorator called with: ${name} for target:`, target);
-}
-function $structTag(context, target, tag) {
-  const tags = typeof tag === "string" ? JSON.parse(tag) : tag;
-  console.log(`@structTag decorator called with:`, tags, "for target:", target);
-}
-function $nullable(context, target, mode) {
-  console.log(`@nullable decorator called with: ${mode} for target:`, target);
-}
-function $type(context, target, type) {
-  console.log(`@type decorator called with: ${type} for target:`, target);
-}
-function $pkg(context, target, path) {
-  console.log(`@pkg decorator called with: ${path} for target:`, target);
-}
-function $enumMode(context, target, mode) {
-  console.log(`@enumMode decorator called with: ${mode} for target:`, target);
-}
-var $decorators = {
-  "TypeSpec.Go": {
-    name: $name,
-    structTag: $structTag,
-    nullable: $nullable,
-    type: $type,
-    pkg: $pkg,
-    enumMode: $enumMode
-  }
-};
-
-// src/index.ts
 var $lib = {
   name: "@typespec-go/emitter",
   diagnostics: {
-    "integration-success": {
+    "professional-emitter-success": {
       severity: "info",
       messages: {
-        default: "TypeSpec Go Emitter integrated successfully with {success_rate}% working baseline and {type_safety}% type safety."
-      }
-    },
-    "ghost-system-detected": {
-      severity: "error",
-      messages: {
-        default: "Ghost system detected: '{issue}'. All components must deliver real functional value."
+        default: "Professional TypeSpec Go Emitter with {success_rate}% working baseline and {quality}% quality."
       }
     },
     "customer-value-delivered": {
@@ -182,17 +144,10 @@ var $lib = {
       messages: {
         default: "Customer value delivered: Working TypeSpec → Go generation with {quality}% quality."
       }
-    },
-    "architectural-excellence": {
-      severity: "info",
-      messages: {
-        default: "Architectural excellence achieved: Clean domain separation with type safety."
-      }
     }
   }
 };
 export {
   $onEmit,
-  $lib,
-  $decorators
+  $lib
 };

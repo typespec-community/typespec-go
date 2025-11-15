@@ -10,7 +10,7 @@
  * - Domain-driven design - clean architecture
  * - Single responsibility - focused components
  */
-export { $onEmit } from "./final-integrated-emitter.js";
+export { $onEmit } from "./professional-emitter.js";
 export { $decorators } from "./lib.js";
 
 // Create professional lib export with integration status
