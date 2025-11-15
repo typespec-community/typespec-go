@@ -11,10 +11,10 @@
  * Branded Types for Type-Safe Entity Identification
  * ZERO 'ANY' TYPES: Impossible naming conflicts eliminated
  */
-type TypeSpecId = string & { readonly __brand: "TypeSpecId" };
-type ModelName = string & { readonly __brand: "ModelName" };
-type PropertyName = string & { readonly __brand: "PropertyName" };
-type ErrorId = string & { readonly __brand: "ErrorId" };
+export type TypeSpecId = string & { readonly __brand: "TypeSpecId" };
+export type ModelName = string & { readonly __brand: "ModelName" };
+export type PropertyName = string & { readonly __brand: "PropertyName" };
+export type ErrorId = string & { readonly __brand: "ErrorId" };
 
 /**
  * Type-Safe Error Creators

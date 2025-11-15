@@ -10,8 +10,6 @@
     "declaration": true,
     "sourceMap": true,
     "declarationMap": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "@alloy-js/core",
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -19,6 +17,8 @@
     "allowJs": true,
     "outDir": "dist"
   },
-  "include": ["src", "test"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": ["node_modules", "dist"]
 }
