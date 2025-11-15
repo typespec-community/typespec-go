@@ -1,5 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "include": ["src/standalone-generator.ts", "src/index.ts"],
-  "exclude": ["src/**/*.test.ts", "test/**/*", "src/minimal-*", "src/simple-*", "src/working-*", "src/professional-*"]
-}

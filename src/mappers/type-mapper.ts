@@ -7,7 +7,7 @@
  * GENERICS: Extensible mapping system
  */
 
-import { GeneratorError, GeneratorErrorFactory, InvalidModelReason, TypeSpecId } from '../types/errors.js';
+import { GeneratorError, GeneratorErrorFactory, InvalidModelReason, TypeSpecId, TypeSpecEntities } from '../types/errors.js';
 import { GoIntegerType, GoTypeMapping, GoTypeMappingFactory, GoStringType, GoCollectionType } from '../types/go-types.js';
 
 /**
@@ -45,8 +45,8 @@ export class TypeSpecTypeMapper {
    */
   private static readonly TYPE_MAPPINGS: Map<TypeSpecTypeNode["kind"], GoTypeMapping> = new Map([
     // String types
-    ["String", GoTypeMappingFactory.createStringMapping({ minLength: 1, maxLength: 1000 })],
-    ["Enum", GoTypeMappingFactory.createStringMapping({ enumValues: [] })],
+    ["String", GoTypeMappingFactory.createStringMapping(GoStringType.String, { minLength: 1, maxLength: 1000 })],
+    ["Enum", GoTypeMappingFactory.createStringMapping(GoStringType.String, { enumValues: [] })],
     
     // Unsigned integer types (never negative values)
     ["Uint8", GoTypeMappingFactory.createIntegerMapping(GoIntegerType.Uint8, { min: 0, max: 255 })],
@@ -61,18 +61,18 @@ export class TypeSpecTypeMapper {
     ["Int64", GoTypeMappingFactory.createIntegerMapping(GoIntegerType.Int64, { min: BigInt("-9223372036854775808"), max: BigInt("9223372036854775807") })],
     
     // Floating point types
-    ["Float32", GoTypeMappingFactory.createStringMapping({ floatPrecision: "single" })],
-    ["Float64", GoTypeMappingFactory.createStringMapping({ floatPrecision: "double" })],
+    ["Float32", GoTypeMappingFactory.createStringMapping(GoStringType.String, { floatPrecision: "single" })],
+    ["Float64", GoTypeMappingFactory.createStringMapping(GoStringType.String, { floatPrecision: "double" })],
     
     // Boolean type
-    ["Boolean", GoTypeMappingFactory.createStringMapping({ booleanType: true })],
+    ["Boolean", GoTypeMappingFactory.createStringMapping(GoStringType.String, { booleanType: true })],
     
     // Binary data type
-    ["Bytes", GoTypeMappingFactory.createStringMapping({ binaryType: "bytes" })],
+    ["Bytes", GoTypeMappingFactory.createStringMapping(GoStringType.ByteSlice, { binaryType: "bytes" })],
     
     // Collection types
     ["Array", GoTypeMappingFactory.createCollectionMapping("interface{}")],
-    ["Model", GoTypeMappingFactory.createStringMapping({ modelType: "interface{}" })],
+    ["Model", GoTypeMappingFactory.createStringMapping(GoStringType.String, { modelType: "interface{}" })],
     ["Union", GoTypeMappingFactory.createCollectionMapping("interface{}")]
   ]);
 
@@ -85,7 +85,7 @@ export class TypeSpecTypeMapper {
     const mapping = this.TYPE_MAPPINGS.get(type.kind);
     
     if (!mapping) {
-      throw GeneratorErrorFactory.unsupportedType(type.kind, type.kind);
+      throw GeneratorErrorFactory.unsupportedType(type.kind, TypeSpecEntities.createTypeSpecId(type.kind));
     }
     
     return mapping;

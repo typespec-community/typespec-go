@@ -31,13 +31,13 @@
 		"typescript": "6.0.0-dev.20251114"
 	},
 	"scripts": {
-		"build": "tsc -p tsconfig.clean.json",
-		"build:check": "tsc --noEmit -p tsconfig.clean.json",
+		"build": "tsc",
+		"build:check": "tsc --noEmit",
 		"test": "bun test",
 		"test:working": "bun test test/integrated-enhanced-generator.test.ts",
-		"lint": "eslint src/standalone-generator.ts src/index.ts --report-unused-disable-directives --max-warnings=0",
-		"lint:fix": "eslint src/standalone-generator.ts src/index.ts --report-unused-disable-directives --fix",
-		"format": "prettier src/standalone-generator.ts src/index.ts --write",
-		"format:check": "prettier src/standalone-generator.ts src/index.ts --check"
+		"lint": "eslint src/ --report-unused-disable-directives --max-warnings=0 --ext .ts",
+		"lint:fix": "eslint src/ --report-unused-disable-directives --fix --ext .ts",
+		"format": "prettier src/ --write",
+		"format:check": "prettier src/ --check"
 	}
 }
