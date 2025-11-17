@@ -14,7 +14,7 @@ export { StandaloneGoGenerator, GoGenerationError } from "./standalone-generator
 
 // Type system components
 export type { GeneratorError, GeneratorErrorFactory, InvalidModelReason, GenerationContext } from "./types/errors.js";
-export type { GoIntegerType, GoStringType, GoCollectionType, GenerationMode, LogLevel, StrictMode, OptionalHandling } from "./types/go-types.js";
+export type { GoIntegerType, GoStringType, GoCollectionType, LogLevel, StrictMode, OptionalHandling } from "./types/go-types.js";
 
 /**
  * Library metadata for TypeSpec integration

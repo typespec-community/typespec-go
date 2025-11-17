@@ -35,16 +35,6 @@ export enum GoStringType {
 }
 
 /**
- * Generation Mode Enum
- * ENUMS INSTEAD OF BOOLEANS: Clear generation options
- */
-export enum GenerationMode {
-  Standalone = "standalone",
-  Integrated = "integrated",
-  Plugin = "plugin"
-}
-
-/**
  * Log Level Enum
  * ENUMS INSTEAD OF BOOLEANS: Clear logging options
  */
