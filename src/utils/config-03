@@ -1,0 +1,11 @@
+   * Priority: TypeSpec options > Environment > Defaults
+   */
+  static createEffective(typeSpecOptions: any): EmitterConfig {
+    // Start with environment
+    const config = this.fromEnvironment();
+    
+    // Override with TypeSpec options
+    const typeSpecConfig = this.fromTypeSpecOptions(typeSpecOptions);
+    return { ...config, ...typeSpecConfig };
+  }
+}

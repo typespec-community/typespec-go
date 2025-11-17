@@ -5,7 +5,7 @@
  * the complex TypeSpec testing framework.
  */
 
-import { StandaloneGoGenerator } from '../refactored-standalone-generator.js';
+import { StandaloneGoGenerator } from '../standalone-generator.js';
 import { TypeSpecTypeMapper, TypeSpecPropertyNode } from '../mappers/type-mapper.js';
 
 // Create a simple test

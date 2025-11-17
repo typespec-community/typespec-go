@@ -1,0 +1,110 @@
+/**
+ * Bun Test for StandaloneGoGenerator
+ * BDD-style test framework for TypeSpec Go Emitter
+ */
+
+import { describe, it, expect, beforeEach } from "bun:test";
+import { StandaloneGoGenerator } from "../standalone-generator.js";
+
+describe("StandaloneGoGenerator", () => {
+  let generator: StandaloneGoGenerator;
+
+  beforeEach(() => {
+    generator = new StandaloneGoGenerator();
+  });
+
+  describe("Given a simple TypeSpec model", () => {
+    it("should generate valid Go struct", () => {
+      // Given
+      const model = {
+        name: "User",
+        properties: new Map([
+          ["name", { name: "name", type: { kind: "String" }, optional: false }],
+          ["age", { name: "age", type: { kind: "Uint8" }, optional: true }]
+        ])
+      };
+
+      // When
+      const goCode = generator.generateModel(model);
+
+      // Then
+      expect(goCode).toContain("package api");
+      expect(goCode).toContain("type User struct {");
+      expect(goCode).toContain('Name string `json:"name"`');
+      expect(goCode).toContain('Age *uint8 `json:"age,omitempty"`');
+      expect(goCode).toContain("}");
+    });
+
+    it("should handle required and optional fields correctly", () => {
+      // Given
+      const model = {
+        name: "Product", 
+        properties: new Map([
+          ["id", { name: "id", type: { kind: "String" }, optional: false }],
+          ["price", { name: "price", type: { kind: "Float64" }, optional: false }],
+          ["description", { name: "description", type: { kind: "String" }, optional: true }]
+        ])
+      };
+
+      // When
+      const goCode = generator.generateModel(model);
+
+      // Then  
+      expect(goCode).toContain('Id string `json:"id"`');
+      expect(goCode).toContain('Price float64 `json:"price"`');
+      expect(goCode).toContain('Description *string `json:"description,omitempty"`');
+    });
+  });
+
+  describe("Given complex TypeSpec types", () => {
+    it("should handle arrays correctly", () => {
+      // Given
+      const model = {
+        name: "Order",
+        properties: new Map([
+          ["items", { 
+            name: "items", 
+            type: { kind: "Array", element: { kind: "String" } }, 
+            optional: false 
+          }]
+        ])
+      };
+
+      // When
+      const goCode = generator.generateModel(model);
+
+      // Then
+      expect(goCode).toContain('Items []interface{} `json:"items"`');
+    });
+
+    it("should handle boolean fields", () => {
+      // Given
+      const model = {
+        name: "Settings",
+        properties: new Map([
+          ["enabled", { name: "enabled", type: { kind: "Boolean" }, optional: false }]
+        ])
+      };
+
+      // When
+      const goCode = generator.generateModel(model);
+
+      // Then
+      expect(goCode).toContain('Enabled bool `json:"enabled"`');
+    });
+  });
+
+  describe("Error handling", () => {
+    it("should throw GoGenerationError for invalid models", () => {
+      // Given
+      const invalidModel = {
+        name: "", // Invalid empty name
+        properties: new Map()
+      };
+
+      // When & Then
+      expect(() => generator.generateModel(invalidModel))
+        .toThrow("Invalid model: name must be a non-empty string");
+    });
+  });
+});
