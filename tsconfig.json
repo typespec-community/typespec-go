@@ -17,7 +17,9 @@
     "allowJs": false,
     "outDir": "dist",
     "noEmit": false,
-    "types": ["node"]
+    "types": ["node"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "@alloy-js/core"
   },
   "include": [
     "src/**/*"
