@@ -29,13 +29,16 @@ export class ExternalErrorAdapter {
   static adaptTypeSpecCompilerError(
     externalError: TypeSpecCompilerExternalError,
   ): GoEmitterError {
+    const baseOptions = {
+      resolution: externalError.resolution || "Fix TypeSpec model syntax",
+    };
+    
     return ErrorFactory.createTypeSpecCompilerError(
       externalError.message || "TypeSpec compiler error",
-      {
-        modelName: externalError.modelName,
-        propertyName: externalError.propertyName,
-        resolution: externalError.resolution || "Fix TypeSpec model syntax",
-      },
+      Object.assign(baseOptions,
+        externalError.modelName && { modelName: externalError.modelName },
+        externalError.propertyName && { propertyName: externalError.propertyName }
+      )
     );
   }
 

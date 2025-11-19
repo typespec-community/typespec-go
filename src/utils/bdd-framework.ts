@@ -140,7 +140,8 @@ export class BDDRunner {
     message: string, 
     details?: Record<string, unknown>
   ): BDDValidation {
-    return { success, message, details };
+    const baseValidation = { success, message };
+    return Object.assign(baseValidation, details && { details });
   }
 
   /**
@@ -152,7 +153,8 @@ export class BDDRunner {
     message: string, 
     errorDetails?: Record<string, unknown>
   ): BDDValidation {
-    return { success, message, details: errorDetails };
+    const baseValidation = { success, message };
+    return Object.assign(baseValidation, errorDetails && { details: errorDetails });
   }
 
   /**
