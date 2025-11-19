@@ -44,14 +44,16 @@ export class ExternalErrorAdapter {
    *
    * ADAPTER PATTERN: Convert TS errors to unified error domain
    */
-  static adaptTypeScriptError(externalError: TypeScriptExternalError): GoEmitterError {
-    const message = 
-      (typeof externalError.messageText === 'string' 
+  static adaptTypeScriptError(
+    externalError: TypeScriptExternalError,
+  ): GoEmitterError {
+    const message =
+      (typeof externalError.messageText === "string"
         ? externalError.messageText
         : externalError.messageText?.messageText) ||
       externalError.message ||
       "TypeScript compilation error";
-      
+
     return ErrorFactory.createTypeSpecCompilerError(message, {
       modelName: externalError.modelName,
       propertyName: externalError.propertyName,
@@ -64,7 +66,9 @@ export class ExternalErrorAdapter {
    *
    * ADAPTER PATTERN: Convert Go errors to unified error domain
    */
-  static adaptGoCompilationError(externalError: GoCompilationExternalError): GoEmitterError {
+  static adaptGoCompilationError(
+    externalError: GoCompilationExternalError,
+  ): GoEmitterError {
     return ErrorFactory.createGoCodeGenerationError(
       externalError.message || "Go compilation error",
       {

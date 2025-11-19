@@ -110,7 +110,7 @@ export class PropertyTransformer {
     // Handle common initialisms that should remain uppercase
     const initialisms = [
       "id",
-      "url", 
+      "url",
       "api",
       "http",
       "https",
@@ -172,7 +172,9 @@ export class PropertyTransformer {
   /**
    * Generate XML struct tag for Go field (if needed)
    */
-  static generateXmlTag(prop: TypeSpecModelProperty | TransformedGoField): string {
+  static generateXmlTag(
+    prop: TypeSpecModelProperty | TransformedGoField,
+  ): string {
     const tagName = "originalName" in prop ? prop.originalName : prop.name;
     const options: string[] = [];
 

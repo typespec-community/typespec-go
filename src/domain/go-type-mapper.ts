@@ -32,7 +32,7 @@ export class GoTypeMapper {
     if ((type as any).kind === "scalar") {
       const scalarName = (type as any).name?.toLowerCase();
       const mapping = SCALAR_TYPE_MAPPINGS[scalarName];
-      
+
       if (!mapping) {
         return {
           kind: "basic",
@@ -46,7 +46,7 @@ export class GoTypeMapper {
         name: mapping.name,
         usePointerForOptional: mapping.usePointerForOptional,
         requiresImport: mapping.requiresImport,
-        importPath: mapping.importPath,
+        ...(mapping.importPath && { importPath: mapping.importPath }),
       };
     }
 
@@ -123,11 +123,11 @@ export class GoTypeMapper {
    */
   static shouldUseUnsignedType(fieldName: string): boolean {
     const neverNegativePatterns = [
-      /id$/i,      // userID, orderID - can't be negative!
-      /count$/i,    // itemCount - can't be negative!  
-      /age$/i,      // userAge - Can't be negative!
-      /amount$/i,    // paymentAmount - Can't be negative!
+      /id$/i, // userID, orderID - can't be negative!
+      /count$/i, // itemCount - can't be negative!
+      /age$/i, // userAge - Can't be negative!
+      /amount$/i, // paymentAmount - Can't be negative!
     ];
-    return neverNegativePatterns.some(pattern => pattern.test(fieldName));
+    return neverNegativePatterns.some((pattern) => pattern.test(fieldName));
   }
 }

@@ -4,7 +4,21 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext", 
     "target": "es2022",
+    
+    // Professional Strict Mode Settings
     "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "alwaysStrict": true,
+    
     "skipLibCheck": true,
     "isolatedModules": true,
     "declaration": true,

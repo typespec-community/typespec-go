@@ -12,7 +12,11 @@ export interface DecoratorTarget {
 /**
  * @name decorator implementation
  */
-export function $name(context: DecoratorContext, target: DecoratorTarget, name: string) {
+export function $name(
+  context: DecoratorContext,
+  target: DecoratorTarget,
+  name: string,
+) {
   // Store custom name in state for later use during emission
   // Note: This will be simplified for now to focus on core functionality
   console.log(`@name decorator called with: ${name} for target:`, target);
@@ -44,14 +48,22 @@ export function $nullable(
 /**
  * @type decorator implementation
  */
-export function $type(context: DecoratorContext, target: DecoratorTarget, type: string) {
+export function $type(
+  context: DecoratorContext,
+  target: DecoratorTarget,
+  type: string,
+) {
   console.log(`@type decorator called with: ${type} for target:`, target);
 }
 
 /**
  * @pkg decorator implementation
  */
-export function $pkg(context: DecoratorContext, target: DecoratorTarget, path: string) {
+export function $pkg(
+  context: DecoratorContext,
+  target: DecoratorTarget,
+  path: string,
+) {
   console.log(`@pkg decorator called with: ${path} for target:`, target);
 }
 

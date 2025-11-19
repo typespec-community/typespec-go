@@ -59,7 +59,15 @@ export const SCALAR_TYPE_MAPPINGS: Record<string, BasicMappedType> = {
     usePointerForOptional: true,
   },
   // Special types
-  string: { name: "string", requiresImport: false, usePointerForOptional: true },
+  string: {
+    name: "string",
+    requiresImport: false,
+    usePointerForOptional: true,
+  },
   bool: { name: "bool", requiresImport: false, usePointerForOptional: true },
-  bytes: { name: "[]byte", requiresImport: false, usePointerForOptional: false },
+  bytes: {
+    name: "[]byte",
+    requiresImport: false,
+    usePointerForOptional: false,
+  },
 };

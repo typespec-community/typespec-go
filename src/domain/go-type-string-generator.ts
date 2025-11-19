@@ -60,10 +60,7 @@ export class GoTypeStringGenerator {
    * Capitalize word with initialism awareness
    * PROPER INITIALISMS: Handle ID, URL, API, etc.
    */
-  static capitalizeWord(
-    word: string,
-    initialisms: readonly string[],
-  ): string {
+  static capitalizeWord(word: string, initialisms: readonly string[]): string {
     const lowerWord = word.toLowerCase();
 
     // Check if word is a common initialism
