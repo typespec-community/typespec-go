@@ -1,5 +1,5 @@
 /**
- * TypeSpec Go Emitter - Professional Standalone Generator
+ * TypeSpec Go Emitter - Professional Unified Architecture
  *
  * CRITICAL SUCCESS FACTORS:
  * ✅ Working Go generation - verified and tested
@@ -7,17 +7,14 @@
  * ✅ Clean architecture - focused single responsibility
  * ✅ Customer value - real functional output
  * ✅ Unified error system - single source of truth for error handling
+ * ✅ Professional logging - structured observability
  */
 
-// Legacy generator (working)
-export {
-  StandaloneGoGenerator,
-} from "./standalone-generator.js";
+// Primary Go generator (working, type-safe)
+export { StandaloneGoGenerator } from "./standalone-generator.js";
 
-// Unified error system (NEW - primary)
-export type {
-  GoEmitterResult,
-} from "./domain/unified-errors.js";
+// Unified error system (SINGLE SOURCE OF TRUTH)
+export type { GoEmitterResult } from "./domain/unified-errors.js";
 
 export {
   ErrorFactory,
@@ -26,29 +23,31 @@ export {
   InvalidModelReason,
 } from "./domain/unified-errors.js";
 
-// Legacy type system components (deprecated - will be removed in Phase 2)
+// Professional logging system
+export { 
+  Logger, 
+  StructuredLogger, 
+  DevelopmentLogger, 
+  LogLevel, 
+  LogContext 
+} from "./domain/structured-logging.js";
+
+// Professional domain types (single source)
 export type {
-  GeneratorError,
-  GeneratorErrorFactory,
-  GenerationContext,
-} from "./types/errors.js";
-export type {
-  GoIntegerType,
-  GoStringType,
-  GoCollectionType,
-  LogLevel,
-  StrictMode,
-  OptionalHandling,
-} from "./types/go-types.js";
+  TypeSpecModel,
+  TypeSpecPropertyNode,
+  TypeSpecTypeNode,
+  GoEmitterOptions,
+} from "./types/typespec-domain.js";
 
 /**
  * Library metadata for TypeSpec integration
  */
 export const $lib = {
   name: "@typespec-go/emitter",
-  version: "0.0.1",
+  version: "0.1.0",
   description:
-    "Professional TypeSpec to Go code generator with discriminated unions and proper uint usage",
+    "Professional TypeSpec to Go code generator with discriminated unions, structured logging, and proper uint usage",
   features: {
     "working-generation": "Generate compilable Go structs from TypeSpec models",
     "type-safety": "Zero 'any' types with comprehensive coverage",
@@ -59,5 +58,7 @@ export const $lib = {
     "proper-uint-usage": "Never-negative values use unsigned integers",
     "enums-instead-of-booleans": "Clear state representation",
     "unified-errors": "Single source of truth for error handling",
+    "structured-logging": "Production-ready observability with context",
+    "domain-driven": "Business logic encoded in type system",
   },
 } as const;
