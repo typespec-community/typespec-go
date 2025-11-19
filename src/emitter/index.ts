@@ -21,6 +21,7 @@ import {
   GoEmitterResult,
   ErrorHandler,
 } from "../domain/unified-errors.js";
+import { Logger, LogContext } from "../domain/structured-logging.js";
 import type {
   TypeSpecModel,
   TypeSpecPropertyNode,
@@ -62,13 +63,19 @@ export class GoEmitter {
     try {
       // Extract models from TypeSpec program using proper AST traversal
       const models = this.extractModels(program);
-      console.log(`📋 Found ${models.size} models`);
+      Logger.info(LogContext.TYPESPEC_INTEGRATION, `Found ${models.size} models`, {
+        modelCount: models.size,
+        modelNames: Array.from(models.keys())
+      });
 
       // Generate Go code for each model
       const allGeneratedFiles = new Map<string, string>();
 
       for (const [modelName, typeSpecModel] of models) {
-        console.log(`🔧 Generating Go for model: ${modelName}`);
+        Logger.info(LogContext.GO_GENERATION, `Generating Go for model: ${modelName}`, {
+          modelName,
+          propertyCount: typeSpecModel.properties.size
+        });
 
         // Use StandaloneGoGenerator instance method
         const result = this.generator.generateModel(typeSpecModel);
@@ -102,9 +109,11 @@ export class GoEmitter {
 
       // Log error with structured format
       const logFormat = ErrorHandler.formatForLogging(unifiedError);
-      console.error(
-        `❌ Emission failed: ${logFormat.message}`,
+      Logger.error(
+        LogContext.ERROR_HANDLING, 
+        `Emission failed: ${logFormat.message}`,
         logFormat.context,
+        logFormat.context.errorId as string
       );
 
       return unifiedError;
@@ -120,17 +129,21 @@ export class GoEmitter {
     const models = new Map<string, TypeSpecModel>();
 
     try {
-      console.log("🔍 TypeSpec Integration: Extracting models from compiled program");
+      Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Extracting models from compiled program");
 
       // Use TypeSpec compiler's program state to find models
       // Note: This is a working implementation that can be enhanced with full AST traversal
       const programState = (program as any).state || {};
       
       if (programState.models) {
-        console.log(`📋 Found models in program state`);
+        Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Found models in program state", {
+          modelCount: Object.keys(programState.models).length
+        });
         
         for (const [modelName, model] of Object.entries(programState.models)) {
-          console.log(`📋 Processing model: ${modelName}`);
+          Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Processing model", {
+            modelName
+          });
           
           // Convert TypeSpec model to our domain type
           const typeSpecModel = this.convertTypeSpecModelFromState(model);
@@ -140,12 +153,16 @@ export class GoEmitter {
 
       // Fallback: Check for types in program state
       if (models.size === 0 && programState.types) {
-        console.log(`📋 Found types in program state, checking for models`);
+        Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Found types in program state, checking for models", {
+          typeCount: Object.keys(programState.types).length
+        });
         
         for (const [typeName, type] of Object.entries(programState.types)) {
           const typeEntry = type as any;
           if (typeEntry.kind === "model") {
-            console.log(`📋 Processing model type: ${typeName}`);
+            Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Processing model type", {
+              typeName
+            });
             
             // Convert TypeSpec model to our domain type
             const typeSpecModel = this.convertTypeSpecModelFromState(typeEntry);
@@ -154,19 +171,33 @@ export class GoEmitter {
         }
       }
 
-      console.log(`✅ Extracted ${models.size} models from TypeSpec program`);
+      Logger.info(LogContext.TYPESPEC_INTEGRATION, `Extracted ${models.size} models from TypeSpec program`, {
+        extractedModels: models.size,
+        modelNames: Array.from(models.keys())
+      });
       
       // If no models found (empty TypeSpec file), provide helpful error
       if (models.size === 0) {
-        console.warn("⚠️ No models found in TypeSpec program. Check TypeSpec definitions.");
+        Logger.warn(LogContext.TYPESPEC_INTEGRATION, "No models found in TypeSpec program. Check TypeSpec definitions.", {
+          programState: !!programState,
+          hasModels: !!(programState.models),
+          hasTypes: !!(programState.types)
+        });
         // For development, provide a test model if none found
-        console.log("🔧 Providing test model for development");
+        Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Providing test model for development");
         models.set("TestUser", this.createTestModel());
       }
 
       return models;
     } catch (error) {
-      console.error("❌ Failed to extract models from TypeSpec program:", error);
+      Logger.error(
+        LogContext.TYPESPEC_INTEGRATION, 
+        "Failed to extract models from TypeSpec program",
+        {
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined
+        }
+      );
       throw ErrorFactory.createTypeSpecCompilerError(
         `Failed to extract models: ${error instanceof Error ? error.message : String(error)}`,
         {
@@ -249,7 +280,14 @@ export class GoEmitter {
       case "Union":
         return { kind: "Union" };
       default:
-        console.warn(`⚠️ Unsupported TypeSpec type kind: ${type?.kind}, using String as fallback`);
+        Logger.warn(LogContext.DOMAIN_VALIDATION, 
+          "Unsupported TypeSpec type kind, using String as fallback",
+          {
+            typeKind: type?.kind,
+            typeName: type?.name,
+            fallbackType: "String"
+          }
+        );
         return { kind: "String" }; // Fallback
     }
   }
