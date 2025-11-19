@@ -11,8 +11,8 @@ import type {
   ModelProperty as TypeSpecModelProperty,
   Type as TypeSpecType,
 } from "@typespec/compiler";
-import type { MappedGoType } from "./type-mapper.js";
-import { GoTypeMapper } from "./type-mapper.js";
+import type { MappedGoType } from "../domain/type-interfaces.js";
+import { GoTypeMapper } from "../domain/go-type-mapper.js";
 
 /**
  * Transformed Go field information
@@ -91,18 +91,13 @@ export class PropertyTransformer {
 
   /**
    * Generate Go type with optional handling
+   * DELEGATED TO DOMAIN: Uses GoTypeMapper for consistency
    */
   private static generateGoType(
     mappedType: MappedGoType,
     isOptional: boolean,
   ): string {
-    // Use pointer for optional if type supports it
-    if (isOptional && (mappedType.usePointerForOptional ?? false)) {
-      return `*${mappedType.name}`;
-    }
-
-    // Don't use pointer for non-optional or types that don't support pointers
-    return mappedType.name || "interface{}";
+    return GoTypeMapper.generateGoTypeString(mappedType);
   }
 
   /**
@@ -115,7 +110,7 @@ export class PropertyTransformer {
     // Handle common initialisms that should remain uppercase
     const initialisms = [
       "id",
-      "url",
+      "url", 
       "api",
       "http",
       "https",
