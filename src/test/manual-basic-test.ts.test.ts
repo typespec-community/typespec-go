@@ -41,12 +41,18 @@ function runBasicTest() {
     };
 
     // Generate Go code
-    const goCode = generator.generateModel(model);
+    const result = generator.generateModel(model);
 
-    console.log("✅ SUCCESS: Go code generated:");
-    console.log(goCode);
-
-    return true;
+    // Handle result using proper discriminated union
+    if (result._tag === "Success") {
+      const goCode = Array.from(result.data.values())[0];
+      console.log("✅ SUCCESS: Go code generated:");
+      console.log(goCode);
+      return true;
+    } else {
+      console.error("❌ FAILED:", result.message);
+      return false;
+    }
   } catch (error) {
     console.error("❌ FAILED:", error);
     return false;

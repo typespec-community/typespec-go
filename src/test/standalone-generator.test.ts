@@ -25,14 +25,18 @@ describe("StandaloneGoGenerator", () => {
       };
 
       // When
-      const goCode = generator.generateModel(model);
+      const result = generator.generateModel(model);
 
       // Then
-      expect(goCode).toContain("package api");
-      expect(goCode).toContain("type User struct {");
-      expect(goCode).toContain('Name string `json:"name"`');
-      expect(goCode).toContain('Age *uint8 `json:"age,omitempty"`');
-      expect(goCode).toContain("}");
+      expect(result._tag).toBe("Success");
+      if (result._tag === "Success") {
+        const goCode = result.data.get("User.go");
+        expect(goCode).toContain("package api");
+        expect(goCode).toContain("type User struct {");
+        expect(goCode).toContain('Name string `json:"name"`');
+        expect(goCode).toContain('Age *uint8 `json:"age,omitempty"`');
+        expect(goCode).toContain("}");
+      }
     });
 
     it("should handle required and optional fields correctly", () => {
@@ -53,14 +57,18 @@ describe("StandaloneGoGenerator", () => {
       };
 
       // When
-      const goCode = generator.generateModel(model);
+      const result = generator.generateModel(model);
 
       // Then
-      expect(goCode).toContain('Id string `json:"id"`');
-      expect(goCode).toContain('Price float64 `json:"price"`');
-      expect(goCode).toContain(
-        'Description *string `json:"description,omitempty"`',
-      );
+      expect(result._tag).toBe("Success");
+      if (result._tag === "Success") {
+        const goCode = result.data.get("Product.go");
+        expect(goCode).toContain('Id string `json:"id"`');
+        expect(goCode).toContain('Price float64 `json:"price"`');
+        expect(goCode).toContain(
+          'Description *string `json:"description,omitempty"`',
+        );
+      }
     });
   });
 
@@ -82,10 +90,14 @@ describe("StandaloneGoGenerator", () => {
       };
 
       // When
-      const goCode = generator.generateModel(model);
+      const result = generator.generateModel(model);
 
       // Then
-      expect(goCode).toContain('Items []interface{} `json:"items"`');
+      expect(result._tag).toBe("Success");
+      if (result._tag === "Success") {
+        const goCode = result.data.get("Order.go");
+        expect(goCode).toContain('Items []interface{} `json:"items"`');
+      }
     });
 
     it("should handle boolean fields", () => {
@@ -101,10 +113,14 @@ describe("StandaloneGoGenerator", () => {
       };
 
       // When
-      const goCode = generator.generateModel(model);
+      const result = generator.generateModel(model);
 
       // Then
-      expect(goCode).toContain('Enabled bool `json:"enabled"`');
+      expect(result._tag).toBe("Success");
+      if (result._tag === "Success") {
+        const goCode = result.data.get("Settings.go");
+        expect(goCode).toContain('Enabled bool `json:"enabled"`');
+      }
     });
   });
 
@@ -116,10 +132,16 @@ describe("StandaloneGoGenerator", () => {
         properties: new Map(),
       };
 
-      // When & Then
-      expect(() => generator.generateModel(invalidModel)).toThrow(
-        "Invalid model: name must be a non-empty string",
-      );
+      // When
+      const result = generator.generateModel(invalidModel);
+
+      // Then
+      expect(result._tag).toBe("ModelValidationError");
+      if (result._tag === "ModelValidationError") {
+        expect(result.message).toBe("Invalid model: name must be a non-empty string");
+        expect(result.reason).toBe("empty-name");
+        expect(result.resolution).toBe("Provide a valid model name");
+      }
     });
   });
 });

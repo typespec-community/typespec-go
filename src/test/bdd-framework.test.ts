@@ -19,23 +19,25 @@ describe("Real BDD Framework Integration", () => {
   });
 
   it("should execute BDD scenario with real assertions", () => {
-    // Given: Create BDD scenario for Go emitter testing
+    // Given: Create BDD scenario for Go generator testing
     const scenario: BDDScenario = {
-      name: "Go Emitter Success",
-      description: "Verify Go emitter generates proper code",
+      name: "Go Generator Success",
+      description: "Verify Go generator generates proper code using BDD framework",
       given: () => {
-        const mockProgram = {} as Program;
-        const emitter = new GoEmitter({
-          "output-dir": "./test-generated",
-          "go-package": "github.com/example/test",
-        });
-        return { emitter, program: mockProgram };
+        return { generator };
       },
       when: (context) => {
-        return context.emitter.emit(context.program);
+        const model = {
+          name: "TestUser",
+          properties: new Map([
+            ["name", { name: "name", type: { kind: "String" }, optional: false }],
+            ["email", { name: "email", type: { kind: "String" }, optional: true }],
+          ]),
+        };
+        return context.generator.generateModel(model);
       },
       then: (result) => {
-        // Use BDDRunner's validation instead of manual assertions
+        // Use BDDRunner's validation with correct expected file name
         return BDDRunner.validateGoEmitterResult(result, ["TestUser.go"]);
       },
     };
@@ -76,10 +78,13 @@ describe("Real BDD Framework Integration", () => {
       ]),
     });
 
-    // When: Extract generated code
-    const generatedCode = (goCode as any)._tag === "Success" ? 
-      Array.from(goCode.data.values())[0] : 
-      goCode.message || "";
+    // When: Extract generated code using proper discriminated union
+    let generatedCode = "";
+    if (goCode._tag === "Success") {
+      generatedCode = Array.from(goCode.data.values())[0];
+    } else {
+      generatedCode = goCode.message || "";
+    }
 
     // Then: Validate with BDD framework
     const validation = BDDRunner.validateGoCode(generatedCode, {

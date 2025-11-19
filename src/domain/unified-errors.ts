@@ -251,21 +251,15 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): ModelValidationError {
-    const errorObject: ModelValidationError = {
+    return {
       _tag: "ModelValidationError",
       message,
       modelName: Entities.createModelName(modelName),
       reason,
       resolution: options?.resolution || "Fix model validation issue",
       errorId: this.createErrorId(),
+      ...(options?.context && { context: options.context }),
     };
-    
-    // Conditionally add optional context to avoid explicit undefined passing
-    if (options?.context) {
-      errorObject.context = options.context;
-    }
-    
-    return errorObject;
   }
 
   /**
@@ -278,19 +272,13 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): SystemError {
-    const errorObject: SystemError = {
+    return {
       _tag: "SystemError",
       message,
       resolution: options?.resolution || "Contact system administrator",
       errorId: this.createErrorId(),
+      ...(originalError && { originalError }),
     };
-    
-    // Conditionally add optional originalError to avoid explicit undefined
-    if (originalError) {
-      errorObject.originalError = originalError;
-    }
-    
-    return errorObject;
   }
 
   /**
