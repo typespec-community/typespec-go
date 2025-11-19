@@ -52,7 +52,7 @@ export class GoEmitter {
 
   constructor(options?: GoEmitterOptions) {
     this.generator = new StandaloneGoGenerator(options);
-    this.options = options;
+    this.options = options ?? {};
   }
 
   /**

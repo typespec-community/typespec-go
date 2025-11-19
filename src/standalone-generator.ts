@@ -127,13 +127,14 @@ export class StandaloneGoGenerator {
         generatedFiles: [`${model.name}.go`],
       });
     } catch (error) {
+      const errorOptions = {
+        fileName: `${model.name}.go`,
+        resolution: "Check model properties and type mappings",
+      };
+      
       return ErrorFactory.createGoCodeGenerationError(
         `Failed to generate Go struct: ${error instanceof Error ? error.message : "Unknown error"}`,
-        {
-          fileName: `${model.name}.go`,
-          goCode: undefined,
-          resolution: "Check model properties and type mappings",
-        },
+        errorOptions
       );
     }
   }
@@ -148,13 +149,14 @@ export class StandaloneGoGenerator {
     try {
       return this.createGoFile(name, fields);
     } catch (error) {
+      const errorOptions = {
+        fileName: `${name}.go`,
+        resolution: "Check struct field generation",
+      };
+      
       throw ErrorFactory.createGoCodeGenerationError(
         `Failed to create Go file: ${error instanceof Error ? error.message : "Unknown error"}`,
-        {
-          fileName: `${name}.go`,
-          goCode: undefined,
-          resolution: "Check struct field generation",
-        },
+        errorOptions
       );
     }
   }
