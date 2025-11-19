@@ -70,26 +70,32 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): TypeSpecGenerationError {
-    return {
+    const baseError = {
       type: "TypeSpecGenerationError",
       message,
-      modelName: options?.modelName,
-      propertyName: options?.propertyName,
       resolution: options?.resolution || "Check TypeSpec model definition",
     };
+    
+    return Object.assign(baseError,
+      options?.modelName && { modelName: options.modelName },
+      options?.propertyName && { propertyName: options.propertyName }
+    );
   }
 
   static createGoCodeGenerationError(
     message: string,
     options?: { fileName?: string; goCode?: string; resolution?: string },
   ): GoCodeGenerationError {
-    return {
+    const baseError = {
       type: "GoCodeGenerationError",
       message,
-      fileName: options?.fileName,
-      goCode: options?.goCode,
       resolution: options?.resolution || "Check Go code generation logic",
     };
+    
+    return Object.assign(baseError,
+      options?.fileName && { fileName: options.fileName },
+      options?.goCode && { goCode: options.goCode }
+    );
   }
 
   static createTypeSafetyError(

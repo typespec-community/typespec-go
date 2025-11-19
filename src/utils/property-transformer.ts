@@ -77,16 +77,19 @@ export class PropertyTransformer {
     // Generate Go type (pointer for optional, non-pointer for required)
     const goType = this.generateGoType(mappedGoType, isOptional);
 
-    return {
+    const baseField = {
       name: fieldName,
       type: goType,
       exported: true, // JSON fields should always be exported
       jsonTag,
       optional: isOptional,
       requiresImport: mappedGoType.requiresImport ?? false,
-      importPath: mappedGoType.importPath,
       originalName: prop.name, // Store original name for XML tag generation
     };
+    
+    return Object.assign(baseField, 
+      mappedGoType.importPath && { importPath: mappedGoType.importPath }
+    );
   }
 
   /**

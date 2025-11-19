@@ -57,11 +57,14 @@ export class ExternalErrorAdapter {
       externalError.message ||
       "TypeScript compilation error";
 
-    return ErrorFactory.createTypeSpecCompilerError(message, {
-      modelName: externalError.modelName,
-      propertyName: externalError.propertyName,
-      resolution: externalError.resolution || "Fix TypeScript type errors",
-    });
+    return ErrorFactory.createTypeSpecCompilerError(message, 
+      Object.assign({ 
+        resolution: externalError.resolution || "Fix TypeScript type errors" 
+      },
+        externalError.modelName && { modelName: externalError.modelName },
+        externalError.propertyName && { propertyName: externalError.propertyName }
+      )
+    );
   }
 
   /**
@@ -74,11 +77,12 @@ export class ExternalErrorAdapter {
   ): GoEmitterError {
     return ErrorFactory.createGoCodeGenerationError(
       externalError.message || "Go compilation error",
-      {
-        fileName: externalError.fileName,
-        goCode: externalError.goCode,
-        resolution: externalError.resolution || "Fix Go code syntax",
+      Object.assign({ 
+        resolution: externalError.resolution || "Fix Go code syntax" 
       },
+        externalError.fileName && { fileName: externalError.fileName },
+        externalError.goCode && { goCode: externalError.goCode }
+      )
     );
   }
 }
