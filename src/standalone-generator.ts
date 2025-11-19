@@ -2,26 +2,26 @@
  * Type-safe Standalone Generator
  *
  * PROFESSIONAL TYPE SAFETY: Zero any types
+ * UNIFIED ERROR SYSTEM: Single source of truth for error handling
  * EXHAUSTIVE MATCHING: Compile-time safety enforced
  * CUSTOMER VALUE: Working Go generation with professional quality
  */
 
+import { 
+  ErrorFactory, 
+  GoEmitterResult, 
+  ErrorHandler,
+  InvalidModelReason 
+} from "./domain/unified-errors.js";
+
 /**
- * Professional error types
- * ZERO ANY TYPES: Structured error handling
+ * Go type mapping configuration
  */
-export class GoGenerationError extends Error {
-  constructor(
-    message: string,
-    public readonly code:
-      | "UNSUPPORTED_TYPE"
-      | "INVALID_MODEL"
-      | "GENERATION_FAILED",
-    public readonly context?: unknown,
-  ) {
-    super(message);
-    this.name = "GoGenerationError";
-  }
+interface GoTypeMapping {
+  /** Go type string */
+  readonly goType: string;
+  /** Whether to use pointer for optional fields */
+  readonly usePointerForOptional: boolean;
 }
 
 /**
@@ -81,10 +81,7 @@ export class StandaloneGoGenerator {
     "go-package"?: string;
   };
 
-  constructor(options?: {
-    "output-dir"?: string;
-    "go-package"?: string;
-  }) {
+  constructor(options?: { "output-dir"?: string; "go-package"?: string }) {
     this.options = options;
   }
 
@@ -117,15 +114,16 @@ export class StandaloneGoGenerator {
 
   /**
    * Type-safe type mapping
-   * ZERO ANY TYPES: Exhaustive matching with proper error handling
+   * UNIFIED ERROR SYSTEM: Uses Result pattern but returns GoTypeMapping for internal use
    */
   static mapTypeSpecType(type: TypeSpecTypeNode): GoTypeMapping {
     const mapping = this.TYPE_MAPPINGS[type.kind];
     if (!mapping) {
-      throw new GoGenerationError(
+      throw ErrorFactory.createTypeSpecCompilerError(
         `Unsupported TypeSpec type: ${type.kind}`,
-        "UNSUPPORTED_TYPE",
-        { kind: type.kind },
+        {
+          resolution: "Use supported TypeSpec types: string, int32, int64, bool, arrays, models",
+        },
       );
     }
     return mapping;
@@ -133,39 +131,49 @@ export class StandaloneGoGenerator {
 
   /**
    * Type-safe model generation
-   * ZERO ANY TYPES: Professional type safety with validation
+   * UNIFIED ERROR SYSTEM: Returns GoEmitterResult instead of throwing
    */
   generateModel(model: {
     name: string;
     properties: ReadonlyMap<string, TypeSpecPropertyNode>;
-  }): string {
+  }): GoEmitterResult {
     // Input validation
     if (!model.name || typeof model.name !== "string") {
-      throw new GoGenerationError(
+      return ErrorFactory.createModelValidationError(
         "Invalid model: name must be a non-empty string",
-        "INVALID_MODEL",
-        { name: model.name },
+        model.name || "unknown",
+        InvalidModelReason.EmptyName,
+        {
+          resolution: "Provide a valid model name",
+        },
       );
     }
 
     if (!model.properties || model.properties.size === 0) {
-      throw new GoGenerationError(
+      return ErrorFactory.createModelValidationError(
         "Invalid model: must have at least one property",
-        "INVALID_MODEL",
-        { propertyCount: model.properties?.size },
+        model.name,
+        InvalidModelReason.NoProperties,
+        {
+          context: { propertyCount: model.properties?.size },
+          resolution: "Add at least one property to the model",
+        },
       );
     }
 
-    const modelName = model.name;
-    const properties = Array.from(model.properties.values());
-
     try {
-      return this.generateStruct(modelName, properties);
+      const goCode = this.generateStruct(model.name, Array.from(model.properties.values()));
+      return ErrorFactory.createSuccess(new Map([[`${model.name}.go`, goCode]]), {
+        generatedFiles: [`${model.name}.go`],
+      });
     } catch (error) {
-      throw new GoGenerationError(
+      return ErrorFactory.createGoCodeGenerationError(
         `Failed to generate Go struct: ${error instanceof Error ? error.message : "Unknown error"}`,
-        "GENERATION_FAILED",
-        { modelName, originalError: error },
+        {
+          fileName: `${model.name}.go`,
+          goCode: undefined,
+          resolution: "Check model properties and type mappings",
+        },
       );
     }
   }
@@ -182,22 +190,28 @@ export class StandaloneGoGenerator {
 
   /**
    * Type-safe field generation
-   * ZERO ANY TYPES: Professional type safety
+   * UNIFIED ERROR SYSTEM: Proper error handling for unsupported types
    */
   private generateField(property: TypeSpecPropertyNode): string {
     const goName =
       property.name.charAt(0).toUpperCase() + property.name.slice(1);
-    const mapping = StandaloneGoGenerator.mapTypeSpecType(property.type);
-    const goType =
-      property.optional && mapping.usePointerForOptional
-        ? `*${mapping.goType}`
-        : mapping.goType;
+    
+    try {
+      const mapping = StandaloneGoGenerator.mapTypeSpecType(property.type);
+      const goType =
+        property.optional && mapping.usePointerForOptional
+          ? `*${mapping.goType}`
+          : mapping.goType;
 
-    const jsonTag = property.optional
-      ? `json:"${property.name},omitempty"`
-      : `json:"${property.name}"`;
+      const jsonTag = property.optional
+        ? `json:"${property.name},omitempty"`
+        : `json:"${property.name}"`;
 
-    return `  ${goName} ${goType} \`${jsonTag}\``;
+      return `  ${goName} ${goType} \`${jsonTag}\``;
+    } catch (error) {
+      // This will be caught by the outer try-catch in generateModel
+      throw new Error(`Failed to generate field ${property.name}: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   /**

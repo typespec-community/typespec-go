@@ -6,20 +6,30 @@
  * ✅ Zero 'any' types - professional type safety
  * ✅ Clean architecture - focused single responsibility
  * ✅ Customer value - real functional output
- * ✅ Professional error handling - structured error management
+ * ✅ Unified error system - single source of truth for error handling
  */
 
 // Legacy generator (working)
 export {
   StandaloneGoGenerator,
-  GoGenerationError,
 } from "./standalone-generator.js";
 
-// Type system components
+// Unified error system (NEW - primary)
+export type {
+  GoEmitterResult,
+} from "./domain/unified-errors.js";
+
+export {
+  ErrorFactory,
+  ErrorHandler,
+  Entities,
+  InvalidModelReason,
+} from "./domain/unified-errors.js";
+
+// Legacy type system components (deprecated - will be removed in Phase 2)
 export type {
   GeneratorError,
   GeneratorErrorFactory,
-  InvalidModelReason,
   GenerationContext,
 } from "./types/errors.js";
 export type {
@@ -44,9 +54,10 @@ export const $lib = {
     "type-safety": "Zero 'any' types with comprehensive coverage",
     "optional-handling": "Proper Go pointer usage for optional fields",
     "json-tags": "Automatic JSON tag generation",
-    "error-handling": "Professional error management with discriminated unions",
+    "error-handling": "Unified error system with discriminated unions",
     "discriminated-unions": "Impossible states unrepresentable",
     "proper-uint-usage": "Never-negative values use unsigned integers",
     "enums-instead-of-booleans": "Clear state representation",
+    "unified-errors": "Single source of truth for error handling",
   },
 } as const;

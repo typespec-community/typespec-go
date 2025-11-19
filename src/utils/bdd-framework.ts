@@ -4,12 +4,13 @@
  * BDD EXCELLENCE: Customer scenario testing
  * ZERO ANY TYPES: Professional type safety
  * REAL VALIDATION: Go compilation verification
+ * UNIFIED ERROR SYSTEM: Single source of truth for error handling
  */
 
 import {
   StandaloneGoGenerator,
-  GoGenerationError,
 } from "../standalone-generator.js";
+import { GoEmitterResult } from "../domain/unified-errors.js";
 
 /**
  * BDD Test Scenario Interface
