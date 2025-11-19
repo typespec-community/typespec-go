@@ -1,4 +1,3 @@
-import { jsx } from "@alloy-js/core";
 import { SourceFile, StructTypeDeclaration, StructMember } from "@alloy-js/go";
 
 // Test basic Alloy.js JSX to Go generation
