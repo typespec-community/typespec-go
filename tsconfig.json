@@ -26,5 +26,5 @@
     "*.ts",
     "*.tsx"
   ],
-  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "src/minimal-*", "src/simple-*", "src/working-*", "src/professional-*"]
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "src/minimal-*", "src/simple-*", "src/working-*", "src/professional-*", "test-emitter-basic.tsx"]
 }

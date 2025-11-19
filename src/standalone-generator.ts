@@ -28,7 +28,7 @@ export class GoGenerationError extends Error {
  * Type-safe TypeSpec type definitions
  * ZERO ANY TYPES: Comprehensive type coverage
  */
-interface TypeSpecTypeNode {
+export interface TypeSpecTypeNode {
   readonly kind:
     | "String"
     | "Int8"
@@ -49,7 +49,7 @@ interface TypeSpecTypeNode {
     | "Union";
 }
 
-interface TypeSpecPropertyNode {
+export interface TypeSpecPropertyNode {
   readonly name: string;
   readonly type: TypeSpecTypeNode;
   readonly optional: boolean;
@@ -73,6 +73,21 @@ interface GoTypeMapping {
  * CUSTOMER VALUE: Working Go generation
  */
 export class StandaloneGoGenerator {
+  /**
+   * Configuration options for Go generation
+   */
+  private options?: {
+    "output-dir"?: string;
+    "go-package"?: string;
+  };
+
+  constructor(options?: {
+    "output-dir"?: string;
+    "go-package"?: string;
+  }) {
+    this.options = options;
+  }
+
   /**
    * Type-safe type mapping
    * ZERO ANY TYPES: Comprehensive coverage
