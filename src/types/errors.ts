@@ -181,10 +181,11 @@ export class GeneratorErrorHandler {
 
       // TypeScript ensures all cases are handled
       default:
+        const _exhaustiveCheck: never = error;
         return {
           success: false,
           message: "Unknown error occurred",
-          details: { errorId: "unknown", errorType: (error as any)._type },
+          details: { errorId: "unknown", errorType: "UNKNOWN" },
         };
     }
   }

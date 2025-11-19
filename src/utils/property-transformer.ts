@@ -38,6 +38,9 @@ export interface TransformedGoField {
 
   /** Import path if needed */
   readonly importPath?: string;
+
+  /** Original TypeSpec property name (for XML tag generation) */
+  readonly originalName?: string;
 }
 
 /**
@@ -82,6 +85,7 @@ export class PropertyTransformer {
       optional: isOptional,
       requiresImport: mappedGoType.requiresImport ?? false,
       importPath: mappedGoType.importPath,
+      originalName: prop.name, // Store original name for XML tag generation
     };
   }
 
@@ -173,8 +177,8 @@ export class PropertyTransformer {
   /**
    * Generate XML struct tag for Go field (if needed)
    */
-  static generateXmlTag(prop: TypeSpecModelProperty): string {
-    const tagName = prop.name;
+  static generateXmlTag(prop: TypeSpecModelProperty | TransformedGoField): string {
+    const tagName = "originalName" in prop ? prop.originalName : prop.name;
     const options: string[] = [];
 
     if (prop.optional) {
@@ -193,7 +197,7 @@ export class PropertyTransformer {
 
     // Add XML tag for certain property names
     if (this.shouldHaveXmlTag(field.name)) {
-      tags.push(this.generateXmlTag(field as any)); // TODO: Fix type hack
+      tags.push(this.generateXmlTag(field));
     }
 
     const tagsStr = tags.length > 0 ? ` \`${tags.join(" ")}\`` : "";

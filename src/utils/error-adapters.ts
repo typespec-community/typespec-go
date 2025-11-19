@@ -13,6 +13,37 @@ import {
 } from "./error-domains.js";
 
 /**
+ * TypeSpec Compiler Error Interface
+ */
+export interface TypeSpecCompilerError {
+  readonly message: string;
+  readonly modelName?: string;
+  readonly propertyName?: string;
+  readonly resolution?: string;
+}
+
+/**
+ * TypeScript Error Interface
+ */
+export interface TypeScriptError {
+  readonly message?: string;
+  readonly messageText?: string | { messageText?: string };
+  readonly modelName?: string;
+  readonly propertyName?: string;
+  readonly resolution?: string;
+}
+
+/**
+ * Go Compilation Error Interface
+ */
+export interface GoCompilationError {
+  readonly message: string;
+  readonly fileName?: string;
+  readonly goCode?: string;
+  readonly resolution?: string;
+}
+
+/**
  * External Error Adapter
  *
  * ADAPTER PATTERN: External tool error integration
@@ -24,7 +55,7 @@ export class ExternalErrorAdapter {
    * ADAPTER PATTERN: Convert external errors to internal domain
    */
   static adaptTypeSpecCompilerError(
-    externalError: any,
+    externalError: TypeSpecCompilerError,
   ): TypeSpecGenerationError {
     return {
       type: "TypeSpecGenerationError",
@@ -40,13 +71,17 @@ export class ExternalErrorAdapter {
    *
    * ADAPTER PATTERN: Convert TS errors to internal domain
    */
-  static adaptTypeScriptError(externalError: any): TypeSpecGenerationError {
+  static adaptTypeScriptError(externalError: TypeScriptError): TypeSpecGenerationError {
+    const message = 
+      (typeof externalError.messageText === 'string' 
+        ? externalError.messageText
+        : externalError.messageText?.messageText) ||
+      externalError.message ||
+      "TypeScript compilation error";
+      
     return {
       type: "TypeSpecGenerationError",
-      message:
-        externalError.messageText ||
-        externalError.message ||
-        "TypeScript compilation error",
+      message,
       modelName: externalError.modelName,
       propertyName: externalError.propertyName,
       resolution: externalError.resolution || "Fix TypeScript type errors",
@@ -58,7 +93,7 @@ export class ExternalErrorAdapter {
    *
    * ADAPTER PATTERN: Convert Go errors to internal domain
    */
-  static adaptGoCompilationError(externalError: any): GoCodeGenerationError {
+  static adaptGoCompilationError(externalError: GoCompilationError): GoCodeGenerationError {
     return {
       type: "GoCodeGenerationError",
       message: externalError.message || "Go compilation error",
