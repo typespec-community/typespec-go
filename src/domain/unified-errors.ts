@@ -177,17 +177,14 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): TypeSpecCompilerError {
-    const baseError = {
+    return {
       _tag: "TypeSpecCompilerError",
       message,
+      ...(options?.modelName && { modelName: Entities.createModelName(options.modelName) }),
+      ...(options?.propertyName && { propertyName: Entities.createPropertyName(options.propertyName) }),
       resolution: options?.resolution || "Check TypeSpec model syntax",
       errorId: this.createErrorId(),
     };
-    
-    return Object.assign(baseError, 
-      options?.modelName && { modelName: Entities.createModelName(options.modelName) },
-      options?.propertyName && { propertyName: Entities.createPropertyName(options.propertyName) }
-    );
   }
 
   /**
