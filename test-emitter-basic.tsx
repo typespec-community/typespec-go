@@ -8,7 +8,7 @@ try {
   // Create emitter
   const emitter = new GoEmitter({
     "output-dir": "./generated",
-    "go-package": "github.com/example/api"
+    "go-package": "github.com/example/api",
   });
 
   // TODO: Create actual TypeSpec program
@@ -17,9 +17,9 @@ try {
 
   // Test emission
   const result = await emitter.emit(mockProgram);
-  
+
   // Handle discriminated result properly
-  if (result._type === "success") {
+  if (result._tag === "Success") {
     console.log("✅ Emitter test successful!");
     console.log("📄 Generated files:");
     for (const [filename, content] of result.data) {
@@ -27,7 +27,7 @@ try {
       console.log(content);
     }
   } else {
-    console.error("❌ Emitter failed with error:", result.error);
+    console.error("❌ Emitter failed with error:", result.message);
   }
 } catch (error: any) {
   console.error("❌ Emitter test failed:", error.message);
