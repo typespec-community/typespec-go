@@ -23,7 +23,7 @@ describe("TypeSpec Integration", () => {
 
     // When
     const host = createTestHost({
-      libraries: [testLibrary]
+      libraries: [testLibrary],
     });
 
     // Then
@@ -35,7 +35,7 @@ describe("TypeSpec Integration", () => {
     // Given
     const testLibrary = await TypespecGoTestLibrary();
     const host = createTestHost({
-      libraries: [testLibrary]
+      libraries: [testLibrary],
     });
 
     const simpleTsp = `

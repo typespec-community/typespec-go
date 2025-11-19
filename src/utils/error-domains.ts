@@ -1,6 +1,6 @@
 /**
  * Error Domains - TypeSpec Go Emitter
- * 
+ *
  * DOMAIN-DRIVEN DESIGN: Error domain separation
  * ZERO ANY TYPES: Professional error handling
  * SINGLE RESPONSIBILITY: Focused error concerns
@@ -8,7 +8,7 @@
 
 /**
  * TypeSpec Generation Errors
- * 
+ *
  * PURE DOMAIN: TypeSpec generation concerns only
  */
 export interface TypeSpecGenerationError {
@@ -21,7 +21,7 @@ export interface TypeSpecGenerationError {
 
 /**
  * Go Code Generation Errors
- * 
+ *
  * PURE DOMAIN: Go code generation concerns only
  */
 export interface GoCodeGenerationError {
@@ -34,7 +34,7 @@ export interface GoCodeGenerationError {
 
 /**
  * Type Safety Errors
- * 
+ *
  * PURE DOMAIN: Type safety concerns only
  */
 export interface TypeSafetyError {
@@ -48,43 +48,47 @@ export interface TypeSafetyError {
 
 /**
  * Error Domain Union
- * 
+ *
  * EXHAUSTIVE TYPE MATCHING: All error types covered
  */
-export type ErrorDomain = 
+export type ErrorDomain =
   | TypeSpecGenerationError
   | GoCodeGenerationError
   | TypeSafetyError;
 
 /**
  * Error Factory
- * 
+ *
  * SINGLE SOURCE OF TRUTH: Unified error creation
  */
 export class ErrorFactory {
   static createTypeSpecGenerationError(
     message: string,
-    options?: { modelName?: string; propertyName?: string; resolution?: string }
+    options?: {
+      modelName?: string;
+      propertyName?: string;
+      resolution?: string;
+    },
   ): TypeSpecGenerationError {
     return {
       type: "TypeSpecGenerationError",
       message,
       modelName: options?.modelName,
       propertyName: options?.propertyName,
-      resolution: options?.resolution || "Check TypeSpec model definition"
+      resolution: options?.resolution || "Check TypeSpec model definition",
     };
   }
 
   static createGoCodeGenerationError(
     message: string,
-    options?: { fileName?: string; goCode?: string; resolution?: string }
+    options?: { fileName?: string; goCode?: string; resolution?: string },
   ): GoCodeGenerationError {
     return {
       type: "GoCodeGenerationError",
       message,
       fileName: options?.fileName,
       goCode: options?.goCode,
-      resolution: options?.resolution || "Check Go code generation logic"
+      resolution: options?.resolution || "Check Go code generation logic",
     };
   }
 
@@ -93,7 +97,7 @@ export class ErrorFactory {
     violation: string,
     expected: string,
     actual: string,
-    options?: { resolution?: string }
+    options?: { resolution?: string },
   ): TypeSafetyError {
     return {
       type: "TypeSafetyError",
@@ -101,20 +105,20 @@ export class ErrorFactory {
       violation,
       expected,
       actual,
-      resolution: options?.resolution || "Fix type safety violation"
+      resolution: options?.resolution || "Fix type safety violation",
     };
   }
 }
 
 /**
  * Error Handler
- * 
+ *
  * SINGLE RESPONSIBILITY: Error processing only
  */
 export class ErrorHandler {
   static handleError(error: ErrorDomain): ErrorDomain {
     console.error(`🚨 ${error.type}: ${error.message}`);
-    
+
     if (error.type === "TypeSpecGenerationError") {
       console.error(`   Model: ${error.modelName || "Unknown"}`);
       console.error(`   Property: ${error.propertyName || "Unknown"}`);
@@ -128,7 +132,7 @@ export class ErrorHandler {
       console.error(`   Actual: ${error.actual}`);
       console.error(`   Resolution: ${error.resolution}`);
     }
-    
+
     return error;
   }
 }

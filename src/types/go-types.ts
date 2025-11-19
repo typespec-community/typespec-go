@@ -1,6 +1,6 @@
 /**
  * Type-Safe Go Type Definitions
- * 
+ *
  * RESPONSIBILITY: Define Go type mapping infrastructure
  * SINGLE RESPONSIBILITY: Only Go type definitions
  * TYPE SAFETY: Zero 'any' types with comprehensive coverage
@@ -14,15 +14,15 @@
 export enum GoIntegerType {
   // Unsigned integers (never negative values)
   Uint8 = "uint8",
-  Uint16 = "uint16", 
+  Uint16 = "uint16",
   Uint32 = "uint32",
   Uint64 = "uint64",
-  
+
   // Signed integers (potentially negative values)
   Int8 = "int8",
   Int16 = "int16",
-  Int32 = "int32", 
-  Int64 = "int64"
+  Int32 = "int32",
+  Int64 = "int64",
 }
 
 /**
@@ -31,7 +31,7 @@ export enum GoIntegerType {
  */
 export enum GoStringType {
   String = "string",
-  ByteSlice = "[]byte"
+  ByteSlice = "[]byte",
 }
 
 /**
@@ -40,10 +40,10 @@ export enum GoStringType {
  */
 export enum LogLevel {
   Debug = "debug",
-  Info = "info", 
+  Info = "info",
   Warn = "warn",
   Error = "error",
-  None = "none"
+  None = "none",
 }
 
 /**
@@ -53,7 +53,7 @@ export enum LogLevel {
 export enum StrictMode {
   Disabled = "disabled",
   Enabled = "enabled",
-  Production = "production"
+  Production = "production",
 }
 
 /**
@@ -63,7 +63,7 @@ export enum StrictMode {
 export enum OptionalHandling {
   Pointers = "pointers",
   ZeroValues = "zero-values",
-  OmitEmpty = "omit-empty"
+  OmitEmpty = "omit-empty",
 }
 
 /**
@@ -108,11 +108,11 @@ export class GoTypeMappingFactory {
    */
   static createStringMapping(
     stringType: GoStringType,
-    validation?: Partial<GoTypeMapping["validation"]>
+    validation?: Partial<GoTypeMapping["validation"]>,
   ): GoTypeMapping {
     return {
       goType: stringType,
-      validation: validation || {}
+      validation: validation || {},
     };
   }
 
@@ -122,11 +122,11 @@ export class GoTypeMappingFactory {
    */
   static createIntegerMapping(
     integerType: GoIntegerType,
-    validation?: Partial<GoTypeMapping["validation"]>
+    validation?: Partial<GoTypeMapping["validation"]>,
   ): GoTypeMapping {
     return {
       goType: integerType,
-      validation: validation || {}
+      validation: validation || {},
     };
   }
 
@@ -136,21 +136,21 @@ export class GoTypeMappingFactory {
    */
   static createCollectionMapping(
     elementType: string,
-    options?: { isSlice?: boolean; isMap?: boolean }
+    options?: { isSlice?: boolean; isMap?: boolean },
   ): GoTypeMapping {
     const collectionInfo: GoCollectionType = {
       elementType,
       isSlice: options?.isSlice ?? true,
-      isMap: options?.isMap ?? false
+      isMap: options?.isMap ?? false,
     };
 
-    const goType = options?.isMap 
+    const goType = options?.isMap
       ? `map[string]${elementType}`
       : `[]${elementType}`;
 
     return {
       goType,
-      collectionInfo
+      collectionInfo,
     };
   }
 
@@ -160,11 +160,11 @@ export class GoTypeMappingFactory {
    */
   static createModelMapping(
     modelName: string,
-    options?: { usePointer?: boolean }
+    options?: { usePointer?: boolean },
   ): GoTypeMapping {
     return {
       goType: modelName,
-      usePointerForOptional: options?.usePointer ?? true
+      usePointerForOptional: options?.usePointer ?? true,
     };
   }
 
@@ -172,12 +172,12 @@ export class GoTypeMappingFactory {
    * Create interface mapping for unknown types
    * TYPE-SAFE: Safe fallback for complex types
    */
-  static createInterfaceMapping(
-    options?: { usePointer?: boolean }
-  ): GoTypeMapping {
+  static createInterfaceMapping(options?: {
+    usePointer?: boolean;
+  }): GoTypeMapping {
     return {
       goType: "interface{}",
-      usePointerForOptional: options?.usePointer ?? false
+      usePointerForOptional: options?.usePointer ?? false,
     };
   }
 }

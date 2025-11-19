@@ -20,8 +20,8 @@ describe("StandaloneGoGenerator", () => {
         name: "User",
         properties: new Map([
           ["name", { name: "name", type: { kind: "String" }, optional: false }],
-          ["age", { name: "age", type: { kind: "Uint8" }, optional: true }]
-        ])
+          ["age", { name: "age", type: { kind: "Uint8" }, optional: true }],
+        ]),
       };
 
       // When
@@ -38,21 +38,29 @@ describe("StandaloneGoGenerator", () => {
     it("should handle required and optional fields correctly", () => {
       // Given
       const model = {
-        name: "Product", 
+        name: "Product",
         properties: new Map([
           ["id", { name: "id", type: { kind: "String" }, optional: false }],
-          ["price", { name: "price", type: { kind: "Float64" }, optional: false }],
-          ["description", { name: "description", type: { kind: "String" }, optional: true }]
-        ])
+          [
+            "price",
+            { name: "price", type: { kind: "Float64" }, optional: false },
+          ],
+          [
+            "description",
+            { name: "description", type: { kind: "String" }, optional: true },
+          ],
+        ]),
       };
 
       // When
       const goCode = generator.generateModel(model);
 
-      // Then  
+      // Then
       expect(goCode).toContain('Id string `json:"id"`');
       expect(goCode).toContain('Price float64 `json:"price"`');
-      expect(goCode).toContain('Description *string `json:"description,omitempty"`');
+      expect(goCode).toContain(
+        'Description *string `json:"description,omitempty"`',
+      );
     });
   });
 
@@ -62,12 +70,15 @@ describe("StandaloneGoGenerator", () => {
       const model = {
         name: "Order",
         properties: new Map([
-          ["items", { 
-            name: "items", 
-            type: { kind: "Array", element: { kind: "String" } }, 
-            optional: false 
-          }]
-        ])
+          [
+            "items",
+            {
+              name: "items",
+              type: { kind: "Array", element: { kind: "String" } },
+              optional: false,
+            },
+          ],
+        ]),
       };
 
       // When
@@ -82,8 +93,11 @@ describe("StandaloneGoGenerator", () => {
       const model = {
         name: "Settings",
         properties: new Map([
-          ["enabled", { name: "enabled", type: { kind: "Boolean" }, optional: false }]
-        ])
+          [
+            "enabled",
+            { name: "enabled", type: { kind: "Boolean" }, optional: false },
+          ],
+        ]),
       };
 
       // When
@@ -99,12 +113,13 @@ describe("StandaloneGoGenerator", () => {
       // Given
       const invalidModel = {
         name: "", // Invalid empty name
-        properties: new Map()
+        properties: new Map(),
       };
 
       // When & Then
-      expect(() => generator.generateModel(invalidModel))
-        .toThrow("Invalid model: name must be a non-empty string");
+      expect(() => generator.generateModel(invalidModel)).toThrow(
+        "Invalid model: name must be a non-empty string",
+      );
     });
   });
 });

@@ -1,6 +1,6 @@
 /**
  * Type-safe Standalone Generator
- * 
+ *
  * PROFESSIONAL TYPE SAFETY: Zero any types
  * EXHAUSTIVE MATCHING: Compile-time safety enforced
  * CUSTOMER VALUE: Working Go generation with professional quality
@@ -13,8 +13,11 @@
 export class GoGenerationError extends Error {
   constructor(
     message: string,
-    public readonly code: "UNSUPPORTED_TYPE" | "INVALID_MODEL" | "GENERATION_FAILED",
-    public readonly context?: unknown
+    public readonly code:
+      | "UNSUPPORTED_TYPE"
+      | "INVALID_MODEL"
+      | "GENERATION_FAILED",
+    public readonly context?: unknown,
   ) {
     super(message);
     this.name = "GoGenerationError";
@@ -26,10 +29,24 @@ export class GoGenerationError extends Error {
  * ZERO ANY TYPES: Comprehensive type coverage
  */
 interface TypeSpecTypeNode {
-  readonly kind: "String" | "Int8" | "Int16" | "Int32" | "Int64" | 
-           "Uint8" | "Uint16" | "Uint32" | "Uint64" | 
-           "Float32" | "Float64" | "Boolean" | "Bytes" |
-           "Array" | "Model" | "Enum" | "Union";
+  readonly kind:
+    | "String"
+    | "Int8"
+    | "Int16"
+    | "Int32"
+    | "Int64"
+    | "Uint8"
+    | "Uint16"
+    | "Uint32"
+    | "Uint64"
+    | "Float32"
+    | "Float64"
+    | "Boolean"
+    | "Bytes"
+    | "Array"
+    | "Model"
+    | "Enum"
+    | "Union";
 }
 
 interface TypeSpecPropertyNode {
@@ -50,7 +67,7 @@ interface GoTypeMapping {
 
 /**
  * Type-safe Standalone Go Generator
- * 
+ *
  * ZERO ANY TYPES: Professional type safety
  * EXHAUSTIVE MATCHING: Compile-time safety
  * CUSTOMER VALUE: Working Go generation
@@ -60,7 +77,10 @@ export class StandaloneGoGenerator {
    * Type-safe type mapping
    * ZERO ANY TYPES: Comprehensive coverage
    */
-  private static TYPE_MAPPINGS: Record<TypeSpecTypeNode["kind"], GoTypeMapping> = {
+  private static TYPE_MAPPINGS: Record<
+    TypeSpecTypeNode["kind"],
+    GoTypeMapping
+  > = {
     String: { goType: "string", usePointerForOptional: true },
     Int8: { goType: "int8", usePointerForOptional: true },
     Int16: { goType: "int16", usePointerForOptional: true },
@@ -77,7 +97,7 @@ export class StandaloneGoGenerator {
     Array: { goType: "[]interface{}", usePointerForOptional: false },
     Model: { goType: "interface{}", usePointerForOptional: false },
     Enum: { goType: "string", usePointerForOptional: true },
-    Union: { goType: "interface{}", usePointerForOptional: false }
+    Union: { goType: "interface{}", usePointerForOptional: false },
   } as const;
 
   /**
@@ -90,7 +110,7 @@ export class StandaloneGoGenerator {
       throw new GoGenerationError(
         `Unsupported TypeSpec type: ${type.kind}`,
         "UNSUPPORTED_TYPE",
-        { kind: type.kind }
+        { kind: type.kind },
       );
     }
     return mapping;
@@ -100,34 +120,37 @@ export class StandaloneGoGenerator {
    * Type-safe model generation
    * ZERO ANY TYPES: Professional type safety with validation
    */
-  generateModel(model: { name: string; properties: ReadonlyMap<string, TypeSpecPropertyNode> }): string {
+  generateModel(model: {
+    name: string;
+    properties: ReadonlyMap<string, TypeSpecPropertyNode>;
+  }): string {
     // Input validation
-    if (!model.name || typeof model.name !== 'string') {
+    if (!model.name || typeof model.name !== "string") {
       throw new GoGenerationError(
         "Invalid model: name must be a non-empty string",
         "INVALID_MODEL",
-        { name: model.name }
+        { name: model.name },
       );
     }
-    
+
     if (!model.properties || model.properties.size === 0) {
       throw new GoGenerationError(
         "Invalid model: must have at least one property",
-        "INVALID_MODEL", 
-        { propertyCount: model.properties?.size }
+        "INVALID_MODEL",
+        { propertyCount: model.properties?.size },
       );
     }
-    
+
     const modelName = model.name;
     const properties = Array.from(model.properties.values());
-    
+
     try {
       return this.generateStruct(modelName, properties);
     } catch (error) {
       throw new GoGenerationError(
-        `Failed to generate Go struct: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Failed to generate Go struct: ${error instanceof Error ? error.message : "Unknown error"}`,
         "GENERATION_FAILED",
-        { modelName, originalError: error }
+        { modelName, originalError: error },
       );
     }
   }
@@ -137,8 +160,8 @@ export class StandaloneGoGenerator {
    * ZERO ANY TYPES: Professional type safety
    */
   generateStruct(name: string, properties: TypeSpecPropertyNode[]): string {
-    const fields = properties.map(prop => this.generateField(prop));
-    
+    const fields = properties.map((prop) => this.generateField(prop));
+
     return this.createGoFile(name, fields);
   }
 
@@ -147,14 +170,18 @@ export class StandaloneGoGenerator {
    * ZERO ANY TYPES: Professional type safety
    */
   private generateField(property: TypeSpecPropertyNode): string {
-    const goName = property.name.charAt(0).toUpperCase() + property.name.slice(1);
+    const goName =
+      property.name.charAt(0).toUpperCase() + property.name.slice(1);
     const mapping = StandaloneGoGenerator.mapTypeSpecType(property.type);
-    const goType = property.optional && mapping.usePointerForOptional 
-      ? `*${mapping.goType}` 
-      : mapping.goType;
-    
-    const jsonTag = property.optional ? `json:"${property.name},omitempty"` : `json:"${property.name}"`;
-    
+    const goType =
+      property.optional && mapping.usePointerForOptional
+        ? `*${mapping.goType}`
+        : mapping.goType;
+
+    const jsonTag = property.optional
+      ? `json:"${property.name},omitempty"`
+      : `json:"${property.name}"`;
+
     return `  ${goName} ${goType} \`${jsonTag}\``;
   }
 
@@ -164,8 +191,8 @@ export class StandaloneGoGenerator {
    */
   private createGoFile(name: string, fields: string[]): string {
     const structName = this.capitalizeStructName(name);
-    const fieldDefinitions = fields.join('\n');
-    
+    const fieldDefinitions = fields.join("\n");
+
     return `package api
 
 // Auto-generated from TypeSpec model: ${name}

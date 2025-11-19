@@ -12,7 +12,11 @@ export function $name(context: DecoratorContext, target: any, name: string) {
 /**
  * @structTag decorator implementation
  */
-export function $structTag(context: DecoratorContext, target: any, tag: string | Record<string, string>) {
+export function $structTag(
+  context: DecoratorContext,
+  target: any,
+  tag: string | Record<string, string>,
+) {
   const tags = typeof tag === "string" ? JSON.parse(tag) : tag;
   console.log(`@structTag decorator called with:`, tags, "for target:", target);
 }
@@ -20,7 +24,11 @@ export function $structTag(context: DecoratorContext, target: any, tag: string |
 /**
  * @nullable decorator implementation
  */
-export function $nullable(context: DecoratorContext, target: any, mode: string) {
+export function $nullable(
+  context: DecoratorContext,
+  target: any,
+  mode: string,
+) {
   console.log(`@nullable decorator called with: ${mode} for target:`, target);
 }
 
@@ -41,7 +49,11 @@ export function $pkg(context: DecoratorContext, target: any, path: string) {
 /**
  * @enumMode decorator implementation
  */
-export function $enumMode(context: DecoratorContext, target: any, mode: string) {
+export function $enumMode(
+  context: DecoratorContext,
+  target: any,
+  mode: string,
+) {
   console.log(`@enumMode decorator called with: ${mode} for target:`, target);
 }
 
