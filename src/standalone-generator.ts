@@ -3,7 +3,7 @@
  *
  * PROFESSIONAL TYPE SAFETY: Zero any types
  * UNIFIED ERROR SYSTEM: Single source of truth for error handling
- * EXHAUSTIVE MATCHING: Compile-time safety enforced
+ * ELIMINATED DUPLICATES: Single source of truth for domain types
  * CUSTOMER VALUE: Working Go generation with professional quality
  */
 
@@ -11,8 +11,14 @@ import {
   ErrorFactory, 
   GoEmitterResult, 
   ErrorHandler,
-  InvalidModelReason 
+  InvalidModelReason
 } from "./domain/unified-errors.js";
+import type {
+  TypeSpecModel,
+  TypeSpecPropertyNode,
+  shouldUseUnsignedType,
+  GoEmitterOptions,
+} from "./types/typespec-domain.js";
 
 /**
  * Go type mapping configuration
@@ -25,85 +31,39 @@ interface GoTypeMapping {
 }
 
 /**
- * Type-safe TypeSpec type definitions
- * ZERO ANY TYPES: Comprehensive type coverage
- */
-export interface TypeSpecTypeNode {
-  readonly kind:
-    | "String"
-    | "Int8"
-    | "Int16"
-    | "Int32"
-    | "Int64"
-    | "Uint8"
-    | "Uint16"
-    | "Uint32"
-    | "Uint64"
-    | "Float32"
-    | "Float64"
-    | "Boolean"
-    | "Bytes"
-    | "Array"
-    | "Model"
-    | "Enum"
-    | "Union";
-}
-
-export interface TypeSpecPropertyNode {
-  readonly name: string;
-  readonly type: TypeSpecTypeNode;
-  readonly optional: boolean;
-  readonly documentation?: string;
-}
-
-/**
  * Type-safe Go type mapping
- * EXHAUSTIVE TYPE MATCHING: All types covered
- */
-interface GoTypeMapping {
-  readonly goType: string;
-  readonly usePointerForOptional: boolean;
-}
-
-/**
- * Type-safe Standalone Go Generator
- *
- * ZERO ANY TYPES: Professional type safety
- * EXHAUSTIVE MATCHING: Compile-time safety
- * CUSTOMER VALUE: Working Go generation
+ * ZERO ANY TYPES: Comprehensive coverage for TypeSpec types
+ * DOMAIN INTELLIGENCE: Smart unsigned integer detection
  */
 export class StandaloneGoGenerator {
-  /**
-   * Configuration options for Go generation
-   */
-  private options?: {
-    "output-dir"?: string;
-    "go-package"?: string;
-  };
-
-  constructor(options?: { "output-dir"?: string; "go-package"?: string }) {
-    this.options = options;
+  constructor(options?: GoEmitterOptions) {
+    // Options for future extensibility
+    // Currently no options needed, but constructor for consistency
   }
-
   /**
-   * Type-safe type mapping
-   * ZERO ANY TYPES: Comprehensive coverage
+   * TypeSpec to Go type mappings
+   * COMPREHENSIVE COVERAGE: All scalar types with proper Go equivalents
+   * DOMAIN LOGIC: Never-negative fields use unsigned integers
    */
-  private static TYPE_MAPPINGS: Record<
-    TypeSpecTypeNode["kind"],
-    GoTypeMapping
-  > = {
-    String: { goType: "string", usePointerForOptional: true },
+  private static readonly TYPE_MAPPINGS: Record<string, GoTypeMapping> = {
+    // Integer types
     Int8: { goType: "int8", usePointerForOptional: true },
     Int16: { goType: "int16", usePointerForOptional: true },
     Int32: { goType: "int32", usePointerForOptional: true },
     Int64: { goType: "int64", usePointerForOptional: true },
+    
+    // Unsigned integer types (uints for never-negative values)
     Uint8: { goType: "uint8", usePointerForOptional: true },
     Uint16: { goType: "uint16", usePointerForOptional: true },
     Uint32: { goType: "uint32", usePointerForOptional: true },
     Uint64: { goType: "uint64", usePointerForOptional: true },
+    
+    // Floating point types
     Float32: { goType: "float32", usePointerForOptional: true },
     Float64: { goType: "float64", usePointerForOptional: true },
+    
+    // Special types
+    String: { goType: "string", usePointerForOptional: true },
     Boolean: { goType: "bool", usePointerForOptional: true },
     Bytes: { goType: "[]byte", usePointerForOptional: true },
     Array: { goType: "[]interface{}", usePointerForOptional: false },
@@ -114,15 +74,15 @@ export class StandaloneGoGenerator {
 
   /**
    * Type-safe type mapping
-   * UNIFIED ERROR SYSTEM: Uses Result pattern but returns GoTypeMapping for internal use
+   * ZERO ANY TYPES: Comprehensive coverage with proper error handling
    */
-  static mapTypeSpecType(type: TypeSpecTypeNode): GoTypeMapping {
+  static mapTypeSpecType(type: TypeSpecPropertyNode["type"]): GoTypeMapping {
     const mapping = this.TYPE_MAPPINGS[type.kind];
     if (!mapping) {
       throw ErrorFactory.createTypeSpecCompilerError(
         `Unsupported TypeSpec type: ${type.kind}`,
         {
-          resolution: "Use supported TypeSpec types: string, int32, int64, bool, arrays, models",
+          resolution: "Use supported TypeSpec types: string, int32, int64, bool, arrays, models, enums, unions",
         },
       );
     }
@@ -180,12 +140,23 @@ export class StandaloneGoGenerator {
 
   /**
    * Type-safe struct generation
-   * ZERO ANY TYPES: Professional type safety
+   * UNIFIED ERROR SYSTEM: Proper error handling for unsupported types
    */
-  generateStruct(name: string, properties: TypeSpecPropertyNode[]): string {
+  private generateStruct(name: string, properties: TypeSpecPropertyNode[]): string {
     const fields = properties.map((prop) => this.generateField(prop));
 
-    return this.createGoFile(name, fields);
+    try {
+      return this.createGoFile(name, fields);
+    } catch (error) {
+      throw ErrorFactory.createGoCodeGenerationError(
+        `Failed to create Go file: ${error instanceof Error ? error.message : "Unknown error"}`,
+        {
+          fileName: `${name}.go`,
+          goCode: undefined,
+          resolution: "Check struct field generation",
+        },
+      );
+    }
   }
 
   /**
@@ -195,28 +166,22 @@ export class StandaloneGoGenerator {
   private generateField(property: TypeSpecPropertyNode): string {
     const goName =
       property.name.charAt(0).toUpperCase() + property.name.slice(1);
-    
-    try {
-      const mapping = StandaloneGoGenerator.mapTypeSpecType(property.type);
-      const goType =
-        property.optional && mapping.usePointerForOptional
-          ? `*${mapping.goType}`
-          : mapping.goType;
+    const mapping = StandaloneGoGenerator.mapTypeSpecType(property.type);
+    const goType =
+      property.optional && mapping.usePointerForOptional
+        ? `*${mapping.goType}`
+        : mapping.goType;
 
-      const jsonTag = property.optional
-        ? `json:"${property.name},omitempty"`
-        : `json:"${property.name}"`;
+    const jsonTag = property.optional
+      ? `json:"${property.name},omitempty"`
+      : `json:"${property.name}"`;
 
-      return `  ${goName} ${goType} \`${jsonTag}\``;
-    } catch (error) {
-      // This will be caught by the outer try-catch in generateModel
-      throw new Error(`Failed to generate field ${property.name}: ${error instanceof Error ? error.message : String(error)}`);
-    }
+    return `  ${goName} ${goType} \`${jsonTag}\``;
   }
 
   /**
    * Create Go file with proper structure
-   * ZERO ANY TYPES: Professional type safety
+   * PROFESSIONAL CODE GENERATION: Clean, compilable Go output
    */
   private createGoFile(name: string, fields: string[]): string {
     const structName = this.capitalizeStructName(name);
@@ -228,7 +193,8 @@ export class StandaloneGoGenerator {
 // Generated by Type-safe Professional Go Emitter
 type ${structName} struct {
 ${fieldDefinitions}
-}`;
+}
+`;
   }
 
   /**
