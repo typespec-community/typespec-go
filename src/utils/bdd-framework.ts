@@ -144,6 +144,18 @@ export class BDDRunner {
   }
 
   /**
+   * Create BDD error validation result
+   * HELPER: Type-safe error validation creation
+   */
+  static createErrorValidation(
+    success: boolean, 
+    message: string, 
+    errorDetails?: Record<string, unknown>
+  ): BDDValidation {
+    return { success, message, details: errorDetails };
+  }
+
+  /**
    * Validate Go emitter result
    * DOMAIN INTELLIGENCE: Proper result validation
    */
@@ -162,7 +174,11 @@ export class BDDRunner {
         if (missingFiles.length > 0 || extraFiles.length > 0) {
           return this.createValidation(false, 
             `Generated files mismatch. Expected: [${expectedFiles.join(", ")}], Generated: [${generatedFiles.join(", ")}]`,
-            { missingFiles, extraFiles, generatedFiles }
+            { 
+              missingFiles: missingFiles.length > 0 ? missingFiles : undefined,
+              extraFiles: extraFiles.length > 0 ? extraFiles : undefined,
+              generatedFiles
+            }
           );
         }
       }

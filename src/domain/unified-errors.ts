@@ -109,7 +109,7 @@ export interface TypeSafetyError {
 export interface ModelValidationError {
   readonly _tag: "ModelValidationError";
   readonly message: string;
-  readonly modelName: ModelName;
+  readonly modelName?: ModelName;
   readonly reason: InvalidModelReason;
   readonly context?: Record<string, unknown>;
   readonly resolution: string;
@@ -177,18 +177,23 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): TypeSpecCompilerError {
-    return {
+    const errorObject: TypeSpecCompilerError = {
       _tag: "TypeSpecCompilerError",
       message,
-      modelName: options?.modelName 
-        ? Entities.createModelName(options.modelName) 
-        : undefined,
-      propertyName: options?.propertyName 
-        ? Entities.createPropertyName(options.propertyName) 
-        : undefined,
       resolution: options?.resolution || "Check TypeSpec model syntax",
       errorId: this.createErrorId(),
     };
+    
+    // Conditionally add optional properties to avoid explicit undefined passing
+    if (options?.modelName) {
+      errorObject.modelName = Entities.createModelName(options.modelName);
+    }
+    
+    if (options?.propertyName) {
+      errorObject.propertyName = Entities.createPropertyName(options.propertyName);
+    }
+    
+    return errorObject;
   }
 
   /**
@@ -202,16 +207,23 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): GoCodeGenerationError {
-    return {
+    const errorObject: GoCodeGenerationError = {
       _tag: "GoCodeGenerationError",
       message,
-      fileName: options?.fileName 
-        ? Entities.createFileName(options.fileName) 
-        : undefined,
-      goCode: options?.goCode,
       resolution: options?.resolution || "Fix Go code syntax",
       errorId: this.createErrorId(),
     };
+    
+    // Conditionally add optional properties to avoid explicit undefined
+    if (options?.fileName) {
+      errorObject.fileName = Entities.createFileName(options.fileName);
+    }
+    
+    if (options?.goCode) {
+      errorObject.goCode = options.goCode;
+    }
+    
+    return errorObject;
   }
 
   /**
@@ -249,15 +261,21 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): ModelValidationError {
-    return {
+    const errorObject: ModelValidationError = {
       _tag: "ModelValidationError",
       message,
       modelName: Entities.createModelName(modelName),
       reason,
-      context: options?.context,
       resolution: options?.resolution || "Fix model validation issue",
       errorId: this.createErrorId(),
     };
+    
+    // Conditionally add optional context to avoid explicit undefined passing
+    if (options?.context) {
+      errorObject.context = options.context;
+    }
+    
+    return errorObject;
   }
 
   /**
@@ -270,13 +288,19 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): SystemError {
-    return {
+    const errorObject: SystemError = {
       _tag: "SystemError",
       message,
-      originalError,
       resolution: options?.resolution || "Contact system administrator",
       errorId: this.createErrorId(),
     };
+    
+    // Conditionally add optional originalError to avoid explicit undefined
+    if (originalError) {
+      errorObject.originalError = originalError;
+    }
+    
+    return errorObject;
   }
 
   /**
@@ -292,7 +316,8 @@ export class ErrorFactory {
     return {
       _tag: "Success",
       data,
-      generatedFiles: options?.generatedFiles?.map(Entities.createFileName) ?? [],
+      generatedFiles:
+        options?.generatedFiles?.map(Entities.createFileName) ?? [],
       typeSpecProgram: options?.typeSpecProgram,
     };
   }

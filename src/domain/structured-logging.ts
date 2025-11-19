@@ -50,15 +50,16 @@ export class StructuredLogger {
     details?: Record<string, unknown>,
     errorId?: string
   ): LogEntry {
-    return {
+    const entry: LogEntry = {
       timestamp: new Date().toISOString(),
       level,
       context,
       message,
-      details,
-      errorId,
       correlationId: this.correlationId,
+      ...(details && { details }),
+      ...(errorId && { errorId }),
     };
+    return entry;
   }
 
   /**
