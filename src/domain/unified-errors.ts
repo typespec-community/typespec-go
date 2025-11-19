@@ -206,15 +206,14 @@ export class ErrorFactory {
     };
     
     // Conditionally add optional properties to avoid explicit undefined
-    if (options?.fileName) {
-      errorObject.fileName = Entities.createFileName(options.fileName);
-    }
-    
-    if (options?.goCode) {
-      errorObject.goCode = options.goCode;
-    }
-    
-    return errorObject;
+    return {
+      _tag: "GoCodeGenerationError",
+      message,
+      ...(options?.fileName && { fileName: Entities.createFileName(options.fileName) }),
+      ...(options?.goCode && { goCode: options.goCode }),
+      resolution: options?.resolution || "Fix Go code syntax",
+      errorId: this.createErrorId(),
+    };
   }
 
   /**
