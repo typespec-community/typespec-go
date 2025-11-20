@@ -79,14 +79,10 @@ export type GenerationError =
       readonly stack?: string;
     };
 
-// NOTE: shouldUseUnsignedType moved to GoTypeMapper to eliminate split brain
-// Import from src/domain/go-type-mapper.ts instead
-import { GoTypeMapper } from "../domain/go-type-mapper.js";
-
-/**
- * Helper: Detect if field should be unsigned (never-negative)
- * DELEGATED: Uses unified GoTypeMapper logic
- */
-export function shouldUseUnsignedType(fieldName: string): boolean {
-  return GoTypeMapper.shouldUseUnsignedType(fieldName);
-}
+// DELETED: shouldUseUnsignedType() - UNNECESSARY AI OVER-ENGINEERING!
+//
+// TypeSpec has native uint types! Use them directly for 1:1 mapping:
+//   ✅ CORRECT: userID: uint32  →  Go: UserID uint32
+//   ❌ WRONG:   userID: int32 + AI detection → Go: UserID uint32
+//
+// Use native TypeSpec types for direct, simple, honest mapping!

@@ -69,8 +69,15 @@ describe("Performance Regression Tests", () => {
       const start = performance.now();
 
       for (let i = 0; i < iterations; i++) {
-        fieldNames.forEach(field => {
-          GoTypeMapper.shouldUseUnsignedType(field);
+        // Test native TypeSpec → Go mapping performance
+        const nativeTypes = [
+          { kind: "scalar", name: "uint32" }, // Direct mapping
+          { kind: "scalar", name: "uint8" },  // Direct mapping
+          { kind: "scalar", name: "string" }, // Direct mapping
+          { kind: "scalar", name: "int64" }, // Direct mapping
+        ];
+        nativeTypes.forEach(type => {
+          GoTypeMapper.mapTypeSpecType(type);
         });
       }
 

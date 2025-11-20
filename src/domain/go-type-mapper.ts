@@ -41,22 +41,14 @@ export class GoTypeMapper {
         };
       }
 
-      // Apply domain intelligence for unsigned integer detection
-      let finalMapping = mapping;
-      if (fieldName && this.shouldUseUnsignedType(fieldName)) {
-        // Map signed integers to unsigned equivalents
-        const unsignedMapping = this.getUnsignedEquivalent(mapping.name);
-        if (unsignedMapping) {
-          finalMapping = unsignedMapping;
-        }
-      }
-
+      // Direct 1:1 TypeSpec → Go mapping (no AI needed!)
+      // Use native TypeSpec types: uint32, uint8, uint16, uint64
       return {
         kind: "basic",
-        name: finalMapping.name,
-        usePointerForOptional: finalMapping.usePointerForOptional,
-        requiresImport: finalMapping.requiresImport,
-        ...(finalMapping.importPath && { importPath: finalMapping.importPath }),
+        name: mapping.name,
+        usePointerForOptional: mapping.usePointerForOptional,
+        requiresImport: mapping.requiresImport,
+        ...(mapping.importPath && { importPath: mapping.importPath }),
       };
     }
 
@@ -127,44 +119,7 @@ export class GoTypeMapper {
     return imports;
   }
 
-  /**
-   * Check if type should use unsigned integer (domain intelligence)
-   * DOMAIN LOGIC: Never-negative fields should use uint
-   */
-  static shouldUseUnsignedType(fieldName: string): boolean {
-    const neverNegativePatterns = [
-      /id$/i, // userID, orderID - can't be negative!
-      /count$/i, // itemCount - can't be negative!
-      /age$/i, // userAge - Can't be negative!
-      /amount$/i, // paymentAmount - Can't be negative!
-      /quantity$/i, // productQuantity - can't be negative!
-      /size$/i, // fileSize, arraySize - can't be negative!
-      /length$/i, // stringLength - can't be negative!
-      /index$/i, // arrayIndex - can't be negative!
-      /position$/i, // arrayPosition - can't be negative!
-      /number$/i, // phoneNumber, accountNumber - can't be negative!
-      /code$/i, // statusCode, zipCode - can't be negative!
-    ];
-    return neverNegativePatterns.some((pattern) => pattern.test(fieldName));
-  }
-
-  /**
-   * Get unsigned equivalent for signed integer types
-   * DOMAIN LOGIC: Map signed types to unsigned for never-negative fields
-   */
-  private static getUnsignedEquivalent(signedTypeName: string): BasicMappedType | null {
-    const unsignedEquivalents: Record<string, string> = {
-      "int8": "uint8",
-      "int16": "uint16", 
-      "int32": "uint32",
-      "int64": "uint64",
-    };
-
-    const unsignedType = unsignedEquivalents[signedTypeName];
-    if (!unsignedType) {
-      return null; // No unsigned equivalent or not a signed integer
-    }
-
-    return SCALAR_TYPE_MAPPINGS[unsignedType] || null;
-  }
+  // DELETED: shouldUseUnsignedType() - UNNECESSARY AI OVER-ENGINEERING
+  // TypeSpec has native uint types! Use direct 1:1 mapping instead.
+  // Example: Use uint32 in TypeSpec, not int32 with AI detection.
 }
