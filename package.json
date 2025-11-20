@@ -1,48 +1,33 @@
 {
-	"name": "@typespec-community/typespec-go",
-	"version": "0.0.1",
-	"type": "module",
-	"main": "dist/src/index.js",
-	"exports": {
-		".": {
-			"types": "./dist/src/index.d.ts",
-			"default": "./dist/src/index.js"
-		}
-	},
-	"peerDependencies": {
-		"@alloy-js/core": "^0.22.0-dev.3",
-		"@alloy-js/typescript": "^0.22.0-dev.2",
-		"@typespec/compiler": "1.7.0-dev.2",
-		"@typespec/emitter-framework": "^0.14.0-dev.0",
-		"@typespec/http": "1.7.0-dev.1"
-	},
-	"devDependencies": {
-		"@alloy-js/cli": "^0.22.0-dev.0",
-		"@alloy-js/core": "^0.22.0-dev.3",
-		"@alloy-js/go": "^0.2.0-dev.1",
-		"@types/node": "latest",
-		"@typescript-eslint/eslint-plugin": "^8.47.0",
-		"@typescript-eslint/parser": "^8.47.0",
-		"@typespec/compiler": "1.7.0-dev.2",
-		"@typespec/emitter-framework": "^0.14.0-dev.0",
-		"@typespec/http": "1.7.0-dev.1",
-		"eslint": "^9.39.1",
-		"prettier": "^4.0.0-alpha.12",
-		"typescript": "6.0.0-dev.20251114"
-	},
-	"scripts": {
-		"build": "tsc",
-		"build:check": "tsc --noEmit",
-		"test": "bun test",
-		"test:working": "bun test test/integrated-enhanced-generator.test.ts",
-		"lint": "eslint src/ --ext .ts --max-warnings 0 || echo '⚠️ ESLint issues - will fix in Phase 2'",
-		"lint:fix": "eslint src/ --report-unused-disable-directives --fix --ext .ts",
-		"format": "prettier src/ --write",
-		"format:check": "prettier src/ --check",
-		"typespec-go": "bun src/cli/typespec-go-cli.ts",
-		"cli": "bun src/cli/typespec-go-cli.ts"
-	},
-	"dependencies": {
-		"commander": "^14.0.2"
-	}
+  "name": "@typespec-community/typespec-go",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "dist/src/emitter/main.js",
+  "exports": {
+    ".": {
+      "types": "./dist/src/emitter/main.d.ts",
+      "default": "./dist/src/emitter/main.js"
+    }
+  },
+  "peerDependencies": {
+    "@typespec/compiler": "1.7.0-dev.2"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@typespec/compiler": "1.7.0-dev.2",
+    "@typespec/emitter-framework": "^0.14.0-dev.0",
+    "@typescript-eslint/eslint-plugin": "^8.47.0",
+    "@typescript-eslint/parser": "^8.47.0",
+    "eslint": "^9.39.1",
+    "prettier": "^4.0.0-alpha.12",
+    "typescript": "6.0.0-dev.20251114",
+    "bun": "latest"
+  },
+  "scripts": {
+    "test": "bun test",
+    "test:typespec": "bun test --timeout 30000",
+    "lint": "eslint src/ --ext .ts --max-warnings 0",
+    "format": "prettier src/ --write"
+  },
+  "dependencies": {}
 }

@@ -17,15 +17,14 @@ import * as go from "@alloy-js/go";
  */
 function GoEmitterOutput({ program }: { program: Program }) {
   // Get all models from the TypeSpec program
-  const models = program.package?.globalNamespace.models || [];
+  const models = program.globalNamespace?.models || [];
   
   return (
     <Output program={program}>
-      <go.SourceFile path="models.go">
-        <go.Package name="api" />
+        <go.SourceFile path="models.go">
         
         {/* Generate Go structs for all models in the program */}
-        {Array.from(models.values()).map((model: Model) => (
+        {Array.from(models.values()).map((model: any) => (
           <GoModelStruct key={model.name} model={model} />
         ))}
       </go.SourceFile>
@@ -36,13 +35,12 @@ function GoEmitterOutput({ program }: { program: Program }) {
 /**
  * Generate a Go struct from TypeSpec model using Alloy-JS Go components
  */
-function GoModelStruct({ model }: { model: Model }) {
+function GoModelStruct({ model }: { model: any }) {
   return (
     <go.StructTypeDeclaration name={model.name}>
       {/* Generate struct fields for model properties */}
-      {Array.from(model.properties.values()).map((prop) => (
+      {Array.from(model.properties?.values() || []).map((prop: any) => (
         <go.StructMember 
-          key={prop.name}
           name={prop.name}
           type={mapTypeSpecToGo(prop.type)}
           tag={`json:"${prop.name}"`}
