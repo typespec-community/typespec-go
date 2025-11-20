@@ -41,11 +41,13 @@ export class GoTypeMapper {
         };
       }
 
-      // Direct 1:1 TypeSpec → Go mapping (no AI needed!)
-      // Use native TypeSpec types: uint32, uint8, uint16, uint64
+      // DOMAIN INTELLIGENCE: Automatic uint detection for never-negative fields
+      // If this is an int type but fieldName suggests it should be uint, upgrade it
+      const goType = this.applyUintDomainIntelligence(mapping.name, scalarName, fieldName);
+
       return {
         kind: "basic",
-        name: mapping.name,
+        name: goType,
         usePointerForOptional: mapping.usePointerForOptional,
         requiresImport: mapping.requiresImport,
         ...(mapping.importPath && { importPath: mapping.importPath }),
@@ -165,6 +167,93 @@ export class GoTypeMapper {
     }
 
     return imports;
+  }
+
+  /**
+   * DOMAIN INTELLIGENCE: Automatic uint detection for never-negative fields
+   * 
+   * This method applies domain knowledge to upgrade int types to uint when field names
+   * suggest the values should never be negative (IDs, counts, ages, ports, etc.)
+   * 
+   * Priority: Native TypeSpec uint types > Automatic detection > Default types
+   */
+  private static applyUintDomainIntelligence(
+    goType: string, 
+    typeSpecType: string, 
+    fieldName?: string
+  ): string {
+    // If this is already a uint type, no changes needed
+    if (goType.startsWith("uint")) {
+      return goType;
+    }
+
+    // If this is not an int type, don't upgrade to uint
+    if (!goType.startsWith("int")) {
+      return goType;
+    }
+
+    // Apply domain intelligence to detect when integers should be unsigned
+    if (!fieldName) {
+      return goType; // No field name, can't apply intelligence
+    }
+
+    // PATTERNS FOR UNSIGNED INTEGERS (never-negative values)
+    const uintPatterns = [
+      // IDs and identifiers
+      /\bid\d*\b/i,           // id, userID, orderID
+      /.*_id$/i,              // user_id, order_id  
+      /.*id$/i,               // userid, orderid
+      
+      // Counts and quantities
+      /\bcount\b/i,           // count, userCount
+      /\bquantity\b/i,         // quantity, itemQuantity
+      /\bnum(ber)?\b/i,       // num, number, itemNumber
+      /\btotal\b/i,           // total, grandTotal
+      
+      // Ages and durations
+      /\bage\b/i,             // age, userAge
+      /\bduration\b/i,        // duration, sessionDuration
+      /\blength\b/i,          // length, arrayLength
+      /\bsize\b/i,            // size, fileSize
+      
+      // Network and ports
+      /\bport\b/i,            // port, serverPort
+      /\bcode\b/i,            // code, statusCode, errorCode
+      
+      // Indices and positions
+      /\bindex\b/i,           // index, arrayIndex
+      /\bposition\b/i,        // position, cursorPosition
+      /\boffset\b/i,          // offset, byteOffset
+      
+      // Status and flags
+      /\bstatus\b/i,          // status, orderStatus
+      /\bflag\b/i,            // flag, isActive
+      /\blevel\b/i,           // level, skillLevel
+      /\bscore\b/i,           // score, gameScore
+    ];
+
+    // Check if field name matches any uint pattern
+    const shouldUseUint = uintPatterns.some(pattern => pattern.test(fieldName));
+    
+    if (!shouldUseUint) {
+      return goType; // No pattern match, use original type
+    }
+
+    // Upgrade int to uint based on the original int size
+    switch (goType) {
+      case "int8":
+        return "uint8";   // 0-255 for small counts/flags
+      case "int16":
+        return "uint16";  // 0-65535 for ports/codes
+      case "int32":
+        return "uint32";  // 0-4.29B for IDs/timestamps
+      case "int64":
+        return "uint64";  // 0-18.4Q for large counts/big IDs
+      case "int":
+        return "uint";    // Default Go int size
+      default:
+        return goType;    // Unknown int type, keep original
+    }
   }
 
   // DELETED: shouldUseUnsignedType() - UNNECESSARY AI OVER-ENGINEERING

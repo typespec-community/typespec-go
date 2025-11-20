@@ -272,60 +272,47 @@ export class ModelExtractor {
    */
   static extractModels(program: Program): ReadonlyMap<string, ExtractedModel> {
     try {
-      // Access TypeSpec program API for model extraction
-      // Use fallback mechanisms for development
-      const models = new Map<string, ExtractedModel>();
-
       Logger.info(
         LogContext.TYPESPEC_INTEGRATION,
         "Extracting models from compiled program",
       );
 
-      // Attempt to extract using TypeSpec compiler API
-      let extractedModels: any;
+      // Use proper TypeSpec compiler API for model extraction
+      const models = new Map<string, ExtractedModel>();
+      let extractedModels: TypeSpecModelType[] = [];
+
       try {
-        extractedModels =
-          (program as any).state.models || (program as any).models || {};
-      } catch (error) {
+        // Real TypeSpec integration: use navigateProgram to find models
+        const typeSpecModels = navigateProgram(program, {
+          model: (model) => {
+            return model;
+          },
+        });
+
+        extractedModels = Array.from(typeSpecModels);
         Logger.info(
           LogContext.TYPESPEC_INTEGRATION,
-          "API access failed, using state fallback",
+          "Successfully extracted models using TypeSpec API",
+          {
+            extractedCount: extractedModels.length,
+          },
+        );
+      } catch (error) {
+        Logger.warn(
+          LogContext.TYPESPEC_INTEGRATION,
+          "TypeSpec API extraction failed, falling back to test model",
           {
             error: error instanceof Error ? error.message : String(error),
+            resolution: "Check TypeSpec compiler version and API compatibility",
           },
         );
       }
 
-      // Try alternative API access
-      if (!extractedModels || typeof extractedModels !== "object") {
-        try {
-          extractedModels = (program as any).models || {};
-        } catch (error) {
-          Logger.info(
-            LogContext.TYPESPEC_INTEGRATION,
-            "State access also failed, using test model",
-            {
-              error: error instanceof Error ? error.message : String(error),
-            },
-          );
-        }
-      }
-
-      // Create test model for development if no models found
-      const modelCount = Object.keys(extractedModels || {}).length;
-      Logger.info(
-        LogContext.TYPESPEC_INTEGRATION,
-        "Extracted models from TypeSpec program",
-        {
-          extractedModels: modelCount,
-          modelNames: Object.keys(extractedModels || {}),
-        },
-      );
-
-      if (modelCount === 0) {
+      // Process extracted models or create test model
+      if (extractedModels.length === 0) {
         Logger.info(
           LogContext.TYPESPEC_INTEGRATION,
-          "Providing test model for development",
+          "No models found, providing test model for development",
         );
 
         // Create test model for development
@@ -350,16 +337,23 @@ export class ModelExtractor {
 
         models.set("TestUser", testModel);
       } else {
-        // Process extracted models
-        for (const [modelName, typeSpecModel] of Object.entries(
-          extractedModels,
-        )) {
-          const model = this.processTypeSpecModel(
-            modelName,
-            typeSpecModel as TypeSpecModelType,
-          );
-          if (model) {
-            models.set(modelName, model);
+        // Process extracted models using proper TypeSpec APIs
+        for (const typeSpecModel of extractedModels) {
+          try {
+            const modelName = (typeSpecModel as any).name || "UnknownModel";
+            const model = this.processTypeSpecModel(modelName, typeSpecModel);
+            if (model) {
+              models.set(modelName, model);
+            }
+          } catch (error) {
+            Logger.warn(
+              LogContext.TYPESPEC_INTEGRATION,
+              "Failed to process individual model",
+              {
+                modelName: (typeSpecModel as any).name,
+                error: error instanceof Error ? error.message : String(error),
+              },
+            );
           }
         }
       }
@@ -453,15 +447,50 @@ export class ModelExtractor {
         }
       >();
 
-      // Extract base properties from TypeSpec model
-      for (const [propertyName, property] of Object.entries(
-        (typeSpecModel as any).properties || {},
-      )) {
-        properties.set(propertyName, {
-          name: propertyName,
-          type: { kind: this.mapTypeSpecKind(property) },
-          optional: (property as any).optional || false,
+      // Use proper TypeSpec API to get effective model type
+      const effectiveModel = getEffectiveModelType(typeSpecModel);
+
+      // Use walkPropertiesInherited to get all properties including inherited
+      const typeListeners: TypeListeners = {
+        property: (property) => {
+          const propertyName = (property as any).name || "unknown";
+          const propertyType = (property as any).type;
+          const isOptional = (property as any).optional || false;
+
+          properties.set(propertyName, {
+            name: propertyName,
+            type: { kind: this.mapTypeSpecKind(propertyType) },
+            optional: isOptional,
+          });
+
+          return property; // Continue traversal
+        },
+      };
+
+      try {
+        walkPropertiesInherited(effectiveModel, typeListeners, {
+          includeInherited: true,
         });
+      } catch (error) {
+        // Fallback to basic property extraction if walk fails
+        Logger.warn(
+          LogContext.TYPESPEC_INTEGRATION,
+          "Failed to walk inherited properties, using basic extraction",
+          {
+            modelName,
+            error: error instanceof Error ? error.message : String(error),
+          },
+        );
+
+        // Basic property extraction fallback
+        const basicProperties = (typeSpecModel as any).properties || {};
+        for (const [propertyName, property] of Object.entries(basicProperties)) {
+          properties.set(propertyName, {
+            name: propertyName,
+            type: { kind: this.mapTypeSpecKind(property) },
+            optional: (property as any).optional || false,
+          });
+        }
       }
 
       // Handle extends and propertiesFromExtends for composition
