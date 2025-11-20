@@ -71,6 +71,29 @@ export class GoTypeMapper {
       };
     }
 
+    // Handle union types - NEW FEATURE!
+    if ((type as any).kind === "union") {
+      const unionVariants = (type as any).variants?.map((variant: any) => 
+        this.mapTypeSpecType(variant.type)
+      ) || [];
+      
+      return {
+        kind: "union",
+        name: GoTypeStringGenerator.toPascalCase((type as any).name || "Union"),
+        unionVariants,
+        usePointerForOptional: false,
+      };
+    }
+
+    // Handle enum types
+    if ((type as any).kind === "enum") {
+      return {
+        kind: "enum",
+        name: GoTypeStringGenerator.toPascalCase((type as any).name || "Enum"),
+        usePointerForOptional: false,
+      };
+    }
+
     // Default fallback
     return {
       kind: "basic",

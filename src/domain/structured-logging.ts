@@ -8,14 +8,14 @@
 
 export enum LogLevel {
   DEBUG = "debug",
-  INFO = "info", 
+  INFO = "info",
   WARN = "warn",
   ERROR = "error",
 }
 
 export enum LogContext {
   TYPESPEC_INTEGRATION = "typespec-integration",
-  GO_GENERATION = "go-generation", 
+  GO_GENERATION = "go-generation",
   ERROR_HANDLING = "error-handling",
   BDD_FRAMEWORK = "bdd-framework",
   DOMAIN_VALIDATION = "domain-validation",
@@ -48,7 +48,7 @@ export class StructuredLogger {
     context: LogContext,
     message: string,
     details?: Record<string, unknown>,
-    errorId?: string
+    errorId?: string,
   ): LogEntry {
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),
@@ -69,9 +69,14 @@ export class StructuredLogger {
   static debug(
     context: LogContext,
     message: string,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): void {
-    const entry = this.createLogEntry(LogLevel.DEBUG, context, message, details);
+    const entry = this.createLogEntry(
+      LogLevel.DEBUG,
+      context,
+      message,
+      details,
+    );
     this.writeLog(entry);
   }
 
@@ -82,7 +87,7 @@ export class StructuredLogger {
   static info(
     context: LogContext,
     message: string,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): void {
     const entry = this.createLogEntry(LogLevel.INFO, context, message, details);
     this.writeLog(entry);
@@ -95,7 +100,7 @@ export class StructuredLogger {
   static warn(
     context: LogContext,
     message: string,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): void {
     const entry = this.createLogEntry(LogLevel.WARN, context, message, details);
     this.writeLog(entry);
@@ -109,9 +114,15 @@ export class StructuredLogger {
     context: LogContext,
     message: string,
     details?: Record<string, unknown>,
-    errorId?: string
+    errorId?: string,
   ): void {
-    const entry = this.createLogEntry(LogLevel.ERROR, context, message, details, errorId);
+    const entry = this.createLogEntry(
+      LogLevel.ERROR,
+      context,
+      message,
+      details,
+      errorId,
+    );
     this.writeLog(entry);
   }
 
@@ -121,7 +132,7 @@ export class StructuredLogger {
    */
   private static writeLog(entry: LogEntry): void {
     const logJson = JSON.stringify(entry);
-    
+
     switch (entry.level) {
       case LogLevel.DEBUG:
         console.debug(logJson);
@@ -160,14 +171,17 @@ export class StructuredLogger {
    */
   static withContext(context: LogContext) {
     return {
-      debug: (message: string, details?: Record<string, unknown>) => 
+      debug: (message: string, details?: Record<string, unknown>) =>
         this.debug(context, message, details),
-      info: (message: string, details?: Record<string, unknown>) => 
+      info: (message: string, details?: Record<string, unknown>) =>
         this.info(context, message, details),
-      warn: (message: string, details?: Record<string, unknown>) => 
+      warn: (message: string, details?: Record<string, unknown>) =>
         this.warn(context, message, details),
-      error: (message: string, details?: Record<string, unknown>, errorId?: string) => 
-        this.error(context, message, details, errorId),
+      error: (
+        message: string,
+        details?: Record<string, unknown>,
+        errorId?: string,
+      ) => this.error(context, message, details, errorId),
     };
   }
 }
@@ -179,7 +193,7 @@ export class StructuredLogger {
 export class DevelopmentLogger {
   private static contextEmojis: Record<LogContext, string> = {
     [LogContext.TYPESPEC_INTEGRATION]: "🔍",
-    [LogContext.GO_GENERATION]: "🔧", 
+    [LogContext.GO_GENERATION]: "🔧",
     [LogContext.ERROR_HANDLING]: "❌",
     [LogContext.BDD_FRAMEWORK]: "🧪",
     [LogContext.DOMAIN_VALIDATION]: "📋",
@@ -194,18 +208,18 @@ export class DevelopmentLogger {
     level: LogLevel,
     context: LogContext,
     message: string,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): void {
     const emoji = this.contextEmojis[context] || "📝";
     const timestamp = new Date().toLocaleTimeString();
     const contextStr = context.replace("-", " ");
-    
+
     let output = `${timestamp} ${emoji} [${contextStr}] ${message}`;
-    
+
     if (details && Object.keys(details).length > 0) {
       output += `\n   Details: ${JSON.stringify(details, null, 2)}`;
     }
-    
+
     switch (level) {
       case LogLevel.DEBUG:
         console.log(output);
@@ -231,7 +245,11 @@ export class DevelopmentLogger {
 export class Logger {
   private static isDevelopment = process.env.NODE_ENV !== "production";
 
-  static debug(context: LogContext, message: string, details?: Record<string, unknown>): void {
+  static debug(
+    context: LogContext,
+    message: string,
+    details?: Record<string, unknown>,
+  ): void {
     if (this.isDevelopment) {
       DevelopmentLogger.log(LogLevel.DEBUG, context, message, details);
     } else {
@@ -239,7 +257,11 @@ export class Logger {
     }
   }
 
-  static info(context: LogContext, message: string, details?: Record<string, unknown>): void {
+  static info(
+    context: LogContext,
+    message: string,
+    details?: Record<string, unknown>,
+  ): void {
     if (this.isDevelopment) {
       DevelopmentLogger.log(LogLevel.INFO, context, message, details);
     } else {
@@ -247,7 +269,11 @@ export class Logger {
     }
   }
 
-  static warn(context: LogContext, message: string, details?: Record<string, unknown>): void {
+  static warn(
+    context: LogContext,
+    message: string,
+    details?: Record<string, unknown>,
+  ): void {
     if (this.isDevelopment) {
       DevelopmentLogger.log(LogLevel.WARN, context, message, details);
     } else {
@@ -255,7 +281,12 @@ export class Logger {
     }
   }
 
-  static error(context: LogContext, message: string, details?: Record<string, unknown>, errorId?: string): void {
+  static error(
+    context: LogContext,
+    message: string,
+    details?: Record<string, unknown>,
+    errorId?: string,
+  ): void {
     if (this.isDevelopment) {
       DevelopmentLogger.log(LogLevel.ERROR, context, message, details);
     } else {
@@ -265,14 +296,17 @@ export class Logger {
 
   static withContext(context: LogContext) {
     return {
-      debug: (message: string, details?: Record<string, unknown>) => 
+      debug: (message: string, details?: Record<string, unknown>) =>
         this.debug(context, message, details),
-      info: (message: string, details?: Record<string, unknown>) => 
+      info: (message: string, details?: Record<string, unknown>) =>
         this.info(context, message, details),
-      warn: (message: string, details?: Record<string, unknown>) => 
+      warn: (message: string, details?: Record<string, unknown>) =>
         this.warn(context, message, details),
-      error: (message: string, details?: Record<string, unknown>, errorId?: string) => 
-        this.error(context, message, details, errorId),
+      error: (
+        message: string,
+        details?: Record<string, unknown>,
+        errorId?: string,
+      ) => this.error(context, message, details, errorId),
     };
   }
 }

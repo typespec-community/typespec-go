@@ -5,7 +5,11 @@
  * Professional architecture with clean abstractions
  */
 
-export { BaseGenerator, GeneratorRegistry, type Generator } from "./base-generator.js";
+export {
+  BaseGenerator,
+  GeneratorRegistry,
+  type Generator,
+} from "./base-generator.js";
 export { ModelGenerator } from "./model-generator.js";
 export { EnumGenerator } from "./enum-generator.js";
 

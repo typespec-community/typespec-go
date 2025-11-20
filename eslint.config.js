@@ -1,27 +1,27 @@
 /** @type {import('eslint').Linter.Config} */
-import parser from '@typescript-eslint/parser';
-import plugin from '@typescript-eslint/eslint-plugin';
+import parser from "@typescript-eslint/parser";
+import plugin from "@typescript-eslint/eslint-plugin";
 
 export default [
   {
-    ignores: ['**/dist/**/*', '**/.temp/**/*', '**/node_modules/**/*'],
+    ignores: ["**/dist/**/*", "**/.temp/**/*", "**/node_modules/**/*"],
   },
   {
-    files: ['**/*.ts'],
+    files: ["**/*.ts"],
     languageOptions: {
       parser,
       parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
+        ecmaVersion: "latest",
+        sourceType: "module",
       },
     },
     plugins: {
-      '@typescript-eslint': plugin,
+      "@typescript-eslint": plugin,
     },
     rules: {
-      'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': 'warn', // Downgrade to warn for Phase 1
-      '@typescript-eslint/no-explicit-any': 'warn', // Downgrade to warn for Phase 1
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "warn", // Downgrade to warn for Phase 1
+      "@typescript-eslint/no-explicit-any": "warn", // Downgrade to warn for Phase 1
     },
   },
 ];

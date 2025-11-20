@@ -68,7 +68,7 @@ export class BDDRunner {
       if (validation.success) {
         expect(validation.success).toBe(true);
         console.log(`✅ ${validation.message}`);
-        
+
         // Additional validation details
         if (validation.details) {
           console.log("📊 Validation Details:", validation.details);
@@ -95,23 +95,23 @@ export class BDDRunner {
     results: Array<{ name: string; passed: boolean; error?: Error }>;
   } {
     const results: Array<{ name: string; passed: boolean; error?: Error }> = [];
-    
+
     for (const scenario of scenarios) {
       try {
         this.executeScenario(scenario);
         results.push({ name: scenario.name, passed: true });
       } catch (error) {
         console.log(`❌ Failed scenario: ${scenario.name}`);
-        results.push({ 
-          name: scenario.name, 
-          passed: false, 
-          error: error instanceof Error ? error : new Error(String(error))
+        results.push({
+          name: scenario.name,
+          passed: false,
+          error: error instanceof Error ? error : new Error(String(error)),
         });
       }
     }
 
-    const passed = results.filter(r => r.passed).length;
-    const failed = results.filter(r => !r.passed).length;
+    const passed = results.filter((r) => r.passed).length;
+    const failed = results.filter((r) => !r.passed).length;
 
     console.log(
       `\n🎯 BDD EXECUTION SUMMARY: ${passed} passed, ${failed} failed`,
@@ -120,9 +120,11 @@ export class BDDRunner {
     // Detailed results for debugging
     if (failed > 0) {
       console.log("\n❌ Failed Scenarios:");
-      results.forEach(result => {
+      results.forEach((result) => {
         if (!result.passed) {
-          console.log(`  ❌ ${result.name}: ${result.error?.message || 'Unknown error'}`);
+          console.log(
+            `  ❌ ${result.name}: ${result.error?.message || "Unknown error"}`,
+          );
         }
       });
     }
@@ -135,9 +137,9 @@ export class BDDRunner {
    * HELPER: Type-safe validation creation
    */
   static createValidation(
-    success: boolean, 
-    message: string, 
-    details?: Record<string, unknown>
+    success: boolean,
+    message: string,
+    details?: Record<string, unknown>,
   ): BDDValidation {
     const baseValidation = { success, message };
     return Object.assign(baseValidation, details && { details });
@@ -148,12 +150,15 @@ export class BDDRunner {
    * HELPER: Type-safe error validation creation
    */
   static createErrorValidation(
-    success: boolean, 
-    message: string, 
-    errorDetails?: Record<string, unknown>
+    success: boolean,
+    message: string,
+    errorDetails?: Record<string, unknown>,
   ): BDDValidation {
     const baseValidation = { success, message };
-    return Object.assign(baseValidation, errorDetails && { details: errorDetails });
+    return Object.assign(
+      baseValidation,
+      errorDetails && { details: errorDetails },
+    );
   }
 
   /**
@@ -162,36 +167,43 @@ export class BDDRunner {
    */
   static validateGoEmitterResult(
     result: GoEmitterResult,
-    expectedFiles?: string[]
+    expectedFiles?: string[],
   ): BDDValidation {
-    if (result._tag === "Success") {
+    if (result._tag === "success") {
       const generatedFiles = Array.from(result.data.keys());
-      
+
       // Check expected files if provided
       if (expectedFiles) {
-        const missingFiles = expectedFiles.filter(file => !generatedFiles.includes(file));
-        const extraFiles = generatedFiles.filter(file => !expectedFiles.includes(file));
-        
+        const missingFiles = expectedFiles.filter(
+          (file) => !generatedFiles.includes(file),
+        );
+        const extraFiles = generatedFiles.filter(
+          (file) => !expectedFiles.includes(file),
+        );
+
         if (missingFiles.length > 0 || extraFiles.length > 0) {
-          return this.createValidation(false, 
+          return this.createValidation(
+            false,
             `Generated files mismatch. Expected: [${expectedFiles.join(", ")}], Generated: [${generatedFiles.join(", ")}]`,
-            { 
+            {
               missingFiles: missingFiles.length > 0 ? missingFiles : undefined,
               extraFiles: extraFiles.length > 0 ? extraFiles : undefined,
-              generatedFiles
-            }
+              generatedFiles,
+            },
           );
         }
       }
-      
-      return this.createValidation(true, 
+
+      return this.createValidation(
+        true,
         `Go emitter success with ${generatedFiles.length} files generated`,
-        { generatedFiles: Array.from(result.data.entries()) }
+        { generatedFiles: Array.from(result.data.entries()) },
       );
     } else {
-      return this.createValidation(false, 
+      return this.createValidation(
+        false,
         `Go emitter failed: ${result.message}`,
-        { error: result, errorId: result.errorId }
+        { error: result, errorId: result.errorId },
       );
     }
   }
@@ -207,65 +219,70 @@ export class BDDRunner {
       hasJsonTags?: boolean;
       hasUintTypes?: boolean;
       hasOptionalPointers?: boolean;
-    }
+    },
   ): BDDValidation {
     const validation: Record<string, any> = {};
-    
+
     // Check for struct definition
     if (expectedElements?.hasStruct) {
-      const hasStruct = goCode.includes('type') && goCode.includes('struct');
+      const hasStruct = goCode.includes("type") && goCode.includes("struct");
       validation.struct = hasStruct;
-      
+
       if (!hasStruct) {
-        return this.createValidation(false,
+        return this.createValidation(
+          false,
           "Generated code missing struct definition",
-          validation
+          validation,
         );
       }
     }
-    
+
     // Check for JSON tags
     if (expectedElements?.hasJsonTags) {
-      const hasJsonTags = goCode.includes('json:');
+      const hasJsonTags = goCode.includes("json:");
       validation.jsonTags = hasJsonTags;
-      
+
       if (!hasJsonTags) {
-        return this.createValidation(false,
+        return this.createValidation(
+          false,
           "Generated code missing JSON struct tags",
-          validation
+          validation,
         );
       }
     }
-    
+
     // Check for uint types
     if (expectedElements?.hasUintTypes) {
       const hasUintTypes = /uint(8|16|32|64)/.test(goCode);
       validation.uintTypes = hasUintTypes;
-      
+
       if (!hasUintTypes) {
-        return this.createValidation(false,
+        return this.createValidation(
+          false,
           "Generated code missing uint types for never-negative fields",
-          validation
+          validation,
         );
       }
     }
-    
+
     // Check for optional pointers
     if (expectedElements?.hasOptionalPointers) {
       const hasPointers = /\*\w+/.test(goCode);
       validation.optionalPointers = hasPointers;
-      
+
       if (!hasPointers) {
-        return this.createValidation(false,
+        return this.createValidation(
+          false,
           "Generated code missing optional field pointers",
-          validation
+          validation,
         );
       }
     }
-    
-    return this.createValidation(true,
+
+    return this.createValidation(
+      true,
       "Generated Go code validation passed",
-      validation
+      validation,
     );
   }
 }

@@ -31,7 +31,7 @@ class LargeModelPerformanceTester {
    */
   private getMemoryUsage(): number {
     const usage = process.memoryUsage();
-    return Math.round(usage.heapUsed / 1024 / 1024 * 100) / 100;
+    return Math.round((usage.heapUsed / 1024 / 1024) * 100) / 100;
   }
 
   /**
@@ -39,90 +39,105 @@ class LargeModelPerformanceTester {
    */
   private generateLargeModel(propertyCount: number): any {
     const properties = new Map();
-    const baseTypes = ["String", "Int32", "Uint32", "Float64", "Boolean", 
-                      "Int16", "Uint16", "Float32", "Int8", "Uint8"];
-    
+    const baseTypes = [
+      "String",
+      "Int32",
+      "Uint32",
+      "Float64",
+      "Boolean",
+      "Int16",
+      "Uint16",
+      "Float32",
+      "Int8",
+      "Uint8",
+    ];
+
     for (let i = 0; i < propertyCount; i++) {
       const typeIndex = i % baseTypes.length;
       const baseType = baseTypes[typeIndex];
       const isOptional = i % 3 === 0; // 33% optional fields
-      
+
       properties.set(`field${i}`, {
         name: `field${i}`,
         type: { kind: baseType },
         optional: isOptional,
-        documentation: `Field ${i} of ${propertyCount} - ${baseType} type${isOptional ? ' (optional)' : ''}`
+        documentation: `Field ${i} of ${propertyCount} - ${baseType} type${isOptional ? " (optional)" : ""}`,
       });
     }
 
     return {
       name: `LargeModel${propertyCount}`,
-      properties
+      properties,
     };
   }
 
   /**
    * Test performance with large model
    */
-  private async testLargeModelPerformance(propertyCount: number, iterations: number = 20): Promise<LargeModelMetrics> {
-    console.log(`🧪 Testing ${propertyCount}-property model (${iterations} iterations)`);
-    
+  private async testLargeModelPerformance(
+    propertyCount: number,
+    iterations: number = 20,
+  ): Promise<LargeModelMetrics> {
+    console.log(
+      `🧪 Testing ${propertyCount}-property model (${iterations} iterations)`,
+    );
+
     const model = this.generateLargeModel(propertyCount);
     const baselineMemory = this.getMemoryUsage();
-    
+
     // Warm-up iterations
     for (let i = 0; i < 3; i++) {
       this.generator.generateModel(model);
     }
-    
+
     // Performance measurement
     const startTime = performance.now();
     let totalGoCodeSize = 0;
     let peakMemory = baselineMemory;
-    
+
     for (let i = 0; i < iterations; i++) {
       const result = this.generator.generateModel(model);
-      
+
       if (result._tag === "Success") {
         const goCode = result.data.get(`${model.name}.go`) || "";
         totalGoCodeSize += goCode.length;
       }
-      
+
       // Track memory usage
       const currentMemory = this.getMemoryUsage();
       peakMemory = Math.max(peakMemory, currentMemory);
-      
+
       // Prevent memory accumulation
       if (i % 5 === 0) {
         if (global.gc) global.gc();
       }
     }
-    
+
     const endTime = performance.now();
     const totalTimeMs = endTime - startTime;
-    
+
     // Calculate metrics
     const averageGenerationTimeMs = totalTimeMs / iterations;
     const memoryOverhead = peakMemory - baselineMemory;
     const averageGoCodeSize = Math.round(totalGoCodeSize / iterations);
-    
+
     // Classify performance
     let classification = "Excellent";
     if (averageGenerationTimeMs > 100) classification = "Poor";
     else if (averageGenerationTimeMs > 50) classification = "Fair";
     else if (averageGenerationTimeMs > 20) classification = "Good";
-    
+
     const metrics: LargeModelMetrics = {
       propertyCount,
       generationTimeMs: Math.round(averageGenerationTimeMs * 100) / 100,
       memoryUsageMB: Math.max(0, memoryOverhead),
       goCodeSize: averageGoCodeSize,
-      performanceClassification: classification
+      performanceClassification: classification,
     };
 
     this.printLargeModelMetrics(metrics);
     this.results.push(metrics);
-    
+
     return metrics;
   }
 
@@ -131,18 +146,26 @@ class LargeModelPerformanceTester {
    */
   private printLargeModelMetrics(metrics: LargeModelMetrics): void {
     const classificationEmoji = {
-      "Excellent": "🏆",
-      "Good": "✅",
-      "Fair": "⚠️",
-      "Poor": "❌"
+      Excellent: "🏆",
+      Good: "✅",
+      Fair: "⚠️",
+      Poor: "❌",
     }[metrics.performanceClassification];
 
-    console.log(`📊 Large Model Performance (${metrics.propertyCount} properties):`);
-    console.log(`   ${classificationEmoji} Performance: ${metrics.performanceClassification}`);
+    console.log(
+      `📊 Large Model Performance (${metrics.propertyCount} properties):`,
+    );
+    console.log(
+      `   ${classificationEmoji} Performance: ${metrics.performanceClassification}`,
+    );
     console.log(`   ⏱️  Generation time: ${metrics.generationTimeMs}ms`);
     console.log(`   💾 Memory overhead: ${metrics.memoryUsageMB}MB`);
-    console.log(`   📄 Go code size: ${metrics.goCodeSize.toLocaleString()} chars`);
-    console.log(`   📈 Throughput: ${Math.round(1000 / metrics.generationTimeMs)} models/sec`);
+    console.log(
+      `   📄 Go code size: ${metrics.goCodeSize.toLocaleString()} chars`,
+    );
+    console.log(
+      `   📈 Throughput: ${Math.round(1000 / metrics.generationTimeMs)} models/sec`,
+    );
     console.log();
   }
 
@@ -151,7 +174,7 @@ class LargeModelPerformanceTester {
    */
   async runLargeModelPerformanceSuite(): Promise<void> {
     console.log("🚀 Large Model Performance Testing Suite");
-    console.log("=" .repeat(50));
+    console.log("=".repeat(50));
 
     // Test different scales of models
     const testCases = [
@@ -166,10 +189,13 @@ class LargeModelPerformanceTester {
     ];
 
     for (const testCase of testCases) {
-      await this.testLargeModelPerformance(testCase.properties, testCase.iterations);
-      
+      await this.testLargeModelPerformance(
+        testCase.properties,
+        testCase.iterations,
+      );
+
       // Allow system recovery between tests
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
     this.generateLargeModelSummary();
@@ -180,7 +206,7 @@ class LargeModelPerformanceTester {
    */
   private generateLargeModelSummary(): void {
     console.log("📊 LARGE MODEL PERFORMANCE SUMMARY");
-    console.log("=" .repeat(50));
+    console.log("=".repeat(50));
 
     if (this.results.length === 0) {
       console.log("No performance data collected.");
@@ -188,27 +214,46 @@ class LargeModelPerformanceTester {
     }
 
     // Sort results by property count
-    const sortedResults = [...this.results].sort((a, b) => a.propertyCount - b.propertyCount);
+    const sortedResults = [...this.results].sort(
+      (a, b) => a.propertyCount - b.propertyCount,
+    );
 
     // Calculate correlations
-    const slowestResult = sortedResults.reduce((max, r) => r.generationTimeMs > max.generationTimeMs ? r : max);
-    const largestMemory = sortedResults.reduce((max, r) => r.memoryUsageMB > max.memoryUsageMB ? r : max);
-    const largestCodeSize = sortedResults.reduce((max, r) => r.goCodeSize > max.goCodeSize ? r : max);
+    const slowestResult = sortedResults.reduce((max, r) =>
+      r.generationTimeMs > max.generationTimeMs ? r : max,
+    );
+    const largestMemory = sortedResults.reduce((max, r) =>
+      r.memoryUsageMB > max.memoryUsageMB ? r : max,
+    );
+    const largestCodeSize = sortedResults.reduce((max, r) =>
+      r.goCodeSize > max.goCodeSize ? r : max,
+    );
 
     console.log("🏆 PERFORMANCE LEADERS:");
-    console.log(`   ⚡ Fastest generation: ${Math.min(...sortedResults.map(r => r.generationTimeMs))}ms (${sortedResults.find(r => r.generationTimeMs === Math.min(...sortedResults.map(r => r.generationTimeMs)))?.propertyCount} properties)`);
-    console.log(`   💾 Lowest memory: ${Math.min(...sortedResults.map(r => r.memoryUsageMB))}MB (${sortedResults.find(r => r.memoryUsageMB === Math.min(...sortedResults.map(r => r.memoryUsageMB)))?.propertyCount} properties)`);
-    console.log(`   📈 Highest throughput: ${Math.max(...sortedResults.map(r => Math.round(1000 / r.generationTimeMs)))} models/sec (${sortedResults.find(r => r.generationTimeMs === Math.min(...sortedResults.map(r => r.generationTimeMs)))?.propertyCount} properties)`);
+    console.log(
+      `   ⚡ Fastest generation: ${Math.min(...sortedResults.map((r) => r.generationTimeMs))}ms (${sortedResults.find((r) => r.generationTimeMs === Math.min(...sortedResults.map((r) => r.generationTimeMs)))?.propertyCount} properties)`,
+    );
+    console.log(
+      `   💾 Lowest memory: ${Math.min(...sortedResults.map((r) => r.memoryUsageMB))}MB (${sortedResults.find((r) => r.memoryUsageMB === Math.min(...sortedResults.map((r) => r.memoryUsageMB)))?.propertyCount} properties)`,
+    );
+    console.log(
+      `   📈 Highest throughput: ${Math.max(...sortedResults.map((r) => Math.round(1000 / r.generationTimeMs)))} models/sec (${sortedResults.find((r) => r.generationTimeMs === Math.min(...sortedResults.map((r) => r.generationTimeMs)))?.propertyCount} properties)`,
+    );
 
     console.log();
     console.log("📊 PERFORMANCE BREAKDOWN:");
     sortedResults.forEach((result, index) => {
-      const efficiency = result.propertyCount / Math.max(1, result.generationTimeMs);
+      const efficiency =
+        result.propertyCount / Math.max(1, result.generationTimeMs);
       const throughput = Math.round(1000 / result.generationTimeMs);
-      
+
       console.log(`   ${index + 1}. ${result.propertyCount} properties:`);
-      console.log(`      Time: ${result.generationTimeMs}ms | Memory: ${result.memoryUsageMB}MB | Code: ${(result.goCodeSize / 1000).toFixed(1)}KB`);
-      console.log(`      Throughput: ${throughput} models/sec | Efficiency: ${efficiency.toFixed(1)} props/ms`);
+      console.log(
+        `      Time: ${result.generationTimeMs}ms | Memory: ${result.memoryUsageMB}MB | Code: ${(result.goCodeSize / 1000).toFixed(1)}KB`,
+      );
+      console.log(
+        `      Throughput: ${throughput} models/sec | Efficiency: ${efficiency.toFixed(1)} props/ms`,
+      );
       console.log(`      Grade: ${result.performanceClassification}`);
     });
 
@@ -228,14 +273,17 @@ class LargeModelPerformanceTester {
       const smallModel = results[0];
       const largeModel = results[results.length - 1];
       const propertyRatio = largeModel.propertyCount / smallModel.propertyCount;
-      const timeRatio = largeModel.generationTimeMs / smallModel.generationTimeMs;
-      
+      const timeRatio =
+        largeModel.generationTimeMs / smallModel.generationTimeMs;
+
       console.log(`🔬 Time Complexity Analysis:`);
       console.log(`   Properties increased by ${propertyRatio.toFixed(1)}x`);
       console.log(`   Generation time increased by ${timeRatio.toFixed(1)}x`);
-      
+
       if (timeRatio < propertyRatio * 1.2) {
-        console.log(`   ✅ Linear scaling: ${timeRatio.toFixed(1)}x time for ${propertyRatio.toFixed(1)}x properties`);
+        console.log(
+          `   ✅ Linear scaling: ${timeRatio.toFixed(1)}x time for ${propertyRatio.toFixed(1)}x properties`,
+        );
       } else if (timeRatio < propertyRatio * 2) {
         console.log(`   ⚠️ Sub-linear scaling: Better than expected`);
       } else {
@@ -244,13 +292,21 @@ class LargeModelPerformanceTester {
     }
 
     // Memory scaling
-    const memoryPerProperty = results.map(r => r.memoryUsageMB / r.propertyCount);
-    const avgMemoryPerProperty = memoryPerProperty.reduce((sum, mem) => sum + mem, 0) / memoryPerProperty.length;
-    
+    const memoryPerProperty = results.map(
+      (r) => r.memoryUsageMB / r.propertyCount,
+    );
+    const avgMemoryPerProperty =
+      memoryPerProperty.reduce((sum, mem) => sum + mem, 0) /
+      memoryPerProperty.length;
+
     console.log();
     console.log(`💾 Memory Scaling Analysis:`);
-    console.log(`   Average memory per property: ${avgMemoryPerProperty.toFixed(2)}MB`);
-    console.log(`   Memory efficiency: ${avgMemoryPerProperty < 0.1 ? '✅ Excellent' : avgMemoryPerProperty < 0.2 ? '✅ Good' : '⚠️ Needs optimization'}`);
+    console.log(
+      `   Average memory per property: ${avgMemoryPerProperty.toFixed(2)}MB`,
+    );
+    console.log(
+      `   Memory efficiency: ${avgMemoryPerProperty < 0.1 ? "✅ Excellent" : avgMemoryPerProperty < 0.2 ? "✅ Good" : "⚠️ Needs optimization"}`,
+    );
   }
 
   /**
@@ -260,14 +316,20 @@ class LargeModelPerformanceTester {
     console.log();
     console.log("💡 LARGE MODEL OPTIMIZATION RECOMMENDATIONS:");
 
-    const poorPerformance = this.results.filter(r => r.performanceClassification === "Poor");
-    const fairPerformance = this.results.filter(r => r.performanceClassification === "Fair");
-    const highMemoryUsage = this.results.filter(r => r.memoryUsageMB > 50);
-    const largeCodeSize = this.results.filter(r => r.goCodeSize > 50000);
+    const poorPerformance = this.results.filter(
+      (r) => r.performanceClassification === "Poor",
+    );
+    const fairPerformance = this.results.filter(
+      (r) => r.performanceClassification === "Fair",
+    );
+    const highMemoryUsage = this.results.filter((r) => r.memoryUsageMB > 50);
+    const largeCodeSize = this.results.filter((r) => r.goCodeSize > 50000);
 
     if (poorPerformance.length > 0) {
       console.log("   ⚠️ Poor Performance Detected:");
-      console.log("      • Implement lazy generation strategies for large models");
+      console.log(
+        "      • Implement lazy generation strategies for large models",
+      );
       console.log("      • Use streaming approach for Go code output");
       console.log("      • Consider model splitting for very large schemas");
       console.log("      • Optimize type mapping lookup tables");
@@ -284,7 +346,9 @@ class LargeModelPerformanceTester {
     if (highMemoryUsage.length > 0) {
       console.log("   💾 High Memory Usage Optimization:");
       console.log("      • Implement object pooling for frequent allocations");
-      console.log("      • Use streaming generation to reduce memory footprint");
+      console.log(
+        "      • Use streaming generation to reduce memory footprint",
+      );
       console.log("      • Consider incremental generation strategies");
       console.log("      • Optimize property iteration patterns");
     }
@@ -307,9 +371,15 @@ class LargeModelPerformanceTester {
 
     console.log();
     console.log("🎯 PRODUCTION GUIDELINES:");
-    console.log("   • Models <50 properties: Suitable for real-time generation");
-    console.log("   • Models 50-100 properties: Suitable for on-demand generation");
-    console.log("   • Models 100-200 properties: Consider pre-generation/caching");
+    console.log(
+      "   • Models <50 properties: Suitable for real-time generation",
+    );
+    console.log(
+      "   • Models 50-100 properties: Suitable for on-demand generation",
+    );
+    console.log(
+      "   • Models 100-200 properties: Consider pre-generation/caching",
+    );
     console.log("   • Models >200 properties: Implement background generation");
   }
 }

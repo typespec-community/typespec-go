@@ -38,20 +38,28 @@ export class GoEmitter {
     try {
       // Extract models from TypeSpec program using modular extractor
       const extractedModels = ModelExtractor.extractModels(program);
-      Logger.info(LogContext.TYPESPEC_INTEGRATION, `Found ${extractedModels.size} models`, {
-        modelCount: extractedModels.size,
-        modelNames: Array.from(extractedModels.keys()),
-      });
+      Logger.info(
+        LogContext.TYPESPEC_INTEGRATION,
+        `Found ${extractedModels.size} models`,
+        {
+          modelCount: extractedModels.size,
+          modelNames: Array.from(extractedModels.keys()),
+        },
+      );
 
       // Generate Go code for all extracted models
       const result = this.codeGenerator.generateForModels(extractedModels);
 
       return result;
     } catch (error) {
-      Logger.error(LogContext.GO_GENERATION, "TypeSpec to Go conversion failed", {
-        error: error instanceof Error ? error.message : String(error),
-        typeSpecProgram: program,
-      });
+      Logger.error(
+        LogContext.GO_GENERATION,
+        "TypeSpec to Go conversion failed",
+        {
+          error: error instanceof Error ? error.message : String(error),
+          typeSpecProgram: program,
+        },
+      );
 
       // UNIFIED ERROR RESULT: Single source of truth
       return ErrorFactory.createTypeSpecCompilerError(

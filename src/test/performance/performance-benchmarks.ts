@@ -48,7 +48,7 @@ export const PERFORMANCE_BENCHMARKS: PerformanceBenchmark[] = [
   {
     id: "basic-address-model",
     name: "Address Model",
-    category: "basic", 
+    category: "basic",
     expectedMaxTimeMs: 5,
     expectedMaxMemoryMB: 2,
     expectedMinThroughput: 8,
@@ -244,17 +244,26 @@ export const PERFORMANCE_BENCHMARKS: PerformanceBenchmark[] = [
 
       // Add 50 string fields
       for (let i = 0; i < 50; i++) {
-        properties[`stringField${i}`] = { type: "string", required: i % 2 === 0 };
+        properties[`stringField${i}`] = {
+          type: "string",
+          required: i % 2 === 0,
+        };
       }
 
       // Add 20 numeric fields
       for (let i = 0; i < 20; i++) {
-        properties[`numericField${i}`] = { type: i % 2 === 0 ? "int32" : "float64", required: i % 3 === 0 };
+        properties[`numericField${i}`] = {
+          type: i % 2 === 0 ? "int32" : "float64",
+          required: i % 3 === 0,
+        };
       }
 
       // Add 10 boolean fields
       for (let i = 0; i < 10; i++) {
-        properties[`booleanField${i}`] = { type: "boolean", required: i % 2 === 0 };
+        properties[`booleanField${i}`] = {
+          type: "boolean",
+          required: i % 2 === 0,
+        };
       }
 
       // Add 5 array fields

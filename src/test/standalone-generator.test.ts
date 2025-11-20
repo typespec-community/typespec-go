@@ -138,7 +138,9 @@ describe("StandaloneGoGenerator", () => {
       // Then
       expect(result._tag).toBe("model_validation_error");
       if (result._tag === "ModelValidationError") {
-        expect(result.message).toBe("Invalid model: name must be a non-empty string");
+        expect(result.message).toBe(
+          "Invalid model: name must be a non-empty string",
+        );
         expect(result.reason).toBe("empty-name");
         expect(result.resolution).toBe("Provide a valid model name");
       }

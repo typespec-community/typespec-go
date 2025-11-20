@@ -35,13 +35,9 @@ export {
   EntityTransformation,
 } from "./error-entities.js";
 
-export {
-  ErrorFactory,
-} from "./error-factory.js";
+export { ErrorFactory } from "./error-factory.js";
 
-export {
-  ErrorAnalysis,
-} from "./error-types.js";
+export { ErrorAnalysis } from "./error-types.js";
 
 // Re-export legacy types from old errors file for compatibility
 export type {
@@ -50,34 +46,34 @@ export type {
   GenerationContext,
 } from "../types/errors.js";
 
-export { 
-  InvalidModelReason,
-  TypeSpecEntities,
-} from "../types/errors.js";
+export { InvalidModelReason, TypeSpecEntities } from "../types/errors.js";
 
 // Legacy exports for backward compatibility
 export type TypeSpecModel = {
   readonly name: string;
-  readonly properties: ReadonlyMap<string, {
-    name: string;
-    type: { kind: string };
-    optional: boolean;
-  }>;
+  readonly properties: ReadonlyMap<
+    string,
+    {
+      name: string;
+      type: { kind: string };
+      optional: boolean;
+    }
+  >;
 };
 
 export type GoEmitterOptions = {
   /** Optional custom output directory */
   readonly outputDir?: string;
-  
+
   /** Optional file naming pattern */
   readonly namingPattern?: "snake_case" | "PascalCase";
-  
+
   /** Optional json tag style */
   readonly jsonTagStyle?: "snake_case" | "camelCase";
-  
+
   /** Optional pointer usage policy */
   readonly pointerPolicy?: "all" | "optional_only" | "primitives_only";
-  
+
   /** Optional uint usage policy */
   readonly uintPolicy?: "auto" | "int_only" | "prefer_uint";
 };
@@ -90,7 +86,9 @@ export type LogContext = string;
  * LEGACY COMPATIBILITY: Maintaining existing API
  */
 export type GoGenerationError = GoCodeGenerationError;
-export type ModelValidationError = ValidationError & { _tag: "ModelValidationError" };
+export type ModelValidationError = ValidationError & {
+  _tag: "ModelValidationError";
+};
 export type TypeSpecIntegrationError = TypeSpecCompilerError;
 
 /**

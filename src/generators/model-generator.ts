@@ -28,8 +28,9 @@ export class ModelGenerator extends BaseGenerator {
     }
 
     try {
-      // Extract models using modular extractor
+      // Extract models and unions using modular extractor
       const models = ModelExtractor.extractModels(program);
+      const unions = ModelExtractor.extractUnions(program);
       const allGeneratedFiles = new Map<string, string>();
 
       // Generate Go struct for each model
@@ -37,6 +38,13 @@ export class ModelGenerator extends BaseGenerator {
         const goStruct = this.generateGoStruct(modelName, extractedModel);
         const fileName = this.getFileName(modelName);
         allGeneratedFiles.set(fileName, goStruct);
+      }
+
+      // Generate Go interface for each union
+      for (const [unionName, extractedUnion] of unions) {
+        const goInterface = this.generateGoUnionInterface(unionName, extractedUnion);
+        const fileName = this.getFileName(unionName);
+        allGeneratedFiles.set(fileName, goInterface);
       }
 
       // Return successful result
@@ -59,7 +67,7 @@ export class ModelGenerator extends BaseGenerator {
    */
   private generateGoStruct(
     modelName: string,
-    extractedModel: { name: string; properties: ReadonlyMap<string, any> }
+    extractedModel: { name: string; properties: ReadonlyMap<string, any> },
   ): string {
     const imports = new Set<string>();
     const fields: string[] = [];
@@ -69,12 +77,16 @@ export class ModelGenerator extends BaseGenerator {
       const goType = GoTypeMapper.mapTypeSpecType(property.type, propertyName);
       const goTypeString = GoTypeMapper.generateGoTypeString(goType);
       const jsonTag = this.getJsonTag(propertyName);
-      
+
       // Handle optional types with proper pointer semantics
       if (property.optional && goType.usePointerForOptional) {
-        fields.push(`  ${this.capitalize(propertyName)} *${goTypeString} \`${jsonTag}\``);
+        fields.push(
+          `  ${this.capitalize(propertyName)} *${goTypeString} \`${jsonTag}\``,
+        );
       } else {
-        fields.push(`  ${this.capitalize(propertyName)} ${goTypeString} \`${jsonTag}\``);
+        fields.push(
+          `  ${this.capitalize(propertyName)} ${goTypeString} \`${jsonTag}\``,
+        );
       }
     }
 
@@ -84,9 +96,59 @@ export class ModelGenerator extends BaseGenerator {
       this.generateImports(imports),
       this.generateStructBody(modelName, fields),
       this.generateFooter(),
-    ].join('\n');
+    ].join("\n");
 
     return goStruct;
+  }
+
+  /**
+   * Generate Go union interface from extracted union
+   * DOMAIN LOGIC: Clean sealed interface generation for unions
+   */
+  private generateGoUnionInterface(
+    unionName: string,
+    extractedUnion: { name: string; variants: ReadonlyMap<string, any> },
+  ): string {
+    const variantTypes: string[] = [];
+    const implementationMethods: string[] = [];
+
+    // Generate union interface and variants
+    for (const [variantName, variant] of extractedUnion.variants) {
+      const variantType = this.capitalize(variantName);
+      variantTypes.push(variantType);
+      
+      // Generate isUnion method for each variant
+      implementationMethods.push(`func (${variantType}) is${unionName}() {}`);
+    }
+
+    // Generate complete union interface
+    const unionInterface = [
+      this.generateHeader(unionName),
+      this.generateUnionInterface(unionName, variantTypes),
+      this.generateUnionImplementations(unionName, implementationMethods),
+      this.generateFooter(),
+    ].join("\n");
+
+    return unionInterface;
+  }
+
+  /**
+   * Generate union interface declaration
+   */
+  private generateUnionInterface(unionName: string, variantTypes: string[]): string {
+    return `type ${unionName} interface {
+  is${unionName}()
+}`;
+  }
+
+  /**
+   * Generate union implementations
+   */
+  private generateUnionImplementations(unionName: string, implementations: string[]): string {
+    return [
+      "// Union implementations",
+      ...implementations,
+    ].join("\n");
   }
 
   /**
@@ -107,14 +169,14 @@ package api
    */
   private generateImports(imports: Set<string>): string {
     if (imports.size === 0) {
-      return '';
+      return "";
     }
 
     const importStatements = Array.from(imports)
       .sort()
-      .map(imp => `import "${imp}"`);
+      .map((imp) => `import "${imp}"`);
 
-    return '\n' + importStatements.join('\n') + '\n\n';
+    return "\n" + importStatements.join("\n") + "\n\n";
   }
 
   /**
@@ -126,7 +188,7 @@ package api
       return `type ${modelName} struct {}`;
     }
 
-    return `type ${modelName} struct {\n${fields.join('\n')}\n}`;
+    return `type ${modelName} struct {\n${fields.join("\n")}\n}`;
   }
 
   /**
@@ -134,7 +196,7 @@ package api
    * DOMAIN LOGIC: Clean Go file footer
    */
   private generateFooter(): string {
-    return '\n';
+    return "\n";
   }
 
   /**
@@ -151,11 +213,11 @@ package api
    */
   private getJsonTag(propertyName: string): string {
     const snakeCase = propertyName
-      .replace(/([a-z])([A-Z])/g, '$1_$2')
+      .replace(/([a-z])([A-Z])/g, "$1_$2")
       .toLowerCase();
-    
+
     const tagName = propertyName === snakeCase ? propertyName : snakeCase;
-    return `${tagName}${propertyName === 'id' ? ',omitempty' : ',omitempty'}`;
+    return `${tagName}${propertyName === "id" ? ",omitempty" : ",omitempty"}`;
   }
 
   /**

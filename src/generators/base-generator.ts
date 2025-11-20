@@ -50,10 +50,7 @@ export abstract class BaseGenerator implements Generator {
    * Common file generation pattern
    * DOMAIN LOGIC: Clean file creation with proper handling
    */
-  protected createFile(
-    fileName: string,
-    content: string
-  ): Map<string, string> {
+  protected createFile(fileName: string, content: string): Map<string, string> {
     const files = new Map<string, string>();
     files.set(fileName, content);
     return files;

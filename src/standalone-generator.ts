@@ -7,11 +7,11 @@
  * CUSTOMER VALUE: Working Go generation with professional quality
  */
 
-import { 
-  ErrorFactory, 
-  GoEmitterResult, 
+import {
+  ErrorFactory,
+  GoEmitterResult,
   ErrorHandler,
-  InvalidModelReason
+  InvalidModelReason,
 } from "./domain/unified-errors.js";
 import { GoTypeMapper } from "./domain/go-type-mapper.js";
 import type {
@@ -52,25 +52,28 @@ export class StandaloneGoGenerator {
    * DOMAIN INTELLIGENCE: Automatic uint detection for never-negative fields
    * UNIFIED SYSTEM: Single source of truth for all type mappings
    */
-  static mapTypeSpecType(type: TypeSpecPropertyNode["type"], fieldName?: string): GoTypeMapping {
+  static mapTypeSpecType(
+    type: TypeSpecPropertyNode["type"],
+    fieldName?: string,
+  ): GoTypeMapping {
     // Special handling for Array types with element types
     if (type.kind === "Array" && (type as any).element) {
       const elementType = this.mapTypeSpecType((type as any).element);
       return {
         goType: `[]${elementType.goType}`,
-        usePointerForOptional: true  // Arrays should use pointer when optional
+        usePointerForOptional: true, // Arrays should use pointer when optional
       };
     }
-    
+
     // Convert StandaloneGoGenerator type format to GoTypeMapper format
     const mappedType = this.convertToGoTypeMapperFormat(type);
     const mappedGoType = GoTypeMapper.mapTypeSpecType(mappedType, fieldName);
     const goTypeString = GoTypeMapper.generateGoTypeString(mappedGoType);
-    
+
     // Convert back to StandaloneGoGenerator format for compatibility
     return {
       goType: goTypeString,
-      usePointerForOptional: mappedGoType.usePointerForOptional || true
+      usePointerForOptional: mappedGoType.usePointerForOptional || true,
     };
   }
 
@@ -78,34 +81,37 @@ export class StandaloneGoGenerator {
    * Convert StandaloneGoGenerator type format to GoTypeMapper format
    * BRIDGE PATTERN: Ensures compatibility between systems
    */
-  private static convertToGoTypeMapperFormat(type: TypeSpecPropertyNode["type"]): any {
+  private static convertToGoTypeMapperFormat(
+    type: TypeSpecPropertyNode["type"],
+  ): any {
     // Map StandaloneGoGenerator types to GoTypeMapper types
     const typeMapping: Record<string, any> = {
-      "Int8": { kind: "scalar", name: "int8" },
-      "Int16": { kind: "scalar", name: "int16" },
-      "Int32": { kind: "scalar", name: "int32" },
-      "Int64": { kind: "scalar", name: "int64" },
-      "Uint8": { kind: "scalar", name: "uint8" },
-      "Uint16": { kind: "scalar", name: "uint16" },
-      "Uint32": { kind: "scalar", name: "uint32" },
-      "Uint64": { kind: "scalar", name: "uint64" },
-      "Float32": { kind: "scalar", name: "float32" },
-      "Float64": { kind: "scalar", name: "float64" },
-      "String": { kind: "scalar", name: "string" },
-      "Boolean": { kind: "scalar", name: "bool" },
-      "Bytes": { kind: "scalar", name: "bytes" },
+      Int8: { kind: "scalar", name: "int8" },
+      Int16: { kind: "scalar", name: "int16" },
+      Int32: { kind: "scalar", name: "int32" },
+      Int64: { kind: "scalar", name: "int64" },
+      Uint8: { kind: "scalar", name: "uint8" },
+      Uint16: { kind: "scalar", name: "uint16" },
+      Uint32: { kind: "scalar", name: "uint32" },
+      Uint64: { kind: "scalar", name: "uint64" },
+      Float32: { kind: "scalar", name: "float32" },
+      Float64: { kind: "scalar", name: "float64" },
+      String: { kind: "scalar", name: "string" },
+      Boolean: { kind: "scalar", name: "bool" },
+      Bytes: { kind: "scalar", name: "bytes" },
     };
-    
+
     const mapped = typeMapping[type.kind];
     if (!mapped) {
       throw ErrorFactory.createTypeSpecCompilerError(
         `Unsupported TypeSpec type: ${type.kind}`,
         {
-          resolution: "Use supported TypeSpec types: string, int8-64, uint8-64, float32/64, bool, arrays",
+          resolution:
+            "Use supported TypeSpec types: string, int8-64, uint8-64, float32/64, bool, arrays",
         },
       );
     }
-    
+
     return mapped;
   }
 
@@ -142,19 +148,25 @@ export class StandaloneGoGenerator {
     }
 
     try {
-      const goCode = this.generateStruct(model.name, Array.from(model.properties.values()));
-      return ErrorFactory.createSuccess(new Map([[`${model.name}.go`, goCode]]), {
-        generatedFiles: [`${model.name}.go`],
-      });
+      const goCode = this.generateStruct(
+        model.name,
+        Array.from(model.properties.values()),
+      );
+      return ErrorFactory.createSuccess(
+        new Map([[`${model.name}.go`, goCode]]),
+        {
+          generatedFiles: [`${model.name}.go`],
+        },
+      );
     } catch (error) {
       const errorOptions = {
         fileName: `${model.name}.go`,
         resolution: "Check model properties and type mappings",
       };
-      
+
       return ErrorFactory.createGoCodeGenerationError(
         `Failed to generate Go struct: ${error instanceof Error ? error.message : "Unknown error"}`,
-        errorOptions
+        errorOptions,
       );
     }
   }
@@ -163,7 +175,10 @@ export class StandaloneGoGenerator {
    * Type-safe struct generation
    * UNIFIED ERROR SYSTEM: Proper error handling for unsupported types
    */
-  private generateStruct(name: string, properties: TypeSpecPropertyNode[]): string {
+  private generateStruct(
+    name: string,
+    properties: TypeSpecPropertyNode[],
+  ): string {
     const fields = properties.map((prop) => this.generateField(prop));
 
     try {
@@ -173,10 +188,10 @@ export class StandaloneGoGenerator {
         fileName: `${name}.go`,
         resolution: "Check struct field generation",
       };
-      
+
       throw ErrorFactory.createGoCodeGenerationError(
         `Failed to create Go file: ${error instanceof Error ? error.message : "Unknown error"}`,
-        errorOptions
+        errorOptions,
       );
     }
   }
@@ -188,7 +203,10 @@ export class StandaloneGoGenerator {
   private generateField(property: TypeSpecPropertyNode): string {
     const goName =
       property.name.charAt(0).toUpperCase() + property.name.slice(1);
-    const mapping = StandaloneGoGenerator.mapTypeSpecType(property.type, property.name);
+    const mapping = StandaloneGoGenerator.mapTypeSpecType(
+      property.type,
+      property.name,
+    );
     const goType =
       property.optional && mapping.usePointerForOptional
         ? `*${mapping.goType}`

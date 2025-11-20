@@ -107,7 +107,7 @@ export interface GoCompilationExternalError {
  * Unified Go Emitter Result Type
  * DISCRIMINATED UNION: Compile-time exhaustive matching
  */
-export type GoEmitterResult = 
+export type GoEmitterResult =
   | TypeSpecCompilerError
   | GoCodeGenerationError
   | SystemError
@@ -150,7 +150,9 @@ export namespace ErrorAnalysis {
   /**
    * Get error severity level
    */
-  export const getSeverity = (error: GoEmitterResult): "low" | "medium" | "high" | "critical" => {
+  export const getSeverity = (
+    error: GoEmitterResult,
+  ): "low" | "medium" | "high" | "critical" => {
     switch (error._tag) {
       case "Success":
         return "low";

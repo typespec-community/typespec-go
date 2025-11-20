@@ -29,6 +29,9 @@ export interface MappedGoType {
   /** Element type for array/slice types */
   readonly elementType?: MappedGoType;
 
+  /** Union variants for union types */
+  readonly unionVariants?: readonly MappedGoType[];
+
   /** Whether this type requires import */
   readonly requiresImport?: boolean;
 

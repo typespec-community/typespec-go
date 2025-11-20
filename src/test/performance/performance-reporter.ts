@@ -5,7 +5,10 @@
  * Supports multiple output formats and analysis
  */
 
-import type { PerformanceBenchmark, PerformanceTestResult } from "./performance-benchmarks.js";
+import type {
+  PerformanceBenchmark,
+  PerformanceTestResult,
+} from "./performance-benchmarks.js";
 
 export interface PerformanceSummary {
   totalTests: number;
@@ -45,23 +48,25 @@ export class PerformanceReporter {
    */
   generateSummary(results: PerformanceTestResult[]): PerformanceSummary {
     const totalTests = results.length;
-    const passedTests = results.filter(r => r.passed).length;
+    const passedTests = results.filter((r) => r.passed).length;
     const failedTests = totalTests - passedTests;
     const passRate = (passedTests / totalTests) * 100;
 
-    const times = results.map(r => r.actualTimeMs);
-    const memories = results.map(r => r.actualMemoryMB);
-    const throughputs = results.map(r => r.actualThroughput);
+    const times = results.map((r) => r.actualTimeMs);
+    const memories = results.map((r) => r.actualMemoryMB);
+    const throughputs = results.map((r) => r.actualThroughput);
 
     const averageTimeMs = times.reduce((a, b) => a + b, 0) / times.length;
     const maxTimeMs = Math.max(...times);
     const minTimeMs = Math.min(...times);
 
-    const averageMemoryMB = memories.reduce((a, b) => a + b, 0) / memories.length;
+    const averageMemoryMB =
+      memories.reduce((a, b) => a + b, 0) / memories.length;
     const maxMemoryMB = Math.max(...memories);
     const minMemoryMB = Math.min(...memories);
 
-    const averageThroughput = throughputs.reduce((a, b) => a + b, 0) / throughputs.length;
+    const averageThroughput =
+      throughputs.reduce((a, b) => a + b, 0) / throughputs.length;
 
     const categories = this.generateCategorySummaries(results);
 
@@ -92,7 +97,9 @@ export class PerformanceReporter {
   /**
    * Generate category-specific summaries
    */
-  private generateCategorySummaries(results: PerformanceTestResult[]): PerformanceSummary["categories"] {
+  private generateCategorySummaries(
+    results: PerformanceTestResult[],
+  ): PerformanceSummary["categories"] {
     const categories = {
       basic: this.getCategoryResults(results, "basic"),
       complex: this.getCategoryResults(results, "complex"),
@@ -111,19 +118,34 @@ export class PerformanceReporter {
   /**
    * Get results for specific category
    */
-  private getCategoryResults(results: PerformanceTestResult[], category: PerformanceBenchmark["category"]): PerformanceTestResult[] {
-    return results.filter(r => r.benchmark.category === category);
+  private getCategoryResults(
+    results: PerformanceTestResult[],
+    category: PerformanceBenchmark["category"],
+  ): PerformanceTestResult[] {
+    return results.filter((r) => r.benchmark.category === category);
   }
 
   /**
    * Calculate summary for a specific category
    */
-  private calculateCategorySummary(categoryResults: PerformanceTestResult[]): CategorySummary {
+  private calculateCategorySummary(
+    categoryResults: PerformanceTestResult[],
+  ): CategorySummary {
     const count = categoryResults.length;
-    const passed = categoryResults.filter(r => r.passed).length;
-    const averageTimeMs = count > 0 ? categoryResults.reduce((sum, r) => sum + r.actualTimeMs, 0) / count : 0;
-    const averageMemoryMB = count > 0 ? categoryResults.reduce((sum, r) => sum + r.actualMemoryMB, 0) / count : 0;
-    const averageThroughput = count > 0 ? categoryResults.reduce((sum, r) => sum + r.actualThroughput, 0) / count : 0;
+    const passed = categoryResults.filter((r) => r.passed).length;
+    const averageTimeMs =
+      count > 0
+        ? categoryResults.reduce((sum, r) => sum + r.actualTimeMs, 0) / count
+        : 0;
+    const averageMemoryMB =
+      count > 0
+        ? categoryResults.reduce((sum, r) => sum + r.actualMemoryMB, 0) / count
+        : 0;
+    const averageThroughput =
+      count > 0
+        ? categoryResults.reduce((sum, r) => sum + r.actualThroughput, 0) /
+          count
+        : 0;
 
     return {
       count,
@@ -144,39 +166,56 @@ export class PerformanceReporter {
       averageTimeMs: number;
       averageMemoryMB: number;
       averageThroughput: number;
-    }
+    },
   ): string[] {
     const recommendations: string[] = [];
 
     // Pass rate recommendations
     if (metrics.passRate < 100) {
-      recommendations.push(`${100 - metrics.passRate}% of tests failed. Review failing tests for performance bottlenecks.`);
+      recommendations.push(
+        `${100 - metrics.passRate}% of tests failed. Review failing tests for performance bottlenecks.`,
+      );
     }
 
     // Time performance recommendations
     if (metrics.averageTimeMs > 25) {
-      recommendations.push("Average execution time exceeds 25ms. Consider optimizing the generation algorithm.");
+      recommendations.push(
+        "Average execution time exceeds 25ms. Consider optimizing the generation algorithm.",
+      );
     }
 
     // Memory usage recommendations
     if (metrics.averageMemoryMB > 10) {
-      recommendations.push("Average memory usage exceeds 10MB. Check for memory leaks or inefficient data structures.");
+      recommendations.push(
+        "Average memory usage exceeds 10MB. Check for memory leaks or inefficient data structures.",
+      );
     }
 
     // Throughput recommendations
     if (metrics.averageThroughput < 15) {
-      recommendations.push("Low throughput detected. Consider implementing caching or streaming generation.");
+      recommendations.push(
+        "Low throughput detected. Consider implementing caching or streaming generation.",
+      );
     }
 
     // Category-specific recommendations
-    const stressTests = results.filter(r => r.benchmark.category === "stress");
-    if (stressTests.length > 0 && stressTests.every(r => !r.passed)) {
-      recommendations.push("All stress tests failed. System may not handle large models efficiently.");
+    const stressTests = results.filter(
+      (r) => r.benchmark.category === "stress",
+    );
+    if (stressTests.length > 0 && stressTests.every((r) => !r.passed)) {
+      recommendations.push(
+        "All stress tests failed. System may not handle large models efficiently.",
+      );
     }
 
-    const largeTests = results.filter(r => r.benchmark.category === "large");
-    if (largeTests.length > 0 && largeTests.some(r => r.actualMemoryMB > 20)) {
-      recommendations.push("Large models consume excessive memory. Consider implementing streaming generation.");
+    const largeTests = results.filter((r) => r.benchmark.category === "large");
+    if (
+      largeTests.length > 0 &&
+      largeTests.some((r) => r.actualMemoryMB > 20)
+    ) {
+      recommendations.push(
+        "Large models consume excessive memory. Consider implementing streaming generation.",
+      );
     }
 
     return recommendations;
@@ -188,7 +227,7 @@ export class PerformanceReporter {
   formatConsoleOutput(summary: PerformanceSummary): string {
     const lines = [
       "🚀 PERFORMANCE TEST SUITE RESULTS",
-      "=" .repeat(50),
+      "=".repeat(50),
       `📊 Overall: ${summary.passedTests}/${summary.totalTests} tests passed (${summary.passRate.toFixed(1)}%)`,
       "",
       "⏱️  Timing Performance:",
@@ -215,7 +254,7 @@ export class PerformanceReporter {
       lines.push(
         "",
         "💡 Recommendations:",
-        ...summary.recommendations.map(rec => `   • ${rec}`)
+        ...summary.recommendations.map((rec) => `   • ${rec}`),
       );
     }
 

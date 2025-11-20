@@ -26,21 +26,28 @@ export class GoCodeGenerator {
    * Domain logic: Clean generation coordination with proper error handling
    */
   generateForModels(
-    models: ReadonlyMap<string, ExtractedModel>
+    models: ReadonlyMap<string, ExtractedModel>,
   ): GoEmitterResult {
     try {
       // Generate Go code for each model
       const allGeneratedFiles = new Map<string, string>();
 
       for (const [modelName, extractedModel] of models) {
-        Logger.info(LogContext.GO_GENERATION, `Generating Go for model: ${modelName}`, {
-          modelName,
-          propertyCount: extractedModel.properties.size,
-        });
+        Logger.info(
+          LogContext.GO_GENERATION,
+          `Generating Go for model: ${modelName}`,
+          {
+            modelName,
+            propertyCount: extractedModel.properties.size,
+          },
+        );
 
         // Convert extracted model to generator-compatible format
-        const generatorModel = this.convertToGeneratorModel(modelName, extractedModel);
-        
+        const generatorModel = this.convertToGeneratorModel(
+          modelName,
+          extractedModel,
+        );
+
         // Generate Go code using StandaloneGoGenerator
         const result = this.generator.generateModel(generatorModel);
 
@@ -65,7 +72,7 @@ export class GoCodeGenerator {
       Logger.error(LogContext.GO_GENERATION, "Go code generation failed", {
         error: error instanceof Error ? error.message : String(error),
       });
-      
+
       return {
         _tag: "GoCodeGenerationError",
         message: error instanceof Error ? error.message : String(error),
@@ -80,17 +87,26 @@ export class GoCodeGenerator {
    * Generate Go code using registered generators
    * DOMAIN LOGIC: Extensible generator architecture
    */
-  async generateWithGenerators(program: import("@typespec/compiler").Program): Promise<GoEmitterResult> {
+  async generateWithGenerators(
+    program: import("@typespec/compiler").Program,
+  ): Promise<GoEmitterResult> {
     try {
       const allGeneratedFiles = new Map<string, string>();
       const generators = GeneratorRegistry.getAll();
 
-      Logger.info(LogContext.GO_GENERATION, `Using ${generators.length} registered generators`, {
-        generatorNames: generators.map(g => g.name),
-      });
+      Logger.info(
+        LogContext.GO_GENERATION,
+        `Using ${generators.length} registered generators`,
+        {
+          generatorNames: generators.map((g) => g.name),
+        },
+      );
 
       for (const generator of generators) {
-        Logger.info(LogContext.GO_GENERATION, `Executing generator: ${generator.name}`);
+        Logger.info(
+          LogContext.GO_GENERATION,
+          `Executing generator: ${generator.name}`,
+        );
 
         // Execute generator
         const result = await generator.generate(program);
@@ -112,10 +128,14 @@ export class GoCodeGenerator {
         generatedFiles: Array.from(allGeneratedFiles.keys()),
       };
     } catch (error) {
-      Logger.error(LogContext.GO_GENERATION, "Generator-based generation failed", {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      
+      Logger.error(
+        LogContext.GO_GENERATION,
+        "Generator-based generation failed",
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
+
       return {
         _tag: "SystemError",
         message: `Generator execution failed: ${error instanceof Error ? error.message : String(error)}`,
@@ -132,14 +152,17 @@ export class GoCodeGenerator {
    */
   private convertToGeneratorModel(
     modelName: string,
-    extractedModel: ExtractedModel
+    extractedModel: ExtractedModel,
   ): {
     name: string;
-    properties: ReadonlyMap<string, {
-      name: string;
-      type: { kind: string };
-      optional: boolean;
-    }>;
+    properties: ReadonlyMap<
+      string,
+      {
+        name: string;
+        type: { kind: string };
+        optional: boolean;
+      }
+    >;
   } {
     return {
       name: modelName,

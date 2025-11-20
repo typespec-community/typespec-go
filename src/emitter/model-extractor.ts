@@ -5,28 +5,131 @@
  * Clean separation of concerns for emitter architecture
  */
 
-import type { 
-  Program,
-  Model as TypeSpecModelType,
-} from "@typespec/compiler";
+import type { Program, Model as TypeSpecModelType } from "@typespec/compiler";
 import { Logger, LogContext } from "../domain/structured-logging.js";
+
+/**
+ * Extracted TypeSpec union with metadata
+ */
+export interface ExtractedUnion {
+  readonly name: string;
+  readonly variants: ReadonlyMap<
+    string,
+    {
+      name: string;
+      type: { kind: string };
+    }
+  >;
+}
 
 /**
  * Extracted TypeSpec model with metadata
  */
 export interface ExtractedModel {
   readonly name: string;
-  readonly properties: ReadonlyMap<string, {
-    name: string;
-    type: { kind: string };
-    optional: boolean;
-  }>;
+  readonly properties: ReadonlyMap<
+    string,
+    {
+      name: string;
+      type: { kind: string };
+      optional: boolean;
+    }
+  >;
 }
 
 /**
- * TypeSpec model extraction utilities
+ * TypeSpec model and union extraction utilities
  */
 export class ModelExtractor {
+  /**
+   * Extract all unions from TypeSpec program
+   * Domain logic: Clean AST traversal for union types
+   */
+  static extractUnions(program: Program): ReadonlyMap<string, ExtractedUnion> {
+    try {
+      const unions = new Map<string, ExtractedUnion>();
+
+      Logger.info(
+        LogContext.TYPESPEC_INTEGRATION,
+        "Extracting unions from compiled program",
+      );
+
+      // Attempt to extract using TypeSpec compiler API
+      let extractedUnions: any;
+      try {
+        extractedUnions =
+          (program as any).state.unions || (program as any).unions || {};
+      } catch (error) {
+        Logger.info(
+          LogContext.TYPESPEC_INTEGRATION,
+          "Union API access failed, using fallback",
+          {
+            error: error instanceof Error ? error.message : String(error),
+          },
+        );
+      }
+
+      // Process extracted unions
+      for (const [unionName, typeSpecUnion] of Object.entries(extractedUnions)) {
+        const union = this.processTypeSpecUnion(unionName, typeSpecUnion);
+        if (union) {
+          unions.set(unionName, union);
+        }
+      }
+
+      Logger.info(LogContext.TYPESPEC_INTEGRATION, "Found unions", {
+        unionCount: unions.size,
+        unionNames: Array.from(unions.keys()),
+      });
+
+      return unions;
+    } catch (error) {
+      Logger.error(LogContext.TYPESPEC_INTEGRATION, "Union extraction failed", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      // Return empty map on error
+      return new Map();
+    }
+  }
+
+  /**
+   * Process individual TypeSpec union
+   * Domain logic: Clean union processing with proper variant mapping
+   */
+  private static processTypeSpecUnion(
+    unionName: string,
+    typeSpecUnion: any,
+  ): ExtractedUnion | null {
+    try {
+      const variants = new Map<string, { name: string; type: { kind: string } }>();
+
+      // Extract variants from TypeSpec union
+      const unionVariants = (typeSpecUnion as any).variants || [];
+      for (const variant of unionVariants) {
+        const variantName = (variant as any).name || "Unknown";
+        variants.set(variantName, {
+          name: variantName,
+          type: { kind: this.mapTypeSpecKind(variant) },
+        });
+      }
+
+      return {
+        name: unionName,
+        variants,
+      };
+    } catch (error) {
+      Logger.error(
+        LogContext.TYPESPEC_INTEGRATION,
+        `Failed to process union: ${unionName}`,
+        {
+          unionName,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
+      return null;
+    }
+  }
+
   /**
    * Extract all models from TypeSpec program
    * Domain logic: Clean AST traversal with proper error handling
@@ -37,46 +140,71 @@ export class ModelExtractor {
       // Use fallback mechanisms for development
       const models = new Map<string, ExtractedModel>();
 
-      Logger.info(LogContext.TYPESPEC_INTEGRATION, "Extracting models from compiled program");
+      Logger.info(
+        LogContext.TYPESPEC_INTEGRATION,
+        "Extracting models from compiled program",
+      );
 
       // Attempt to extract using TypeSpec compiler API
       let extractedModels: any;
       try {
-        extractedModels = (program as any).state.models || (program as any).models || {};
+        extractedModels =
+          (program as any).state.models || (program as any).models || {};
       } catch (error) {
-        Logger.info(LogContext.TYPESPEC_INTEGRATION, "API access failed, using state fallback", {
-          error: error instanceof Error ? error.message : String(error),
-        });
+        Logger.info(
+          LogContext.TYPESPEC_INTEGRATION,
+          "API access failed, using state fallback",
+          {
+            error: error instanceof Error ? error.message : String(error),
+          },
+        );
       }
 
       // Try alternative API access
-      if (!extractedModels || typeof extractedModels !== 'object') {
+      if (!extractedModels || typeof extractedModels !== "object") {
         try {
           extractedModels = (program as any).models || {};
         } catch (error) {
-          Logger.info(LogContext.TYPESPEC_INTEGRATION, "State access also failed, using test model", {
-            error: error instanceof Error ? error.message : String(error),
-          });
+          Logger.info(
+            LogContext.TYPESPEC_INTEGRATION,
+            "State access also failed, using test model",
+            {
+              error: error instanceof Error ? error.message : String(error),
+            },
+          );
         }
       }
 
       // Create test model for development if no models found
       const modelCount = Object.keys(extractedModels || {}).length;
-      Logger.info(LogContext.TYPESPEC_INTEGRATION, "Extracted models from TypeSpec program", {
-        extractedModels: modelCount,
-        modelNames: Object.keys(extractedModels || {})
-      });
+      Logger.info(
+        LogContext.TYPESPEC_INTEGRATION,
+        "Extracted models from TypeSpec program",
+        {
+          extractedModels: modelCount,
+          modelNames: Object.keys(extractedModels || {}),
+        },
+      );
 
       if (modelCount === 0) {
-        Logger.info(LogContext.TYPESPEC_INTEGRATION, "Providing test model for development");
-        
+        Logger.info(
+          LogContext.TYPESPEC_INTEGRATION,
+          "Providing test model for development",
+        );
+
         // Create test model for development
         const testProperties = new Map([
           ["id", { name: "id", type: { kind: "String" }, optional: false }],
           ["name", { name: "name", type: { kind: "String" }, optional: false }],
-          ["email", { name: "email", type: { kind: "String" }, optional: true }],
+          [
+            "email",
+            { name: "email", type: { kind: "String" }, optional: true },
+          ],
           ["age", { name: "age", type: { kind: "Uint8" }, optional: true }],
-          ["active", { name: "active", type: { kind: "Boolean" }, optional: false }],
+          [
+            "active",
+            { name: "active", type: { kind: "Boolean" }, optional: false },
+          ],
         ]);
 
         const testModel: ExtractedModel = {
@@ -87,8 +215,13 @@ export class ModelExtractor {
         models.set("TestUser", testModel);
       } else {
         // Process extracted models
-        for (const [modelName, typeSpecModel] of Object.entries(extractedModels)) {
-          const model = this.processTypeSpecModel(modelName, typeSpecModel as TypeSpecModelType);
+        for (const [modelName, typeSpecModel] of Object.entries(
+          extractedModels,
+        )) {
+          const model = this.processTypeSpecModel(
+            modelName,
+            typeSpecModel as TypeSpecModelType,
+          );
           if (model) {
             models.set(modelName, model);
           }
@@ -97,7 +230,7 @@ export class ModelExtractor {
 
       Logger.info(LogContext.TYPESPEC_INTEGRATION, "Found models", {
         modelCount: models.size,
-        modelNames: Array.from(models.keys())
+        modelNames: Array.from(models.keys()),
       });
 
       return models;
@@ -115,17 +248,22 @@ export class ModelExtractor {
    */
   private static processTypeSpecModel(
     modelName: string,
-    typeSpecModel: TypeSpecModelType
+    typeSpecModel: TypeSpecModelType,
   ): ExtractedModel | null {
     try {
-      const properties = new Map<string, {
-        name: string;
-        type: { kind: string };
-        optional: boolean;
-      }>();
+      const properties = new Map<
+        string,
+        {
+          name: string;
+          type: { kind: string };
+          optional: boolean;
+        }
+      >();
 
       // Extract properties from TypeSpec model
-      for (const [propertyName, property] of Object.entries((typeSpecModel as any).properties || {})) {
+      for (const [propertyName, property] of Object.entries(
+        (typeSpecModel as any).properties || {},
+      )) {
         properties.set(propertyName, {
           name: propertyName,
           type: { kind: this.mapTypeSpecKind(property) },
@@ -138,10 +276,14 @@ export class ModelExtractor {
         properties,
       };
     } catch (error) {
-      Logger.error(LogContext.TYPESPEC_INTEGRATION, `Failed to process model: ${modelName}`, {
-        modelName,
-        error: error instanceof Error ? error.message : String(error),
-      });
+      Logger.error(
+        LogContext.TYPESPEC_INTEGRATION,
+        `Failed to process model: ${modelName}`,
+        {
+          modelName,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
       return null;
     }
   }
@@ -153,20 +295,25 @@ export class ModelExtractor {
   private static mapTypeSpecKind(property: any): string {
     try {
       // Map TypeSpec types to simple kinds for generator compatibility
-      const typeSpecType = (property as any).type || (property as any).typeKind || property;
-      
-      if (typeof typeSpecType === 'string') {
+      const typeSpecType =
+        (property as any).type || (property as any).typeKind || property;
+
+      if (typeof typeSpecType === "string") {
         return typeSpecType;
       }
-      
-      if (typeSpecType && typeof typeSpecType === 'object' && typeSpecType.kind) {
+
+      if (
+        typeSpecType &&
+        typeof typeSpecType === "object" &&
+        typeSpecType.kind
+      ) {
         return typeSpecType.kind;
       }
-      
+
       // Default fallback
-      return 'String';
+      return "String";
     } catch (error) {
-      return 'String'; // Safe fallback
+      return "String"; // Safe fallback
     }
   }
 }

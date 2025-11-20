@@ -24,12 +24,12 @@ export {
 } from "./domain/unified-errors.js";
 
 // Professional logging system
-export { 
-  Logger, 
-  StructuredLogger, 
-  DevelopmentLogger, 
-  LogLevel, 
-  LogContext 
+export {
+  Logger,
+  StructuredLogger,
+  DevelopmentLogger,
+  LogLevel,
+  LogContext,
 } from "./domain/structured-logging.js";
 
 // Professional domain types (single source)

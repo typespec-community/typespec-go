@@ -5,7 +5,10 @@
  * Provides memory efficiency metrics and recommendations
  */
 
-import type { MemoryMetrics, MemoryLeakTestResult } from "./memory-test-runner.js";
+import type {
+  MemoryMetrics,
+  MemoryLeakTestResult,
+} from "./memory-test-runner.js";
 
 /**
  * Memory analysis and reporting utilities
@@ -30,9 +33,10 @@ export class MemoryValidator {
     // Calculate scaling factor (memory growth vs property count)
     const smallModel = metrics[0];
     const largeModel = metrics[metrics.length - 1];
-    
+
     const propertyRatio = largeModel.propertyCount / smallModel.propertyCount;
-    const memoryRatio = largeModel.memoryOverheadMB / smallModel.memoryOverheadMB;
+    const memoryRatio =
+      largeModel.memoryOverheadMB / smallModel.memoryOverheadMB;
     const scalingFactor = memoryRatio / propertyRatio;
 
     // Determine efficiency rating
@@ -64,7 +68,7 @@ export class MemoryValidator {
     recommendation: string;
   } {
     const { memoryGrowthMB } = leakTestResult;
-    
+
     let leakSeverity: "none" | "minor" | "moderate" | "severe";
     let recommendation: string;
 
@@ -76,7 +80,8 @@ export class MemoryValidator {
       recommendation = "Minor memory growth - monitor in production";
     } else if (memoryGrowthMB < 30) {
       leakSeverity = "moderate";
-      recommendation = "Moderate memory leaks detected - investigate object lifecycle";
+      recommendation =
+        "Moderate memory leaks detected - investigate object lifecycle";
     } else {
       leakSeverity = "severe";
       recommendation = "Severe memory leaks - requires immediate attention";
@@ -148,40 +153,54 @@ export class MemoryValidator {
    */
   generateOptimizationRecommendations(
     metrics: MemoryMetrics[],
-    leakTestResult: MemoryLeakTestResult
+    leakTestResult: MemoryLeakTestResult,
   ): string[] {
     const recommendations: string[] = [];
 
     // Analyze patterns and generate specific recommendations
-    const maxOverhead = Math.max(...metrics.map(m => m.memoryOverheadMB));
-    const avgPerProperty = metrics.reduce((sum, m) => sum + m.memoryPerPropertyMB, 0) / metrics.length;
+    const maxOverhead = Math.max(...metrics.map((m) => m.memoryOverheadMB));
+    const avgPerProperty =
+      metrics.reduce((sum, m) => sum + m.memoryPerPropertyMB, 0) /
+      metrics.length;
 
     // Memory overhead recommendations
     if (maxOverhead > 15) {
-      recommendations.push("High memory overhead detected - reduce temporary object creation");
+      recommendations.push(
+        "High memory overhead detected - reduce temporary object creation",
+      );
     }
 
     // Memory per property recommendations
     if (avgPerProperty > 0.05) {
-      recommendations.push("High memory per property - optimize property storage and processing");
+      recommendations.push(
+        "High memory per property - optimize property storage and processing",
+      );
     }
 
     // Model size recommendations
-    const largeModelMetrics = metrics.filter(m => m.propertyCount > 100);
-    if (largeModelMetrics.some(m => m.memoryOverheadMB > 10)) {
-      recommendations.push("Large models consume excessive memory - implement streaming generation");
+    const largeModelMetrics = metrics.filter((m) => m.propertyCount > 100);
+    if (largeModelMetrics.some((m) => m.memoryOverheadMB > 10)) {
+      recommendations.push(
+        "Large models consume excessive memory - implement streaming generation",
+      );
     }
 
     // Leak test recommendations
     if (leakTestResult.leakDetected) {
-      recommendations.push("Memory leaks detected - implement proper object cleanup");
+      recommendations.push(
+        "Memory leaks detected - implement proper object cleanup",
+      );
       recommendations.push("Consider object pooling for frequent allocations");
     }
 
     // General optimization recommendations
     recommendations.push("Monitor memory usage in production environments");
-    recommendations.push("Implement memory usage alerts for threshold violations");
-    recommendations.push("Consider implementing memory usage baselines for regression detection");
+    recommendations.push(
+      "Implement memory usage alerts for threshold violations",
+    );
+    recommendations.push(
+      "Consider implementing memory usage baselines for regression detection",
+    );
 
     return recommendations;
   }
@@ -191,7 +210,7 @@ export class MemoryValidator {
    */
   generateMemorySummary(
     metrics: MemoryMetrics[],
-    leakTestResult: MemoryLeakTestResult
+    leakTestResult: MemoryLeakTestResult,
   ): {
     status: "optimal" | "acceptable" | "needs-attention" | "critical";
     keyMetrics: {
@@ -202,9 +221,12 @@ export class MemoryValidator {
     };
     summary: string;
   } {
-    const averageOverheadMB = metrics.reduce((sum, m) => sum + m.memoryOverheadMB, 0) / metrics.length;
-    const maxOverheadMB = Math.max(...metrics.map(m => m.memoryOverheadMB));
-    const averageMemoryPerPropertyMB = metrics.reduce((sum, m) => sum + m.memoryPerPropertyMB, 0) / metrics.length;
+    const averageOverheadMB =
+      metrics.reduce((sum, m) => sum + m.memoryOverheadMB, 0) / metrics.length;
+    const maxOverheadMB = Math.max(...metrics.map((m) => m.memoryOverheadMB));
+    const averageMemoryPerPropertyMB =
+      metrics.reduce((sum, m) => sum + m.memoryPerPropertyMB, 0) /
+      metrics.length;
     const leakDetected = leakTestResult.leakDetected;
 
     let status: "optimal" | "acceptable" | "needs-attention" | "critical";
@@ -220,7 +242,8 @@ export class MemoryValidator {
       summary = "Memory usage is optimal across all metrics";
     } else if (hasAcceptableOverhead && !leakDetected) {
       status = "acceptable";
-      summary = "Memory usage is acceptable with minor optimization opportunities";
+      summary =
+        "Memory usage is acceptable with minor optimization opportunities";
     } else if (leakDetected || maxOverheadMB > 20) {
       status = "critical";
       summary = "Memory usage requires immediate attention";

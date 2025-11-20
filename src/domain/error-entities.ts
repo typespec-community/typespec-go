@@ -91,7 +91,7 @@ export namespace EntityTransformation {
       .replace(/(?:^|[_-])([a-z])/g, (_, char) => char.toUpperCase())
       .replace(/[0-9]+/g, "") // Remove numbers
       .replace(/[^a-zA-Z]/g, "") // Remove non-letters
-      .replace(/^./, char => char.toUpperCase()); // Capitalize first letter
+      .replace(/^./, (char) => char.toUpperCase()); // Capitalize first letter
   };
 
   /**

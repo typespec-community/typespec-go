@@ -19,13 +19,13 @@ export class MemoryTracker {
    * Get current memory usage in bytes
    */
   getCurrentMemoryUsage(): number {
-    if (typeof process !== 'undefined' && process.memoryUsage) {
+    if (typeof process !== "undefined" && process.memoryUsage) {
       const usage = process.memoryUsage();
       return usage.heapUsed;
     }
 
     // Fallback for browser or other environments
-    if (typeof performance !== 'undefined' && (performance as any).memory) {
+    if (typeof performance !== "undefined" && (performance as any).memory) {
       return (performance as any).memory.usedJSHeapSize || 0;
     }
 
@@ -65,9 +65,9 @@ export class MemoryTracker {
    * Force garbage collection if available
    */
   forceGarbageCollection(): void {
-    if (typeof global !== 'undefined' && (global as any).gc) {
+    if (typeof global !== "undefined" && (global as any).gc) {
       (global as any).gc();
-    } else if (typeof window !== 'undefined' && (window as any).gc) {
+    } else if (typeof window !== "undefined" && (window as any).gc) {
       (window as any).gc();
     }
   }
@@ -85,7 +85,7 @@ export class MemoryTracker {
     externalMB: number;
     rssMB: number;
   } {
-    if (typeof process !== 'undefined' && process.memoryUsage) {
+    if (typeof process !== "undefined" && process.memoryUsage) {
       const usage = process.memoryUsage();
       return {
         heapUsed: usage.heapUsed,
@@ -100,7 +100,7 @@ export class MemoryTracker {
     }
 
     // Fallback for browser environments
-    if (typeof performance !== 'undefined' && (performance as any).memory) {
+    if (typeof performance !== "undefined" && (performance as any).memory) {
       const memory = (performance as any).memory;
       return {
         heapUsed: memory.usedJSHeapSize || 0,

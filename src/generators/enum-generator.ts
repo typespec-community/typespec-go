@@ -63,7 +63,8 @@ export class EnumGenerator extends BaseGenerator {
       // Use fallback mechanisms for development
       let extractedEnums: any;
       try {
-        extractedEnums = (program as any).state.enums || (program as any).enums || {};
+        extractedEnums =
+          (program as any).state.enums || (program as any).enums || {};
       } catch (error) {
         console.log("Enum extraction from TypeSpec API failed, using fallback");
       }
@@ -75,8 +76,13 @@ export class EnumGenerator extends BaseGenerator {
         enums.set("Priority", ["Low", "Medium", "High"]);
       } else {
         // Process extracted enums
-        for (const [enumName, enumDefinition] of Object.entries(extractedEnums)) {
-          const enumValues = this.processEnumDefinition(enumName, enumDefinition as any);
+        for (const [enumName, enumDefinition] of Object.entries(
+          extractedEnums,
+        )) {
+          const enumValues = this.processEnumDefinition(
+            enumName,
+            enumDefinition as any,
+          );
           if (enumValues.length > 0) {
             enums.set(enumName, enumValues);
           }
@@ -94,9 +100,12 @@ export class EnumGenerator extends BaseGenerator {
    * Process individual enum definition
    * DOMAIN LOGIC: Clean enum processing with proper validation
    */
-  private processEnumDefinition(enumName: string, enumDefinition: any): string[] {
+  private processEnumDefinition(
+    enumName: string,
+    enumDefinition: any,
+  ): string[] {
     try {
-      if (!enumDefinition || typeof enumDefinition !== 'object') {
+      if (!enumDefinition || typeof enumDefinition !== "object") {
         return [];
       }
 
@@ -105,7 +114,7 @@ export class EnumGenerator extends BaseGenerator {
       const members = (enumDefinition as any).members || {};
 
       for (const [memberName, memberValue] of Object.entries(members)) {
-        if (typeof memberName === 'string' && memberName.length > 0) {
+        if (typeof memberName === "string" && memberName.length > 0) {
           enumValues.push(this.sanitizeEnumValue(memberName));
         }
       }
@@ -127,7 +136,7 @@ export class EnumGenerator extends BaseGenerator {
       this.generateEnumType(enumName),
       this.generateEnumValues(enumValues),
       this.generateFooter(),
-    ].join('\n');
+    ].join("\n");
 
     return goEnum;
   }
@@ -158,11 +167,12 @@ type ${enumName} string`;
    * DOMAIN LOGIC: Type-safe enum constants
    */
   private generateEnumValues(enumValues: string[]): string {
-    const constants = enumValues.map(value => 
-      `const ${enumName}${this.capitalize(value)} ${enumName} = "${value}"`
+    const constants = enumValues.map(
+      (value) =>
+        `const ${enumName}${this.capitalize(value)} ${enumName} = "${value}"`,
     );
 
-    return '\nconst (\n' + constants.join('\n') + '\n)';
+    return "\nconst (\n" + constants.join("\n") + "\n)";
   }
 
   /**
@@ -170,7 +180,7 @@ type ${enumName} string`;
    * DOMAIN LOGIC: Clean Go file footer
    */
   private generateFooter(): string {
-    return '\n';
+    return "\n";
   }
 
   /**
@@ -188,8 +198,8 @@ type ${enumName} string`;
   private sanitizeEnumValue(value: string): string {
     // Remove invalid characters and capitalize
     return value
-      .replace(/[^a-zA-Z0-9_]/g, '')
-      .replace(/^./, char => char.toUpperCase());
+      .replace(/[^a-zA-Z0-9_]/g, "")
+      .replace(/^./, (char) => char.toUpperCase());
   }
 
   /**

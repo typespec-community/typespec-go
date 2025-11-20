@@ -41,6 +41,13 @@ export class GoTypeStringGenerator {
         }
         return `[0]${this.generateGoTypeString(type.elementType)}`;
 
+      case "union":
+        if (!type.unionVariants || type.unionVariants.length === 0) {
+          return "interface{}";
+        }
+        // Generate union as interface name (sealed interface)
+        return type.name || "interface{}";
+
       default:
         return "interface{}";
     }
@@ -53,7 +60,8 @@ export class GoTypeStringGenerator {
   static toPascalCase(str: string): string {
     return str
       .replace(/(?:^|[_-])([a-z])/g, (_, c) => c.toUpperCase())
-      .replace(/([a-z])([A-Z])/g, (_, c1, c2) => `${c1}${c2.toLowerCase()}`);
+      .replace(/([a-z])([A-Z])/g, (_, c1, c2) => `${c1}${c2}`)
+      .replace(/^./, (c) => c.toUpperCase()); // Capitalize first letter
   }
 
   /**

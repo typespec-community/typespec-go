@@ -8,7 +8,10 @@
 import { performance } from "perf_hooks";
 import { StandaloneGoGenerator } from "../../standalone-generator.js";
 import type { GoEmitterResult } from "../../domain/unified-errors.js";
-import type { PerformanceBenchmark, PerformanceTestResult } from "./performance-benchmarks.js";
+import type {
+  PerformanceBenchmark,
+  PerformanceTestResult,
+} from "./performance-benchmarks.js";
 import { MemoryTracker } from "./memory-tracker.js";
 
 /**
@@ -41,15 +44,24 @@ export class PerformanceTestRunner {
 
     const actualTimeMs = endTime - startTime;
     const actualMemoryMB = (endMemory - startMemory) / 1024 / 1024;
-    const actualThroughput = model.properties ? Object.keys(model.properties).length / (actualTimeMs / 1000) : 0;
+    const actualThroughput = model.properties
+      ? Object.keys(model.properties).length / (actualTimeMs / 1000)
+      : 0;
 
     // Determine if benchmark passed
-    const passed = 
+    const passed =
       actualTimeMs <= benchmark.expectedMaxTimeMs &&
       actualMemoryMB <= benchmark.expectedMaxMemoryMB &&
       actualThroughput >= benchmark.expectedMinThroughput;
 
-    const failureReason = passed ? undefined : this.getFailureReason(benchmark, actualTimeMs, actualMemoryMB, actualThroughput);
+    const failureReason = passed
+      ? undefined
+      : this.getFailureReason(
+          benchmark,
+          actualTimeMs,
+          actualMemoryMB,
+          actualThroughput,
+        );
 
     return {
       benchmark,
@@ -65,9 +77,11 @@ export class PerformanceTestRunner {
   /**
    * Execute multiple benchmarks in sequence
    */
-  executeBenchmarks(benchmarks: PerformanceBenchmark[]): PerformanceTestResult[] {
+  executeBenchmarks(
+    benchmarks: PerformanceBenchmark[],
+  ): PerformanceTestResult[] {
     const results: PerformanceTestResult[] = [];
-    
+
     for (const benchmark of benchmarks) {
       const result = this.executeBenchmark(benchmark);
       results.push(result);
@@ -83,20 +97,26 @@ export class PerformanceTestRunner {
     benchmark: PerformanceBenchmark,
     actualTimeMs: number,
     actualMemoryMB: number,
-    actualThroughput: number
+    actualThroughput: number,
   ): string {
     const reasons: string[] = [];
 
     if (actualTimeMs > benchmark.expectedMaxTimeMs) {
-      reasons.push(`Time exceeded: ${actualTimeMs.toFixed(2)}ms > ${benchmark.expectedMaxTimeMs}ms`);
+      reasons.push(
+        `Time exceeded: ${actualTimeMs.toFixed(2)}ms > ${benchmark.expectedMaxTimeMs}ms`,
+      );
     }
 
     if (actualMemoryMB > benchmark.expectedMaxMemoryMB) {
-      reasons.push(`Memory exceeded: ${actualMemoryMB.toFixed(2)}MB > ${benchmark.expectedMaxMemoryMB}MB`);
+      reasons.push(
+        `Memory exceeded: ${actualMemoryMB.toFixed(2)}MB > ${benchmark.expectedMaxMemoryMB}MB`,
+      );
     }
 
     if (actualThroughput < benchmark.expectedMinThroughput) {
-      reasons.push(`Throughput below: ${actualThroughput.toFixed(2)}/s < ${benchmark.expectedMinThroughput}/s`);
+      reasons.push(
+        `Throughput below: ${actualThroughput.toFixed(2)}/s < ${benchmark.expectedMinThroughput}/s`,
+      );
     }
 
     return reasons.join("; ");

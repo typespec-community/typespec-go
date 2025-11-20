@@ -22,18 +22,29 @@ describe("Real BDD Framework Integration", () => {
     // Given: Create BDD scenario for Go generator testing
     const scenario: BDDScenario = {
       name: "Go Generator Success",
-      description: "Verify Go generator generates proper code using BDD framework",
+      description:
+        "Verify Go generator generates proper code using BDD framework",
       given: () => {
         return { generator };
       },
       when: (context) => {
+        // Create proper readonly map for type safety
+        const properties = new Map([
+          [
+            "name",
+            { name: "name", type: { kind: "String" }, optional: false },
+          ],
+          [
+            "email",
+            { name: "email", type: { kind: "String" }, optional: true },
+          ],
+        ]);
+        
         const model = {
           name: "TestUser",
-          properties: new Map([
-            ["name", { name: "name", type: { kind: "String" }, optional: false }],
-            ["email", { name: "email", type: { kind: "String" }, optional: true }],
-          ]),
+          properties: properties as ReadonlyMap<string, import("../types/typespec-domain.js").TypeSpecPropertyNode>,
         };
+        
         return context.generator.generateModel(model);
       },
       then: (result) => {
@@ -45,7 +56,7 @@ describe("Real BDD Framework Integration", () => {
     // When & Then: Execute scenario with real BDD framework
     // The BDD framework handles validation internally
     BDDRunner.executeScenario(scenario);
-    
+
     // Test passes if no exception is thrown
     expect(true).toBe(true);
   });
@@ -65,7 +76,10 @@ describe("Real BDD Framework Integration", () => {
       },
       then: (result) => {
         // This should always fail (emitter.emit returns error)
-        return BDDRunner.createValidation(false, "Expected failure for testing");
+        return BDDRunner.createValidation(
+          false,
+          "Expected failure for testing",
+        );
       },
     };
 
@@ -112,20 +126,24 @@ describe("Real BDD Framework Integration", () => {
         description: "First test scenario",
         given: () => ({ test: "data1" }),
         when: (context) => ({ result: "success1" }),
-        then: (result) => BDDRunner.createValidation(true, "Success scenario 1"),
+        then: (result) =>
+          BDDRunner.createValidation(true, "Success scenario 1"),
       },
       {
-        name: "Scenario 2", 
+        name: "Scenario 2",
         description: "Second test scenario",
         given: () => ({ test: "data2" }),
         when: (context) => ({ result: "success2" }),
-        then: (result) => BDDRunner.createValidation(true, "Success scenario 2"),
+        then: (result) =>
+          BDDRunner.createValidation(true, "Success scenario 2"),
       },
       {
         name: "Scenario 3 (Fails)",
         description: "Intentionally failing scenario",
         given: () => null as any,
-        when: (context) => { throw new Error("Intentional failure"); },
+        when: (context) => {
+          throw new Error("Intentional failure");
+        },
         then: (result) => BDDRunner.createValidation(false, "Expected failure"),
       },
     ];
@@ -137,6 +155,10 @@ describe("Real BDD Framework Integration", () => {
     expect(results.passed).toBe(2);
     expect(results.failed).toBe(1);
     expect(results.results).toHaveLength(3);
-    expect(results.results.some(r => !r.passed && r.error?.message.includes("Intentional failure"))).toBe(true);
+    expect(
+      results.results.some(
+        (r) => !r.passed && r.error?.message.includes("Intentional failure"),
+      ),
+    ).toBe(true);
   });
 });

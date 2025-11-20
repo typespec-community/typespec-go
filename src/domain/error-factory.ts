@@ -5,14 +5,19 @@
  * Single source of truth for error generation
  */
 
-import type { 
+import type {
   TypeSpecCompilerError,
   GoCodeGenerationError,
   SystemError,
   ValidationError,
   GoEmitterResult,
 } from "./error-types.js";
-import type { ModelName, PropertyName, FileName, ErrorId } from "./error-entities.js";
+import type {
+  ModelName,
+  PropertyName,
+  FileName,
+  ErrorId,
+} from "./error-entities.js";
 import { Entities } from "./error-entities.js";
 
 /**
@@ -30,7 +35,9 @@ export class ErrorFactory {
   private static nextErrorId = 0;
 
   private static createErrorId(): ErrorId {
-    return Entities.createErrorId(`error-${++ErrorFactory.nextErrorId}-${Date.now() % 10000}`) as ErrorId;
+    return Entities.createErrorId(
+      `error-${++ErrorFactory.nextErrorId}-${Date.now() % 10000}`,
+    ) as ErrorId;
   }
 
   /**
@@ -47,8 +54,12 @@ export class ErrorFactory {
     return {
       _tag: "typespec_compiler_error",
       message,
-      ...(options?.modelName && { modelName: Entities.createModelName(options.modelName) }),
-      ...(options?.propertyName && { propertyName: Entities.createPropertyName(options.propertyName) }),
+      ...(options?.modelName && {
+        modelName: Entities.createModelName(options.modelName),
+      }),
+      ...(options?.propertyName && {
+        propertyName: Entities.createPropertyName(options.propertyName),
+      }),
       resolution: options?.resolution || "Check TypeSpec model syntax",
       errorId: this.createErrorId(),
     };
@@ -70,7 +81,9 @@ export class ErrorFactory {
       message,
       resolution: options?.resolution || "Fix Go code syntax",
       errorId: this.createErrorId(),
-      ...(options?.fileName && { fileName: Entities.createFileName(options.fileName) }),
+      ...(options?.fileName && {
+        fileName: Entities.createFileName(options.fileName),
+      }),
       ...(options?.goCode && { goCode: options.goCode }),
     } as GoCodeGenerationError;
   }
@@ -110,7 +123,9 @@ export class ErrorFactory {
       _tag: "validation_error",
       message,
       ...(modelName && { modelName: Entities.createModelName(modelName) }),
-      ...(options?.propertyName && { propertyName: Entities.createPropertyName(options.propertyName) }),
+      ...(options?.propertyName && {
+        propertyName: Entities.createPropertyName(options.propertyName),
+      }),
       resolution: options?.resolution || "Fix validation issue",
       errorId: this.createErrorId(),
       ...(reason && { reason }),
@@ -137,8 +152,12 @@ export class ErrorFactory {
     return {
       _tag: "validation_error",
       message,
-      ...(options?.modelName && { modelName: Entities.createModelName(options.modelName) }),
-      ...(options?.propertyName && { propertyName: Entities.createPropertyName(options.propertyName) }),
+      ...(options?.modelName && {
+        modelName: Entities.createModelName(options.modelName),
+      }),
+      ...(options?.propertyName && {
+        propertyName: Entities.createPropertyName(options.propertyName),
+      }),
       resolution: options?.resolution || "Fix validation issue",
       errorId: this.createErrorId(),
     };
@@ -158,7 +177,9 @@ export class ErrorFactory {
       _tag: "success",
       data,
       generatedFiles: options?.generatedFiles || Array.from(data.keys()),
-      ...(options?.typeSpecProgram && { typeSpecProgram: options.typeSpecProgram }),
+      ...(options?.typeSpecProgram && {
+        typeSpecProgram: options.typeSpecProgram,
+      }),
     };
   }
 
@@ -167,26 +188,35 @@ export class ErrorFactory {
    */
   static handleExternalError(
     error: unknown,
-    context: "typespec" | "typescript" | "go" | "system"
+    context: "typespec" | "typescript" | "go" | "system",
   ): TypeSpecCompilerError | GoCodeGenerationError | SystemError {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    
+
     switch (context) {
       case "typespec":
-        return this.createTypeSpecCompilerError(`TypeSpec compiler error: ${errorMessage}`, {
-          resolution: "Check TypeSpec model definitions and syntax",
-        });
-        
+        return this.createTypeSpecCompilerError(
+          `TypeSpec compiler error: ${errorMessage}`,
+          {
+            resolution: "Check TypeSpec model definitions and syntax",
+          },
+        );
+
       case "typescript":
-        return this.createSystemError(`TypeScript compilation error: ${errorMessage}`, {
-          context: "TypeScript compilation",
-        });
-        
+        return this.createSystemError(
+          `TypeScript compilation error: ${errorMessage}`,
+          {
+            context: "TypeScript compilation",
+          },
+        );
+
       case "go":
-        return this.createGoCodeGenerationError(`Go compilation error: ${errorMessage}`, {
-          resolution: "Check generated Go code for syntax errors",
-        });
-        
+        return this.createGoCodeGenerationError(
+          `Go compilation error: ${errorMessage}`,
+          {
+            resolution: "Check generated Go code for syntax errors",
+          },
+        );
+
       case "system":
       default:
         return this.createSystemError(`System error: ${errorMessage}`, {
@@ -200,7 +230,11 @@ export class ErrorFactory {
    * DOMAIN LOGIC: Context-aware error recovery
    */
   static createRecoverySuggestion(
-    error: TypeSpecCompilerError | GoCodeGenerationError | SystemError | ValidationError,
+    error:
+      | TypeSpecCompilerError
+      | GoCodeGenerationError
+      | SystemError
+      | ValidationError,
   ): string {
     // Use error's existing resolution as primary suggestion
     if (error.resolution) {
@@ -211,13 +245,13 @@ export class ErrorFactory {
     switch (error._tag) {
       case "TypeSpecCompilerError":
         return "Review TypeSpec model definition for syntax or type issues";
-        
+
       case "GoCodeGenerationError":
         return "Review Go code generation logic and type mappings";
-        
+
       case "SystemError":
         return "Check system configuration and dependencies";
-        
+
       case "ValidationError":
         return "Review input validation rules and constraints";
     }

@@ -86,9 +86,10 @@ export class PropertyTransformer {
       requiresImport: mappedGoType.requiresImport ?? false,
       originalName: prop.name, // Store original name for XML tag generation
     };
-    
-    return Object.assign(baseField, 
-      mappedGoType.importPath && { importPath: mappedGoType.importPath }
+
+    return Object.assign(
+      baseField,
+      mappedGoType.importPath && { importPath: mappedGoType.importPath },
     );
   }
 
