@@ -100,7 +100,7 @@ export namespace EntityTransformation {
   export const toGoFieldName = (name: string): string => {
     // Convert to camelCase for Go fields
     const pascalCase = toGoIdentifier(name);
-    if (pascalCase.length === 0) {
+    if (pascalCase.length === 0 || !pascalCase[0]) {
       return name;
     }
     return pascalCase[0].toLowerCase() + pascalCase.slice(1);
