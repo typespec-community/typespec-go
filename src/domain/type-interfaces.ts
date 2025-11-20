@@ -10,7 +10,7 @@
  * Mapped Go type information with comprehensive type support
  */
 export interface MappedGoType {
-  /** Go type kind (basic, pointer, slice, struct, enum, union, array) */
+  /** Go type kind (basic, pointer, slice, struct, enum, union, array, template, spread) */
   readonly kind:
     | "basic"
     | "pointer"
@@ -18,7 +18,9 @@ export interface MappedGoType {
     | "struct"
     | "enum"
     | "union"
-    | "array";
+    | "array"
+    | "template"
+    | "spread";
 
   /** Type name for basic types (e.g., 'int32', 'string') */
   readonly name?: string;
@@ -31,6 +33,12 @@ export interface MappedGoType {
 
   /** Union variants for union types */
   readonly unionVariants?: readonly MappedGoType[];
+
+  /** Base types for composition (spread operator) */
+  readonly baseTypes?: readonly MappedGoType[];
+
+  /** Template definition for generic types */
+  readonly template?: string;
 
   /** Whether this type requires import */
   readonly requiresImport?: boolean;

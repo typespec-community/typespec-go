@@ -79,14 +79,15 @@ export class ModelGenerator extends BaseGenerator {
 
   /**
    * Generate Go struct from extracted model
-   * DOMAIN LOGIC: Clean Go struct generation with proper types
+   * DOMAIN LOGIC: Clean Go struct generation with proper types and composition
    */
   private generateGoStruct(
     modelName: string,
-    extractedModel: { name: string; properties: ReadonlyMap<string, any> },
+    extractedModel: { name: string; properties: ReadonlyMap<string, any>; extends?: string; propertiesFromExtends?: ReadonlyMap<string, any> },
   ): string {
     const imports = new Set<string>();
     const fields: string[] = [];
+    const embeddedTypes = new Set<string>();
 
     // Process each property with domain intelligence
     for (const [propertyName, property] of extractedModel.properties) {
@@ -103,6 +104,31 @@ export class ModelGenerator extends BaseGenerator {
         fields.push(
           `  ${this.capitalize(propertyName)} ${goTypeString} \`${jsonTag}\``,
         );
+      }
+    }
+
+    // Handle extends with Go struct embedding
+    if (extractedModel.extends) {
+      embeddedTypes.add(extractedModel.extends);
+      fields.push(`  ${this.capitalize(extractedModel.extends)} // Embedded struct`);
+    }
+
+    // Handle propertiesFromExtends (spread operator)
+    if (extractedModel.propertiesFromExtends) {
+      for (const [propertyName, property] of extractedModel.propertiesFromExtends) {
+        const goType = GoTypeMapper.mapTypeSpecType(property.type, propertyName);
+        const goTypeString = GoTypeMapper.generateGoTypeString(goType);
+        const jsonTag = this.getJsonTag(propertyName);
+
+        if (property.optional && goType.usePointerForOptional) {
+          fields.push(
+            `  ${this.capitalize(propertyName)} *${goTypeString} \`${jsonTag}\``,
+          );
+        } else {
+          fields.push(
+            `  ${this.capitalize(propertyName)} ${goTypeString} \`${jsonTag}\``,
+          );
+        }
       }
     }
 

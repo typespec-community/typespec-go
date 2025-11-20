@@ -48,6 +48,20 @@ export class GoTypeStringGenerator {
         // Generate union as interface name (sealed interface)
         return type.name || "interface{}";
 
+      case "template":
+        if (!type.template) {
+          return "interface{}";
+        }
+        // Generate template as generic interface
+        return `${type.name}[${type.template}]`;
+
+      case "spread":
+        if (!type.baseTypes || type.baseTypes.length === 0) {
+          return "interface{}";
+        }
+        // Generate spread as composed interface
+        return type.name || "interface{}";
+
       default:
         return "interface{}";
     }

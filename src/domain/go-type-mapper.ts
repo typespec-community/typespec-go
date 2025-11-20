@@ -85,6 +85,31 @@ export class GoTypeMapper {
       };
     }
 
+    // Handle template types - NEW FEATURE!
+    if ((type as any).kind === "template") {
+      const templateName = (type as any).name || "T";
+      return {
+        kind: "template",
+        name: templateName,
+        template: (type as any).template,
+        usePointerForOptional: false,
+      };
+    }
+
+    // Handle composition types (spread operator) - NEW FEATURE!
+    if ((type as any).kind === "spread") {
+      const baseTypes = (type as any).types?.map((baseType: any) => 
+        this.mapTypeSpecType(baseType)
+      ) || [];
+        
+      return {
+        kind: "spread",
+        name: GoTypeStringGenerator.toPascalCase((type as any).name || "Composed"),
+        baseTypes,
+        usePointerForOptional: false,
+      };
+    }
+
     // Handle enum types
     if ((type as any).kind === "enum") {
       return {

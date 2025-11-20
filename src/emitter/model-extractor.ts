@@ -54,6 +54,9 @@ export interface ExtractedModel {
       optional: boolean;
     }
   >;
+  readonly extends?: string;
+  readonly template?: string;
+  readonly propertiesFromExtends?: ReadonlyMap<string, any>;
 }
 
 /**
@@ -363,8 +366,65 @@ export class ModelExtractor {
   }
 
   /**
+   * Detect cyclic dependencies in model composition
+   * Domain logic: Prevent infinite recursion in model generation
+   */
+  private static detectCyclicDependency(
+    model: ExtractedModel,
+    processedModels: Array<{ name: string; extends?: string }>,
+  ): string | null {
+    if (!model.extends) {
+      return null; // No extends = no cycle
+    }
+
+    // Check for circular reference
+    let currentModel = model.extends;
+    const visitedModels = new Set<string>([model.name]);
+
+    while (currentModel) {
+      if (visitedModels.has(currentModel)) {
+        return currentModel; // Cycle detected
+      }
+
+      visitedModels.add(currentModel);
+      const extendedModel = processedModels.find(m => m.name === currentModel);
+      currentModel = extendedModel?.extends || null;
+    }
+
+    return null; // No cycle
+  }
+
+  /**
+   * Break cyclic dependency by using pointers
+   * Domain logic: Smart pointer conversion for circular references
+   */
+  private static breakCyclicDependency(model: ExtractedModel): ExtractedModel {
+    if (!model.extends) {
+      return model; // No cycle to break
+    }
+
+    // Convert the extends reference to pointer type
+    const fixedProperties = new Map(model.properties);
+    
+    // Add the parent as a pointer to break cycle
+    if (model.extends) {
+      fixedProperties.set(model.extends, {
+        name: model.extends,
+        type: { kind: "model" },
+        optional: true, // Use pointer to break cycle
+      });
+    }
+
+    return {
+      ...model,
+      properties: fixedProperties,
+      extends: undefined, // Remove direct extends, use pointer instead
+    };
+  }
+
+  /**
    * Process individual TypeSpec model
-   * Domain logic: Clean model processing with proper type mapping
+   * Domain logic: Clean model processing with composition support
    */
   private static processTypeSpecModel(
     modelName: string,
@@ -380,7 +440,7 @@ export class ModelExtractor {
         }
       >();
 
-      // Extract properties from TypeSpec model
+      // Extract base properties from TypeSpec model
       for (const [propertyName, property] of Object.entries(
         (typeSpecModel as any).properties || {},
       )) {
@@ -391,10 +451,29 @@ export class ModelExtractor {
         });
       }
 
-      return {
+      // Handle extends and propertiesFromExtends for composition
+      const extendsModel = (typeSpecModel as any).extends;
+      const propertiesFromExtends = (typeSpecModel as any).propertiesFromExtends;
+
+      let modelType: ExtractedModel = {
         name: modelName,
         properties,
       };
+
+      // Add extends information if present
+      if (extendsModel) {
+        modelType = { ...modelType, extends: extendsModel };
+      }
+
+      // Add propertiesFromExtends if present (spread operator)
+      if (propertiesFromExtends) {
+        modelType = { 
+          ...modelType, 
+          propertiesFromExtends: new Map(Object.entries(propertiesFromExtends)) 
+        };
+      }
+
+      return modelType;
     } catch (error) {
       Logger.error(
         LogContext.TYPESPEC_INTEGRATION,
