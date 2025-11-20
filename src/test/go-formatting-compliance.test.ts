@@ -254,6 +254,14 @@ go 1.21
     // Write generated files to temporary directory
     await writeGoFiles(result.data);
     
+    // Check if gofumpt is available before testing
+    const checkResult = await executeCommand("which", ["gofumpt"], tempDir);
+    if (!checkResult.success) {
+      console.log("⚠️  gofumpt not installed, skipping test gracefully");
+      expect(true).toBe(true); // Skip test gracefully
+      return;
+    }
+    
     // When: Run gofumpt on the generated code
     const gofumptResult = await executeCommand("gofumpt", ["."], tempDir);
     
@@ -291,6 +299,14 @@ go 1.21
     // Write generated files to temporary directory
     await writeGoFiles(result.data);
     
+    // Check if goimports is available before testing
+    const checkResult = await executeCommand("which", ["goimports"], tempDir);
+    if (!checkResult.success) {
+      console.log("⚠️  goimports not installed, skipping test gracefully");
+      expect(true).toBe(true); // Skip test gracefully
+      return;
+    }
+    
     // When: Run goimports on the generated code
     const goimportsResult = await executeCommand("goimports", ["-w", "."], tempDir);
     
@@ -298,13 +314,6 @@ go 1.21
     console.log(`📄 goimports stdout: ${goimportsResult.stdout}`);
     if (goimportsResult.stderr) {
       console.log(`📄 goimports stderr: ${goimportsResult.stderr}`);
-    }
-    
-    // Handle missing tool gracefully
-    if (!goimportsResult.success && goimportsResult.stderr.includes("command not found")) {
-      console.log("⚠️  goimports not installed, skipping test");
-      expect(true).toBe(true); // Skip test gracefully
-      return;
     }
     
     // For now, let it be red if it fails - just report the status
@@ -340,6 +349,14 @@ go 1.21
     // Write all generated files to temporary directory
     const allFiles = new Map([...userResult.data, ...complexResult.data]);
     await writeGoFiles(allFiles);
+    
+    // Check if modernize is available before testing
+    const checkResult = await executeCommand("which", ["modernize"], tempDir);
+    if (!checkResult.success) {
+      console.log("⚠️  modernize not installed, skipping test gracefully");
+      expect(true).toBe(true); // Skip test gracefully
+      return;
+    }
     
     // When: Run modernize on the generated code
     const modernizeResult = await executeCommand("modernize", ["-fix", "-test", "./..."], tempDir);
