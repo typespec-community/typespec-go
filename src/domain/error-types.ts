@@ -134,15 +134,15 @@ export namespace ErrorAnalysis {
    */
   export const isRecoverable = (error: GoEmitterResult): boolean => {
     switch (error._tag) {
-      case "TypeSpecCompilerError":
+      case "typespec_compiler_error":
         return !!error.resolution;
-      case "GoCodeGenerationError":
+      case "go_code_generation_error":
         return !!error.resolution;
-      case "SystemError":
+      case "system_error":
         return error.context === "Temporary";
-      case "ValidationError":
+      case "validation_error":
         return !!error.resolution;
-      case "Success":
+      case "success":
         return true; // Success is always "recoverable"
     }
   };
@@ -154,15 +154,15 @@ export namespace ErrorAnalysis {
     error: GoEmitterResult,
   ): "low" | "medium" | "high" | "critical" => {
     switch (error._tag) {
-      case "Success":
+      case "success":
         return "low";
-      case "ValidationError":
+      case "validation_error":
         return "medium";
-      case "GoCodeGenerationError":
+      case "go_code_generation_error":
         return "high";
-      case "TypeSpecCompilerError":
+      case "typespec_compiler_error":
         return "high";
-      case "SystemError":
+      case "system_error":
         return "critical";
     }
   };
@@ -172,15 +172,15 @@ export namespace ErrorAnalysis {
    */
   export const formatError = (error: GoEmitterResult): string => {
     switch (error._tag) {
-      case "Success":
+      case "success":
         return `✅ Success: Generated ${error.generatedFiles?.length || 0} files`;
-      case "ValidationError":
+      case "validation_error":
         return `❌ Validation Error: ${error.message}${error.modelName ? ` in model '${error.modelName}'` : ""}`;
-      case "GoCodeGenerationError":
+      case "go_code_generation_error":
         return `❌ Go Generation Error: ${error.message}${error.fileName ? ` in file '${error.fileName}'` : ""}`;
-      case "TypeSpecCompilerError":
+      case "typespec_compiler_error":
         return `❌ TypeSpec Error: ${error.message}${error.modelName ? ` in model '${error.modelName}'` : ""}`;
-      case "SystemError":
+      case "system_error":
         return `❌ System Error: ${error.message}${error.context ? ` (${error.context})` : ""}`;
     }
   };

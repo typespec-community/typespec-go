@@ -51,7 +51,7 @@ export class GoCodeGenerator {
         // Generate Go code using StandaloneGoGenerator
         const result = this.generator.generateModel(generatorModel);
 
-        if (result._tag !== "Success") {
+        if (result._tag !== "success") {
           return result; // Return error if generation failed
         }
 
@@ -64,7 +64,7 @@ export class GoCodeGenerator {
 
       // Return successful result with all generated files
       return {
-        _tag: "Success",
+        _tag: "success",
         data: allGeneratedFiles,
         generatedFiles: Array.from(allGeneratedFiles.keys()),
       };
@@ -74,7 +74,7 @@ export class GoCodeGenerator {
       });
 
       return {
-        _tag: "GoCodeGenerationError",
+        _tag: "go_code_generation_error",
         message: error instanceof Error ? error.message : String(error),
         errorId: "GO_CODE_GENERATION_FAILED",
         fileName: "emitter-generation",
@@ -111,7 +111,7 @@ export class GoCodeGenerator {
         // Execute generator
         const result = await generator.generate(program);
 
-        if (result._tag !== "Success") {
+        if (result._tag !== "success") {
           return result; // Return error if generation failed
         }
 
@@ -123,7 +123,7 @@ export class GoCodeGenerator {
 
       // Return successful result with all generated files
       return {
-        _tag: "Success",
+        _tag: "success",
         data: allGeneratedFiles,
         generatedFiles: Array.from(allGeneratedFiles.keys()),
       };
@@ -137,7 +137,7 @@ export class GoCodeGenerator {
       );
 
       return {
-        _tag: "SystemError",
+        _tag: "system_error",
         message: `Generator execution failed: ${error instanceof Error ? error.message : String(error)}`,
         context: "Generator execution",
         resolution: "Check registered generators and their dependencies",

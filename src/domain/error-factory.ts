@@ -24,7 +24,7 @@ import { Entities } from "./error-entities.js";
  * Type-safe ModelValidationError for backward compatibility
  */
 export interface ModelValidationError extends ValidationError {
-  readonly _tag: "model_validation_error";
+  // Inherits _tag: "validation_error" from ValidationError
 }
 
 /**
@@ -134,8 +134,7 @@ export class ErrorFactory {
     // Create ModelValidationError with correct tag for backward compatibility
     return {
       ...validationError,
-      _tag: "model_validation_error" as const,
-    };
+    } as ModelValidationError;
   }
 
   /**
@@ -177,9 +176,9 @@ export class ErrorFactory {
       _tag: "success",
       data,
       generatedFiles: options?.generatedFiles || Array.from(data.keys()),
-      ...(options?.typeSpecProgram && {
+      ...(options?.typeSpecProgram ? {
         typeSpecProgram: options.typeSpecProgram,
-      }),
+      } : {}),
     };
   }
 
@@ -243,16 +242,16 @@ export class ErrorFactory {
 
     // Provide fallback suggestions based on error type
     switch (error._tag) {
-      case "TypeSpecCompilerError":
+      case "typespec_compiler_error":
         return "Review TypeSpec model definition for syntax or type issues";
 
-      case "GoCodeGenerationError":
+      case "go_code_generation_error":
         return "Review Go code generation logic and type mappings";
 
-      case "SystemError":
+      case "system_error":
         return "Check system configuration and dependencies";
 
-      case "ValidationError":
+      case "validation_error":
         return "Review input validation rules and constraints";
     }
   }
