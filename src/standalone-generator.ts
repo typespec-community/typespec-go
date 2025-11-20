@@ -19,7 +19,6 @@ import type {
   TypeSpecPropertyNode,
   GoEmitterOptions,
 } from "./types/typespec-domain.js";
-import { GoTypeMapper } from "./domain/go-type-mapper.js";
 
 /**
  * Go type mapping configuration
@@ -109,7 +108,9 @@ export class StandaloneGoGenerator {
       Boolean: { kind: "scalar", name: "bool" },
       Bytes: { kind: "scalar", name: "bytes" },
       Template: { kind: "generic", name: "T" }, // Template support - will be overridden per field
+      template: { kind: "generic", name: "T" }, // Template support - will be overridden per field
       Model: { kind: "struct", name: "struct" }, // Model support
+      model: { kind: "struct", name: "struct" }, // Model support
       Array: { kind: "slice", name: "[]" }, // Array support
     };
 
@@ -200,7 +201,8 @@ export class StandaloneGoGenerator {
     properties?: TypeSpecPropertyNode[],
   ): string {
     const propArray = properties || [];
-    const fields = propArray.map((prop) => this.generateField(prop, model));
+    const modelContext = { template: undefined }; // Provide model context
+    const fields = propArray.map((prop) => this.generateField(prop, modelContext));
 
     // Add embedded struct if extends is specified
     // GO EMBEDDING: Proper Go struct composition
@@ -249,7 +251,7 @@ export class StandaloneGoGenerator {
     let goType;
     
     // TEMPLATE HANDLING: Special case for template types
-    if (property.type.kind === "Template") {
+    if (property.type.kind === "Template" || property.type.kind === "template") {
       // Extract template parameter name (e.g., "T" from "<T>" or "User" from "PaginatedResponse<User>")
       const templateInfo = property.type as any;
       if (templateInfo.name) {
@@ -266,9 +268,9 @@ export class StandaloneGoGenerator {
       } else {
         goType = "T"; // Default template parameter
       }
-    } else if (property.type.kind === "Model") {
+    } else if (property.type.kind === "Model" || property.type.kind === "model") {
       // MODEL HANDLING: Use model name directly
-      goType = (property.type as any).name || mapping.goType;
+      goType = (property.type as any).name || (property.type as any).modelName || mapping.goType;
     } else {
       goType = property.optional && mapping.usePointerForOptional
         ? `*${mapping.goType}`
@@ -280,7 +282,7 @@ export class StandaloneGoGenerator {
       : `json:"${property.name}"`;
 
     // Add template comment for template fields
-    const templateComment = property.type.kind === "Template" 
+    const templateComment = (property.type.kind === "Template" || property.type.kind === "template") 
       ? `  // Template type ${(property.type as any).name || "T"}`
       : "";
 
@@ -343,21 +345,59 @@ ${fieldDefinitions}
   }
 
   /**
-   * Get properties from template registry
-   * TEMPLATE INHERITANCE: Extract base template properties
+   * Get properties from template registry with proper template instantiation
+   * TEMPLATE INHERITANCE: Extract base template properties and substitute parameters
    */
   private getTemplateProperties(templateString: string): Map<string, TypeSpecPropertyNode> {
     // Check if template instantiation like "PaginatedResponse<User>"
-    const baseTemplateMatch = templateString.match(/^([^<]+)</);
-    if (baseTemplateMatch) {
-      const baseTemplateName = baseTemplateMatch[1];
+    const templateInstantiationMatch = templateString.match(/^([^<]+)<(.+)>$/);
+    if (templateInstantiationMatch) {
+      const baseTemplateName = templateInstantiationMatch[1];
+      const templateArgument = templateInstantiationMatch[2];
       const baseTemplate = StandaloneGoGenerator.TEMPLATE_REGISTRY.get(baseTemplateName);
+      
       if (baseTemplate) {
-        return new Map(baseTemplate);
+        const instantiatedProperties = new Map<string, TypeSpecPropertyNode>();
+        
+        // Substitute template parameters with actual types
+        for (const [propName, propNode] of baseTemplate) {
+          const updatedPropNode = this.substituteTemplateParameter(propNode, "T", templateArgument);
+          instantiatedProperties.set(propName, updatedPropNode);
+        }
+        
+        return instantiatedProperties;
       }
     }
     
+    // Check for basic template name (like "PaginatedResponse")
+    const baseTemplate = StandaloneGoGenerator.TEMPLATE_REGISTRY.get(templateString);
+    if (baseTemplate) {
+      return new Map(baseTemplate);
+    }
+    
     return new Map();
+  }
+
+  /**
+   * Substitute template parameter with actual type
+   * TEMPLATE INSTANTIATION: Replace T with actual type
+   */
+  private substituteTemplateParameter(
+    propNode: TypeSpecPropertyNode,
+    templateParam: string,
+    actualType: string
+  ): TypeSpecPropertyNode {
+    // Create new property node with substituted type
+    if (propNode.type && typeof propNode.type === 'object') {
+      if ('templateName' in propNode.type && propNode.type.templateName === templateParam) {
+        return {
+          ...propNode,
+          type: { kind: "Model", modelName: actualType }
+        };
+      }
+    }
+    
+    return propNode;
   }
 
   /**

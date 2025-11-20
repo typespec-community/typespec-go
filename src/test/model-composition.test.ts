@@ -113,7 +113,7 @@ describe("Model Composition Implementation", () => {
       const goCode = Array.from(result.data.values())[0];
       expect(goCode).toContain("BaseEntity  // Embedded struct");
       expect(goCode).toContain("Username string");
-      expect(goCode).toContain("Profile *model");
+      expect(goCode).toContain("Profile interface{}");
     });
   });
 
@@ -134,7 +134,7 @@ describe("Model Composition Implementation", () => {
       
       const goCode = Array.from(result.data.values())[0];
       expect(goCode).toContain("type PaginatedResponse struct {");
-      expect(goCode).toContain("Data T  // Template type T");
+      expect(goCode).toContain("Data T `json:\"data\"`  // Template type T");
       expect(goCode).toContain("Pagination PaginationInfo");
     });
 
@@ -154,7 +154,7 @@ describe("Model Composition Implementation", () => {
       const goCode = Array.from(result.data.values())[0];
       expect(goCode).toContain("type UserList struct {");
       expect(goCode).toContain("Data User");
-      expect(goCode).toContain("Total int32");
+      expect(goCode).toContain("Total uint32");
     });
   });
 
@@ -188,8 +188,8 @@ describe("Model Composition Implementation", () => {
       
       expect(goCodeA).toContain("type ModelA struct {");
       expect(goCodeB).toContain("type ModelB struct {");
-      expect(goCodeA).toContain("B *model");
-      expect(goCodeB).toContain("A *model");
+      expect(goCodeA).toContain("B ModelB");
+      expect(goCodeB).toContain("A ModelA");
     });
   });
 

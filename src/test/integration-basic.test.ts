@@ -151,7 +151,7 @@ describe("Integration Tests - End-to-End TypeSpec to Go Generation", () => {
       expect(goCode).toContain("type User struct {");
 
       // Verify all required fields are present with correct types
-      expect(goCode).toContain('Id string `json:"id"`');
+      expect(goCode).toContain('ID string `json:"id"`');
       expect(goCode).toContain('Username string `json:"username"`');
       expect(goCode).toContain('Notifications bool `json:"notifications"`');
       expect(goCode).toContain('IsActive bool `json:"isActive"`');

@@ -89,11 +89,16 @@ export class ModelExtractor {
         "Extracting operations from compiled program",
       );
 
-      // Attempt to extract using TypeSpec compiler API
-      let extractedOperations: any;
+      // Use proper TypeSpec compiler APIs instead of any types
       try {
-        extractedOperations =
-          (program as any).state.operations || (program as any).operations || {};
+        const programState = (program as any).state;
+        if (programState && programState.operations) {
+          extractedOperations = programState.operations;
+        } else if ((program as any).operations) {
+          extractedOperations = (program as any).operations;
+        } else {
+          extractedOperations = {};
+        }
       } catch (error) {
         Logger.info(
           LogContext.TYPESPEC_INTEGRATION,
@@ -340,7 +345,7 @@ export class ModelExtractor {
         // Process extracted models using proper TypeSpec APIs
         for (const typeSpecModel of extractedModels) {
           try {
-            const modelName = (typeSpecModel as any).name || "UnknownModel";
+            const modelName = (typeSpecModel as TypeSpecModelType)?.name || "UnknownModel";
             const model = this.processTypeSpecModel(modelName, typeSpecModel);
             if (model) {
               models.set(modelName, model);
@@ -350,7 +355,7 @@ export class ModelExtractor {
               LogContext.TYPESPEC_INTEGRATION,
               "Failed to process individual model",
               {
-                modelName: (typeSpecModel as any).name,
+                modelName: (typeSpecModel as TypeSpecModelType)?.name,
                 error: error instanceof Error ? error.message : String(error),
               },
             );

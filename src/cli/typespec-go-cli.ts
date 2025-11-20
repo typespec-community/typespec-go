@@ -12,6 +12,8 @@ import { readFile, writeFile, mkdir } from 'fs/promises';
 import { join, basename, extname } from 'path';
 import { StandaloneGoGenerator } from '../standalone-generator.js';
 import type { GoEmitterResult } from '../domain/unified-errors.js';
+import { TypeSpecCompiler } from '@typespec/compiler';
+import { ModelExtractor } from '../emitter/model-extractor.js';
 
 const program = new Command();
 
@@ -44,7 +46,7 @@ program
         process.exit(1);
       }
 
-      // Read and parse TypeSpec file
+      // Read TypeSpec file
       const tspContent = await readFile(input, 'utf-8');
       
       if (options.verbose) {
@@ -53,28 +55,74 @@ program
 
       // Create generator instance
       const generator = new StandaloneGoGenerator();
-      
-      // For now, create a basic model from file content
-      // TODO: Integrate with real TypeSpec compiler in Phase 3
-      const modelName = basename(input, extname(input));
-      const basicModel = createBasicModelFromContent(tspContent, modelName);
-      
-      // Generate Go code
-      const result = generator.generateModel(basicModel);
-      
-      if (result._tag !== 'success') {
-        console.error(`❌ Generation failed: ${result.message}`);
-        if (result.details?.resolution) {
-          console.error(`💡 Resolution: ${result.details.resolution}`);
-        }
-        process.exit(1);
-      }
 
-      // Write generated files
-      await writeGeneratedFiles(result.data, options.output, options.package);
-      
-      console.log(`✅ Successfully generated ${result.data.size} Go file(s)`);
-      console.log(`📂 Output directory: ${options.output}`);
+      // Use real TypeSpec compiler (Phase 1 implementation)
+      try {
+        const compiler = TypeSpecCompiler.compile(input);
+        const extractedModels = ModelExtractor.extractModels(compiler.program);
+        
+        if (extractedModels.size === 0) {
+          console.warn(`⚠️  No models found in ${input}, creating fallback model`);
+          // Fallback to basic parsing for development
+          const basicModel = createBasicModelFromContent(tspContent, modelName);
+          const result = generator.generateModel(basicModel);
+          
+          if (result._tag !== 'success') {
+            console.error(`❌ Generation failed: ${result.message}`);
+            process.exit(1);
+          }
+          
+          await writeGeneratedFiles(result.data, options.output, options.package);
+          console.log(`✅ Generated ${result.data.size} Go file(s) with fallback model`);
+          return;
+        }
+        
+        // Process extracted models with real TypeSpec compiler
+        const generatedFiles = new Map<string, string>();
+        
+        for (const [modelName, extractedModel] of extractedModels) {
+          const modelForGenerator = {
+            name: modelName,
+            properties: extractedModel.properties,
+            extends: extractedModel.extends,
+            propertiesFromExtends: extractedModel.propertiesFromExtends,
+            template: extractedModel.template
+          };
+          
+          const result = generator.generateModel(modelForGenerator);
+          
+          if (result._tag !== 'success') {
+            console.error(`❌ Failed to generate model ${modelName}: ${result.message}`);
+            continue;
+          }
+          
+          // Merge generated files
+          for (const [fileName, content] of result.data) {
+            generatedFiles.set(fileName, content);
+          }
+        }
+        
+        await writeGeneratedFiles(generatedFiles, options.output, options.package);
+        console.log(`✅ Successfully generated ${generatedFiles.size} Go file(s) from ${extractedModels.size} model(s)`);
+        console.log(`📂 Output directory: ${options.output}`);
+        
+      } catch (compilerError) {
+        console.warn(`⚠️  TypeSpec compiler error: ${compilerError instanceof Error ? compilerError.message : String(compilerError)}`);
+        console.log(`🔄 Falling back to basic parsing...`);
+        
+        // Fallback to regex parsing
+        const modelName = basename(input, extname(input));
+        const basicModel = createBasicModelFromContent(tspContent, modelName);
+        const result = generator.generateModel(basicModel);
+        
+        if (result._tag !== 'success') {
+          console.error(`❌ Generation failed: ${result.message}`);
+          process.exit(1);
+        }
+        
+        await writeGeneratedFiles(result.data, options.output, options.package);
+        console.log(`📂 Output directory: ${options.output}`);
+      }
       
     } catch (error) {
       console.error(`❌ CLI Error: ${error instanceof Error ? error.message : String(error)}`);
