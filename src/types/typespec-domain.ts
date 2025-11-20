@@ -36,13 +36,26 @@ export interface TypeSpecTypeNode {
 }
 
 /**
- * TypeSpec Model Domain Entity (compatibility layer)
- * VALUE OBJECT: Immutable TypeSpec model representation
+ * TypeSpec Template Definition
+ * DOMAIN MODEL: Template parameter and definition
+ */
+export interface TypeSpecTemplate {
+  readonly name: string;
+  readonly parameters: readonly string[];
+  readonly properties: ReadonlyMap<string, TypeSpecPropertyNode>;
+}
+
+/**
+ * TypeSpec Model with Composition Support
+ * DOMAIN MODEL: Immutable TypeSpec model with composition
  */
 export interface TypeSpecModel {
   readonly name: string;
   readonly properties: ReadonlyMap<string, TypeSpecPropertyNode>;
   readonly namespace?: string;
+  readonly extends?: string; // Parent model name for composition
+  readonly propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>; // Spread operator properties
+  readonly templates?: ReadonlyMap<string, TypeSpecTemplate>; // Template definitions
 }
 
 /**
