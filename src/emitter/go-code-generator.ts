@@ -9,6 +9,7 @@ import { StandaloneGoGenerator } from "../standalone-generator.js";
 import type { GoEmitterResult } from "../domain/unified-errors.js";
 import { Logger, LogContext } from "../domain/structured-logging.js";
 import type { ExtractedModel } from "./model-extractor.js";
+import { Entities } from "../types/errors.js";
 import { GeneratorRegistry } from "../generators/index.js";
 
 /**
@@ -76,8 +77,8 @@ export class GoCodeGenerator {
       return {
         _tag: "go_code_generation_error",
         message: error instanceof Error ? error.message : String(error),
-        errorId: "GO_CODE_GENERATION_FAILED",
-        fileName: "emitter-generation",
+        errorId: Entities.createErrorId("GO_CODE_GENERATION_FAILED") as any,
+        fileName: Entities.createFileName("emitter-generation") as any,
         resolution: "Check model properties and type mappings",
       };
     }
@@ -141,7 +142,7 @@ export class GoCodeGenerator {
         message: `Generator execution failed: ${error instanceof Error ? error.message : String(error)}`,
         context: "Generator execution",
         resolution: "Check registered generators and their dependencies",
-        errorId: "GENERATOR_EXECUTION_FAILED",
+        errorId: Entities.createErrorId("GENERATOR_EXECUTION_FAILED") as any,
       };
     }
   }
