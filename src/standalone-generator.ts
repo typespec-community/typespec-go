@@ -37,6 +37,15 @@ interface GoTypeMapping {
  * DOMAIN INTELLIGENCE: Smart unsigned integer detection
  */
 export class StandaloneGoGenerator {
+  // TODO: TEMPLATE REGISTRY - Replace with proper TypeSpec program parsing
+  // Built-in template definitions for common patterns
+  private static readonly TEMPLATE_REGISTRY: Map<string, Map<string, TypeSpecPropertyNode>> = new Map([
+    ["PaginatedResponse", new Map([
+      ["data", { name: "data", type: { kind: "Template", templateName: "T" }, optional: false }],
+      ["pagination", { name: "pagination", type: { kind: "Model", modelName: "PaginationInfo" }, optional: false }],
+    ])],
+  ]);
+
   constructor(options?: GoEmitterOptions) {
     // Options for future extensibility
     // Currently no options needed, but constructor for consistency
@@ -191,7 +200,7 @@ export class StandaloneGoGenerator {
     properties?: TypeSpecPropertyNode[],
   ): string {
     const propArray = properties || [];
-    const fields = propArray.map((prop) => this.generateField(prop));
+    const fields = propArray.map((prop) => this.generateField(prop, model));
 
     // Add embedded struct if extends is specified
     // GO EMBEDDING: Proper Go struct composition
@@ -221,7 +230,9 @@ export class StandaloneGoGenerator {
    * Type-safe field generation
    * UNIFIED ERROR SYSTEM: Proper error handling for unsupported types
    */
-  private generateField(property: TypeSpecPropertyNode): string {
+  private generateField(property: TypeSpecPropertyNode, model?: {
+    template?: string;
+  }): string {
     // SPECIAL CASE: Handle common Go field naming patterns
     // IDENTITY FIELD: "id" should become "ID", not "Id"
     let goName = property.name;
@@ -304,6 +315,7 @@ ${fieldDefinitions}
     properties: ReadonlyMap<string, TypeSpecPropertyNode>;
     extends?: string;
     propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>;
+    template?: string;
   }): ReadonlyMap<string, TypeSpecPropertyNode> {
     // Start with direct properties (highest priority)
     const allProperties = new Map(model.properties);
@@ -317,10 +329,35 @@ ${fieldDefinitions}
       }
     }
     
-    // TODO: Add inherited properties from extends model (lowest priority)
-    // This requires model registry or multi-model processing
+    // Add template properties (lowest priority)
+    if (model.template) {
+      const templateProperties = this.getTemplateProperties(model.template);
+      for (const [propName, propNode] of templateProperties) {
+        if (!allProperties.has(propName)) {
+          allProperties.set(propName, propNode);
+        }
+      }
+    }
     
     return allProperties;
+  }
+
+  /**
+   * Get properties from template registry
+   * TEMPLATE INHERITANCE: Extract base template properties
+   */
+  private getTemplateProperties(templateString: string): Map<string, TypeSpecPropertyNode> {
+    // Check if template instantiation like "PaginatedResponse<User>"
+    const baseTemplateMatch = templateString.match(/^([^<]+)</);
+    if (baseTemplateMatch) {
+      const baseTemplateName = baseTemplateMatch[1];
+      const baseTemplate = StandaloneGoGenerator.TEMPLATE_REGISTRY.get(baseTemplateName);
+      if (baseTemplate) {
+        return new Map(baseTemplate);
+      }
+    }
+    
+    return new Map();
   }
 
   /**
