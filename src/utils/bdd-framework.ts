@@ -74,7 +74,6 @@ export class BDDRunner {
           console.log("📊 Validation Details:", validation.details);
         }
       } else {
-        expect(validation.success).toBe(true);
         console.log(`❌ ${validation.message}`);
         throw new Error(`BDD Scenario Failed: ${scenario.name}`);
       }

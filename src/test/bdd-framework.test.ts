@@ -43,7 +43,11 @@ describe("Real BDD Framework Integration", () => {
     };
 
     // When & Then: Execute scenario with real BDD framework
+    // The BDD framework handles validation internally
     BDDRunner.executeScenario(scenario);
+    
+    // Test passes if no exception is thrown
+    expect(true).toBe(true);
   });
 
   it("should handle BDD scenario failure properly", () => {
@@ -60,6 +64,7 @@ describe("Real BDD Framework Integration", () => {
         return context.emitter.emit(context.program);
       },
       then: (result) => {
+        // This should always fail (emitter.emit returns error)
         return BDDRunner.createValidation(false, "Expected failure for testing");
       },
     };
