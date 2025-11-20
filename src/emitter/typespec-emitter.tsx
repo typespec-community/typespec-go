@@ -6,18 +6,18 @@
  * Replaces fake GoEmitter class with proper TypeSpec integration
  */
 
-import type { Program, EmitContext } from "@typespec/compiler";
+import type { Program, EmitContext, Model } from "@typespec/compiler";
 import { writeOutput } from "@typespec/emitter-framework";
-import { Output, useTsp } from "@typespec/emitter-framework";
+import { Output } from "@typespec/emitter-framework";
 import * as go from "@alloy-js/go";
-import type { Type, Model, Namespace } from "@typespec/compiler";
 
 /**
  * Main TypeSpec Go Emitter Output Component
  * Generates Go files from TypeSpec program using Alloy-JS components
  */
 function GoEmitterOutput({ program }: { program: Program }) {
-  const tsp = useTsp();
+  // Get all models from the TypeSpec program
+  const models = program.package?.globalNamespace.models || [];
   
   return (
     <Output program={program}>
@@ -25,7 +25,7 @@ function GoEmitterOutput({ program }: { program: Program }) {
         <go.Package name="api" />
         
         {/* Generate Go structs for all models in the program */}
-        {tsp.program.namespace?.models?.map((model: Model) => (
+        {Array.from(models.values()).map((model: Model) => (
           <GoModelStruct key={model.name} model={model} />
         ))}
       </go.SourceFile>
@@ -40,7 +40,7 @@ function GoModelStruct({ model }: { model: Model }) {
   return (
     <go.StructTypeDeclaration name={model.name}>
       {/* Generate struct fields for model properties */}
-      {model.properties?.map((prop) => (
+      {Array.from(model.properties.values()).map((prop) => (
         <go.StructMember 
           key={prop.name}
           name={prop.name}
@@ -56,20 +56,18 @@ function GoModelStruct({ model }: { model: Model }) {
  * Map TypeSpec types to Go types
  * TODO: Implement comprehensive type mapping
  */
-function mapTypeSpecToGo(type: Type): string {
+function mapTypeSpecToGo(type: any): string {
   switch (type.kind) {
     case "String":
       return "string";
     case "Boolean":
       return "bool";
-    case "Int32":
-      return "int32";
-    case "Int64":
-      return "int64";
-    case "Uint32":
-      return "uint32";
-    case "Uint64":
-      return "uint64";
+    case "Number":
+      if (type.name === "int32") return "int32";
+      if (type.name === "int64") return "int64";
+      if (type.name === "uint32") return "uint32";
+      if (type.name === "uint64") return "uint64";
+      return "int";
     case "Float32":
       return "float32";
     case "Float64":
