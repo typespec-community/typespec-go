@@ -7,7 +7,7 @@
  */
 
 import { performance } from "perf_hooks";
-import { StandaloneGoGenerator } from "../src/standalone-generator.js";
+import { StandaloneGoGenerator } from "../standalone-generator.js";
 import type { GoEmitterResult } from "../src/domain/unified-errors.js";
 
 interface LargeModelMetrics {
@@ -196,9 +196,9 @@ class LargeModelPerformanceTester {
     const largestCodeSize = sortedResults.reduce((max, r) => r.goCodeSize > max.goCodeSize ? r : max);
 
     console.log("🏆 PERFORMANCE LEADERS:");
-    console.log(`   ⚡ Fastest generation: ${Math.min(...sortedResults.map(r => r.generationTimeMs))}ms (${sortedResults.find(r => r.generationTimeMs === Math.min(...sortedResults.map(r => r.generationTimeMs))?.propertyCount} properties)`);
-    console.log(`   💾 Lowest memory: ${Math.min(...sortedResults.map(r => r.memoryUsageMB))}MB (${sortedResults.find(r => r.memoryUsageMB === Math.min(...sortedResults.map(r => r.memoryUsageMB))?.propertyCount} properties)`);
-    console.log(`   📈 Highest throughput: ${Math.max(...sortedResults.map(r => Math.round(1000 / r.generationTimeMs)))} models/sec (${sortedResults.find(r => r.generationTimeMs === Math.min(...sortedResults.map(r => r.generationTimeMs))?.propertyCount} properties)`);
+    console.log(`   ⚡ Fastest generation: ${Math.min(...sortedResults.map(r => r.generationTimeMs))}ms (${sortedResults.find(r => r.generationTimeMs === Math.min(...sortedResults.map(r => r.generationTimeMs)))?.propertyCount} properties)`);
+    console.log(`   💾 Lowest memory: ${Math.min(...sortedResults.map(r => r.memoryUsageMB))}MB (${sortedResults.find(r => r.memoryUsageMB === Math.min(...sortedResults.map(r => r.memoryUsageMB)))?.propertyCount} properties)`);
+    console.log(`   📈 Highest throughput: ${Math.max(...sortedResults.map(r => Math.round(1000 / r.generationTimeMs)))} models/sec (${sortedResults.find(r => r.generationTimeMs === Math.min(...sortedResults.map(r => r.generationTimeMs)))?.propertyCount} properties)`);
 
     console.log();
     console.log("📊 PERFORMANCE BREAKDOWN:");
