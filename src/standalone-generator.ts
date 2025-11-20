@@ -13,6 +13,7 @@ import {
   ErrorHandler,
   InvalidModelReason
 } from "./domain/unified-errors.js";
+import { GoTypeMapper } from "./domain/go-type-mapper.js";
 import type {
   TypeSpecModel,
   TypeSpecPropertyNode,
@@ -66,6 +67,7 @@ export class StandaloneGoGenerator {
     String: { goType: "string", usePointerForOptional: true },
     Boolean: { goType: "bool", usePointerForOptional: true },
     Bytes: { goType: "[]byte", usePointerForOptional: true },
+    // Array types - handled specially in mapTypeSpecType method
     Array: { goType: "[]interface{}", usePointerForOptional: false },
     Model: { goType: "interface{}", usePointerForOptional: false },
     Enum: { goType: "string", usePointerForOptional: true },
@@ -77,6 +79,15 @@ export class StandaloneGoGenerator {
    * ZERO ANY TYPES: Comprehensive coverage with proper error handling
    */
   static mapTypeSpecType(type: TypeSpecPropertyNode["type"]): GoTypeMapping {
+    // Special handling for Array types with element types
+    if (type.kind === "Array" && (type as any).element) {
+      const elementType = this.mapTypeSpecType((type as any).element);
+      return {
+        goType: `[]${elementType.goType}`,
+        usePointerForOptional: true  // Arrays should use pointer when optional
+      };
+    }
+    
     const mapping = this.TYPE_MAPPINGS[type.kind];
     if (!mapping) {
       throw ErrorFactory.createTypeSpecCompilerError(

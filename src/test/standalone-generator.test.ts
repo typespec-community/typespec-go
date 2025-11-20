@@ -96,7 +96,7 @@ describe("StandaloneGoGenerator", () => {
       expect(result._tag).toBe("Success");
       if (result._tag === "Success") {
         const goCode = result.data.get("Order.go");
-        expect(goCode).toContain('Items []interface{} `json:"items"`');
+        expect(goCode).toContain('Items []string `json:"items"`');
       }
     });
 

@@ -60,7 +60,7 @@ export class GoTypeMapper {
     }
 
     // Handle array types
-    if ((type as any).kind === "array") {
+    if ((type as any).kind === "Array") {
       const elementType = this.mapTypeSpecType((type as any).elementType);
       return {
         kind: "slice",

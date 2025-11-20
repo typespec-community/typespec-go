@@ -131,34 +131,90 @@ export class GoEmitter {
     try {
       Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Extracting models from compiled program");
 
-      // Use TypeSpec compiler's correct API: program.getGlobalNamespaceType().models
-      const globalNamespace = program.getGlobalNamespaceType();
-      const typeSpecModels = [...globalNamespace.models.values()];
+      // Try proper API first, fallback to state access
+      try {
+        const globalNamespace = program.getGlobalNamespaceType();
+        const typeSpecModels = [...globalNamespace.models.values()];
 
-      Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Found models in global namespace", {
-        modelCount: typeSpecModels.length
-      });
-
-      for (const typeSpecModel of typeSpecModels) {
-        Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Processing model", {
-          modelName: typeSpecModel.name
+        Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Found models in global namespace", {
+          modelCount: typeSpecModels.length
         });
 
-        // TODO: Implement proper TypeSpec API model conversion
-        // For now, use test model to get system working
-        Logger.debug(LogContext.TYPESPEC_INTEGRATION, "TypeSpec API models found, using test model for now");
+        for (const typeSpecModel of typeSpecModels) {
+          Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Processing model", {
+            modelName: typeSpecModel.name
+          });
+
+          // TODO: Implement proper TypeSpec API model conversion
+          // For now, use test model to get system working
+          Logger.debug(LogContext.TYPESPEC_INTEGRATION, "TypeSpec API models found, using test model for now");
+        }
+      } catch (apiError) {
+        // Fallback to state access if proper API fails
+        Logger.debug(LogContext.TYPESPEC_INTEGRATION, "API access failed, using state fallback", {
+          error: apiError instanceof Error ? apiError.message : String(apiError)
+        });
+
+        // Use more robust state access with multiple fallback patterns
+        let hasModels = false;
+        
+        // Try different state access patterns
+        try {
+          const programAny = program as any;
+          const programState = programAny.state || programAny._state || {};
+          
+          if (programState.models) {
+            Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Found models in program state", {
+              modelCount: Object.keys(programState.models).length
+            });
+            
+            for (const [modelName, model] of Object.entries(programState.models)) {
+              Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Processing model", {
+                modelName
+              });
+              
+              // Convert TypeSpec model to our domain type
+              const typeSpecModel = this.convertTypeSpecModelFromState(model);
+              models.set(modelName, typeSpecModel);
+              hasModels = true;
+            }
+          }
+
+          // Fallback: Check for types in program state
+          if (!hasModels && programState.types) {
+            Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Found types in program state, checking for models", {
+              typeCount: Object.keys(programState.types).length
+            });
+            
+            for (const [typeName, type] of Object.entries(programState.types)) {
+              const typeEntry = type as any;
+              if (typeEntry.kind === "model") {
+                Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Processing model type", {
+                  typeName
+                });
+                
+                // Convert TypeSpec model to our domain type
+                const typeSpecModel = this.convertTypeSpecModelFromState(typeEntry);
+                models.set(typeName, typeSpecModel);
+                hasModels = true;
+              }
+            }
+          }
+        } catch (stateError) {
+          Logger.debug(LogContext.TYPESPEC_INTEGRATION, "State access also failed, using test model", {
+            error: stateError instanceof Error ? stateError.message : String(stateError)
+          });
+        }
+      }
 
       Logger.info(LogContext.TYPESPEC_INTEGRATION, `Extracted ${models.size} models from TypeSpec program`, {
         extractedModels: models.size,
         modelNames: Array.from(models.keys())
       });
-      
+
       // If no models found (empty TypeSpec file), provide helpful error
       if (models.size === 0) {
-        Logger.warn(LogContext.TYPESPEC_INTEGRATION, "No models found in TypeSpec program. Check TypeSpec definitions.", {
-          hasGlobalNamespace: !!globalNamespace,
-          modelCount: typeSpecModels.length
-        });
+        Logger.warn(LogContext.TYPESPEC_INTEGRATION, "No models found in TypeSpec program. Check TypeSpec definitions.");
         // For development, provide a test model if none found
         Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Providing test model for development");
         models.set("TestUser", this.createTestModel());
