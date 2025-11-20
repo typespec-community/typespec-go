@@ -5,7 +5,20 @@
  * Clean separation of concerns for emitter architecture
  */
 
-import type { Program, Model as TypeSpecModelType } from "@typespec/compiler";
+import type { 
+  Program, 
+  Model as TypeSpecModelType, 
+  ModelProperty as TypeSpecModelProperty,
+  Type,
+  Namespace,
+  SemanticNodeListener
+} from "@typespec/compiler";
+import { 
+  navigateProgram, 
+  getEffectiveModelType, 
+  walkPropertiesInherited,
+  type TypeListeners
+} from "@typespec/compiler";
 import { Logger, LogContext } from "../domain/structured-logging.js";
 
 /**
