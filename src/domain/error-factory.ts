@@ -30,7 +30,7 @@ export class ErrorFactory {
   private static nextErrorId = 0;
 
   private static createErrorId(): ErrorId {
-    return Entities.createErrorId(`error-${++ErrorFactory.nextErrorId}`);
+    return Entities.createErrorId(`error-${++ErrorFactory.nextErrorId}-${Date.now() % 10000}`) as ErrorId;
   }
 
   /**

@@ -7,6 +7,7 @@
 
 import type { Program } from "@typespec/compiler";
 import type { GoEmitterResult } from "../domain/unified-errors.js";
+import { Entities } from "../domain/error-entities.js";
 
 /**
  * Base generator interface
@@ -39,7 +40,7 @@ export abstract class BaseGenerator implements Generator {
         message: "Program is required",
         context: "Generator input validation",
         resolution: "Provide valid TypeSpec program",
-        errorId: "generator-no-program" as any,
+        errorId: Entities.createErrorId("generator-no-program"),
       };
     }
     return null;

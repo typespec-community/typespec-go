@@ -80,7 +80,7 @@ export class GoCodeGenerator {
    * Generate Go code using registered generators
    * DOMAIN LOGIC: Extensible generator architecture
    */
-  async generateWithGenerators(program: any): Promise<GoEmitterResult> {
+  async generateWithGenerators(program: import("@typespec/compiler").Program): Promise<GoEmitterResult> {
     try {
       const allGeneratedFiles = new Map<string, string>();
       const generators = GeneratorRegistry.getAll();
