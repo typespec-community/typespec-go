@@ -19,7 +19,7 @@ export type FileName = string & { readonly __brand: "FileName" };
  * DOMAIN ERROR: TypeSpec compilation or validation issues
  */
 export interface TypeSpecCompilerError {
-  readonly _tag: "TypeSpecCompilerError";
+  readonly _tag: "typespec_compiler_error";
   readonly message: string;
   readonly modelName?: ModelName;
   readonly propertyName?: PropertyName;
@@ -32,7 +32,7 @@ export interface TypeSpecCompilerError {
  * DOMAIN ERROR: Go code generation issues
  */
 export interface GoCodeGenerationError {
-  readonly _tag: "GoCodeGenerationError";
+  readonly _tag: "go_code_generation_error";
   readonly message: string;
   readonly fileName?: FileName;
   readonly goCode?: string;
@@ -45,7 +45,7 @@ export interface GoCodeGenerationError {
  * DOMAIN ERROR: System-level issues
  */
 export interface SystemError {
-  readonly _tag: "SystemError";
+  readonly _tag: "system_error";
   readonly message: string;
   readonly context?: string;
   readonly resolution?: string;
@@ -57,7 +57,7 @@ export interface SystemError {
  * DOMAIN ERROR: Input validation issues
  */
 export interface ValidationError {
-  readonly _tag: "ValidationError";
+  readonly _tag: "validation_error";
   readonly message: string;
   readonly modelName?: ModelName;
   readonly propertyName?: PropertyName;
@@ -71,7 +71,7 @@ export interface ValidationError {
  * DOMAIN SUCCESS: Successful operation result
  */
 export interface Success {
-  readonly _tag: "Success";
+  readonly _tag: "success";
   readonly data: ReadonlyMap<string, string>;
   readonly generatedFiles?: string[];
   readonly typeSpecProgram?: unknown;

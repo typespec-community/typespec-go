@@ -64,16 +64,17 @@ export class ModelGenerator extends BaseGenerator {
     const imports = new Set<string>();
     const fields: string[] = [];
 
-    // Process each property
+    // Process each property with domain intelligence
     for (const [propertyName, property] of extractedModel.properties) {
-      const goType = GoTypeMapper.getTypeSpecType(property.type);
+      const goType = GoTypeMapper.mapTypeSpecType(property.type, propertyName);
+      const goTypeString = GoTypeMapper.generateGoTypeString(goType);
       const jsonTag = this.getJsonTag(propertyName);
       
-      // Handle optional types
-      if (property.optional) {
-        fields.push(`  ${this.capitalize(propertyName)} *${goType} \`${jsonTag}\``);
+      // Handle optional types with proper pointer semantics
+      if (property.optional && goType.usePointerForOptional) {
+        fields.push(`  ${this.capitalize(propertyName)} *${goTypeString} \`${jsonTag}\``);
       } else {
-        fields.push(`  ${this.capitalize(propertyName)} ${goType} \`${jsonTag}\``);
+        fields.push(`  ${this.capitalize(propertyName)} ${goTypeString} \`${jsonTag}\``);
       }
     }
 

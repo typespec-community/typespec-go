@@ -79,24 +79,14 @@ export type GenerationError =
       readonly stack?: string;
     };
 
+// NOTE: shouldUseUnsignedType moved to GoTypeMapper to eliminate split brain
+// Import from src/domain/go-type-mapper.ts instead
+import { GoTypeMapper } from "../domain/go-type-mapper.js";
+
 /**
  * Helper: Detect if field should be unsigned (never-negative)
- * DOMAIN LOGIC: Apply architectural knowledge
+ * DELEGATED: Uses unified GoTypeMapper logic
  */
 export function shouldUseUnsignedType(fieldName: string): boolean {
-  const neverNegativePatterns = [
-    /id$/i, // userID, orderID
-    /count$/i, // itemCount, pageCount
-    /size$/i, // fileSize, arraySize
-    /length$/i, // stringLength
-    /age$/i, // userAge (can't be negative)
-    /amount$/i, // paymentAmount
-    /quantity$/i, // productQuantity
-    /index$/i, // arrayIndex
-    /position$/i, // arrayPosition
-    /number$/i, // phoneNumber, accountNumber
-    /code$/i, // statusCode, zipCode
-  ];
-
-  return neverNegativePatterns.some((pattern) => pattern.test(fieldName));
+  return GoTypeMapper.shouldUseUnsignedType(fieldName);
 }

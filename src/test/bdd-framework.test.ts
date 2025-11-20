@@ -85,7 +85,7 @@ describe("Real BDD Framework Integration", () => {
 
     // When: Extract generated code using proper discriminated union
     let generatedCode = "";
-    if (goCode._tag === "Success") {
+    if (goCode._tag === "success") {
       generatedCode = Array.from(goCode.data.values())[0];
     } else {
       generatedCode = goCode.message || "";

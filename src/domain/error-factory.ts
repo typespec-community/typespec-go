@@ -19,7 +19,7 @@ import { Entities } from "./error-entities.js";
  * Type-safe ModelValidationError for backward compatibility
  */
 export interface ModelValidationError extends ValidationError {
-  readonly _tag: "ModelValidationError";
+  readonly _tag: "model_validation_error";
 }
 
 /**
@@ -45,7 +45,7 @@ export class ErrorFactory {
     },
   ): TypeSpecCompilerError {
     return {
-      _tag: "TypeSpecCompilerError",
+      _tag: "typespec_compiler_error",
       message,
       ...(options?.modelName && { modelName: Entities.createModelName(options.modelName) }),
       ...(options?.propertyName && { propertyName: Entities.createPropertyName(options.propertyName) }),
@@ -65,16 +65,8 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): GoCodeGenerationError {
-    const errorObject: GoCodeGenerationError = {
-      _tag: "GoCodeGenerationError",
-      message,
-      resolution: options?.resolution || "Fix Go code syntax",
-      errorId: this.createErrorId(),
-    };
-    
-    // Conditionally add optional properties to avoid explicit undefined
     return {
-      _tag: "GoCodeGenerationError",
+      _tag: "go_code_generation_error",
       message,
       resolution: options?.resolution || "Fix Go code syntax",
       errorId: this.createErrorId(),
@@ -94,7 +86,7 @@ export class ErrorFactory {
     },
   ): SystemError {
     return {
-      _tag: "SystemError",
+      _tag: "system_error",
       message,
       context: options?.context || "Unknown context",
       resolution: options?.resolution || "Check system configuration",
@@ -115,7 +107,7 @@ export class ErrorFactory {
     },
   ): ModelValidationError {
     const validationError: ValidationError = {
-      _tag: "ValidationError",
+      _tag: "validation_error",
       message,
       ...(modelName && { modelName: Entities.createModelName(modelName) }),
       ...(options?.propertyName && { propertyName: Entities.createPropertyName(options.propertyName) }),
@@ -127,7 +119,7 @@ export class ErrorFactory {
     // Create ModelValidationError with correct tag for backward compatibility
     return {
       ...validationError,
-      _tag: "ModelValidationError" as const,
+      _tag: "model_validation_error" as const,
     };
   }
 
@@ -143,7 +135,7 @@ export class ErrorFactory {
     },
   ): ValidationError {
     return {
-      _tag: "ValidationError",
+      _tag: "validation_error",
       message,
       ...(options?.modelName && { modelName: Entities.createModelName(options.modelName) }),
       ...(options?.propertyName && { propertyName: Entities.createPropertyName(options.propertyName) }),
@@ -161,9 +153,9 @@ export class ErrorFactory {
       generatedFiles?: string[];
       typeSpecProgram?: unknown;
     },
-  ): GoEmitterResult & { _tag: "Success" } {
+  ): GoEmitterResult & { _tag: "success" } {
     return {
-      _tag: "Success",
+      _tag: "success",
       data,
       generatedFiles: options?.generatedFiles || Array.from(data.keys()),
       ...(options?.typeSpecProgram && { typeSpecProgram: options.typeSpecProgram }),

@@ -24,10 +24,10 @@ import { isArrayModelType } from "@typespec/compiler";
  */
 export class GoTypeMapper {
   /**
-   * Map TypeSpec type to Go type
-   * CORE FUNCTIONALITY: Primary type mapping logic
+   * Map TypeSpec type to Go type with domain intelligence
+   * CORE FUNCTIONALITY: Primary type mapping logic with uint detection
    */
-  static mapTypeSpecType(type: TypeSpecType): MappedGoType {
+  static mapTypeSpecType(type: TypeSpecType, fieldName?: string): MappedGoType {
     // Handle scalar types using proper TypeSpec kind checking
     if ((type as any).kind === "scalar") {
       const scalarName = (type as any).name?.toLowerCase();
@@ -41,12 +41,22 @@ export class GoTypeMapper {
         };
       }
 
+      // Apply domain intelligence for unsigned integer detection
+      let finalMapping = mapping;
+      if (fieldName && this.shouldUseUnsignedType(fieldName)) {
+        // Map signed integers to unsigned equivalents
+        const unsignedMapping = this.getUnsignedEquivalent(mapping.name);
+        if (unsignedMapping) {
+          finalMapping = unsignedMapping;
+        }
+      }
+
       return {
         kind: "basic",
-        name: mapping.name,
-        usePointerForOptional: mapping.usePointerForOptional,
-        requiresImport: mapping.requiresImport,
-        ...(mapping.importPath && { importPath: mapping.importPath }),
+        name: finalMapping.name,
+        usePointerForOptional: finalMapping.usePointerForOptional,
+        requiresImport: finalMapping.requiresImport,
+        ...(finalMapping.importPath && { importPath: finalMapping.importPath }),
       };
     }
 
@@ -127,7 +137,34 @@ export class GoTypeMapper {
       /count$/i, // itemCount - can't be negative!
       /age$/i, // userAge - Can't be negative!
       /amount$/i, // paymentAmount - Can't be negative!
+      /quantity$/i, // productQuantity - can't be negative!
+      /size$/i, // fileSize, arraySize - can't be negative!
+      /length$/i, // stringLength - can't be negative!
+      /index$/i, // arrayIndex - can't be negative!
+      /position$/i, // arrayPosition - can't be negative!
+      /number$/i, // phoneNumber, accountNumber - can't be negative!
+      /code$/i, // statusCode, zipCode - can't be negative!
     ];
     return neverNegativePatterns.some((pattern) => pattern.test(fieldName));
+  }
+
+  /**
+   * Get unsigned equivalent for signed integer types
+   * DOMAIN LOGIC: Map signed types to unsigned for never-negative fields
+   */
+  private static getUnsignedEquivalent(signedTypeName: string): BasicMappedType | null {
+    const unsignedEquivalents: Record<string, string> = {
+      "int8": "uint8",
+      "int16": "uint16", 
+      "int32": "uint32",
+      "int64": "uint64",
+    };
+
+    const unsignedType = unsignedEquivalents[signedTypeName];
+    if (!unsignedType) {
+      return null; // No unsigned equivalent or not a signed integer
+    }
+
+    return SCALAR_TYPE_MAPPINGS[unsignedType] || null;
   }
 }

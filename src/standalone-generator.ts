@@ -17,9 +17,9 @@ import { GoTypeMapper } from "./domain/go-type-mapper.js";
 import type {
   TypeSpecModel,
   TypeSpecPropertyNode,
-  shouldUseUnsignedType,
   GoEmitterOptions,
 } from "./types/typespec-domain.js";
+import { GoTypeMapper } from "./domain/go-type-mapper.js";
 
 /**
  * Go type mapping configuration
@@ -42,43 +42,17 @@ export class StandaloneGoGenerator {
     // Currently no options needed, but constructor for consistency
   }
   /**
-   * TypeSpec to Go type mappings
-   * COMPREHENSIVE COVERAGE: All scalar types with proper Go equivalents
-   * DOMAIN LOGIC: Never-negative fields use unsigned integers
+   * DEPRECATED: TYPE_MAPPINGS removed - using GoTypeMapper unified system
+   * This eliminates duplicate type mapping systems
    */
-  private static readonly TYPE_MAPPINGS: Record<string, GoTypeMapping> = {
-    // Integer types
-    Int8: { goType: "int8", usePointerForOptional: true },
-    Int16: { goType: "int16", usePointerForOptional: true },
-    Int32: { goType: "int32", usePointerForOptional: true },
-    Int64: { goType: "int64", usePointerForOptional: true },
-    
-    // Unsigned integer types (uints for never-negative values)
-    Uint8: { goType: "uint8", usePointerForOptional: true },
-    Uint16: { goType: "uint16", usePointerForOptional: true },
-    Uint32: { goType: "uint32", usePointerForOptional: true },
-    Uint64: { goType: "uint64", usePointerForOptional: true },
-    
-    // Floating point types
-    Float32: { goType: "float32", usePointerForOptional: true },
-    Float64: { goType: "float64", usePointerForOptional: true },
-    
-    // Special types
-    String: { goType: "string", usePointerForOptional: true },
-    Boolean: { goType: "bool", usePointerForOptional: true },
-    Bytes: { goType: "[]byte", usePointerForOptional: true },
-    // Array types - handled specially in mapTypeSpecType method
-    Array: { goType: "[]interface{}", usePointerForOptional: false },
-    Model: { goType: "interface{}", usePointerForOptional: false },
-    Enum: { goType: "string", usePointerForOptional: true },
-    Union: { goType: "interface{}", usePointerForOptional: false },
-  } as const;
 
   /**
-   * Type-safe type mapping
+   * Type-safe type mapping using unified GoTypeMapper
    * ZERO ANY TYPES: Comprehensive coverage with proper error handling
+   * DOMAIN INTELLIGENCE: Automatic uint detection for never-negative fields
+   * UNIFIED SYSTEM: Single source of truth for all type mappings
    */
-  static mapTypeSpecType(type: TypeSpecPropertyNode["type"]): GoTypeMapping {
+  static mapTypeSpecType(type: TypeSpecPropertyNode["type"], fieldName?: string): GoTypeMapping {
     // Special handling for Array types with element types
     if (type.kind === "Array" && (type as any).element) {
       const elementType = this.mapTypeSpecType((type as any).element);
@@ -88,16 +62,51 @@ export class StandaloneGoGenerator {
       };
     }
     
-    const mapping = this.TYPE_MAPPINGS[type.kind];
-    if (!mapping) {
+    // Convert StandaloneGoGenerator type format to GoTypeMapper format
+    const mappedType = this.convertToGoTypeMapperFormat(type);
+    const mappedGoType = GoTypeMapper.mapTypeSpecType(mappedType, fieldName);
+    const goTypeString = GoTypeMapper.generateGoTypeString(mappedGoType);
+    
+    // Convert back to StandaloneGoGenerator format for compatibility
+    return {
+      goType: goTypeString,
+      usePointerForOptional: mappedGoType.usePointerForOptional || true
+    };
+  }
+
+  /**
+   * Convert StandaloneGoGenerator type format to GoTypeMapper format
+   * BRIDGE PATTERN: Ensures compatibility between systems
+   */
+  private static convertToGoTypeMapperFormat(type: TypeSpecPropertyNode["type"]): any {
+    // Map StandaloneGoGenerator types to GoTypeMapper types
+    const typeMapping: Record<string, any> = {
+      "Int8": { kind: "scalar", name: "int8" },
+      "Int16": { kind: "scalar", name: "int16" },
+      "Int32": { kind: "scalar", name: "int32" },
+      "Int64": { kind: "scalar", name: "int64" },
+      "Uint8": { kind: "scalar", name: "uint8" },
+      "Uint16": { kind: "scalar", name: "uint16" },
+      "Uint32": { kind: "scalar", name: "uint32" },
+      "Uint64": { kind: "scalar", name: "uint64" },
+      "Float32": { kind: "scalar", name: "float32" },
+      "Float64": { kind: "scalar", name: "float64" },
+      "String": { kind: "scalar", name: "string" },
+      "Boolean": { kind: "scalar", name: "bool" },
+      "Bytes": { kind: "scalar", name: "bytes" },
+    };
+    
+    const mapped = typeMapping[type.kind];
+    if (!mapped) {
       throw ErrorFactory.createTypeSpecCompilerError(
         `Unsupported TypeSpec type: ${type.kind}`,
         {
-          resolution: "Use supported TypeSpec types: string, int32, int64, bool, arrays, models, enums, unions",
+          resolution: "Use supported TypeSpec types: string, int8-64, uint8-64, float32/64, bool, arrays",
         },
       );
     }
-    return mapping;
+    
+    return mapped;
   }
 
   /**
@@ -179,7 +188,7 @@ export class StandaloneGoGenerator {
   private generateField(property: TypeSpecPropertyNode): string {
     const goName =
       property.name.charAt(0).toUpperCase() + property.name.slice(1);
-    const mapping = StandaloneGoGenerator.mapTypeSpecType(property.type);
+    const mapping = StandaloneGoGenerator.mapTypeSpecType(property.type, property.name);
     const goType =
       property.optional && mapping.usePointerForOptional
         ? `*${mapping.goType}`

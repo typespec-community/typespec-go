@@ -28,7 +28,7 @@ describe("StandaloneGoGenerator", () => {
       const result = generator.generateModel(model);
 
       // Then
-      expect(result._tag).toBe("Success");
+      expect(result._tag).toBe("success");
       if (result._tag === "Success") {
         const goCode = result.data.get("User.go");
         expect(goCode).toContain("package api");
@@ -60,7 +60,7 @@ describe("StandaloneGoGenerator", () => {
       const result = generator.generateModel(model);
 
       // Then
-      expect(result._tag).toBe("Success");
+      expect(result._tag).toBe("success");
       if (result._tag === "Success") {
         const goCode = result.data.get("Product.go");
         expect(goCode).toContain('Id string `json:"id"`');
@@ -93,7 +93,7 @@ describe("StandaloneGoGenerator", () => {
       const result = generator.generateModel(model);
 
       // Then
-      expect(result._tag).toBe("Success");
+      expect(result._tag).toBe("success");
       if (result._tag === "Success") {
         const goCode = result.data.get("Order.go");
         expect(goCode).toContain('Items []string `json:"items"`');
@@ -116,7 +116,7 @@ describe("StandaloneGoGenerator", () => {
       const result = generator.generateModel(model);
 
       // Then
-      expect(result._tag).toBe("Success");
+      expect(result._tag).toBe("success");
       if (result._tag === "Success") {
         const goCode = result.data.get("Settings.go");
         expect(goCode).toContain('Enabled bool `json:"enabled"`');
@@ -136,7 +136,7 @@ describe("StandaloneGoGenerator", () => {
       const result = generator.generateModel(invalidModel);
 
       // Then
-      expect(result._tag).toBe("ModelValidationError");
+      expect(result._tag).toBe("model_validation_error");
       if (result._tag === "ModelValidationError") {
         expect(result.message).toBe("Invalid model: name must be a non-empty string");
         expect(result.reason).toBe("empty-name");

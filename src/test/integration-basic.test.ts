@@ -105,8 +105,8 @@ describe("Integration Tests - End-to-End TypeSpec to Go Generation", () => {
     const result = generator.generateModel(userModel);
 
     // Then: Verify complete workflow success
-    expect(result._tag).toBe("Success");
-    if (result._tag === "Success") {
+    expect(result._tag).toBe("success");
+    if (result._tag === "success") {
       const goCode = result.data.get("User.go");
       
       // Verify package and header
@@ -267,8 +267,8 @@ describe("Integration Tests - End-to-End TypeSpec to Go Generation", () => {
     const result = generator.generateModel(complexModel);
 
     // Then: Verify all type mappings are correct
-    expect(result._tag).toBe("Success");
-    if (result._tag === "Success") {
+    expect(result._tag).toBe("success");
+    if (result._tag === "success") {
       const goCode = result.data.get("ComplexModel.go");
       
       // Verify structure basics
@@ -360,7 +360,7 @@ describe("Integration Tests - End-to-End TypeSpec to Go Generation", () => {
     // Test 1: Empty name
     console.log("📋 Test 1: Empty model name");
     const result1 = generator.generateModel(emptyNameModel);
-    expect(result1._tag).toBe("ModelValidationError");
+    expect(result1._tag).toBe("model_validation_error");
     if (result1._tag === "ModelValidationError") {
       expect(result1.message).toContain("Invalid model: name must be a non-empty string");
       expect(result1.reason).toBe("empty-name");
@@ -371,7 +371,7 @@ describe("Integration Tests - End-to-End TypeSpec to Go Generation", () => {
     // Test 2: Empty properties
     console.log("📋 Test 2: Empty properties map");
     const result2 = generator.generateModel(emptyPropertiesModel);
-    expect(result2._tag).toBe("ModelValidationError");
+    expect(result2._tag).toBe("model_validation_error");
     if (result2._tag === "ModelValidationError") {
       expect(result2.message).toContain("Invalid model: must have at least one property");
       expect(result2.reason).toBe("no-properties");
@@ -389,7 +389,7 @@ describe("Integration Tests - End-to-End TypeSpec to Go Generation", () => {
     // Test 4: Extremely long name (stress test)
     console.log("📋 Test 4: Extremely long model name");
     const result4 = generator.generateModel(longNameModel);
-    expect(result4._tag).toBe("Success"); // Should succeed, just with long name
+    expect(result4._tag).toBe("success"); // Should succeed, just with long name
     if (result4._tag === "Success") {
       const goCode = result4.data.get(`${longNameModel.name}.go`);
       expect(goCode).toContain("type " + longNameModel.name + " struct {");
@@ -405,7 +405,7 @@ describe("Integration Tests - End-to-End TypeSpec to Go Generation", () => {
       ]),
     };
     const result5 = generator.generateModel(normalModel);
-    expect(result5._tag).toBe("Success");
+    expect(result5._tag).toBe("success");
     if (result5._tag === "Success") {
       const goCode = result5.data.get("NormalTest.go");
       expect(goCode).toContain('Id string `json:"id"`');
