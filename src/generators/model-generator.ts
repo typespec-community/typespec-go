@@ -28,9 +28,10 @@ export class ModelGenerator extends BaseGenerator {
     }
 
     try {
-      // Extract models and unions using modular extractor
+      // Extract models, unions, and operations using modular extractor
       const models = ModelExtractor.extractModels(program);
       const unions = ModelExtractor.extractUnions(program);
+      const operations = ModelExtractor.extractOperations(program);
       const allGeneratedFiles = new Map<string, string>();
 
       // Generate Go struct for each model
@@ -45,6 +46,21 @@ export class ModelGenerator extends BaseGenerator {
         const goInterface = this.generateGoUnionInterface(unionName, extractedUnion);
         const fileName = this.getFileName(unionName);
         allGeneratedFiles.set(fileName, goInterface);
+      }
+
+      // Generate Go service interface and handlers for operations
+      if (operations.size > 0) {
+        const serviceInterface = this.generateGoServiceInterface(operations);
+        const serviceFileName = "service.go";
+        allGeneratedFiles.set(serviceFileName, serviceInterface);
+
+        const httpHandlers = this.generateGoHttpHandlers(operations);
+        const handlersFileName = "handlers.go";
+        allGeneratedFiles.set(handlersFileName, httpHandlers);
+
+        const routeRegistration = this.generateGoRouteRegistration(operations);
+        const routesFileName = "routes.go";
+        allGeneratedFiles.set(routesFileName, routeRegistration);
       }
 
       // Return successful result
@@ -149,6 +165,260 @@ export class ModelGenerator extends BaseGenerator {
       "// Union implementations",
       ...implementations,
     ].join("\n");
+  }
+
+  /**
+   * Generate Go service interface from operations
+   * DOMAIN LOGIC: Clean service interface with context.Context
+   */
+  private generateGoServiceInterface(
+    operations: ReadonlyMap<string, any>,
+  ): string {
+    const methods: string[] = [];
+
+    for (const [operationName, operation] of operations) {
+      const goMethod = this.generateGoServiceMethod(operationName, operation);
+      methods.push(goMethod);
+    }
+
+    const serviceInterface = [
+      this.generateServiceHeader(),
+      this.generateServiceInterfaceBody(methods),
+      this.generateFooter(),
+    ].join("\n");
+
+    return serviceInterface;
+  }
+
+  /**
+   * Generate individual service method
+   */
+  private generateGoServiceMethod(operationName: string, operation: any): string {
+    const methodName = this.capitalize(operationName);
+    const pathParams = this.extractPathParameters(operation.path);
+    const queryParams = this.extractQueryParameters(operation);
+    const bodyParams = this.extractBodyParameters(operation);
+    
+    // Build method signature
+    const params = [
+      "ctx context.Context",
+      ...pathParams.map(p => `${p.name} string`),
+      ...queryParams.map(q => `${q.name} string`),
+      ...bodyParams.map(b => `${b.name} model`),
+    ].join(", ");
+
+    const returnType = operation.returnType 
+      ? this.capitalize(operation.returnType.name || "Response")
+      : "interface{}";
+
+    return `  ${methodName}(${params}) (${returnType}, error)`;
+  }
+
+  /**
+   * Generate HTTP handler functions for operations
+   * DOMAIN LOGIC: Clean HTTP handlers with routing
+   */
+  private generateGoHttpHandlers(
+    operations: ReadonlyMap<string, any>,
+  ): string {
+    const handlers: string[] = [];
+
+    for (const [operationName, operation] of operations) {
+      const handler = this.generateGoHttpHandler(operationName, operation);
+      handlers.push(handler);
+    }
+
+    const httpHandlers = [
+      this.generateHandlerHeader(),
+      ...handlers,
+      this.generateFooter(),
+    ].join("\n");
+
+    return httpHandlers;
+  }
+
+  /**
+   * Generate individual HTTP handler
+   */
+  private generateGoHttpHandler(operationName: string, operation: any): string {
+    const methodName = this.capitalize(operationName);
+    const verb = operation.verb?.toUpperCase() || "GET";
+    const path = operation.path || "/";
+    const pathParams = this.extractPathParameters(operation.path);
+
+    return `func handle${methodName}(
+  service ${this.capitalize(operationName)}Service,
+) http.HandlerFunc {
+  return func(w http.ResponseWriter, r *http.Request) {
+    // ${verb} ${path}
+    ${pathParams.length > 0 ? this.generatePathExtraction(pathParams) : "// No path parameters"}
+    
+    resp, err := service.${operation.name}(${["ctx", ...pathParams.map(p => p.name)].join(", ")})
+    if err != nil {
+      http.Error(w, err.Error(), http.StatusInternalServerError)
+      return
+    }
+    
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusOK)
+    json.NewEncoder(w).Encode(resp)
+  }
+}`;
+  }
+
+  /**
+   * Generate route registration function
+   */
+  private generateGoRouteRegistration(
+    operations: ReadonlyMap<string, any>,
+  ): string {
+    const routes: string[] = [];
+
+    for (const [operationName, operation] of operations) {
+      const verb = operation.verb?.toUpperCase() || "GET";
+      const path = operation.path || "/";
+      const methodName = this.capitalize(operationName);
+
+      routes.push(`  router.HandleFunc("${verb}", "${path}", handle${methodName}(service))`);
+    }
+
+    const routeRegistration = [
+      this.generateRouteHeader(),
+      this.generateRouteBody(routes),
+      this.generateFooter(),
+    ].join("\n");
+
+    return routeRegistration;
+  }
+
+  /**
+   * Helper: Extract path parameters from route path
+   */
+  private extractPathParameters(path: string): Array<{name: string, type: string}> {
+    const paramRegex = /\{(\w+)\}/g;
+    const params: Array<{name: string, type: string}> = [];
+    let match;
+
+    while ((match = paramRegex.exec(path)) !== null) {
+      params.push({ name: match[1], type: "string" });
+    }
+
+    return params;
+  }
+
+  /**
+   * Helper: Extract body parameters from operation
+   */
+  private extractBodyParameters(operation: any): Array<{name: string, type: string}> {
+    const bodyParams: Array<{name: string, type: string}> = [];
+    
+    if (operation.parameters) {
+      // Handle both Array and Map types
+      const paramList = Array.isArray(operation.parameters) 
+        ? operation.parameters 
+        : Array.from(operation.parameters.values());
+
+      for (const param of paramList) {
+        if (param.location === "body") {
+          bodyParams.push({ name: param.name, type: "model" });
+        }
+      }
+    }
+
+    return bodyParams;
+  }
+
+  /**
+   * Helper: Extract query parameters from operation
+   */
+  private extractQueryParameters(operation: any): Array<{name: string, type: string}> {
+    const queryParams: Array<{name: string, type: string}> = [];
+    
+    if (operation.parameters) {
+      for (const param of operation.parameters) {
+        if (param.location === "query") {
+          queryParams.push({ name: param.name, type: "string" });
+        }
+      }
+    }
+
+    return queryParams;
+  }
+
+  /**
+   * Helper: Generate path parameter extraction
+   */
+  private generatePathExtraction(pathParams: Array<{name: string, type: string}>): string {
+    const extractions: string[] = [];
+    
+    pathParams.forEach((param, index) => {
+      const varName = param.name;
+      extractions.push(`    ${varName} := mux.Vars(r)["${param.name}"]`);
+    });
+
+    return extractions.join("\n");
+  }
+
+  /**
+   * Generate service file header
+   */
+  private generateServiceHeader(): string {
+    return `// Auto-generated TypeSpec service interface
+// Generated by Type-safe Professional Go Emitter
+package api
+
+import "context"
+`;
+  }
+
+  /**
+   * Generate service interface body
+   */
+  private generateServiceInterfaceBody(methods: string[]): string {
+    return `type ApiService interface {
+${methods.join("\n")}
+}`;
+  }
+
+  /**
+   * Generate handler file header
+   */
+  private generateHandlerHeader(): string {
+    return `// Auto-generated HTTP handlers for TypeSpec operations
+// Generated by Type-safe Professional Go Emitter
+package api
+
+import (
+  "context"
+  "encoding/json"
+  "net/http"
+  "github.com/gorilla/mux"
+)
+`;
+  }
+
+  /**
+   * Generate route file header
+   */
+  private generateRouteHeader(): string {
+    return `// Auto-generated route registration for TypeSpec operations
+// Generated by Type-safe Professional Go Emitter
+package api
+
+import (
+  "net/http"
+  "github.com/gorilla/mux"
+)
+`;
+  }
+
+  /**
+   * Generate route body
+   */
+  private generateRouteBody(routes: string[]): string {
+    return `func RegisterRoutes(router *http.ServeMux, service ApiService) {
+${routes.join("\n")}
+}`;
   }
 
   /**

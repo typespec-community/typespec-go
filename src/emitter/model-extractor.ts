@@ -9,6 +9,25 @@ import type { Program, Model as TypeSpecModelType } from "@typespec/compiler";
 import { Logger, LogContext } from "../domain/structured-logging.js";
 
 /**
+ * Extracted TypeSpec operation with metadata
+ */
+export interface ExtractedOperation {
+  readonly name: string;
+  readonly verb: string;
+  readonly path: string;
+  readonly parameters: ReadonlyMap<
+    string,
+    {
+      name: string;
+      type: { kind: string };
+      location: string;
+      optional: boolean;
+    }
+  >;
+  readonly returnType?: { kind: string; name?: string };
+}
+
+/**
  * Extracted TypeSpec union with metadata
  */
 export interface ExtractedUnion {
@@ -41,6 +60,107 @@ export interface ExtractedModel {
  * TypeSpec model and union extraction utilities
  */
 export class ModelExtractor {
+  /**
+   * Extract all operations from TypeSpec program
+   * Domain logic: Clean AST traversal for operation types
+   */
+  static extractOperations(program: Program): ReadonlyMap<string, ExtractedOperation> {
+    try {
+      const operations = new Map<string, ExtractedOperation>();
+
+      Logger.info(
+        LogContext.TYPESPEC_INTEGRATION,
+        "Extracting operations from compiled program",
+      );
+
+      // Attempt to extract using TypeSpec compiler API
+      let extractedOperations: any;
+      try {
+        extractedOperations =
+          (program as any).state.operations || (program as any).operations || {};
+      } catch (error) {
+        Logger.info(
+          LogContext.TYPESPEC_INTEGRATION,
+          "Operations API access failed, using fallback",
+          {
+            error: error instanceof Error ? error.message : String(error),
+          },
+        );
+      }
+
+      // Process extracted operations
+      for (const [operationName, typeSpecOperation] of Object.entries(extractedOperations)) {
+        const operation = this.processTypeSpecOperation(operationName, typeSpecOperation);
+        if (operation) {
+          operations.set(operationName, operation);
+        }
+      }
+
+      Logger.info(LogContext.TYPESPEC_INTEGRATION, "Found operations", {
+        operationCount: operations.size,
+        operationNames: Array.from(operations.keys()),
+      });
+
+      return operations;
+    } catch (error) {
+      Logger.error(LogContext.TYPESPEC_INTEGRATION, "Operation extraction failed", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      // Return empty map on error
+      return new Map();
+    }
+  }
+
+  /**
+   * Process individual TypeSpec operation
+   * Domain logic: Clean operation processing with proper parameter mapping
+   */
+  private static processTypeSpecOperation(
+    operationName: string,
+    typeSpecOperation: any,
+  ): ExtractedOperation | null {
+    try {
+      const parameters = new Map<string, {
+        name: string;
+        type: { kind: string };
+        location: string;
+        optional: boolean;
+      }>();
+
+      // Extract parameters from TypeSpec operation
+      const operationParameters = (typeSpecOperation as any).parameters || [];
+      for (const param of operationParameters) {
+        const paramName = (param as any).name || "unknown";
+        parameters.set(paramName, {
+          name: paramName,
+          type: { kind: this.mapTypeSpecKind(param.type) },
+          location: (param as any).location || "query",
+          optional: (param as any).optional || false,
+        });
+      }
+
+      return {
+        name: operationName,
+        verb: (typeSpecOperation as any).verb || "get",
+        path: (typeSpecOperation as any).path || "/",
+        parameters,
+        returnType: (typeSpecOperation as any).returnType 
+          ? { kind: this.mapTypeSpecKind((typeSpecOperation as any).returnType) }
+          : undefined,
+      };
+    } catch (error) {
+      Logger.error(
+        LogContext.TYPESPEC_INTEGRATION,
+        `Failed to process operation: ${operationName}`,
+        {
+          operationName,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
+      return null;
+    }
+  }
+
   /**
    * Extract all unions from TypeSpec program
    * Domain logic: Clean AST traversal for union types
@@ -310,7 +430,7 @@ export class ModelExtractor {
         return typeSpecType.kind;
       }
 
-      // Default fallback
+      // Default fallback for unknown types
       return "String";
     } catch (error) {
       return "String"; // Safe fallback
