@@ -39,13 +39,7 @@ export { ErrorFactory } from "./error-factory.js";
 
 export { ErrorAnalysis } from "./error-types.js";
 
-// Re-export legacy types from old errors file for compatibility
-export type {
-  GeneratorError,
-  GeneratorSuccess,
-  GenerationContext,
-} from "../types/errors.js";
-
+// Export TypeSpec entities for compatibility
 export { InvalidModelReason, TypeSpecEntities } from "../types/errors.js";
 
 // Legacy exports for backward compatibility
