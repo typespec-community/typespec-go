@@ -9,6 +9,7 @@ import { StandaloneGoGenerator } from "../standalone-generator.js";
 import type { GoEmitterResult } from "../domain/unified-errors.js";
 import { Logger, LogContext } from "../domain/structured-logging.js";
 import type { ExtractedModel } from "./model-extractor.js";
+import { GeneratorRegistry } from "../generators/index.js";
 
 /**
  * Go code generation coordination
@@ -71,6 +72,56 @@ export class GoCodeGenerator {
         errorId: "GO_CODE_GENERATION_FAILED",
         fileName: "emitter-generation",
         resolution: "Check model properties and type mappings",
+      };
+    }
+  }
+
+  /**
+   * Generate Go code using registered generators
+   * DOMAIN LOGIC: Extensible generator architecture
+   */
+  async generateWithGenerators(program: any): Promise<GoEmitterResult> {
+    try {
+      const allGeneratedFiles = new Map<string, string>();
+      const generators = GeneratorRegistry.getAll();
+
+      Logger.info(LogContext.GO_GENERATION, `Using ${generators.length} registered generators`, {
+        generatorNames: generators.map(g => g.name),
+      });
+
+      for (const generator of generators) {
+        Logger.info(LogContext.GO_GENERATION, `Executing generator: ${generator.name}`);
+
+        // Execute generator
+        const result = await generator.generate(program);
+
+        if (result._tag !== "Success") {
+          return result; // Return error if generation failed
+        }
+
+        // Merge generated files
+        for (const [fileName, goCode] of result.data) {
+          allGeneratedFiles.set(fileName, goCode);
+        }
+      }
+
+      // Return successful result with all generated files
+      return {
+        _tag: "Success",
+        data: allGeneratedFiles,
+        generatedFiles: Array.from(allGeneratedFiles.keys()),
+      };
+    } catch (error) {
+      Logger.error(LogContext.GO_GENERATION, "Generator-based generation failed", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      
+      return {
+        _tag: "SystemError",
+        message: `Generator execution failed: ${error instanceof Error ? error.message : String(error)}`,
+        context: "Generator execution",
+        resolution: "Check registered generators and their dependencies",
+        errorId: "GENERATOR_EXECUTION_FAILED",
       };
     }
   }
