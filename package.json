@@ -38,6 +38,11 @@
 		"lint": "eslint src/ --ext .ts --max-warnings 0 || echo '⚠️ ESLint issues - will fix in Phase 2'",
 		"lint:fix": "eslint src/ --report-unused-disable-directives --fix --ext .ts",
 		"format": "prettier src/ --write",
-		"format:check": "prettier src/ --check"
+		"format:check": "prettier src/ --check",
+		"typespec-go": "bun src/cli/typespec-go-cli.ts",
+		"cli": "bun src/cli/typespec-go-cli.ts"
+	},
+	"dependencies": {
+		"commander": "^14.0.2"
 	}
 }
