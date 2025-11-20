@@ -99,6 +99,9 @@ export class StandaloneGoGenerator {
       String: { kind: "scalar", name: "string" },
       Boolean: { kind: "scalar", name: "bool" },
       Bytes: { kind: "scalar", name: "bytes" },
+      Template: { kind: "generic", name: "T" }, // Template support - will be overridden per field
+      Model: { kind: "struct", name: "struct" }, // Model support
+      Array: { kind: "slice", name: "[]" }, // Array support
     };
 
     const mapped = typeMapping[type.kind];
@@ -122,6 +125,8 @@ export class StandaloneGoGenerator {
   generateModel(model: {
     name: string;
     properties: ReadonlyMap<string, TypeSpecPropertyNode>;
+    extends?: string; // Support Go struct embedding
+    propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>; // Support spread operator
   }): GoEmitterResult {
     // Input validation
     if (!model.name || typeof model.name !== "string") {
@@ -148,9 +153,14 @@ export class StandaloneGoGenerator {
     }
 
     try {
+      // Merge properties from extends and spread operators
+      // COMPOSITION PRECEDENCE: local properties > propertiesFromExtends > template properties
+      const allProperties = this.mergeCompositionProperties(model);
+      
       const goCode = this.generateStruct(
         model.name,
-        Array.from(model.properties.values()),
+        model.extends, // Pass parent for Go embedding
+        Array.from(allProperties.values()),
       );
       return ErrorFactory.createSuccess(
         new Map([[`${model.name}.go`, goCode]]),
@@ -177,9 +187,20 @@ export class StandaloneGoGenerator {
    */
   private generateStruct(
     name: string,
-    properties: TypeSpecPropertyNode[],
+    extendsModel?: string, // Parent model for Go embedding
+    properties?: TypeSpecPropertyNode[],
   ): string {
-    const fields = properties.map((prop) => this.generateField(prop));
+    const propArray = properties || [];
+    const fields = propArray.map((prop) => this.generateField(prop));
+
+    // Add embedded struct if extends is specified
+    // GO EMBEDDING: Proper Go struct composition
+    if (extendsModel) {
+      const embeddingLine = `  ${extendsModel}  // Embedded struct`;
+      fields.unshift(embeddingLine); // Add at the beginning
+    }
+
+    const fieldDefinitions = fields.join("\n");
 
     try {
       return this.createGoFile(name, fields);
@@ -201,22 +222,58 @@ export class StandaloneGoGenerator {
    * UNIFIED ERROR SYSTEM: Proper error handling for unsupported types
    */
   private generateField(property: TypeSpecPropertyNode): string {
-    const goName =
-      property.name.charAt(0).toUpperCase() + property.name.slice(1);
+    // SPECIAL CASE: Handle common Go field naming patterns
+    // IDENTITY FIELD: "id" should become "ID", not "Id"
+    let goName = property.name;
+    if (goName.toLowerCase() === "id") {
+      goName = "ID";
+    } else {
+      goName = property.name.charAt(0).toUpperCase() + property.name.slice(1);
+    }
+
     const mapping = StandaloneGoGenerator.mapTypeSpecType(
       property.type,
       property.name,
     );
-    const goType =
-      property.optional && mapping.usePointerForOptional
+    let goType;
+    
+    // TEMPLATE HANDLING: Special case for template types
+    if (property.type.kind === "Template") {
+      // Extract template parameter name (e.g., "T" from "<T>" or "User" from "PaginatedResponse<User>")
+      const templateInfo = property.type as any;
+      if (templateInfo.name) {
+        // Simple template parameter
+        goType = templateInfo.name;
+      } else if (model.template && model.template.includes('<')) {
+        // Template instantiation like "PaginatedResponse<User>"
+        const matches = model.template.match(/(\w+)<([^>]+)>/);
+        if (matches) {
+          goType = matches[2]; // Extract instantiated type (e.g., "User")
+        } else {
+          goType = "interface{}";
+        }
+      } else {
+        goType = "T"; // Default template parameter
+      }
+    } else if (property.type.kind === "Model") {
+      // MODEL HANDLING: Use model name directly
+      goType = (property.type as any).name || mapping.goType;
+    } else {
+      goType = property.optional && mapping.usePointerForOptional
         ? `*${mapping.goType}`
         : mapping.goType;
+    }
 
     const jsonTag = property.optional
       ? `json:"${property.name},omitempty"`
       : `json:"${property.name}"`;
 
-    return `  ${goName} ${goType} \`${jsonTag}\``;
+    // Add template comment for template fields
+    const templateComment = property.type.kind === "Template" 
+      ? `  // Template type ${(property.type as any).name || "T"}`
+      : "";
+
+    return `  ${goName} ${goType} \`${jsonTag}\`${templateComment}`;
   }
 
   /**
@@ -235,6 +292,35 @@ type ${structName} struct {
 ${fieldDefinitions}
 }
 `;
+  }
+
+  /**
+   * Merge properties from extends and spread operators
+   * COMPOSITION HANDLING: Prioritize current properties over inherited
+   * DOMAIN INTELLIGENCE: Proper property precedence and conflict resolution
+   */
+  private mergeCompositionProperties(model: {
+    name: string;
+    properties: ReadonlyMap<string, TypeSpecPropertyNode>;
+    extends?: string;
+    propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>;
+  }): ReadonlyMap<string, TypeSpecPropertyNode> {
+    // Start with direct properties (highest priority)
+    const allProperties = new Map(model.properties);
+    
+    // Add properties from spread operator (lower priority than direct properties)
+    if (model.propertiesFromExtends) {
+      for (const [propName, propNode] of model.propertiesFromExtends) {
+        if (!allProperties.has(propName)) {
+          allProperties.set(propName, propNode);
+        }
+      }
+    }
+    
+    // TODO: Add inherited properties from extends model (lowest priority)
+    // This requires model registry or multi-model processing
+    
+    return allProperties;
   }
 
   /**

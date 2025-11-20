@@ -32,7 +32,8 @@ export interface TypeSpecTypeNode {
     | "Array"
     | "Model"
     | "Enum"
-    | "Union";
+    | "Union"
+    | "Template"; // Added template support
 }
 
 /**
@@ -56,6 +57,7 @@ export interface TypeSpecModel {
   readonly extends?: string; // Parent model name for composition
   readonly propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>; // Spread operator properties
   readonly templates?: ReadonlyMap<string, TypeSpecTemplate>; // Template definitions
+  readonly template?: string; // Template parameter (e.g., "<T>")
 }
 
 /**
