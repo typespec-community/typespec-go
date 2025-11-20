@@ -1,18 +1,27 @@
-// @ts-check
-import eslint from "@eslint/js";
-import tsEslint from "typescript-eslint";
+/** @type {import('eslint').Linter.Config} */
+import parser from '@typescript-eslint/parser';
+import plugin from '@typescript-eslint/eslint-plugin';
 
 export default [
   {
-    ignores: ["**/dist/**/*", "**/.temp/**/*", "**/node_modules/**/*"],
+    ignores: ['**/dist/**/*', '**/.temp/**/*', '**/node_modules/**/*'],
   },
-  eslint.configs.recommended,
-  ...tsEslint.configs.recommended,
   {
+    files: ['**/*.ts'],
+    languageOptions: {
+      parser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+    },
+    plugins: {
+      '@typescript-eslint': plugin,
+    },
     rules: {
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": "error",
-      "@typescript-eslint/no-explicit-any": "error",
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': 'error',
+      '@typescript-eslint/no-explicit-any': 'error',
     },
   },
 ];
