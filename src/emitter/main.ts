@@ -1,4 +1,4 @@
-import type { Program, EmitContext, Model, Type, Scalar, ArrayType, ModelType, UnionType, EnumType } from "@typespec/compiler";
+import type { Program, EmitContext, Model, Type, Scalar } from "@typespec/compiler";
 import { emitFile } from "@typespec/compiler";
 
 export async function $onEmit(context: EmitContext): Promise<void> {
@@ -53,26 +53,25 @@ function mapTypeSpecToGo(type: Type): string {
       if (scalar.name === "utcDateTime") return "time.Time";
       if (scalar.name === "duration") return "time.Duration";
       return "interface{}";
-    case "Array":
-      const arrayType = type as ArrayType;
-      const elementType = mapTypeSpecToGo(arrayType.elementType);
-      return `[]${elementType}`;
     case "Model":
-      const modelType = type as ModelType;
+      const model = type as Model;
       // Special case: TypeSpec creates Model for arrays like string[]
-      if (modelType.name === "Array" && modelType.indexer?.value) {
-        const element = mapTypeSpecToGo(modelType.indexer.value);
+      if (model.name === "Array" && model.indexer?.value) {
+        const element = mapTypeSpecToGo(model.indexer.value);
         return `[]${element}`;
       }
-      return modelType.name || "interface{}";
+      return model.name || "interface{}";
     case "Union":
-      const unionType = type as UnionType;
-      if (unionType.variants?.every((v) => v.type?.kind === "String")) {
-        return "string";
+      // Handle union types generically
+      if ("variants" in type && Array.isArray((type as any).variants)) {
+        const variants = (type as any).variants;
+        if (variants.every((v: any) => v.type?.kind === "String")) {
+          return "string";
+        }
       }
       return "interface{}";
     case "Enum":
-      const enumType = type as EnumType;
+      const enumType = type as any;
       return enumType.name || "string";
     default:
       return "interface{}";

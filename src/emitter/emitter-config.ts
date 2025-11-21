@@ -6,6 +6,11 @@
  */
 
 /**
+ * Type utility for default configuration
+ */
+type NEVER_CONFIGURED = Record<never, never>;
+
+/**
  * Go Emitter Configuration Options
  * ZERO ANY TYPES: Type-safe configuration interface
  */
@@ -31,7 +36,7 @@ export interface GoEmitterOptions {
  * DOMAIN LOGIC: Sensible defaults with flexibility
  */
 export const DEFAULT_EMITTER_OPTIONS: Required<
-  Omit<GoEmitterOptions, keyof typeof NEVER_CONFIGURED>
+  Omit<GoEmitterOptions, never>
 > = {
   outputDir: "./generated",
   namingPattern: "PascalCase",
@@ -140,5 +145,5 @@ export class EmitterConfigValidator {
   }
 }
 
-// Type utility for default configuration
-type NEVER_CONFIGURED = Record<never, never>;
+// Type utility for default configuration (moved to top)
+// type NEVER_CONFIGURED = Record<never, never>; // Already defined above

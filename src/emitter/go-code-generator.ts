@@ -9,8 +9,10 @@ import { StandaloneGoGenerator } from "../standalone-generator.js";
 import type { GoEmitterResult } from "../domain/unified-errors.js";
 import { Logger, LogContext } from "../domain/structured-logging.js";
 import type { ExtractedModel } from "./model-extractor.js";
-import { Entities } from "../types/errors.js";
+import { TypeSpecEntities } from "../types/errors.js";
+import { Entities } from "../domain/error-entities.js";
 import { GeneratorRegistry } from "../generators/index.js";
+import type { TypeSpecPropertyNode } from "../types/typespec-domain.js";
 
 /**
  * Go code generation coordination
@@ -158,16 +160,31 @@ export class GoCodeGenerator {
     name: string;
     properties: ReadonlyMap<
       string,
-      {
-        name: string;
-        type: { kind: string };
-        optional: boolean;
-      }
+      TypeSpecPropertyNode
     >;
+    extends?: string;
+    propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>;
   } {
+    // Convert property types to match expected TypeSpecPropertyNode format
+    const convertedProperties = new Map<string, TypeSpecPropertyNode>();
+    for (const [key, prop] of extractedModel.properties) {
+      // Convert string kind to proper TypeSpecTypeNode format
+      const kind = prop.type.kind as any;
+      convertedProperties.set(key, {
+        name: prop.name,
+        type: {
+          kind: kind,
+          // Add any additional properties needed
+        },
+        optional: prop.optional,
+      });
+    }
+
     return {
       name: modelName,
-      properties: extractedModel.properties,
+      properties: convertedProperties,
+      ...(extractedModel.extends && { extends: extractedModel.extends }),
+      ...(extractedModel.propertiesFromExtends && { propertiesFromExtends: extractedModel.propertiesFromExtends }),
     };
   }
 }

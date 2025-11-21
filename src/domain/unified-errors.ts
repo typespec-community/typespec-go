@@ -7,7 +7,39 @@
  * EFFECT.TS COMPATIBLE: Railway programming ready
  */
 
-// Re-export all types from specialized modules
+// Import all types first
+import type {
+  TypeSpecCompilerError,
+  GoCodeGenerationError,
+  SystemError,
+  ValidationError,
+  Success,
+  GoEmitterResult,
+  TypeSpecCompilerExternalError,
+  TypeScriptExternalError,
+  GoCompilationExternalError,
+  ErrorRecoveryStrategy,
+} from "./error-types.js";
+
+import type {
+  TypeSpecId,
+  ModelName,
+  PropertyName,
+  ErrorId,
+  FileName,
+} from "./error-entities.js";
+
+import {
+  Entities,
+  EntityValidation,
+  EntityTransformation,
+} from "./error-entities.js";
+
+import { ErrorFactory } from "./error-factory.js";
+
+import { ErrorAnalysis } from "./error-types.js";
+
+// Then re-export
 export type {
   TypeSpecId,
   ModelName,
@@ -116,7 +148,7 @@ export const createValidationError = (
     resolution?: string;
   },
 ): ModelValidationError => {
-  return ErrorFactory.createValidationError(message, options);
+  return ErrorFactory.createValidationError(message, options) as ModelValidationError;
 };
 
 export const createTypeSpecError = (

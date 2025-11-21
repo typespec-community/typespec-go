@@ -14,7 +14,9 @@
 export { StandaloneGoGenerator } from "./standalone-generator.js";
 
 // Unified error system (SINGLE SOURCE OF TRUTH)
-export type { GoEmitterResult } from "./domain/unified-errors.js";
+export type {
+  GoEmitterResult,
+} from "./domain/unified-errors.js";
 
 export {
   ErrorFactory,

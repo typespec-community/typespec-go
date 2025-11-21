@@ -23,8 +23,9 @@ import { Entities } from "./error-entities.js";
 /**
  * Type-safe ModelValidationError for backward compatibility
  */
-export interface ModelValidationError extends ValidationError {
-  // Inherits _tag: "validation_error" from ValidationError
+export interface ModelValidationError extends Omit<ValidationError, "_tag"> {
+  // Override _tag to be different from ValidationError
+  _tag: "ModelValidationError";
 }
 
 /**
@@ -134,6 +135,7 @@ export class ErrorFactory {
     // Create ModelValidationError with correct tag for backward compatibility
     return {
       ...validationError,
+      _tag: "ModelValidationError" as const,
     } as ModelValidationError;
   }
 

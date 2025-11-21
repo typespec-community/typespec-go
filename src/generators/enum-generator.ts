@@ -169,7 +169,7 @@ type ${enumName} string`;
   private generateEnumValues(enumValues: string[]): string {
     const constants = enumValues.map(
       (value) =>
-        `const ${enumName}${this.capitalize(value)} ${enumName} = "${value}"`,
+        `const ${this.capitalize(enumName)}${this.capitalize(value)} ${this.capitalize(enumName)} = "${value}"`,
     );
 
     return "\nconst (\n" + constants.join("\n") + "\n)";

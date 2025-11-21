@@ -25,7 +25,7 @@ export class GoEmitter {
   private codeGenerator: GoCodeGenerator;
   private options?: GoEmitterOptions;
 
-  constructor(options?: GoEmitterOptions) {
+  constructor(options: GoEmitterOptions = {}) {
     this.codeGenerator = new GoCodeGenerator();
     this.options = options;
   }
@@ -57,7 +57,9 @@ export class GoEmitter {
         "TypeSpec to Go conversion failed",
         {
           error: error instanceof Error ? error.message : String(error),
-          typeSpecProgram: program,
+          programStats: {
+            models: program.getGlobalNamespaceType().models?.size || 0,
+          },
         },
       );
 
@@ -65,7 +67,7 @@ export class GoEmitter {
       return ErrorFactory.createTypeSpecCompilerError(
         `TypeSpec to Go conversion failed: ${error instanceof Error ? error.message : String(error)}`,
         {
-          typeSpecProgram: program,
+          modelName: program.getGlobalNamespaceType()?.name || "Unknown",
           resolution: "Check TypeSpec model definitions and compatibility",
         },
       );

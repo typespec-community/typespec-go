@@ -36,7 +36,7 @@ export abstract class BaseGenerator implements Generator {
   protected validateInput(program: Program): GoEmitterResult | null {
     if (!program) {
       return {
-        _tag: "SystemError",
+        _tag: "system_error",
         message: "Program is required",
         context: "Generator input validation",
         resolution: "Provide valid TypeSpec program",
