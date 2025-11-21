@@ -69,7 +69,7 @@ export class PerformanceTestRunner {
       actualMemoryMB,
       actualThroughput,
       passed,
-      failureReason,
+      ...(failureReason && { failureReason }),
       timestamp: new Date().toISOString(),
     };
   }

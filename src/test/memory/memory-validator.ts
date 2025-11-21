@@ -34,10 +34,10 @@ export class MemoryValidator {
     const smallModel = metrics[0];
     const largeModel = metrics[metrics.length - 1];
 
-    const propertyRatio = largeModel.propertyCount / smallModel.propertyCount;
+    const propertyRatio = (largeModel?.propertyCount || 1) / (smallModel?.propertyCount || 1);
     const memoryRatio =
-      largeModel.memoryOverheadMB / smallModel.memoryOverheadMB;
-    const scalingFactor = memoryRatio / propertyRatio;
+      (largeModel?.memoryOverheadMB || 0) / (smallModel?.memoryOverheadMB || 0);
+    const scalingFactor = propertyRatio > 0 ? memoryRatio / propertyRatio : 1;
 
     // Determine efficiency rating
     let memoryEfficiency: "excellent" | "good" | "acceptable" | "poor";
@@ -137,7 +137,7 @@ export class MemoryValidator {
           testId: metric.testId,
           violation: "Memory leak detected",
           threshold: 5,
-          actual: metric.finalMemoryMB - metric.baselineMemoryMB,
+          actual: metric.peakMemoryMB - metric.baselineMemoryMB,
         });
       }
     }
