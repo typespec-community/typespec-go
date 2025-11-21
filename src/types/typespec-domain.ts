@@ -72,6 +72,15 @@ export interface GoEmitterOptions {
   readonly "go-package"?: string;
   /** Generate Go package declarations */
   readonly "generate-package"?: boolean;
+  /** Error package configuration */
+  readonly "error-package"?: {
+    /** Enable centralized error package generation */
+    readonly enabled?: boolean;
+    /** Custom error package path (default: "pkg/errors") */
+    readonly path?: string;
+    /** Generate package declarations */
+    readonly "generate-package"?: boolean;
+  };
 }
 
 /**

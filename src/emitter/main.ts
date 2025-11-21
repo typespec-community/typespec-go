@@ -92,10 +92,22 @@ async function generateModelsGoFile(models: Model[], context: EmitContext): Prom
   
   // Generate error models section with native Go error types
   if (errorModels.length > 0) {
-    goContent += `// Error Models (generated from @error decorator)\n\n`;
-    for (const model of errorModels) {
-      const errorCode = generateGoError(model, context.program);
-      goContent += errorCode + "\n\n";
+    const errorPackageConfig = (context.options as any)["error-package"] as { enabled?: boolean; path?: string } | undefined;
+    const errorPackageEnabled = errorPackageConfig?.enabled;
+    const errorPackagePath = errorPackageConfig?.path || "pkg/errors";
+    
+    if (errorPackageEnabled) {
+      // Generate centralized error package
+      await generateErrorPackage(errorModels, errorPackagePath, context);
+      goContent += `// Import centralized error package\n\n`;
+      goContent += `import "${errorPackagePath}"\n\n`;
+    } else {
+      // Generate inline error models
+      goContent += `// Error Models (generated from @error decorator)\n\n`;
+      for (const model of errorModels) {
+        const errorCode = generateGoError(model, context.program);
+        goContent += errorCode + "\n\n";
+      }
     }
   }
   
@@ -392,4 +404,41 @@ function mapEnumToGo(enumType: Type): string {
 // Helper function to check indexer
 function hasIndexer(model: Model): model is Model & { indexer: { value: Type } } {
   return !!model.indexer && "value" in model.indexer && !!model.indexer.value;
+}
+
+/**
+ * Generate centralized error package
+ * 
+ * Creates a separate package for all error types with proper Go package structure.
+ */
+async function generateErrorPackage(
+  errorModels: Model[], 
+  packagePath: string, 
+  context: EmitContext
+): Promise<void> {
+  let packageContent = `// Package errors provides centralized error types from TypeSpec @error models
+// This package is auto-generated. Do not modify manually.
+
+package errors
+
+import "fmt"
+`;
+
+  // Generate all error types in the centralized package
+  for (const model of errorModels) {
+    const errorCode = generateGoError(model, context.program);
+    packageContent += errorCode + "\n\n";
+  }
+
+  // Write the error package file
+  const packageFile = `${packagePath}/errors.go`;
+  await emitFile(context.program, {
+    path: context.emitterOutputDir ? `${context.emitterOutputDir}/${packageFile}` : packageFile,
+    content: packageContent,
+  });
+  
+  Logger.info(
+    LogContext.TYPESPEC_INTEGRATION,
+    `Generated centralized error package: ${packageFile}`
+  );
 }
