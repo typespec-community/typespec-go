@@ -9,6 +9,7 @@ import type {
   Program, 
   Model as TypeSpecModelType, 
   ModelProperty as TypeSpecModelProperty,
+  Model,
   Type,
   Namespace,
   SemanticNodeListener
@@ -16,8 +17,7 @@ import type {
 import { 
   navigateProgram, 
   getEffectiveModelType, 
-  walkPropertiesInherited,
-  type TypeListeners
+  walkPropertiesInherited
 } from "@typespec/compiler";
 import { Logger, LogContext } from "../domain/structured-logging.js";
 
@@ -93,11 +93,21 @@ export class ModelExtractor {
       try {
         const programState = (program as any).state;
         if (programState && programState.operations) {
-          extractedOperations = programState.operations;
+          const ops = programState.operations;
+          Object.entries(ops).forEach(([key, value]) => {
+            operations.set(key, value as ExtractedOperation);
+          });
         } else if ((program as any).operations) {
-          extractedOperations = (program as any).operations;
+          const ops = (program as any).operations;
+          Object.entries(ops).forEach(([key, value]) => {
+            operations.set(key, value as ExtractedOperation);
+          });
         } else {
-          extractedOperations = {};
+          // Fallback: return empty operations map
+          Logger.info(
+            LogContext.TYPESPEC_INTEGRATION,
+            "No operations found in program, using empty map",
+          );
         }
       } catch (error) {
         Logger.info(
@@ -110,7 +120,7 @@ export class ModelExtractor {
       }
 
       // Process extracted operations
-      for (const [operationName, typeSpecOperation] of Object.entries(extractedOperations)) {
+      for (const [operationName, typeSpecOperation] of operations.entries()) {
         const operation = this.processTypeSpecOperation(operationName, typeSpecOperation);
         if (operation) {
           operations.set(operationName, operation);
@@ -166,7 +176,10 @@ export class ModelExtractor {
         path: (typeSpecOperation as any).path || "/",
         parameters,
         returnType: (typeSpecOperation as any).returnType 
-          ? { kind: this.mapTypeSpecKind((typeSpecOperation as any).returnType) }
+          ? { 
+              kind: this.mapTypeSpecKind((typeSpecOperation as any).returnType),
+              ...( (typeSpecOperation as any).returnType?.name && { name: (typeSpecOperation as any).returnType.name })
+            }
           : undefined,
       };
     } catch (error) {
@@ -288,13 +301,15 @@ export class ModelExtractor {
 
       try {
         // Real TypeSpec integration: use navigateProgram to find models
-        const typeSpecModels = navigateProgram(program, {
+        const typeSpecModels = new Map<string, Model>();
+        
+        navigateProgram(program, {
           model: (model) => {
-            return model;
+            typeSpecModels.set(model.name, model);
           },
         });
 
-        extractedModels = Array.from(typeSpecModels);
+        extractedModels = Array.from(typeSpecModels.values());
         Logger.info(
           LogContext.TYPESPEC_INTEGRATION,
           "Successfully extracted models using TypeSpec API",
@@ -400,7 +415,7 @@ export class ModelExtractor {
 
       visitedModels.add(currentModel);
       const extendedModel = processedModels.find(m => m.name === currentModel);
-      currentModel = extendedModel?.extends || null;
+      currentModel = extendedModel?.extends || "";
     }
 
     return null; // No cycle
@@ -430,7 +445,7 @@ export class ModelExtractor {
     return {
       ...model,
       properties: fixedProperties,
-      extends: undefined, // Remove direct extends, use pointer instead
+      ...(model.extends && { extends: model.extends }),
     };
   }
 
@@ -453,40 +468,42 @@ export class ModelExtractor {
       >();
 
       // Use proper TypeSpec API to get effective model type
-      const effectiveModel = getEffectiveModelType(typeSpecModel);
+     const effectiveModel = getEffectiveModelType(typeSpecModel, program);
 
-      // Use walkPropertiesInherited to get all properties including inherited
-      const typeListeners: TypeListeners = {
-        property: (property) => {
-          const propertyName = (property as any).name || "unknown";
-          const propertyType = (property as any).type;
-          const isOptional = (property as any).optional || false;
+     // Use walkPropertiesInherited to get all properties including inherited
+     walkPropertiesInherited(effectiveModel, {
+       property: (property: TypeSpecModelProperty) => {
+         const propertyName = property.name || "unknown";
+         const propertyType = property.type;
+         const isOptional = property.optional || false;
 
-          properties.set(propertyName, {
-            name: propertyName,
-            type: { kind: this.mapTypeSpecKind(propertyType) },
-            optional: isOptional,
-          });
+         properties.set(propertyName, {
+           name: propertyName,
+           type: { kind: this.mapTypeSpecKind(propertyType) },
+           optional: isOptional,
+         });
 
-          return property; // Continue traversal
-        },
-      };
+         return property; // Continue traversal
+       },
+     });
 
       try {
-        walkPropertiesInherited(effectiveModel, typeListeners, {
-          includeInherited: true,
+        walkPropertiesInherited(effectiveModel, {
+          property: (property) => {
+            const propertyName = (property as any).name || "unknown";
+            const propertyType = (property as any).type;
+            const isOptional = (property as any).optional || false;
+
+            properties.set(propertyName, {
+              name: propertyName,
+              type: { kind: this.mapTypeSpecKind(propertyType) },
+              optional: isOptional,
+            });
+
+            return property; // Continue traversal
+          },
         });
       } catch (error) {
-        // Fallback to basic property extraction if walk fails
-        Logger.warn(
-          LogContext.TYPESPEC_INTEGRATION,
-          "Failed to walk inherited properties, using basic extraction",
-          {
-            modelName,
-            error: error instanceof Error ? error.message : String(error),
-          },
-        );
-
         // Basic property extraction fallback
         const basicProperties = (typeSpecModel as any).properties || {};
         for (const [propertyName, property] of Object.entries(basicProperties)) {
