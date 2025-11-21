@@ -93,15 +93,15 @@ export class StandaloneGoGenerator {
     type: TypeSpecPropertyNode["type"],
   ): any {
     // Special handling for Array types - preserve element type information
-    if (type.kind === "Array" && (type as any).elementType) {
+    if (type.kind === "Model" && (type as any).indexer?.value) {
       return {
         kind: "Array",
-        elementType: this.convertToGoTypeMapperFormat((type as any).elementType),
+        elementType: this.convertToGoTypeMapperFormat((type as any).indexer.value),
       };
     }
 
     // If already in proper TypeSpec format (scalar, model, etc.), pass through
-    if (type.kind === "scalar" || type.kind === "model" || type.kind === "union" || type.kind === "template") {
+    if (type.kind === "Scalar" || type.kind === "Model" || type.kind === "Union" || type.kind === "Array" || "template" in type) {
       return type;
     }
 
@@ -124,6 +124,7 @@ export class StandaloneGoGenerator {
       template: { kind: "template", name: "T", template: "T" }, // Template support - will be overridden per field
       Model: { kind: "model", name: "Model" }, // Model support
       model: { kind: "model", name: "Model" }, // Model support
+      Array: { kind: "Array", elementType: { kind: "scalar", name: "string" } }, // Array support (will be updated dynamically)
     };
 
     const mapped = typeMapping[type.kind];

@@ -8,7 +8,7 @@
 
 import { performance } from "perf_hooks";
 import { StandaloneGoGenerator } from "../standalone-generator.js";
-import type { GoEmitterResult } from "../src/domain/unified-errors.js";
+import type { GoEmitterResult } from "../domain/unified-errors.js";
 
 interface PerformanceMetrics {
   testName: string;

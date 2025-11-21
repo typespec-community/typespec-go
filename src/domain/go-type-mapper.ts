@@ -64,6 +64,16 @@ export class GoTypeMapper {
     }
 
     // Handle array types using our test data structure
+    if (type.kind === "Model" && (type as any).indexer?.value) {
+      const elementType = this.mapTypeSpecType((type as any).indexer.value);
+      return {
+        kind: "slice",
+        elementType,
+        usePointerForOptional: false,
+      };
+    }
+
+    // Handle Array pattern from test data (kind: "Array", elementType: Type)
     if (type.kind === "Array" && (type as any).elementType) {
       const elementType = this.mapTypeSpecType((type as any).elementType);
       return {
