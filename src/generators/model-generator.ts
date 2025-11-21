@@ -346,7 +346,7 @@ export class ModelGenerator extends BaseGenerator {
 
       for (const param of paramList) {
         if (param.location === "body") {
-          bodyParams.push({ name: param.name, type: "model" });
+          bodyParams.push({ name: param.name, type: "Model" });
         }
       }
     }

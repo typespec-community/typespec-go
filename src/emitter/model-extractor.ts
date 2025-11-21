@@ -437,7 +437,7 @@ export class ModelExtractor {
     if (model.extends) {
       fixedProperties.set(model.extends, {
         name: model.extends,
-        type: { kind: "model" },
+        type: { kind: "Model" },
         optional: true, // Use pointer to break cycle
       });
     }

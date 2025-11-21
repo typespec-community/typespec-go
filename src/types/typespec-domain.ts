@@ -16,24 +16,22 @@ export interface TypeSpecPropertyNode {
 
 export interface TypeSpecTypeNode {
   readonly kind:
-    | "String"
-    | "Int8"
-    | "Int16"
-    | "Int32"
-    | "Int64"
-    | "Uint8"
-    | "Uint16"
-    | "Uint32"
-    | "Uint64"
-    | "Float32"
-    | "Float64"
-    | "Boolean"
-    | "Bytes"
-    | "Array"
     | "Model"
-    | "Enum"
     | "Union"
-    | "Template"; // Added template support
+    | "Enum"
+    | "String"
+    | "Boolean"
+    | "Decorator"
+    | "EnumMember"
+    | "FunctionParameter"
+    | "Interface"
+    | "Intrinsic"
+    | "ModelProperty"
+    | "Namespace"
+    | "Number"
+    | "Scalar"
+    | "Tuple"
+    | "UnionVariant";
 }
 
 /**

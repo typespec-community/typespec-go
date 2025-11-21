@@ -7,6 +7,8 @@
  */
 
 import type { Program, EmitContext, Model } from "@typespec/compiler";
+import type { SemanticNodeListener } from "@typespec/compiler";
+import { navigateProgram } from "@typespec/compiler";
 import { writeOutput } from "@typespec/emitter-framework";
 import { Output } from "@typespec/emitter-framework";
 import * as go from "@alloy-js/go";
@@ -20,7 +22,7 @@ function GoEmitterOutput({ program }: { program: Program }) {
   const models = new Map();
   
   navigateProgram(program, {
-    model: (model) => {
+    model: (model: Model) => {
       models.set(model.name || "unnamed", model);
     }
   });

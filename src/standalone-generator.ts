@@ -64,9 +64,9 @@ export class StandaloneGoGenerator {
     type: TypeSpecPropertyNode["type"],
     fieldName?: string,
   ): GoTypeMapping {
-    // Special handling for Array types with element types
-    if (type.kind === "Array" && (type as any).element) {
-      const elementType = this.mapTypeSpecType((type as any).element);
+    // Special handling for Model types (arrays are models in TypeSpec)
+    if (type.kind === "Model" && (type as any).indexer?.value) {
+      const elementType = this.mapTypeSpecType((type as any).indexer.value);
       return {
         goType: `[]${elementType.goType}`,
         usePointerForOptional: true, // Arrays should use pointer when optional
@@ -250,8 +250,8 @@ export class StandaloneGoGenerator {
     );
     let goType;
     
-    // TEMPLATE HANDLING: Special case for template types
-    if (property.type.kind === "Template" || property.type.kind === "template") {
+    // TEMPLATE HANDLING: Special case for generic/template types  
+    if (property.type.kind === "Model" && (property.type as any).template) {
       // Extract template parameter name (e.g., "T" from "<T>" or "User" from "PaginatedResponse<User>")
       const templateInfo = property.type as any;
       if (templateInfo.name) {
@@ -268,7 +268,7 @@ export class StandaloneGoGenerator {
       } else {
         goType = "T"; // Default template parameter
       }
-    } else if (property.type.kind === "Model" || property.type.kind === "model") {
+    } else if (property.type.kind === "Model") {
       // MODEL HANDLING: Use model name directly
       goType = (property.type as any).name || (property.type as any).modelName || mapping.goType;
     } else {
@@ -282,7 +282,7 @@ export class StandaloneGoGenerator {
       : `json:"${property.name}"`;
 
     // Add template comment for template fields
-    const templateComment = (property.type.kind === "Template" || property.type.kind === "template") 
+    const templateComment = (property.type.kind === "Model" && (property.type as any).template) 
       ? `  // Template type ${(property.type as any).name || "T"}`
       : "";
 

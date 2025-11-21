@@ -160,9 +160,6 @@ export function mapTypeSpecType(
       const goPrimitive = mapScalarToGoPrimitive(type as Scalar);
       return { _tag: "success", result: goPrimitive };
       
-    case "Array":
-      return mapArrayType(program, type);
-      
     case "Model":
       return mapModelType(program, type as Model);
       
