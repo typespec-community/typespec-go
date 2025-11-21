@@ -22,8 +22,11 @@ export {
   ErrorFactory,
   ErrorHandler,
   Entities,
-  InvalidModelReason,
 } from "./domain/unified-errors.js";
+
+export type {
+  InvalidModelReason,
+} from "./types/errors.js";
 
 // Professional logging system
 export {

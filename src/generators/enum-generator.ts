@@ -134,7 +134,7 @@ export class EnumGenerator extends BaseGenerator {
     const goEnum = [
       this.generateHeader(enumName),
       this.generateEnumType(enumName),
-      this.generateEnumValues(enumValues),
+      this.generateEnumValues(enumName, enumValues),
       this.generateFooter(),
     ].join("\n");
 
@@ -166,7 +166,7 @@ type ${enumName} string`;
    * Generate Go enum values
    * DOMAIN LOGIC: Type-safe enum constants
    */
-  private generateEnumValues(enumValues: string[]): string {
+  private generateEnumValues(enumName: string, enumValues: string[]): string {
     const constants = enumValues.map(
       (value) =>
         `const ${this.capitalize(enumName)}${this.capitalize(value)} ${this.capitalize(enumName)} = "${value}"`,

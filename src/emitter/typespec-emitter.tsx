@@ -16,15 +16,21 @@ import * as go from "@alloy-js/go";
  * Generates Go files from TypeSpec program using Alloy-JS components
  */
 function GoEmitterOutput({ program }: { program: Program }) {
-  // Get all models from the TypeSpec program
-  const models = program.globalNamespace?.models || [];
+  // Get all models from TypeSpec program using navigateProgram
+  const models = new Map();
+  
+  navigateProgram(program, {
+    model: (model) => {
+      models.set(model.name || "unnamed", model);
+    }
+  });
   
   return (
     <Output program={program}>
         <go.SourceFile path="models.go">
         
         {/* Generate Go structs for all models in the program */}
-        {Array.from(models.values()).map((model: any) => (
+        {Array.from(models.values()).map((model) => (
           <GoModelStruct model={model} />
         ))}
       </go.SourceFile>

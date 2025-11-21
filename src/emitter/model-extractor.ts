@@ -468,11 +468,10 @@ export class ModelExtractor {
       >();
 
       // Use proper TypeSpec API to get effective model type
-     const effectiveModel = getEffectiveModelType(typeSpecModel);
+     const effectiveModel = getEffectiveModelType(this.program, typeSpecModel);
 
      // Use walkPropertiesInherited to get all properties including inherited
-     walkPropertiesInherited(effectiveModel, {
-       property: (property: TypeSpecModelProperty) => {
+     for (const property of walkPropertiesInherited(effectiveModel)) {
          const propertyName = property.name || "unknown";
          const propertyType = property.type;
          const isOptional = property.optional || false;
@@ -482,27 +481,9 @@ export class ModelExtractor {
            type: { kind: this.mapTypeSpecKind(propertyType) },
            optional: isOptional,
          });
-
-         return property; // Continue traversal
-       },
-     });
+       }
 
       try {
-        walkPropertiesInherited(effectiveModel, {
-          property: (property) => {
-            const propertyName = (property as any).name || "unknown";
-            const propertyType = (property as any).type;
-            const isOptional = (property as any).optional || false;
-
-            properties.set(propertyName, {
-              name: propertyName,
-              type: { kind: this.mapTypeSpecKind(propertyType) },
-              optional: isOptional,
-            });
-
-            return property; // Continue traversal
-          },
-        });
       } catch (error) {
         // Basic property extraction fallback
         const basicProperties = (typeSpecModel as any).properties || {};
