@@ -25,7 +25,7 @@ function GoEmitterOutput({ program }: { program: Program }) {
         
         {/* Generate Go structs for all models in the program */}
         {Array.from(models.values()).map((model: any) => (
-          <GoModelStruct key={model.name} model={model} />
+          <GoModelStruct model={model} />
         ))}
       </go.SourceFile>
     </Output>

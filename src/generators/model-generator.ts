@@ -326,7 +326,7 @@ export class ModelGenerator extends BaseGenerator {
     let match;
 
     while ((match = paramRegex.exec(path)) !== null) {
-      params.push({ name: match[1], type: "string" });
+      params.push({ name: match[1]!, type: "string" });
     }
 
     return params;

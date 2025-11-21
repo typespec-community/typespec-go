@@ -201,7 +201,7 @@ export class StandaloneGoGenerator {
     properties?: TypeSpecPropertyNode[],
   ): string {
     const propArray = properties || [];
-    const modelContext = { template: undefined }; // Provide model context
+    const modelContext = {}; // Provide model context
     const fields = propArray.map((prop) => this.generateField(prop, modelContext));
 
     // Add embedded struct if extends is specified

@@ -472,10 +472,10 @@ export class ModelExtractor {
 
      // Use walkPropertiesInherited to get all properties including inherited
      walkPropertiesInherited(effectiveModel, {
-       property: (property) => {
-         const propertyName = (property as TypeSpecModelProperty).name || "unknown";
-         const propertyType = (property as TypeSpecModelProperty).type;
-         const isOptional = (property as TypeSpecModelProperty).optional || false;
+       property: (property: TypeSpecModelProperty) => {
+         const propertyName = property.name || "unknown";
+         const propertyType = property.type;
+         const isOptional = property.optional || false;
 
          properties.set(propertyName, {
            name: propertyName,
