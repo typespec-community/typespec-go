@@ -1,20 +1,7 @@
 {
   "name": "@typespec-community/typespec-go",
   "version": "0.0.1",
-  "type": "module",
   "main": "dist/src/emitter/main.js",
-  "exports": {
-    ".": {
-      "types": "./dist/src/emitter/main.d.ts",
-      "default": "./dist/src/emitter/main.js"
-    }
-  },
-  "bin": {
-    "typespec-go": "dist/src/cli/index.js"
-  },
-  "peerDependencies": {
-    "@typespec/compiler": "1.7.0-dev.2"
-  },
   "devDependencies": {
     "@types/node": "latest",
     "@typespec/compiler": "1.7.0-dev.2",
@@ -26,6 +13,16 @@
     "typescript": "6.0.0-dev.20251114",
     "bun": "latest"
   },
+  "peerDependencies": {
+    "@typespec/compiler": "1.7.0-dev.2"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/emitter/main.d.ts",
+      "default": "./dist/src/emitter/main.js"
+    }
+  },
+
   "scripts": {
     "build": "bun build src/emitter/main.ts --outdir dist --target node --format esm",
     "build:check": "bunx tsc --noEmit --strict",
@@ -35,7 +32,5 @@
     "lint:fix": "eslint src/ --ext .ts --fix",
     "format": "prettier src/ --write"
   },
-  "dependencies": {
-    "commander": "^12.0.0"
-  }
+  "type": "module"
 }
