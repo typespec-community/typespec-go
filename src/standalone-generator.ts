@@ -40,8 +40,8 @@ export class StandaloneGoGenerator {
   // Built-in template definitions for common patterns
   private static readonly TEMPLATE_REGISTRY: Map<string, Map<string, TypeSpecPropertyNode>> = new Map([
     ["PaginatedResponse", new Map([
-      ["data", { name: "data", type: { kind: "Template", templateName: "T" }, optional: false }],
-      ["pagination", { name: "pagination", type: { kind: "Model", modelName: "PaginationInfo" }, optional: false }],
+      ["data", { name: "data", type: { kind: "Model" }, optional: false }],
+      ["pagination", { name: "pagination", type: { kind: "Model" }, optional: false }],
     ])],
   ]);
 
@@ -156,7 +156,6 @@ export class StandaloneGoGenerator {
         model.name,
         InvalidModelReason.NoProperties,
         {
-          context: { propertyCount: model.properties?.size },
           resolution: "Add at least one property to the model",
         },
       );
@@ -257,9 +256,9 @@ export class StandaloneGoGenerator {
       if (templateInfo.name) {
         // Simple template parameter
         goType = templateInfo.name;
-      } else if (model.template && model.template.includes('<')) {
+      } else if (model?.template && model.template.includes('<')) {
         // Template instantiation like "PaginatedResponse<User>"
-        const matches = model.template.match(/(\w+)<([^>]+)>/);
+        const matches = model?.template?.match(/(\w+)<([^>]+)>/);
         if (matches) {
           goType = matches[2]; // Extract instantiated type (e.g., "User")
         } else {
@@ -352,8 +351,8 @@ ${fieldDefinitions}
     // Check if template instantiation like "PaginatedResponse<User>"
     const templateInstantiationMatch = templateString.match(/^([^<]+)<(.+)>$/);
     if (templateInstantiationMatch) {
-      const baseTemplateName = templateInstantiationMatch[1];
-      const templateArgument = templateInstantiationMatch[2];
+      const baseTemplateName = templateInstantiationMatch?.[1] || "";
+      const templateArgument = templateInstantiationMatch?.[2] || "";
       const baseTemplate = StandaloneGoGenerator.TEMPLATE_REGISTRY.get(baseTemplateName);
       
       if (baseTemplate) {
@@ -392,7 +391,7 @@ ${fieldDefinitions}
       if ('templateName' in propNode.type && propNode.type.templateName === templateParam) {
         return {
           ...propNode,
-          type: { kind: "Model", modelName: actualType }
+          type: { kind: "Model" }
         };
       }
     }

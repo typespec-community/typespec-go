@@ -361,7 +361,7 @@ export class ModelExtractor {
         for (const typeSpecModel of extractedModels) {
           try {
             const modelName = (typeSpecModel as TypeSpecModelType)?.name || "UnknownModel";
-            const model = this.processTypeSpecModel(modelName, typeSpecModel);
+            const model = this.processTypeSpecModel(program, modelName, typeSpecModel);
             if (model) {
               models.set(modelName, model);
             }
@@ -454,6 +454,7 @@ export class ModelExtractor {
    * Domain logic: Clean model processing with composition support
    */
   private static processTypeSpecModel(
+    program: Program,
     modelName: string,
     typeSpecModel: TypeSpecModelType,
   ): ExtractedModel | null {
@@ -468,7 +469,7 @@ export class ModelExtractor {
       >();
 
       // Use proper TypeSpec API to get effective model type
-     const effectiveModel = getEffectiveModelType(this.program, typeSpecModel);
+     const effectiveModel = getEffectiveModelType(program, typeSpecModel);
 
      // Use walkPropertiesInherited to get all properties including inherited
      for (const property of walkPropertiesInherited(effectiveModel)) {

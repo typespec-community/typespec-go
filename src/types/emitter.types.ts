@@ -16,7 +16,8 @@ export type TypeMappingResult =
   | { _tag: "success"; result: string }
   | { _tag: "unsupported-type"; type: Type; reason: string }
   | { _tag: "invalid-array"; elementType: Type }
-  | { _tag: "invalid-model"; modelName: string };
+  | { _tag: "invalid-model"; modelName: string }
+  | { _tag: "type-mapping-failure"; fieldName: string; typeError: TypeMappingResult };
 
 /**
  * Strong-typed Go primitive types

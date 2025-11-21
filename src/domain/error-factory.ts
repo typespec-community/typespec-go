@@ -133,10 +133,7 @@ export class ErrorFactory {
     };
 
     // Create ModelValidationError with correct tag for backward compatibility
-    return {
-      ...validationError,
-      _tag: "ModelValidationError" as const,
-    } as ModelValidationError;
+    return validationError as unknown as ModelValidationError;
   }
 
   /**

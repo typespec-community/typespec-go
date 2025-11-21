@@ -21,8 +21,11 @@ export type {
 export {
   ErrorFactory,
   ErrorHandler,
-  Entities,
 } from "./domain/unified-errors.js";
+
+export {
+  Entities,
+} from "./domain/error-entities.js";
 
 export type {
   InvalidModelReason,

@@ -113,7 +113,7 @@ export type LogContext = string;
  */
 export type GoGenerationError = GoCodeGenerationError;
 export type ModelValidationError = ValidationError & {
-  _tag: "ModelValidationError";
+  _tag: "validation_error";
 };
 export type TypeSpecIntegrationError = TypeSpecCompilerError;
 
