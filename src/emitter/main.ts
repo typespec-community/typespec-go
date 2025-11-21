@@ -1,4 +1,4 @@
-import type { Program, EmitContext, Model } from "@typespec/compiler";
+import type { Program, EmitContext, Model, Type, Scalar, ArrayType, ModelType, UnionType, EnumType } from "@typespec/compiler";
 import { emitFile } from "@typespec/compiler";
 
 export async function $onEmit(context: EmitContext): Promise<void> {
@@ -28,24 +28,52 @@ export async function $onEmit(context: EmitContext): Promise<void> {
   }
 }
 
-function mapTypeSpecToGo(type: any): string {
+function mapTypeSpecToGo(type: Type): string {
   switch (type.kind) {
     case "String":
       return "string";
     case "Boolean":
       return "bool";
-    case "Number":
-      return type.name || "int";
     case "Scalar":
-      if (type.name === "string") return "string";
-      if (type.name === "boolean") return "bool";
-      if (type.name === "int32") return "int32";
-      if (type.name === "int64") return "int64";
-      if (type.name === "uint32") return "uint32";
-      if (type.name === "uint64") return "uint64";
-      if (type.name === "float32") return "float32";
-      if (type.name === "float64") return "float64";
+      const scalar = type as Scalar;
+      if (scalar.name === "string") return "string";
+      if (scalar.name === "boolean") return "bool";
+      if (scalar.name === "int8") return "int8";
+      if (scalar.name === "int16") return "int16";
+      if (scalar.name === "int32") return "int32";
+      if (scalar.name === "int64") return "int64";
+      if (scalar.name === "uint8") return "uint8";
+      if (scalar.name === "uint16") return "uint16";
+      if (scalar.name === "uint32") return "uint32";
+      if (scalar.name === "uint64") return "uint64";
+      if (scalar.name === "float32") return "float32";
+      if (scalar.name === "float64") return "float64";
+      if (scalar.name === "bytes") return "[]byte";
+      if (scalar.name === "plainDate") return "time.Time";
+      if (scalar.name === "utcDateTime") return "time.Time";
+      if (scalar.name === "duration") return "time.Duration";
       return "interface{}";
+    case "Array":
+      const arrayType = type as ArrayType;
+      const elementType = mapTypeSpecToGo(arrayType.elementType);
+      return `[]${elementType}`;
+    case "Model":
+      const modelType = type as ModelType;
+      // Special case: TypeSpec creates Model for arrays like string[]
+      if (modelType.name === "Array" && modelType.indexer?.value) {
+        const element = mapTypeSpecToGo(modelType.indexer.value);
+        return `[]${element}`;
+      }
+      return modelType.name || "interface{}";
+    case "Union":
+      const unionType = type as UnionType;
+      if (unionType.variants?.every((v) => v.type?.kind === "String")) {
+        return "string";
+      }
+      return "interface{}";
+    case "Enum":
+      const enumType = type as EnumType;
+      return enumType.name || "string";
     default:
       return "interface{}";
   }
