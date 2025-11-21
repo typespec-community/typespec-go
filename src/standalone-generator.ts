@@ -120,10 +120,10 @@ export class StandaloneGoGenerator {
       String: { kind: "scalar", name: "string" },
       Boolean: { kind: "scalar", name: "bool" },
       Bytes: { kind: "scalar", name: "bytes" },
-      Template: { kind: "generic", name: "T" }, // Template support - will be overridden per field
-      template: { kind: "generic", name: "T" }, // Template support - will be overridden per field
-      Model: { kind: "struct", name: "struct" }, // Model support
-      model: { kind: "struct", name: "struct" }, // Model support
+      Template: { kind: "template", name: "T", template: "T" }, // Template support - will be overridden per field
+      template: { kind: "template", name: "T", template: "T" }, // Template support - will be overridden per field
+      Model: { kind: "model", name: "Model" }, // Model support
+      model: { kind: "model", name: "Model" }, // Model support
     };
 
     const mapped = typeMapping[type.kind];

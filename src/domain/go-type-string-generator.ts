@@ -45,22 +45,23 @@ export class GoTypeStringGenerator {
         if (!type.unionVariants || type.unionVariants.length === 0) {
           return "interface{}";
         }
-        // Generate union as interface name (sealed interface)
-        return type.name || "interface{}";
+        // Generate union as sealed interface with proper naming
+        return type.name || this.toPascalCase("union");
 
       case "template":
         if (!type.template) {
           return "interface{}";
         }
-        // Generate template as generic interface
-        return `${type.name}[${type.template}]`;
+        // Generate template as Go generic interface
+        const templateName = type.name || "T";
+        return `${templateName}[${type.template}]`;
 
       case "spread":
         if (!type.baseTypes || type.baseTypes.length === 0) {
           return "interface{}";
         }
-        // Generate spread as composed interface
-        return type.name || "interface{}";
+        // Generate spread as composed interface with proper naming
+        return type.name || this.toPascalCase("composed");
 
       default:
         return "interface{}";

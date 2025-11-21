@@ -28,6 +28,30 @@ export namespace TypeSpecEntities {
   export const createErrorId = (id: string): ErrorId => id as ErrorId;
 }
 
+export namespace Entities {
+  export const createTypeSpecId = (id: string): TypeSpecId => id as TypeSpecId;
+  export const createModelName = (name: string): ModelName => name as ModelName;
+  export const createPropertyName = (name: string): PropertyName =>
+    name as PropertyName;
+  export const createErrorId = (id: string): ErrorId => id as ErrorId;
+}
+
+export namespace EntityValidation {
+  export const createTypeSpecId = (id: string): TypeSpecId => id as TypeSpecId;
+  export const createModelName = (name: string): ModelName => name as ModelName;
+  export const createPropertyName = (name: string): PropertyName =>
+    name as PropertyName;
+  export const createErrorId = (id: string): ErrorId => id as ErrorId;
+}
+
+export namespace EntityTransformation {
+  export const createTypeSpecId = (id: string): TypeSpecId => id as TypeSpecId;
+  export const createModelName = (name: string): ModelName => name as ModelName;
+  export const createPropertyName = (name: string): PropertyName =>
+    name as PropertyName;
+  export const createErrorId = (id: string): ErrorId => id as ErrorId;
+}
+
 /**
  * Invalid Model Reasons Enum
  * ENUMS INSTEAD OF BOOLEANS: Impossible states eliminated

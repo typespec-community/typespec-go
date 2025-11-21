@@ -73,40 +73,43 @@ export class GoTypeMapper {
       };
     }
 
-    // Handle union types - NEW FEATURE!
+    // Handle union types - ENHANCED FEATURE!
     if ((type as any).kind === "union") {
       const unionVariants = (type as any).variants?.map((variant: any) => 
         this.mapTypeSpecType(variant.type)
       ) || [];
       
+      const unionName = GoTypeStringGenerator.toPascalCase((type as any).name || "Union");
       return {
         kind: "union",
-        name: GoTypeStringGenerator.toPascalCase((type as any).name || "Union"),
+        name: unionName,
         unionVariants,
         usePointerForOptional: false,
       };
     }
 
-    // Handle template types - NEW FEATURE!
+    // Handle template types - ENHANCED FEATURE!
     if ((type as any).kind === "template") {
       const templateName = (type as any).name || "T";
+      const templateParams = (type as any).template || "T";
       return {
         kind: "template",
         name: templateName,
-        template: (type as any).template,
+        template: templateParams,
         usePointerForOptional: false,
       };
     }
 
-    // Handle composition types (spread operator) - NEW FEATURE!
+    // Handle composition types (spread operator) - ENHANCED FEATURE!
     if ((type as any).kind === "spread") {
       const baseTypes = (type as any).types?.map((baseType: any) => 
         this.mapTypeSpecType(baseType)
       ) || [];
         
+      const spreadName = GoTypeStringGenerator.toPascalCase((type as any).name || "Spread");
       return {
         kind: "spread",
-        name: GoTypeStringGenerator.toPascalCase((type as any).name || "Composed"),
+        name: spreadName,
         baseTypes,
         usePointerForOptional: false,
       };
