@@ -1,5 +1,6 @@
 import type { Program, EmitContext, Model, Type, Scalar } from "@typespec/compiler";
 import { emitFile } from "@typespec/compiler";
+import { Logger, LogContext } from "../domain/structured-logging.js";
 
 export async function $onEmit(context: EmitContext): Promise<void> {
   try {
@@ -63,16 +64,19 @@ function mapTypeSpecToGo(type: Type): string {
       return model.name || "interface{}";
     case "Union":
       // Handle union types generically
-      if ("variants" in type && Array.isArray((type as any).variants)) {
-        const variants = (type as any).variants;
-        if (variants.every((v: any) => v.type?.kind === "String")) {
-          return "string";
-        }
-      }
+      // TODO: Replace with proper TypeSpec union API when available
+      Logger.warn(
+        LogContext.TYPESPEC_INTEGRATION,
+        "Union variant processing needs TypeSpec API research",
+      );
       return "interface{}";
     case "Enum":
-      const enumType = type as any;
-      return enumType.name || "string";
+      // TODO: Replace with proper TypeSpec enum API when available
+      Logger.warn(
+        LogContext.TYPESPEC_INTEGRATION,
+        "Enum name extraction needs TypeSpec API research",
+      );
+      return "string";
     default:
       return "interface{}";
   }

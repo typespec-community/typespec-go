@@ -79,8 +79,8 @@ export class GoCodeGenerator {
       return {
         _tag: "go_code_generation_error",
         message: error instanceof Error ? error.message : String(error),
-        errorId: Entities.createErrorId("GO_CODE_GENERATION_FAILED") as any,
-        fileName: Entities.createFileName("emitter-generation") as any,
+        errorId: Entities.createErrorId("GO_CODE_GENERATION_FAILED"),
+        fileName: Entities.createFileName("emitter-generation"),
         resolution: "Check model properties and type mappings",
       };
     }
@@ -144,7 +144,7 @@ export class GoCodeGenerator {
         message: `Generator execution failed: ${error instanceof Error ? error.message : String(error)}`,
         context: "Generator execution",
         resolution: "Check registered generators and their dependencies",
-        errorId: Entities.createErrorId("GENERATOR_EXECUTION_FAILED") as any,
+        errorId: Entities.createErrorId("GENERATOR_EXECUTION_FAILED"),
       };
     }
   }
