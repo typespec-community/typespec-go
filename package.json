@@ -24,9 +24,12 @@
     "bun": "latest"
   },
   "scripts": {
+    "build": "bun build src/emitter/main.ts --outdir dist --target node --format esm",
+    "build:check": "bunx tsc --noEmit --strict",
     "test": "bun test",
     "test:typespec": "bun test --timeout 30000",
     "lint": "eslint src/ --ext .ts --max-warnings 0",
+    "lint:fix": "eslint src/ --ext .ts --fix",
     "format": "prettier src/ --write"
   },
   "dependencies": {}
