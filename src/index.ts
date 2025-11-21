@@ -20,6 +20,9 @@ export type {
 
 export {
   ErrorFactory,
+} from "./domain/unified-errors.js";
+
+export type {
   ErrorHandler,
 } from "./domain/unified-errors.js";
 
