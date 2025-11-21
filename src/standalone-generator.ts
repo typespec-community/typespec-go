@@ -149,7 +149,7 @@ export class StandaloneGoGenerator {
 
     if (!model.properties || model.properties.size === 0) {
       return ErrorFactory.createValidationError(
-        message: "Invalid model: must have at least one property",
+        "Invalid model: must have at least one property",
         {
           resolution: "Add at least one property to the model",
         },
