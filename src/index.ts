@@ -23,10 +23,6 @@ export {
   ErrorHandler,
 } from "./domain/unified-errors.js";
 
-export {
-  Entities,
-} from "./domain/error-entities.js";
-
 export type {
   InvalidModelReason,
 } from "./types/errors.js";

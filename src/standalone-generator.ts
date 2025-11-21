@@ -140,18 +140,15 @@ export class StandaloneGoGenerator {
   }): GoEmitterResult {
     // Input validation
     if (!model.name || typeof model.name !== "string") {
-      return ErrorFactory.createModelValidationError(
-        "Invalid model: name must be a non-empty string",
-        model.name || "unknown",
-        InvalidModelReason.EmptyName,
-        {
-          resolution: "Provide a valid model name",
+      return ErrorFactory.createValidationError(
+        "Invalid model: name must be a non-empty string", {
+          modelName: model.name || "unknown",
         },
       );
     }
 
     if (!model.properties || model.properties.size === 0) {
-      return ErrorFactory.createModelValidationError(
+      return ErrorFactory.createValidationError(
         "Invalid model: must have at least one property",
         model.name,
         InvalidModelReason.NoProperties,
