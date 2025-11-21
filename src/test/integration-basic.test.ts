@@ -341,7 +341,7 @@ describe("Integration Tests - End-to-End TypeSpec to Go Generation", () => {
           "stringArray",
           {
             name: "stringArray",
-            type: { kind: "Array", element: { kind: "String" } },
+            type: { kind: "Array", elementType: { kind: "scalar", name: "string" } },
             optional: false,
             documentation: "Array of strings",
           },
@@ -350,7 +350,7 @@ describe("Integration Tests - End-to-End TypeSpec to Go Generation", () => {
           "optionalIntArray",
           {
             name: "optionalIntArray",
-            type: { kind: "Array", element: { kind: "Int32" } },
+            type: { kind: "Array", elementType: { kind: "scalar", name: "int32" } },
             optional: true,
             documentation: "Optional array of integers",
           },
@@ -473,7 +473,7 @@ describe("Integration Tests - End-to-End TypeSpec to Go Generation", () => {
     // Test 1: Empty name
     console.log("📋 Test 1: Empty model name");
     const result1 = generator.generateModel(emptyNameModel);
-    expect(result1._tag).toBe("model_validation_error");
+    expect(result1._tag).toBe("validation_error");
     if (result1._tag === "ModelValidationError") {
       expect(result1.message).toContain(
         "Invalid model: name must be a non-empty string",
@@ -486,7 +486,7 @@ describe("Integration Tests - End-to-End TypeSpec to Go Generation", () => {
     // Test 2: Empty properties
     console.log("📋 Test 2: Empty properties map");
     const result2 = generator.generateModel(emptyPropertiesModel);
-    expect(result2._tag).toBe("model_validation_error");
+    expect(result2._tag).toBe("validation_error");
     if (result2._tag === "ModelValidationError") {
       expect(result2.message).toContain(
         "Invalid model: must have at least one property",

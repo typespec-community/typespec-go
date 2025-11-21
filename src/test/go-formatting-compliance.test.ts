@@ -230,7 +230,7 @@ go 1.21
           "tags",
           {
             name: "tags",
-            type: { kind: "Array", element: { kind: "String" } },
+            type: { kind: "Array", elementType: { kind: "scalar", name: "string" } },
             optional: true,
             documentation: "Tag array",
           },

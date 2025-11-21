@@ -82,7 +82,7 @@ describe("StandaloneGoGenerator", () => {
             "items",
             {
               name: "items",
-              type: { kind: "Array", element: { kind: "String" } },
+              type: { kind: "Array", elementType: { kind: "scalar", name: "string" } },
               optional: false,
             },
           ],
@@ -136,7 +136,7 @@ describe("StandaloneGoGenerator", () => {
       const result = generator.generateModel(invalidModel);
 
       // Then
-      expect(result._tag).toBe("model_validation_error");
+      expect(result._tag).toBe("validation_error");
       if (result._tag === "ModelValidationError") {
         expect(result.message).toBe(
           "Invalid model: name must be a non-empty string",

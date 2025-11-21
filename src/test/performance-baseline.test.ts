@@ -337,7 +337,7 @@ class PerformanceTester {
             "tags",
             {
               name: "tags",
-              type: { kind: "Array", element: { kind: "String" } },
+              type: { kind: "Array", elementType: { kind: "scalar", name: "string" } },
               optional: true,
             },
           ],

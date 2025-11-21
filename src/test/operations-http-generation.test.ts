@@ -101,7 +101,7 @@ describe("Operations HTTP Generation", () => {
           ["limit", { name: "limit", type: { kind: "Int32" }, location: "query", optional: true }],
           ["offset", { name: "offset", type: { kind: "Int32" }, location: "query", optional: true }],
         ]),
-        returnType: { kind: "array", element: { kind: "model", name: "User" } },
+        returnType: { kind: "Array", elementType: { kind: "model", name: "User" } },
       });
 
       const httpHandlers = generator.generateGoHttpHandlers(operations);

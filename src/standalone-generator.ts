@@ -92,7 +92,20 @@ export class StandaloneGoGenerator {
   private static convertToGoTypeMapperFormat(
     type: TypeSpecPropertyNode["type"],
   ): any {
-    // Map StandaloneGoGenerator types to GoTypeMapper types
+    // Special handling for Array types - preserve element type information
+    if (type.kind === "Array" && (type as any).elementType) {
+      return {
+        kind: "Array",
+        elementType: this.convertToGoTypeMapperFormat((type as any).elementType),
+      };
+    }
+
+    // If already in proper TypeSpec format (scalar, model, etc.), pass through
+    if (type.kind === "scalar" || type.kind === "model" || type.kind === "union" || type.kind === "template") {
+      return type;
+    }
+
+    // Map legacy StandaloneGoGenerator types to GoTypeMapper types
     const typeMapping: Record<string, any> = {
       Int8: { kind: "scalar", name: "int8" },
       Int16: { kind: "scalar", name: "int16" },
@@ -111,7 +124,6 @@ export class StandaloneGoGenerator {
       template: { kind: "generic", name: "T" }, // Template support - will be overridden per field
       Model: { kind: "struct", name: "struct" }, // Model support
       model: { kind: "struct", name: "struct" }, // Model support
-      Array: { kind: "slice", name: "[]" }, // Array support
     };
 
     const mapped = typeMapping[type.kind];

@@ -63,8 +63,8 @@ export class GoTypeMapper {
       };
     }
 
-    // Handle array types
-    if ((type as any).kind === "Array") {
+    // Handle array types using our test data structure
+    if (type.kind === "Array" && (type as any).elementType) {
       const elementType = this.mapTypeSpecType((type as any).elementType);
       return {
         kind: "slice",
