@@ -88,71 +88,39 @@ export class GoTypeMapper {
 
     // Handle array models using proper type guard
     if (isModelType(type) && hasIndexer(type)) {
-      const elementType = this.mapTypeSpecType(getArrayElementType(type));
-      return {
-        kind: "slice",
-        elementType,
-        usePointerForOptional: false,
-      };
+      const elementType = getArrayElementType(type);
+      if (elementType) {
+        const mappedElementType = this.mapTypeSpecType(elementType);
+        return {
+          kind: "slice",
+          elementType: mappedElementType,
+          usePointerForOptional: false,
+        };
+      }
     }
 
-    // Handle Array pattern from test data (kind: "Array", elementType: Type)
-    if (type.kind === "Array" && (type as any).elementType && (type as any).elementType !== undefined) {
-      const elementType = this.mapTypeSpecType((type as any).elementType);
-      return {
-        kind: "slice",
-        elementType,
-        usePointerForOptional: false,
-      };
-    }
-
-    // Handle union types - ENHANCED FEATURE!
-    if ((type as any).kind === "union") {
-      const unionVariants = (type as any).variants?.map((variant: any) => 
+    // Handle union types with proper type guard
+    if (isUnionType(type)) {
+      const unionVariants = getUnionVariants(type);
+      const mappedVariants = unionVariants?.map(variant => 
         this.mapTypeSpecType(variant.type)
       ) || [];
       
-      const unionName = GoTypeStringGenerator.toPascalCase((type as any).name || "Union");
+      const unionName = GoTypeStringGenerator.toPascalCase(getUnionName(type));
       return {
         kind: "union",
         name: unionName,
-        unionVariants,
+        unionVariants: mappedVariants,
         usePointerForOptional: false,
       };
     }
 
-    // Handle template types - ENHANCED FEATURE!
-    if ((type as any).kind === "template") {
-      const templateName = (type as any).name || "T";
-      const templateParams = (type as any).template || "T";
-      return {
-        kind: "template",
-        name: templateName,
-        template: templateParams,
-        usePointerForOptional: false,
-      };
-    }
-
-    // Handle composition types (spread operator) - ENHANCED FEATURE!
-    if ((type as any).kind === "spread") {
-      const baseTypes = (type as any).types?.map((baseType: any) => 
-        this.mapTypeSpecType(baseType)
-      ) || [];
-        
-      const spreadName = GoTypeStringGenerator.toPascalCase((type as any).name || "Spread");
-      return {
-        kind: "spread",
-        name: spreadName,
-        baseTypes,
-        usePointerForOptional: false,
-      };
-    }
-
-    // Handle enum types
-    if ((type as any).kind === "enum") {
+    // Handle enum types with proper type guard
+    if (isEnumType(type)) {
+      const enumName = getEnumName(type);
       return {
         kind: "enum",
-        name: GoTypeStringGenerator.toPascalCase((type as any).name || "Enum"),
+        name: GoTypeStringGenerator.toPascalCase(enumName),
         usePointerForOptional: false,
       };
     }

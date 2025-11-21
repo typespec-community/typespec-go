@@ -74,7 +74,7 @@ async function generateModelsGoFile(models: Model[], context: EmitContext): Prom
   const errorModels: Model[] = [];
   
   for (const model of models) {
-    if (hasErrorDecorator(model)) {
+    if (hasErrorDecorator(context.program, model)) {
       errorModels.push(model);
     } else {
       regularModels.push(model);
@@ -85,7 +85,7 @@ async function generateModelsGoFile(models: Model[], context: EmitContext): Prom
   if (regularModels.length > 0) {
     goContent += `// Regular Models\n\n`;
     for (const model of regularModels) {
-      const modelCode = generateModelGoStruct(model);
+      const modelCode = generateModelGoStruct(model, context.program);
       goContent += modelCode + "\n\n";
     }
   }
@@ -94,7 +94,7 @@ async function generateModelsGoFile(models: Model[], context: EmitContext): Prom
   if (errorModels.length > 0) {
     goContent += `// Error Models (generated from @error decorator)\n\n`;
     for (const model of errorModels) {
-      const errorCode = generateGoError(model);
+      const errorCode = generateGoError(model, context.program);
       goContent += errorCode + "\n\n";
     }
   }
@@ -105,9 +105,9 @@ async function generateModelsGoFile(models: Model[], context: EmitContext): Prom
 /**
  * Generate Go struct code for a single TypeSpec model
  */
-function generateModelGoStruct(model: Model): string {
+function generateModelGoStruct(model: Model, program: Program): string {
   const modelName = getModelName(model);
-  const isError = hasErrorDecorator(model);
+  const isError = hasErrorDecorator(program, model);
   
   // Add comment for error models
   const errorComment = isError ? `  // Error model generated from @error decorator\n` : "";
@@ -144,7 +144,7 @@ function generateModelGoStruct(model: Model): string {
 /**
  * Generate Go native error code for @error decorated models
  */
-function generateGoError(model: Model): string {
+function generateGoError(model: Model, program: Program): string {
   const modelName = getModelName(model);
   let errorCode = "";
 
@@ -272,8 +272,9 @@ function mapTypeSpecToGo(type: Type): string {
     "Float64": "float64"
   };
   
-  if (numericTypeMap[type.kind as string]) {
-    return numericTypeMap[type.kind as string];
+  const kind = type.kind;
+  if (numericTypeMap[kind]) {
+    return numericTypeMap[kind];
   }
   
   // Handle Array pattern using TypeSpec compiler types

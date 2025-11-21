@@ -32,6 +32,9 @@ export interface TypeSpecTypeNode {
     | "Scalar"
     | "Tuple"
     | "UnionVariant";
+  readonly name?: string;
+  readonly properties?: ReadonlyMap<string, TypeSpecPropertyNode>;
+  readonly optional?: boolean;
 }
 
 /**

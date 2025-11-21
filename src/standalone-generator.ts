@@ -19,6 +19,7 @@ import type {
   TypeSpecPropertyNode,
   GoEmitterOptions,
 } from "./types/typespec-domain.js";
+import type { Model, Scalar, Union, Enum, Type } from "@typespec/compiler";
 
 /**
  * Go type mapping configuration
@@ -65,12 +66,17 @@ export class StandaloneGoGenerator {
     fieldName?: string,
   ): GoTypeMapping {
     // Special handling for Model types (arrays are models in TypeSpec)
-    if (type.kind === "Model" && (type as any).indexer?.value) {
-      const elementType = this.mapTypeSpecType((type as any).indexer.value);
-      return {
-        goType: `[]${elementType.goType}`,
-        usePointerForOptional: true, // Arrays should use pointer when optional
-      };
+    if (type.kind === "Model") {
+      const modelType = type as Model;
+      if (modelType.indexer?.value) {
+        // Convert Type to TypeSpecTypeNode for mapping
+        const elementTypeSpec = this.convertTypeSpecToTypeNode(modelType.indexer.value);
+        const elementType = this.mapTypeSpecType(elementTypeSpec);
+        return {
+          goType: `[]${elementType.goType}`,
+          usePointerForOptional: true, // Arrays should use pointer when optional
+        };
+      }
     }
 
     // Convert StandaloneGoGenerator type format to GoTypeMapper format
@@ -83,6 +89,48 @@ export class StandaloneGoGenerator {
       goType: goTypeString,
       usePointerForOptional: mappedGoType.usePointerForOptional || true,
     };
+  }
+
+  /**
+   * Convert TypeSpec Type to TypeSpecTypeNode format
+   * TYPE SAFETY: Ensures compatibility between type systems
+   */
+  private static convertTypeSpecToTypeNode(type: Type): TypeSpecPropertyNode["type"] {
+    // Map TypeSpec Type to our domain type
+    if (type.kind === "Model") {
+      return {
+        kind: "Model",
+        name: (type as Model).name || "Unknown",
+        properties: new Map(),
+      } as TypeSpecPropertyNode["type"];
+    }
+    
+    if (type.kind === "Scalar") {
+      return {
+        kind: "Scalar",
+        name: (type as Scalar).name || "Unknown",
+      } as TypeSpecPropertyNode["type"];
+    }
+    
+    if (type.kind === "Union") {
+      return {
+        kind: "Union",
+        name: (type as Union).name || "UnknownUnion",
+      } as TypeSpecPropertyNode["type"];
+    }
+    
+    if (type.kind === "Enum") {
+      return {
+        kind: "Enum",
+        name: (type as Enum).name || "UnknownEnum",
+      } as TypeSpecPropertyNode["type"];
+    }
+    
+    // Fallback for unknown types
+    return {
+      kind: "Scalar",
+      name: "interface{}",
+    } as TypeSpecPropertyNode["type"];
   }
 
   /**
@@ -101,7 +149,7 @@ export class StandaloneGoGenerator {
     }
 
     // If already in proper TypeSpec format (scalar, model, etc.), pass through
-    if (type.kind === "Scalar" || type.kind === "Model" || type.kind === "Union" || "template" in type || type.kind === "Array") {
+    if (type.kind === "Scalar" || type.kind === "Model" || type.kind === "Union" || "template" in type) {
       return type;
     }
 
@@ -258,26 +306,25 @@ export class StandaloneGoGenerator {
     let goType;
     
     // TEMPLATE HANDLING: Special case for generic/template types  
-    if (property.type.kind === "Model" && (property.type as any).template) {
-      // Extract template parameter name (e.g., "T" from "<T>" or "User" from "PaginatedResponse<User>")
-      const templateInfo = property.type as any;
-      if (templateInfo.name) {
-        // Simple template parameter
-        goType = templateInfo.name;
-      } else if (model?.template && model.template.includes('<')) {
-        // Template instantiation like "PaginatedResponse<User>"
-        const matches = model?.template?.match(/(\w+)<([^>]+)>/);
-        if (matches) {
-          goType = matches[2]; // Extract instantiated type (e.g., "User")
-        } else {
-          goType = "interface{}";
-        }
+    if (property.type.kind === "Model") {
+      const modelType = property.type as Model;
+      if (modelType.name) {
+        // MODEL HANDLING: Use model name directly
+        goType = modelType.name;
       } else {
-        goType = "T"; // Default template parameter
+        // TEMPLATE HANDLING: Handle template models
+        if (model?.template && model.template.includes('<')) {
+          // Template instantiation like "PaginatedResponse<User>"
+          const matches = model?.template?.match(/(\w+)<([^>]+)>/);
+          if (matches) {
+            goType = matches[2]; // Extract instantiated type (e.g., "User")
+          } else {
+            goType = "interface{}";
+          }
+        } else {
+          goType = "T"; // Default template parameter
+        }
       }
-    } else if (property.type.kind === "Model") {
-      // MODEL HANDLING: Use model name directly
-      goType = (property.type as any).name || (property.type as any).modelName || mapping.goType;
     } else {
       goType = property.optional && mapping.usePointerForOptional
         ? `*${mapping.goType}`
@@ -288,12 +335,7 @@ export class StandaloneGoGenerator {
       ? `json:"${property.name},omitempty"`
       : `json:"${property.name}"`;
 
-    // Add template comment for template fields
-    const templateComment = (property.type.kind === "Model" && (property.type as any).template) 
-      ? `  // Template type ${(property.type as any).name || "T"}`
-      : "";
-
-    return `  ${goName} ${goType} \`${jsonTag}\`${templateComment}`;
+    return `  ${goName} ${goType} \`${jsonTag}\``;
   }
 
   /**
