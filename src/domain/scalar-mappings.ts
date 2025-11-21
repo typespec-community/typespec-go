@@ -71,3 +71,27 @@ export const SCALAR_TYPE_MAPPINGS: Record<string, BasicMappedType> = {
     usePointerForOptional: false,
   },
 };
+
+// Uppercase mappings for test data compatibility
+export const UPPER_CASE_SCALAR_MAPPINGS: Record<string, BasicMappedType> = {
+  String: {
+    name: "string",
+    requiresImport: false,
+    usePointerForOptional: true,
+  },
+  Boolean: {
+    name: "bool",
+    requiresImport: false,
+    usePointerForOptional: true,
+  },
+  Int8: { name: "int8", requiresImport: false, usePointerForOptional: true },
+  Int16: { name: "int16", requiresImport: false, usePointerForOptional: true },
+  Int32: { name: "int32", requiresImport: false, usePointerForOptional: true },
+  Int64: { name: "int64", requiresImport: false, usePointerForOptional: true },
+  Uint8: { name: "uint8", requiresImport: false, usePointerForOptional: true },
+  Uint16: { name: "uint16", requiresImport: false, usePointerForOptional: true },
+  Uint32: { name: "uint32", requiresImport: false, usePointerForOptional: true },
+  Uint64: { name: "uint64", requiresImport: false, usePointerForOptional: true },
+  Float32: { name: "float32", requiresImport: false, usePointerForOptional: true },
+  Float64: { name: "float64", requiresImport: false, usePointerForOptional: true },
+};

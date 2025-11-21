@@ -12,9 +12,25 @@ import type {
   Type as TypeSpecType,
 } from "@typespec/compiler";
 import type { MappedGoType } from "./type-interfaces.js";
-import { SCALAR_TYPE_MAPPINGS } from "./scalar-mappings.js";
+import { SCALAR_TYPE_MAPPINGS, UPPER_CASE_SCALAR_MAPPINGS } from "./scalar-mappings.js";
 import { GoTypeStringGenerator } from "./go-type-string-generator.js";
 import { isArrayModelType } from "@typespec/compiler";
+import {
+  isScalarType,
+  isModelType,
+  isUnionType,
+  isEnumType,
+  isTemplateModel,
+  hasIndexer,
+  getScalarName,
+  getModelName,
+  getUnionName,
+  getEnumName,
+  getTemplateParameters,
+  getArrayElementType,
+  getUnionVariants,
+  TypeSpecTypeSafeAccess
+} from "../types/typespec-type-guards.js";
 
 /**
  * TypeSpec to Go type mapper
@@ -28,9 +44,9 @@ export class GoTypeMapper {
    * CORE FUNCTIONALITY: Primary type mapping logic with uint detection
    */
   static mapTypeSpecType(type: TypeSpecType, fieldName?: string): MappedGoType {
-    // Handle scalar types using proper TypeSpec kind checking
-    if ((type as any).kind === "scalar") {
-      const scalarName = (type as any).name?.toLowerCase();
+    // Handle scalar types using proper type guard
+    if (isScalarType(type)) {
+      const scalarName = getScalarName(type).toLowerCase();
       const mapping = SCALAR_TYPE_MAPPINGS[scalarName];
 
       if (!mapping) {
@@ -54,18 +70,25 @@ export class GoTypeMapper {
       };
     }
 
-    // Handle model types
-    if ((type as any).kind === "model") {
+    // Handle test data with kind-based types (fallback for development/testing)
+    if ("kind" in type && typeof (type as any).kind === "string") {
+      const testKind = (type as any).kind;
+      
+      
+    }
+
+    // Handle model types using proper type guard
+    if (isModelType(type)) {
       return {
         kind: "struct",
-        name: GoTypeStringGenerator.toPascalCase((type as any).name || "Model"),
+        name: GoTypeStringGenerator.toPascalCase(getModelName(type)),
         usePointerForOptional: true,
       };
     }
 
-    // Handle array types using our test data structure
-    if (type.kind === "Model" && (type as any).indexer?.value) {
-      const elementType = this.mapTypeSpecType((type as any).indexer.value);
+    // Handle array models using proper type guard
+    if (isModelType(type) && hasIndexer(type)) {
+      const elementType = this.mapTypeSpecType(getArrayElementType(type));
       return {
         kind: "slice",
         elementType,
@@ -74,7 +97,7 @@ export class GoTypeMapper {
     }
 
     // Handle Array pattern from test data (kind: "Array", elementType: Type)
-    if (type.kind === "Array" && (type as any).elementType) {
+    if (type.kind === "Array" && (type as any).elementType && (type as any).elementType !== undefined) {
       const elementType = this.mapTypeSpecType((type as any).elementType);
       return {
         kind: "slice",

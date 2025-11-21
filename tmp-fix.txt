@@ -1,0 +1,7 @@
+// File: src/standalone-generator.ts (line 104 fix)
+
+// Find and replace this exact line:
+// OLD: if (type.kind === "Scalar" || type.kind === "Model" || type.kind === "Union" || type.kind === "Array" || "template" in type) {
+// NEW: if (type.kind === "Scalar" || type.kind === "Model" || type.kind === "Union" || "template" in type) {
+
+// Remove the type.kind === "Array" check as TypeSpec doesn't use this kind

@@ -24,7 +24,7 @@ import type {
  * Determines if a Type is a Model type with proper type safety.
  */
 export function isModelType(type: Type): type is Model {
-  return type.kind === "Model";
+  return type.kind === "Model" || type.kind === "model";
 }
 
 /**
@@ -33,7 +33,7 @@ export function isModelType(type: Type): type is Model {
  * Determines if a Type is a Scalar type with proper type safety.
  */
 export function isScalarType(type: Type): type is Scalar {
-  return type.kind === "Scalar";
+  return type.kind === "Scalar" || type.kind === "scalar";
 }
 
 /**
@@ -42,7 +42,7 @@ export function isScalarType(type: Type): type is Scalar {
  * Determines if a Type is a Union type with proper type safety.
  */
 export function isUnionType(type: Type): type is Union {
-  return type.kind === "Union";
+  return type.kind === "Union" || type.kind === "union";
 }
 
 /**
@@ -51,7 +51,7 @@ export function isUnionType(type: Type): type is Union {
  * Determines if a Type is an Enum type with proper type safety.
  */
 export function isEnumType(type: Type): type is Enum {
-  return type.kind === "Enum";
+  return type.kind === "Enum" || type.kind === "enum";
 }
 
 /**
@@ -180,6 +180,40 @@ export function getModelName(model: Model): string {
  */
 export function getUnionName(union: Union): string {
   return union.name || "Union";
+}
+
+/**
+ * TypeGuard: Error Model Detection
+ * 
+ * Determines if a Model is decorated with @error using TypeSpec compiler API.
+ */
+export function isErrorModel(model: Model): boolean {
+  // Use TypeSpec compiler's built-in error detection
+  // @error decorator sets the __error decorator on the model
+  return (model as any).__error === true || 
+         (model as any).decorators?.some((dec: any) => dec.name === "$error");
+}
+
+/**
+ * TypeGuard: Error Type Detection
+ * 
+ * Determines if a Type is an ErrorType (TypeSpec v1.7.0+).
+ */
+export function isErrorType(type: Type): boolean {
+  return type.kind === "ErrorType";
+}
+
+/**
+ * TypeGuard: Error Model Detection
+ * 
+ * Determines if a Model has @error decorator using TypeSpec compiler API.
+ */
+export function hasErrorDecorator(model: Model): boolean {
+  // Check for @error decorator on model
+  // Use TypeSpec compiler's decoration API
+  return ((model as any).__error === true) || 
+         ((model as any).decorators && 
+          (model as any).decorators.some((dec: any) => dec.name === "$error"));
 }
 
 /**
