@@ -28,6 +28,9 @@ describe("StandaloneGoGenerator", () => {
       const result = generator.generateModel(model);
 
       // Then
+      if (result._tag !== "success") {
+        console.error("❌ GENERATION FAILED:", result);
+      }
       expect(result._tag).toBe("success");
       if (result._tag === "Success") {
         const goCode = result.data.get("User.go");
@@ -60,6 +63,9 @@ describe("StandaloneGoGenerator", () => {
       const result = generator.generateModel(model);
 
       // Then
+      if (result._tag !== "success") {
+        console.error("❌ GENERATION FAILED:", result);
+      }
       expect(result._tag).toBe("success");
       if (result._tag === "Success") {
         const goCode = result.data.get("Product.go");
@@ -93,6 +99,9 @@ describe("StandaloneGoGenerator", () => {
       const result = generator.generateModel(model);
 
       // Then
+      if (result._tag !== "success") {
+        console.error("❌ GENERATION FAILED:", result);
+      }
       expect(result._tag).toBe("success");
       if (result._tag === "Success") {
         const goCode = result.data.get("Order.go");
@@ -116,6 +125,9 @@ describe("StandaloneGoGenerator", () => {
       const result = generator.generateModel(model);
 
       // Then
+      if (result._tag !== "success") {
+        console.error("❌ GENERATION FAILED:", result);
+      }
       expect(result._tag).toBe("success");
       if (result._tag === "Success") {
         const goCode = result.data.get("Settings.go");

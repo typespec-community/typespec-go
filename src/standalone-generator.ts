@@ -148,6 +148,11 @@ export class StandaloneGoGenerator {
       };
     }
 
+    // Handle domain Array types (from test data)
+    if (type.kind === "Array") {
+      return type; // Already in correct format
+    }
+
     // If already in proper TypeSpec format (scalar, model, etc.), pass through
     if (type.kind === "Scalar" || type.kind === "Model" || type.kind === "Union" || "template" in type) {
       return type;
