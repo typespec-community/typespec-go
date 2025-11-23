@@ -220,7 +220,8 @@ export class ComprehensiveTypeMapper {
   ): MappedGoType {
     // Convert UniversalType to TypeSpec Type for compatibility
     if (type === null || typeof type !== "object") {
-      return GoTypeMapper.mapTypeSpecType({ kind: "String", name: "string" }, fieldName);
+      // For null/undefined types, use string directly as fallback
+      return GoTypeMapper.mapTypeSpecType("string" as any, fieldName);
     }
     
     return GoTypeMapper.mapTypeSpecType(type as any, fieldName);

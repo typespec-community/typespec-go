@@ -95,7 +95,7 @@ export class LegacyTypeAdapter {
       if (legacyType.kind === "Array" && legacyType.elementType) {
         const convertedElement = legacyType.elementType ? 
           this.convertLegacyToTypeSpecFormat(legacyType.elementType) : 
-          { kind: "String", name: "string" };
+          "string";
         return {
           kind: "Array",
           elementType: convertedElement,

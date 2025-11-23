@@ -246,16 +246,16 @@ export class TypeSpecVisibilityExtractionService {
    * Check if property has @visibility decorator using TypeSpec API
    */
   private hasVisibilityDecorator(program: Program, property: TypeSpecModelProperty): boolean {
-    // Check if property has any visibility modifiers
-    return isVisible(program, property, { operation: () => true, property: () => true });
+    // Check if property has any visibility modifiers (always returns true if no constraints)
+    return isVisible(program, property, {});
   }
 
   /**
    * Check if property has @invisible decorator using TypeSpec API
    */
   private hasInvisibleDecorator(program: Program, property: TypeSpecModelProperty): boolean {
-    // Invisible means no visibility filters pass
-    return !isVisible(program, property, { operation: () => true, property: () => true });
+    // Invisible means no visibility filters pass (always returns false if any constraints)
+    return !isVisible(program, property, { none: new Set() });
   }
 
   /**

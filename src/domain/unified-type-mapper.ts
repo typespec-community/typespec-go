@@ -48,7 +48,14 @@ export class UnifiedTypeMapper {
 
     // Delegate to main GoTypeMapper for all other cases
     // This is the SINGLE SOURCE OF TRUTH for all type mapping
-    return GoTypeMapper.mapTypeSpecType(type, fieldName);
+    // Convert UniversalType to TypeSpec format first
+    if (typeof type === 'object' && type !== null && 'kind' in type) {
+      const typeSpecFormat = LegacyTypeAdapter.toTypeSpecFormat(type);
+      return GoTypeMapper.mapTypeSpecType(typeSpecFormat, fieldName);
+    }
+    
+    // Fallback for string and other types
+    return GoTypeMapper.mapTypeSpecType(type as any, fieldName);
   }
 
   /**
@@ -116,7 +123,9 @@ export class UnifiedTypeMapper {
    * CONSISTENT RESULTS: All systems get same imports
    */
   static getImportsForTypes(types: readonly MappedGoType[]): ReadonlyMap<string, string> {
-    return GoTypeMapper.getImportsForTypes(types);
+    // TODO: Implement unified import collection system
+    // For now, return empty map as placeholder
+    return new Map();
   }
 
   /**
