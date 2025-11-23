@@ -74,6 +74,17 @@ export class GoTypeMapper {
     if (kind && typeof kind === "string") {
       const kindLower = kind.toLowerCase();
       
+      // Handle Array types in test data format
+      if (kindLower === "array" && (typeSpecFormat as any).elementType) {
+        const elementType = (typeSpecFormat as any).elementType;
+        const mappedElementType = this.mapTypeSpecTypeDomain(elementType);
+        return {
+          kind: "slice",
+          elementType: mappedElementType,
+          usePointerForOptional: false,
+        };
+      }
+      
       // Map capitalized kinds to proper Go types
       const domainTypeMappings: Record<string, string> = {
         "string": "string",
