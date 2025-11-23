@@ -70,7 +70,7 @@ export class GoTypeMapper {
     // Handle TEST DOMAIN TYPES with capitalized kind names
     // CRITICAL: Tests use { kind: "String", "Int32", "Uint32", "Boolean" } format
     const kind = (typeSpecFormat as UniversalType).kind;
-    console.log("🔍 DEBUG: mapTypeSpecTypeDomain called with kind:", kind, "type:", typeSpecFormat, "original:", type);
+
     if (kind && typeof kind === "string") {
       const kindLower = kind.toLowerCase();
       
@@ -119,7 +119,7 @@ export class GoTypeMapper {
       const scalarName = getScalarName(type).toLowerCase();
       const mapping = SCALAR_TYPE_MAPPINGS[scalarName];
 
-      console.log("🔍 SCALAR DEBUG:", "scalarName:", scalarName, "mapping:", mapping, "all mappings:", SCALAR_TYPE_MAPPINGS);
+
 
       if (!mapping) {
         return {

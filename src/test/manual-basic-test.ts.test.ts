@@ -45,12 +45,10 @@ describe("Manual Basic Test", () => {
       const result = generator.generateModel(model);
 
       // Handle result using proper discriminated union
-      console.log("🔍 RESULT DEBUG:", JSON.stringify(result, null, 2));
+
       
       if (result._tag === "success") {
         const goCode = Array.from(result.data.values())[0];
-        console.log("✅ SUCCESS: Go code generated:");
-        console.log(goCode);
         
         // Verify basic structure
         expect(goCode).toContain("package api");

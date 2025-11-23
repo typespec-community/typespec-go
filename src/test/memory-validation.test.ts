@@ -70,14 +70,6 @@ class MemoryValidationSuite {
       efficiencyMetrics,
       leakTestResult,
     );
-
-    console.log("\n🔍 Memory Analysis Results:");
-    console.log(
-      `   Efficiency: ${efficiencyAnalysis.memoryEfficiency} (${efficiencyAnalysis.scalingFactor.toFixed(2)}x scaling)`,
-    );
-    console.log(
-      `   Leak Status: ${leakAnalysis.leakSeverity} (${leakAnalysis.recommendation})`,
-    );
     console.log(
       `   Threshold Validation: ${thresholdValidation.passed ? "✅ PASSED" : "❌ FAILED"}`,
     );
