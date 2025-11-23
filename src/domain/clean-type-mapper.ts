@@ -15,8 +15,9 @@ import type {
   Union,
   Enum,
 } from "@typespec/compiler";
-import { MappedGoType, TypeGuards, TypeConstructors, TypeValidators } from "./type-interfaces.js";
+import type { MappedGoType, TypeGuards, TypeConstructors, TypeValidators } from "./type-interfaces.js";
 import { SCALAR_TYPE_MAPPINGS, UPPER_CASE_SCALAR_MAPPINGS } from "./scalar-mappings.js";
+import { toGoIdentifier } from "./error-entities.js";
 import type { UniversalType } from "./legacy-type-adapter.js";
 
 /**
@@ -63,7 +64,10 @@ export class CleanTypeMapper {
 
     // Handle union types
     if (kind.toLowerCase() === "union") {
-      const unionType = this.handleUnionType(type);
+      // Check if union is wrapped in type property (common test pattern)
+      const actualType = (type as any).type || type;
+      const unionName = fieldName || actualType.name || "interface{}";
+      const unionType = this.handleUnionType(actualType, unionName);
       if (unionType) {
         return unionType;
       }
@@ -108,6 +112,10 @@ export class CleanTypeMapper {
     }
     
     if (TypeGuards.isUnion(type)) {
+      // Handle empty unions gracefully
+      if (!type.unionVariants || type.unionVariants.length === 0) {
+        return "interface{}";
+      }
       return type.name || "interface{}"; // Union interface name
     }
     
@@ -188,18 +196,19 @@ export class CleanTypeMapper {
     return null;
   }
 
-  private static handleUnionType(type: any): MappedGoType | null {
-    // Handle TypeSpec Union format
+  private static handleUnionType(type: any, name?: string): MappedGoType | null {
+    
+    // Handle TypeSpec Union format (capitalized)
     if (type && typeof type === "object" && type.kind === "Union") {
       const variants = this.extractUnionVariants(type);
       if (variants && variants.length > 0) {
-        return TypeConstructors.union(variants, type.name);
+        return TypeConstructors.union(variants, name || type.name);
       }
     }
-    // Handle lowercase union kind
-    if (type && typeof type === "object" && type.kind === "union" && type.unionVariants) {
-      const mappedVariants = type.unionVariants.map((v: any) => this.mapType(v));
-      return TypeConstructors.union(mappedVariants, type.name);
+    // Handle lowercase union kind (test format)
+    if (type && typeof type === "object" && type.kind === "union") {
+      const mappedVariants = type.variants.map((v: any) => this.mapType(v.type || v));
+      return TypeConstructors.union(mappedVariants, name || type.name);
     }
     return null;
   }

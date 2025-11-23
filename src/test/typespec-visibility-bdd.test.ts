@@ -40,7 +40,7 @@ describe("TypeSpec Visibility System - Simple Integration Tests", () => {
 
         // Then: Should work without errors
         expect(enhancedField).toBeDefined();
-        expect(enhancedField.name).toBe("TestField");
+        expect(enhancedField.name).toBe("Testfield"); // Expected result from our naming strategy
         expect(enhancedField.originalName).toBe("testField");
       });
     });

@@ -17,8 +17,27 @@ import type {
   TypeSpecPropertyVisibility, 
   TypeSpecVisibilityLifecycle 
 } from "../domain/typespec-visibility-domain.js";
-import { Logger, LogContext } from "../domain/structured-logging.js";
 import { ErrorFactory } from "../domain/error-factory.js";
+
+// Simple logger fallback for testing
+const SimpleLogger = {
+  debug: (context: string, message: string, data?: any) => {
+    if (process.env.DEBUG === "true") {
+      console.debug(`[${context}] ${message}`, data);
+    }
+  },
+  info: (context: string, message: string, data?: any) => {
+    console.log(`[${context}] ${message}`, data);
+  },
+  warn: (context: string, message: string, data?: any) => {
+    console.warn(`[${context}] ${message}`, data);
+  },
+  error: (context: string, message: string, data?: any) => {
+    console.error(`[${context}] ${message}`, data);
+  }
+};
+
+type LogContext = string;
 
 /**
  * Extracted TypeSpec Decorator Information
@@ -52,13 +71,7 @@ export class TypeSpecVisibilityExtractionService {
   private static readonly VISIBILITY_DECORATOR = "@visibility";
   private static readonly INVISIBLE_DECORATOR = "@invisible";
   
-  private readonly logger: Logger;
-  private readonly logContext: LogContext;
-
-  constructor() {
-    this.logger = new Logger();
-    this.logContext = "TypeSpecVisibilityExtractionService";
-  }
+  private readonly logContext: LogContext = "TypeSpecVisibilityExtractionService";
 
   /**
    * Extract visibility information from a TypeSpec property
@@ -77,7 +90,7 @@ export class TypeSpecVisibilityExtractionService {
     const extractionStart = performance.now();
 
     try {
-      this.logger.debug(this.logContext, "Starting visibility extraction", {
+      SimpleLogger.debug(this.logContext, "Starting visibility extraction", {
         propertyName: property.name,
         propertyType: property.type.kind,
         hasDecorators: !!property.decorators
@@ -106,7 +119,7 @@ export class TypeSpecVisibilityExtractionService {
       this.validateVisibilityResult(property.name, finalVisibility);
 
       const extractionTime = performance.now() - extractionStart;
-      this.logger.debug(this.logContext, "Visibility extraction completed", {
+      SimpleLogger.debug(this.logContext, "Visibility extraction completed", {
         propertyName: property.name,
         extractionTime: `${extractionTime.toFixed(4)}ms`,
         finalVisibility: finalVisibility
@@ -115,7 +128,7 @@ export class TypeSpecVisibilityExtractionService {
       return finalVisibility;
 
     } catch (error) {
-      this.logger.error(this.logContext, "Visibility extraction failed", {
+      SimpleLogger.error(this.logContext, "Visibility extraction failed", {
         propertyName: property.name,
         error: error instanceof Error ? error.message : String(error),
         stackTrace: error instanceof Error ? error.stack : undefined
@@ -144,7 +157,7 @@ export class TypeSpecVisibilityExtractionService {
     const batchStart = performance.now();
 
     try {
-      this.logger.debug(this.logContext, "Starting batch visibility extraction", {
+      SimpleLogger.debug(this.logContext, "Starting batch visibility extraction", {
         propertyCount: properties.length
       });
 
@@ -155,7 +168,7 @@ export class TypeSpecVisibilityExtractionService {
       const batchTime = performance.now() - batchStart;
       const avgTime = batchTime / properties.length;
 
-      this.logger.info(this.logContext, "Batch visibility extraction completed", {
+      SimpleLogger.info(this.logContext, "Batch visibility extraction completed", {
         propertyCount: properties.length,
         totalTime: `${batchTime.toFixed(4)}ms`,
         avgTime: `${avgTime.toFixed(4)}ms`,
@@ -165,7 +178,7 @@ export class TypeSpecVisibilityExtractionService {
       return results;
 
     } catch (error) {
-      this.logger.error(this.logContext, "Batch visibility extraction failed", {
+      SimpleLogger.error(this.logContext, "Batch visibility extraction failed", {
         propertyCount: properties.length,
         error: error instanceof Error ? error.message : String(error)
       });
@@ -186,7 +199,7 @@ export class TypeSpecVisibilityExtractionService {
       return [];
     }
 
-    this.logger.debug(this.logContext, "Extracting decorators", {
+    SimpleLogger.debug(this.logContext, "Extracting decorators", {
       propertyName: property.name,
       decoratorCount: property.decorators.length
     });
@@ -284,7 +297,7 @@ export class TypeSpecVisibilityExtractionService {
     }
 
     if (visibilityDecorators.length > 1) {
-      this.logger.warn(this.logContext, "Multiple @visibility decorators found", {
+      SimpleLogger.warn(this.logContext, "Multiple @visibility decorators found", {
         decoratorCount: visibilityDecorators.length
       });
     }
@@ -322,7 +335,7 @@ export class TypeSpecVisibilityExtractionService {
     }
 
     if (invisibleDecorators.length > 1) {
-      this.logger.warn(this.logContext, "Multiple @invisible decorators found", {
+      SimpleLogger.warn(this.logContext, "Multiple @invisible decorators found", {
         decoratorCount: invisibleDecorators.length
       });
     }
@@ -474,7 +487,7 @@ export class TypeSpecVisibilityExtractionService {
       }
     }
 
-    this.logger.debug(this.logContext, "Visibility validation passed", {
+    SimpleLogger.debug(this.logContext, "Visibility validation passed", {
       propertyName,
       isValid: true
     });

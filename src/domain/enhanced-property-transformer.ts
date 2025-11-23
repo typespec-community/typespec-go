@@ -21,7 +21,6 @@ import {
   TypeSpecVisibilityBasedNaming,
   type VisibilityBasedName
 } from "../domain/typespec-visibility-based-naming.js";
-import { ErrorFactory } from "../domain/error-factory.js";
 
 // Simple logger fallback for testing
 const SimpleLogger = {
@@ -97,7 +96,6 @@ export interface EnhancedGoField {
  * - Performance optimization for batch processing
  */
 export class EnhancedPropertyTransformer {
-  private readonly logger = SimpleLogger;
   private readonly logContext: LogContext = "EnhancedPropertyTransformer";
 
   /**
@@ -115,7 +113,7 @@ export class EnhancedPropertyTransformer {
     const transformStart = performance.now();
 
     try {
-      this.logger.debug(this.logContext, "Starting enhanced property transformation", {
+      SimpleLogger.debug(this.logContext, "Starting enhanced property transformation", {
         propertyName: property.name,
         propertyType: property.type.kind,
         hasDecorators: !!property.decorators
@@ -162,7 +160,7 @@ export class EnhancedPropertyTransformer {
       };
 
       const transformTime = performance.now() - transformStart;
-      this.logger.debug(this.logContext, "Enhanced property transformation completed", {
+      SimpleLogger.debug(this.logContext, "Enhanced property transformation completed", {
         propertyName: property.name,
         goFieldName: enhancedField.name,
         isExported: enhancedField.exported,
@@ -174,7 +172,7 @@ export class EnhancedPropertyTransformer {
       return enhancedField;
 
     } catch (error) {
-      this.logger.error(this.logContext, "Enhanced property transformation failed", {
+      SimpleLogger.error(this.logContext, "Enhanced property transformation failed", {
         propertyName: property.name,
         error: error instanceof Error ? error.message : String(error),
         stackTrace: error instanceof Error ? error.stack : undefined
@@ -198,7 +196,7 @@ export class EnhancedPropertyTransformer {
     const batchStart = performance.now();
 
     try {
-      this.logger.info(this.logContext, "Starting enhanced batch property transformation", {
+      SimpleLogger.info(this.logContext, "Starting enhanced batch property transformation", {
         propertyCount: properties.length
       });
 
@@ -251,7 +249,7 @@ export class EnhancedPropertyTransformer {
       const batchTime = performance.now() - batchStart;
       const avgTime = batchTime / properties.length;
 
-      this.logger.info(this.logContext, "Enhanced batch property transformation completed", {
+      SimpleLogger.info(this.logContext, "Enhanced batch property transformation completed", {
         propertyCount: properties.length,
         totalTime: `${batchTime.toFixed(4)}ms`,
         avgTime: `${avgTime.toFixed(4)}ms`,
@@ -262,7 +260,7 @@ export class EnhancedPropertyTransformer {
       return enhancedFields;
 
     } catch (error) {
-      this.logger.error(this.logContext, "Enhanced batch property transformation failed", {
+      SimpleLogger.error(this.logContext, "Enhanced batch property transformation failed", {
         propertyCount: properties.length,
         error: error instanceof Error ? error.message : String(error)
       });

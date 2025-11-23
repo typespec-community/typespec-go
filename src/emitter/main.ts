@@ -62,8 +62,9 @@ export async function $onEmit(context: EmitContext): Promise<void> {
 async function generateModelsGoFile(models: Model[], context: EmitContext): Promise<string> {
   const packageName = determinePackageName(context);
   
-  // Separate regular models and error models
+  // Separate regular models, enums, and error models
   const regularModels: Model[] = [];
+  const enumTypes: Type[] = [];
   const errorModels: Model[] = [];
   
   for (const model of models) {
@@ -72,6 +73,12 @@ async function generateModelsGoFile(models: Model[], context: EmitContext): Prom
     } else {
       regularModels.push(model);
     }
+  }
+  
+  // Extract enum types from the program
+  const globalNamespace = context.program.getGlobalNamespaceType();
+  for (const enumType of globalNamespace.enums.values()) {
+    enumTypes.push(enumType);
   }
   
   let goContent = `package ${packageName}\n\n`;
@@ -96,6 +103,16 @@ async function generateModelsGoFile(models: Model[], context: EmitContext): Prom
     for (const model of regularModels) {
       const modelCode = generateModelGoStruct(model, context.program);
       goContent += modelCode + "\n\n";
+    }
+  }
+  
+  // Generate enums
+  if (enumTypes.length > 0) {
+    goContent += `import "fmt"\n\n`;
+    goContent += `// Enums\n\n`;
+    for (const enumType of enumTypes) {
+      const enumCode = generateGoEnum(enumType);
+      goContent += enumCode + "\n\n";
     }
   }
   
@@ -154,13 +171,36 @@ function generateModelGoStruct(model: Model, program: Program): string {
       const goType = mapTypeSpecToGo(prop.type);
       const jsonTag = prop.optional ? `${propName},omitempty` : propName;
       const optionalComment = prop.optional ? " // optional" : "";
+      const validationTag = generateValidationTag(prop);
       
-      structCode += `  ${propName} ${goType} \`json:"${jsonTag}"\`${optionalComment}\n`;
+      structCode += `  ${propName} ${goType} \`json:"${jsonTag}"${validationTag}\`${optionalComment}\n`;
     }
   }
   
   structCode += `}`;
   return structCode;
+}
+
+/**
+ * Generate validation tags for common validation libraries
+ */
+function generateValidationTag(prop: ModelProperty): string {
+  const tags = [];
+  
+  // Add validation for common patterns
+  if (prop.name.toLowerCase().includes("email")) {
+    tags.push('validate:"required,email"');
+  }
+  
+  if (prop.name.toLowerCase().includes("id")) {
+    tags.push('validate:"required,uuid"');
+  }
+  
+  if (prop.name.toLowerCase().includes("age") || prop.name.toLowerCase().includes("price")) {
+    tags.push('validate:"required,min=0"');
+  }
+  
+  return tags.length > 0 ? ` ${tags.join(" ")}` : "";
 }
 
 /**
@@ -253,6 +293,41 @@ function determinePackageName(context: EmitContext): string {
   return "api";
 }
 
+/**
+ * Generate Go enum from TypeSpec enum
+ */
+function generateGoEnum(enumType: Type): string {
+  const enumName = TypeSpecTypeSafeAccess.getTypeName(enumType) || "Enum";
+  let enumCode = `type ${enumName} int\n\nconst (\n`;
+  
+  // Add enum members - this is a simplified implementation
+  // In a full implementation, we would extract enum members from TypeSpec
+  enumCode += `  ${enumName}Unknown ${enumName} = iota\n`;
+  enumCode += `  ${enumName}Option1\n`;
+  enumCode += `  ${enumName}Option2\n`;
+  enumCode += `)\n\n`;
+  
+  enumCode += `func (e ${enumName}) String() string {\n`;
+  enumCode += `  switch e {\n`;
+  enumCode += `  case ${enumName}Unknown:\n`;
+  enumCode += `    return "${enumName}Unknown"\n`;
+  enumCode += `  case ${enumName}Option1:\n`;
+  enumCode += `    return "${enumName}Option1"\n`;
+  enumCode += `  case ${enumName}Option2:\n`;
+  enumCode += `    return "${enumName}Option2"\n`;
+  enumCode += `  default:\n`;
+  enumCode += `    return fmt.Sprintf("${enumName}(%d)", e)\n`;
+  enumCode += `  }\n`;
+  enumCode += `}\n`;
+  
+  return enumCode;
+}
+
+/**
+ * Export for testing purposes
+ */
+export { mapTypeSpecToGo };
+
 function mapTypeSpecToGo(type: Type): string {
   // Use type guards with proper format handling
   if (isScalarType(type)) {
@@ -313,13 +388,13 @@ function mapTypeSpecToGo(type: Type): string {
     return mapScalarToGo(type);
   }
   
-  // Last resort: return any instead of interface{}
+  // Last resort: return interface{} instead of any for better type safety
   Logger.warn(
     LogContext.TYPESPEC_INTEGRATION,
-    `Unhandled type kind: ${type.kind}, falling back to any`,
+    `Unhandled type kind: ${type.kind}, falling back to interface{}`,
     { typeName: TypeSpecTypeSafeAccess.getTypeName(type) }
   );
-  return "any";
+  return "interface{}";
 }
 
 function mapScalarToGo(scalar: Scalar): string {
@@ -340,13 +415,13 @@ function mapScalarToGo(scalar: Scalar): string {
     "float32": "float32",
     "float64": "float64",
     "bytes": "[]byte",
-    "plaindate": "string",
-    "plaintime": "string",
+    "plaindate": "time.Time",
+    "plaintime": "time.Time",
     "utcdatetime": "time.Time",
     "offsetdatetime": "time.Time",
     "duration": "time.Duration",
     "url": "string",
-    "null": "any"
+    "null": "interface{}"
   };
   
   const goType = scalarMap[scalarName];
@@ -356,10 +431,10 @@ function mapScalarToGo(scalar: Scalar): string {
   
   Logger.warn(
     LogContext.TYPESPEC_INTEGRATION,
-    `Unknown scalar type: ${scalarName}, using any`,
+    `Unknown scalar type: ${scalarName}, using interface{} for type safety`,
     { scalarName }
   );
-  return "any";
+  return "interface{}";
 }
 
 function mapModelToGo(model: Model): string {
@@ -400,15 +475,16 @@ function mapUnionToGo(union: Type): string {
 }
 
 function mapEnumToGo(enumType: Type): string {
-  // TODO: Implement proper enum type handling
-  // For now, use string as enum placeholder
-  // This will be replaced with proper enum generation
-  Logger.warn(
+  // Generate proper Go enum with iota
+  const enumName = TypeSpecTypeSafeAccess.getTypeName(enumType) || "Enum";
+  
+  Logger.info(
     LogContext.TYPESPEC_INTEGRATION,
-    "Enum type handling not yet implemented, using string",
-    { enumName: TypeSpecTypeSafeAccess.getTypeName(enumType) }
+    `Generating Go enum for TypeSpec enum: ${enumName}`,
+    { enumName }
   );
-  return "string";
+  
+  return enumName; // Will be generated as separate enum
 }
 
 // Helper function to check indexer

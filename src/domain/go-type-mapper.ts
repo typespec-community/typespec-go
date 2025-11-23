@@ -20,6 +20,10 @@ export class GoTypeMapper {
     return CleanTypeMapper.mapType(type, fieldName);
   }
 
+  static mapTypeSpecTypeDomain(propertyType: TypeSpecType): MappedGoType {
+    return CleanTypeMapper.mapType(propertyType);
+  }
+
   static generateGoTypeString(type: MappedGoType): string {
     return CleanTypeMapper.generateGoTypeString(type);
   }

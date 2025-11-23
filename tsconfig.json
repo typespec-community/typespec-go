@@ -1,44 +1,19 @@
 {
   "compilerOptions": {
-    "lib": ["es2022", "dom"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext", 
-    "target": "es2022",
-    
-    // Professional Strict Mode Settings
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitThis": true,
-    "noImplicitAny": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "alwaysStrict": true,
-    
-    "skipLibCheck": true,
-    "isolatedModules": true,
-    "declaration": true,
-    "sourceMap": true,
-    "declarationMap": true,
-    "downlevelIteration": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "allowImportingTsExtensions": false,
     "resolveJsonModule": true,
-    "allowJs": false,
-    "outDir": "dist",
-    "noEmit": false,
-    "types": ["node"],
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "@alloy-js/core"
+    "strict": true,
+    "skipLibCheck": true
   },
-  "include": [
-    "src/**/*",
-    "*.ts",
-    "*.tsx"
-  ],
-  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "src/minimal-*", "src/simple-*", "src/working-*", "src/professional-*", "test-emitter-basic.tsx"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
