@@ -2,7 +2,7 @@ import type { Program, EmitContext, Model, Type, ModelProperty } from "@typespec
 import { writeOutput } from "@typespec/emitter-framework";
 import { Output } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
-import { isNullType, isScalar, isUnion, isModel } from "@typespec/compiler";
+import { isNullType, isTemplateInstance, isString, isNumber, isBoolean } from "@typespec/compiler";
 import { Logger, LogContext } from "../domain/structured-logging.js";
 
 /**

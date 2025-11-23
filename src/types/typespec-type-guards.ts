@@ -17,8 +17,9 @@ import type {
   Interface,
   UnionVariant,
   Decorator,
+  DecoratorApplication,
 } from "@typespec/compiler";
-import { isErrorModel } from "@typespec/compiler";
+import { isErrorModel, isNullType, isTemplateInstance, isString, isNumber, isBoolean } from "@typespec/compiler";
 
 /**
  * TypeSpec Model with Template Parameters
