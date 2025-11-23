@@ -51,6 +51,16 @@ export class CleanTypeMapper {
       return { kind: "basic", name: "interface{}", usePointerForOptional: true };
     }
 
+    // Handle scalar types (string, int32, bool, etc.)
+    if (kind.toLowerCase() === "scalar") {
+      const scalarName = this.extractScalarName(type);
+      if (scalarName) {
+        const goType = this.mapKindToGoType(scalarName);
+        const usePointer = this.shouldUsePointer(goType);
+        return TypeConstructors.basic(goType, usePointer);
+      }
+    }
+
     // Handle union types
     if (kind.toLowerCase() === "union") {
       const unionType = this.handleUnionType(type);
@@ -61,15 +71,10 @@ export class CleanTypeMapper {
 
     // Handle arrays with proper element type extraction
     if (kind.toLowerCase() === "array") {
-      console.log("🔍 DEBUG: Processing array type:", { kind, type, elementType: (type as any).elementType });
       const elementType = this.extractElementType(type);
-      console.log("🔍 DEBUG: Extracted element type:", elementType);
       if (elementType) {
         const mappedElement = this.mapType(elementType);
-        console.log("🔍 DEBUG: Mapped element type:", mappedElement);
-        const result = TypeConstructors.slice(mappedElement);
-        console.log("🔍 DEBUG: Final slice type:", result);
-        return result;
+        return TypeConstructors.slice(mappedElement);
       }
     }
 
@@ -156,6 +161,13 @@ export class CleanTypeMapper {
   private static getKindString(type: any): string | null {
     if (type && typeof type === "object" && "kind" in type) {
       return (type as { kind: string }).kind;
+    }
+    return null;
+  }
+
+  private static extractScalarName(type: any): string | null {
+    if (type && typeof type === "object" && "name" in type) {
+      return (type as { name: string }).name;
     }
     return null;
   }
