@@ -61,10 +61,15 @@ export class CleanTypeMapper {
 
     // Handle arrays with proper element type extraction
     if (kind.toLowerCase() === "array") {
+      console.log("🔍 DEBUG: Processing array type:", { kind, type, elementType: (type as any).elementType });
       const elementType = this.extractElementType(type);
+      console.log("🔍 DEBUG: Extracted element type:", elementType);
       if (elementType) {
         const mappedElement = this.mapType(elementType);
-        return TypeConstructors.slice(mappedElement);
+        console.log("🔍 DEBUG: Mapped element type:", mappedElement);
+        const result = TypeConstructors.slice(mappedElement);
+        console.log("🔍 DEBUG: Final slice type:", result);
+        return result;
       }
     }
 

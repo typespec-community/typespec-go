@@ -6,3 +6,10 @@ model User {
   email?: string;
   age?: int32;
 }
+
+model Product {
+  id: int32;
+  title: string;
+  price: float64;
+  description?: string;
+}

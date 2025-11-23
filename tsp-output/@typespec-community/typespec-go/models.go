@@ -14,3 +14,10 @@ type User struct {
   age int32 `json:"age,omitempty"` // optional
 }
 
+type Product struct {
+  id int32 `json:"id"`
+  title string `json:"title"`
+  price float64 `json:"price"`
+  description string `json:"description,omitempty"` // optional
+}
+

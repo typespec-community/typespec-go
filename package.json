@@ -27,7 +27,7 @@
     }
   },
   "scripts": {
-    "build": "bun build src/emitter/main.ts --outdir dist --target node --format esm --entry-naming main.js",
+    "build": "bun build src/emitter/main.ts --outdir dist --target node --format esm --entry-naming '[name].js'",
     "build:check": "bunx tsc --noEmit --strict",
     "test": "bun test",
     "test:typespec": "bun test --timeout 30000",
