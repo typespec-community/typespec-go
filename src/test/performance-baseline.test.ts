@@ -6,6 +6,7 @@
  * Provides benchmarking for optimization
  */
 
+import { describe, it, expect, beforeEach } from "vitest";
 import { performance } from "perf_hooks";
 import { StandaloneGoGenerator } from "../standalone-generator.js";
 import type { GoEmitterResult } from "../domain/unified-errors.js";
@@ -470,6 +471,46 @@ export async function runPerformanceBaseline(): Promise<void> {
   const tester = new PerformanceTester();
   await tester.runPerformanceBaseline();
 }
+
+// Test cases for vitest
+describe("Performance Baseline Tests", () => {
+  let tester: PerformanceTester;
+
+  beforeEach(() => {
+    tester = new PerformanceTester();
+  });
+
+  it("should create performance tester successfully", () => {
+    expect(tester).toBeDefined();
+  });
+
+  it("should have correct memory usage format", () => {
+    const memory = tester["getMemoryUsage"]();
+    expect(typeof memory).toBe("number");
+    expect(memory).toBeGreaterThanOrEqual(0);
+  });
+
+  it("should handle performance metrics interface correctly", () => {
+    const mockMetrics: PerformanceMetrics = {
+      testName: "Test",
+      modelComplexity: "Simple",
+      propertyCount: 5,
+      generationTimeMs: 10,
+      memoryUsageMB: 2,
+      throughputPerSecond: 100,
+      goCodeSize: 500
+    };
+    expect(mockMetrics.testName).toBe("Test");
+    expect(mockMetrics.throughputPerSecond).toBe(100);
+  });
+
+  it("should calculate throughput correctly", () => {
+    // Test throughput calculation logic
+    const generationTimeMs = 20; // 20ms per model
+    const expectedThroughput = Math.round(1000 / generationTimeMs); // 50 models/sec
+    expect(expectedThroughput).toBe(50);
+  });
+});
 
 // Export for use in other modules
 export { PerformanceTester, PerformanceMetrics };

@@ -4,7 +4,7 @@
  * Research and development test for operations support
  */
 
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect } from "vitest";
 
 describe("TypeSpec Operations Research", () => {
   it("should understand TypeSpec operation structure", () => {

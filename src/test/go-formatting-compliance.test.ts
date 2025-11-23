@@ -7,7 +7,7 @@
  * 3. modernize -fix -test ./... - Go modernization compliance
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "bun:test";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { StandaloneGoGenerator } from "../standalone-generator.js";
 import { mkdir, writeFile, rmdir, rm } from "fs/promises";
 import { join } from "path";

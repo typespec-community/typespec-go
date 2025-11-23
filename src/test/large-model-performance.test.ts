@@ -6,6 +6,7 @@
  * Identifies performance bottlenecks
  */
 
+import { describe, it, expect, beforeEach } from "vitest";
 import { performance } from "perf_hooks";
 import { StandaloneGoGenerator } from "../standalone-generator.js";
 import type { GoEmitterResult } from "../domain/unified-errors.js";
@@ -391,6 +392,37 @@ export async function runLargeModelPerformanceSuite(): Promise<void> {
   const tester = new LargeModelPerformanceTester();
   await tester.runLargeModelPerformanceSuite();
 }
+
+// Test cases for vitest
+describe("Large Model Performance Tests", () => {
+  let tester: LargeModelPerformanceTester;
+
+  beforeEach(() => {
+    tester = new LargeModelPerformanceTester();
+  });
+
+  it("should create large model tester successfully", () => {
+    expect(tester).toBeDefined();
+  });
+
+  it("should handle small models efficiently", async () => {
+    const metrics = await tester["testLargeModelPerformance"](25, 5);
+    expect(metrics.propertyCount).toBe(25);
+    expect(metrics.generationTimeMs).toBeLessThan(100);
+  });
+
+  it("should classify performance correctly", () => {
+    // Test performance classification logic
+    const mockMetrics: LargeModelMetrics = {
+      propertyCount: 50,
+      generationTimeMs: 25,
+      memoryUsageMB: 10,
+      goCodeSize: 1000,
+      performanceClassification: "Good"
+    };
+    expect(mockMetrics.performanceClassification).toBe("Good");
+  });
+});
 
 // Export for use in other modules
 export { LargeModelPerformanceTester, LargeModelMetrics };

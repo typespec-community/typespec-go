@@ -3,7 +3,7 @@
  * BDD-style test framework for TypeSpec Go Emitter
  */
 
-import { describe, it, expect, beforeEach } from "bun:test";
+import { describe, it, expect, beforeEach } from "vitest";
 import { StandaloneGoGenerator } from "../standalone-generator.js";
 
 describe("StandaloneGoGenerator", () => {

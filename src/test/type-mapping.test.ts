@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect, beforeAll } from "vitest";
 import { mapTypeSpecToGo } from "../emitter/main.js";
 import { createTestProgram } from "./test-utils.js";
 

@@ -5,7 +5,7 @@
  * Sealed interfaces, discriminated unions, union variants
  */
 
-import { describe, it, expect, beforeAll } from "bun:test";
+import { describe, it, expect, beforeAll } from "vitest";
 import { GoTypeMapper } from "../domain/go-type-mapper.js";
 import { StandaloneGoGenerator } from "../standalone-generator.js";
 import type { MappedGoType } from "../domain/type-interfaces.js";

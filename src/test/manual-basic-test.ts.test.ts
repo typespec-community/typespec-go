@@ -5,7 +5,7 @@
  * complex TypeSpec testing framework.
  */
 
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect } from "vitest";
 import { StandaloneGoGenerator } from "../standalone-generator.js";
 import {
   TypeSpecTypeMapper,

@@ -1,0 +1,15 @@
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  test: {
+    include: ["src/test/**/*.test.ts", "src/test/**/*.test.tsx"],
+    exclude: ["src/test/**/*.d.ts"],
+    environment: "node",
+  },
+  esbuild: {
+    jsx: "transform",
+    jsxFactory: "React.createElement",
+    jsxFragment: "React.Fragment",
+    sourcemap: "both"
+  },
+});

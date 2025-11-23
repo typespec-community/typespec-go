@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect } from "vitest";
 import { StandaloneGoGenerator } from "../standalone-generator.js";
 
 const generator = new StandaloneGoGenerator();

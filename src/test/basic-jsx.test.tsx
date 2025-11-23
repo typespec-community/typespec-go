@@ -1,5 +1,5 @@
 import { SourceFile, StructTypeDeclaration, StructMember } from "@alloy-js/go";
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect } from "vitest";
 
 describe("Basic Alloy.js JSX Test", () => {
   it("should generate simple Go struct using JSX", () => {

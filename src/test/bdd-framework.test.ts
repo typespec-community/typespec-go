@@ -5,7 +5,7 @@
  * Replaces fake console.log testing framework
  */
 
-import { describe, it, expect, beforeAll } from "bun:test";
+import { describe, it, expect, beforeAll } from "vitest";
 import { BDDRunner, BDDScenario } from "../utils/bdd-framework.js";
 import { GoEmitter } from "../emitter/index.js";
 import { StandaloneGoGenerator } from "../standalone-generator.js";

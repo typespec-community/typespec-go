@@ -5,6 +5,7 @@
  * Provides memory usage validation and leak detection
  */
 
+import { describe, it, expect, beforeEach } from "vitest";
 import { performance } from "perf_hooks";
 import { StandaloneGoGenerator } from "../standalone-generator.js";
 import type { GoEmitterResult } from "../domain/unified-errors.js";

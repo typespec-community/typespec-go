@@ -33,8 +33,8 @@
     "build": "npx alloy build",
     "build:webpack": "tsc --project tsconfig.json && npx webpack --mode=development",
     "build:check": "bunx tsc --noEmit --strict",
-    "test": "bun test",
-    "test:typespec": "bun test --timeout 30000",
+    "test": "vitest",
+    "test:typespec": "vitest --run --testTimeout 30000",
     "lint": "eslint src/ --ext .ts --max-warnings 0",
     "lint:fix": "eslint src/ --ext .ts --fix",
     "format": "prettier src/ --write"

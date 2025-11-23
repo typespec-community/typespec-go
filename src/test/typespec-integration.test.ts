@@ -3,7 +3,7 @@
  * Tests proper TypeSpec compiler integration
  */
 
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect } from "vitest";
 import { TypespecGoTestLibrary } from "../testing/index.js";
 import { createTestHost } from "@typespec/compiler/testing";
 

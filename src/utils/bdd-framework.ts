@@ -11,8 +11,7 @@ import { StandaloneGoGenerator } from "../standalone-generator.js";
 import { GoEmitterResult } from "../domain/unified-errors.js";
 
 // Real BDD testing with proper assertions
-declare const require: (id: string) => unknown;
-const expect = require("bun:test").expect as unknown;
+import { expect } from "vitest";
 
 /**
  * BDD Validation Record Type

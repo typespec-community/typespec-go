@@ -5,7 +5,7 @@
  * Service interfaces, handlers, route registration
  */
 
-import { describe, it, expect, beforeAll } from "bun:test";
+import { describe, it, expect, beforeAll } from "vitest";
 import { ModelGenerator } from "../generators/model-generator.js";
 import type { ExtractedOperation } from "../emitter/model-extractor-core.js";
 

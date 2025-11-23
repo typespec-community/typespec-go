@@ -5,7 +5,7 @@
  * Verifies complete workflow from TypeSpec to Go code
  */
 
-import { describe, it, expect, beforeEach } from "bun:test";
+import { describe, it, expect, beforeEach } from "vitest";
 import { StandaloneGoGenerator } from "../standalone-generator.js";
 
 describe("Integration Tests - End-to-End TypeSpec to Go Generation", () => {

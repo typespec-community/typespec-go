@@ -5,7 +5,7 @@
  * Guarantees sub-5ms generation with continuous monitoring
  */
 
-import { describe, it, expect, beforeAll, afterAll } from "bun:test";
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { GoTypeMapper } from "../domain/go-type-mapper.js";
 import { StandaloneGoGenerator } from "../standalone-generator.js";
 
