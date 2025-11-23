@@ -31,7 +31,7 @@ build:
 # Run test suite
 test:
 	@echo "🧪 Running test suite..."
-	vitest --run --testTimeout 30000
+	bunx vitest --run --testTimeout 30000
 	@echo "✅ Tests complete"
 
 # Run ESLint
@@ -89,7 +89,7 @@ type-check:
 # Test with coverage (when available)
 test-cov:
 	@echo "🧪 Running tests with coverage..."
-	vitest --run --coverage
+	bunx vitest --run --coverage
 	@echo "✅ Coverage complete"
 
 # Quality assurance - full check
@@ -125,4 +125,4 @@ status:
 	@bun run build:check && echo "✅ TypeScript OK" || echo "❌ TypeScript Errors"
 	@echo ""
 	@echo "Test Status:"
-	@vitest --run --testTimeout 5000 2>/dev/null && echo "✅ Tests OK" || echo "❌ Test Issues"
+	@bunx vitest --run --testTimeout 5000 2>/dev/null && echo "✅ Tests OK" || echo "❌ Test Issues"
