@@ -10,16 +10,56 @@
 import type {
   Program,
   Type,
-  Model,
-  Scalar,
-  Union,
-  Enum,
 } from "@typespec/compiler";
 import type { MappedGoType, TypeValidators } from "./type-interfaces.js";
 import { TypeGuards, TypeConstructors } from "./type-interfaces.js";
 import { SCALAR_TYPE_MAPPINGS, UPPER_CASE_SCALAR_MAPPINGS } from "./scalar-mappings.js";
 import { EntityTransformation } from "./error-entities.js";
 import type { UniversalType } from "./legacy-type-adapter.js";
+
+/**
+ * Type-safe interface for objects with kind property
+ * Eliminates need for 'any' types throughout the mapper
+ */
+interface TypeWithKind {
+  readonly kind: string;
+  readonly name?: string;
+  readonly elementType?: unknown;
+  readonly variants?: unknown[];
+  readonly type?: unknown;
+  readonly unionVariants?: unknown[];
+}
+
+/**
+ * Type guard to validate TypeWithKind objects
+ */
+const isTypeWithKind = (type: unknown): type is TypeWithKind => {
+  return type && typeof type === 'object' && 'kind' in type && typeof type.kind === 'string';
+};
+
+/**
+ * Type guard to validate TypeSpec Array types
+ */
+const isArrayType = (type: TypeWithKind): type is TypeWithKind & { readonly elementType: unknown } => {
+  return type.kind === 'Array' || type.kind === 'array';
+};
+
+/**
+ * Type guard to validate TypeSpec Union types
+ */
+const isUnionType = (type: TypeWithKind): type is TypeWithKind & { 
+  readonly variants?: unknown[] | undefined;
+  readonly unionVariants?: unknown[] | undefined;
+} => {
+  return type.kind === 'Union' || type.kind === 'union';
+};
+
+/**
+ * Type guard to validate TypeSpec Scalar types
+ */
+const isScalarType = (type: TypeWithKind): type is TypeWithKind & { readonly name: string } => {
+  return type.kind === 'scalar' || type.kind === 'Scalar' && typeof type.name === 'string';
+};
 
 /**
  * Clean Type Mapping - Single Source of Truth
@@ -66,9 +106,13 @@ export class CleanTypeMapper {
     // Handle union types
     if (kind.toLowerCase() === "union") {
       // Check if union is wrapped in type property (common test pattern)
-      const actualType = (type as any).type || type;
+      let actualType = type;
+      if (isTypeWithKind(type) && type.type) {
+        actualType = type.type as Type | UniversalType;
+      }
       // Convert fieldName to PascalCase for Go types when fieldName is provided
-      const unionName = fieldName ? EntityTransformation.toGoIdentifier(fieldName) : actualType.name || "interface{}";
+      const unionName = fieldName ? EntityTransformation.toGoIdentifier(fieldName) : 
+        (isTypeWithKind(actualType) ? actualType.name : undefined) || "interface{}";
       const unionType = this.handleUnionType(actualType, unionName);
       if (unionType) {
         return unionType;
@@ -133,7 +177,7 @@ export class CleanTypeMapper {
    * Legacy compatibility for StandaloneGoGenerator
    */
   static mapTypeSpecTypeLegacy(
-    type: any,
+    type: Type | UniversalType | string,
     fieldName?: string
   ): { goType: string; usePointerForOptional: boolean } {
     const mappedGoType = this.mapType(type, fieldName);
@@ -168,59 +212,61 @@ export class CleanTypeMapper {
   }
 
   // Helper methods
-  private static getKindString(type: any): string | null {
-    if (type && typeof type === "object" && "kind" in type) {
-      return (type as { kind: string }).kind;
+  private static getKindString(type: Type | UniversalType | string): string | null {
+    if (isTypeWithKind(type)) {
+      return type.kind;
     }
     return null;
   }
 
-  private static extractScalarName(type: any): string | null {
-    if (type && typeof type === "object" && "name" in type) {
-      return (type as { name: string }).name;
+  private static extractScalarName(type: Type | UniversalType): string | null {
+    if (isTypeWithKind(type) && typeof type.name === 'string') {
+      return type.name;
     }
     return null;
   }
 
-  private static extractElementType(type: any): any {
-    // Handle legacy elementType property
-    if (type && typeof type === "object" && "elementType" in type) {
-      return (type as { elementType: any }).elementType;
+  private static extractElementType(type: Type | UniversalType): Type | UniversalType | null {
+    if (!isTypeWithKind(type)) {
+      return null;
     }
-    // Handle TypeSpec Array format: { kind: "Array", elementType: ... }
-    if (type && typeof type === "object" && type.kind === "Array" && type.elementType) {
-      return type.elementType;
-    }
-    // Handle lowercase array kind
-    if (type && typeof type === "object" && type.kind === "array" && type.elementType) {
-      return type.elementType;
-    }
-    return null;
-  }
-
-  private static handleUnionType(type: any, name?: string): MappedGoType | null {
     
-    // Handle TypeSpec Union format (capitalized)
-    if (type && typeof type === "object" && type.kind === "Union") {
+    // Handle Array types with elementType property
+    if (isArrayType(type)) {
+      return type.elementType as Type | UniversalType;
+    }
+    
+    return null;
+  }
+
+  private static handleUnionType(type: Type | UniversalType, name?: string): MappedGoType | null {
+    if (!isTypeWithKind(type)) {
+      return null;
+    }
+    
+    // Handle Union types
+    if (isUnionType(type)) {
       const variants = this.extractUnionVariants(type);
       if (variants && variants.length > 0) {
         return TypeConstructors.union(variants, name || type.name);
       }
-    }
-    // Handle lowercase union kind (test format)
-    if (type && typeof type === "object" && type.kind === "union") {
-      const mappedVariants = type.variants.map((v: any) => this.mapType(v.type || v));
-      return TypeConstructors.union(mappedVariants, name || type.name);
+      // Handle lowercase union kind (test format) with variants
+      if (type.variants && Array.isArray(type.variants)) {
+        const mappedVariants = type.variants.map((v: unknown) => 
+          this.mapType(v as Type | UniversalType)
+        );
+        return TypeConstructors.union(mappedVariants, name || type.name);
+      }
     }
     return null;
   }
 
-  private static extractUnionVariants(type: any): MappedGoType[] | null {
+  private static extractUnionVariants(type: TypeWithKind): MappedGoType[] | null {
     if (type.variants && Array.isArray(type.variants)) {
-      return type.variants.map((variant: any) => this.mapType(variant));
+      return type.variants.map((variant: unknown) => this.mapType(variant as Type | UniversalType));
     }
     if (type.unionVariants && Array.isArray(type.unionVariants)) {
-      return type.unionVariants.map((variant: any) => this.mapType(variant));
+      return type.unionVariants.map((variant: unknown) => this.mapType(variant as Type | UniversalType));
     }
     return null;
   }
