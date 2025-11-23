@@ -21,8 +21,27 @@ import {
   TypeSpecVisibilityBasedNaming,
   type VisibilityBasedName
 } from "../domain/typespec-visibility-based-naming.js";
-import { Logger, LogContext } from "../domain/structured-logging.js";
 import { ErrorFactory } from "../domain/error-factory.js";
+
+// Simple logger fallback for testing
+const SimpleLogger = {
+  debug: (context: string, message: string, data?: any) => {
+    if (process.env.DEBUG === "true") {
+      console.debug(`[${context}] ${message}`, data);
+    }
+  },
+  info: (context: string, message: string, data?: any) => {
+    console.log(`[${context}] ${message}`, data);
+  },
+  warn: (context: string, message: string, data?: any) => {
+    console.warn(`[${context}] ${message}`, data);
+  },
+  error: (context: string, message: string, data?: any) => {
+    console.error(`[${context}] ${message}`, data);
+  }
+};
+
+type LogContext = string;
 
 /**
  * Enhanced Go field information with full visibility support
@@ -78,13 +97,8 @@ export interface EnhancedGoField {
  * - Performance optimization for batch processing
  */
 export class EnhancedPropertyTransformer {
-  private readonly logger: Logger;
-  private readonly logContext: LogContext;
-
-  constructor() {
-    this.logger = new Logger();
-    this.logContext = "EnhancedPropertyTransformer";
-  }
+  private readonly logger = SimpleLogger;
+  private readonly logContext: LogContext = "EnhancedPropertyTransformer";
 
   /**
    * Transform single TypeSpec property with visibility support
