@@ -7,8 +7,8 @@
 import { describe, it, expect } from "vitest";
 import { render, Output } from "@alloy-js/core";
 import { SourceFile, StructTypeDeclaration, StructMember } from "@alloy-js/go";
-import { TypeExpression } from "../src/components/TypeExpression.js";
-import { GoModel } from "../src/components/GoModel.js";
+import { TypeExpression } from "../components/TypeExpression.tsx";
+import { GoModel } from "../components/GoModel.tsx";
 
 // Mock TypeSpec types for testing
 const mockStringType = { kind: "String" as const };
