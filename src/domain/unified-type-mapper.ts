@@ -48,14 +48,13 @@ export class UnifiedTypeMapper {
 
     // Delegate to main GoTypeMapper for all other cases
     // This is the SINGLE SOURCE OF TRUTH for all type mapping
-    // Convert UniversalType to TypeSpec format first
+    // Convert universal type to TypeSpec format using CleanTypeMapper
     if (typeof type === 'object' && type !== null && 'kind' in type) {
-      const typeSpecFormat = LegacyTypeAdapter.toTypeSpecFormat(type);
-      return GoTypeMapper.mapTypeSpecType(typeSpecFormat, fieldName);
+      return CleanTypeMapper.mapTypeToGo(type, fieldName);
     }
     
-    // Fallback for string and other types
-    return GoTypeMapper.mapTypeSpecType(type as any, fieldName);
+    // Fallback for TypeSpec types - use CleanTypeMapper
+    return CleanTypeMapper.mapTypeToGo(type as Type, fieldName);
   }
 
   /**

@@ -6,37 +6,40 @@
  * ZERO ANY TYPES: Professional type safety throughout
  */
 
-import type { Program, Type, Scalar, Model } from "@typespec/compiler";
+import type { Program, Type, Scalar, Model, UnionVariant } from "@typespec/compiler";
 import type { 
   TypeMappingResult, 
-  GoPrimitiveType,
   TypeMappingConfig,
   GoStructField 
 } from "../types/emitter.types.js";
+import { GoPrimitiveType } from "../types/emitter.types.js";
 import { CleanTypeMapper } from "../domain/clean-type-mapper.js";
 
 /**
  * TypeSpec Array Type interface
- * Extends TypeSpec compiler Type with elementType property
+ * Standalone interface with explicit kind definition
  */
-interface ArrayType extends Type {
-  elementType?: Type;
+interface ArrayType {
+  kind: "Array";
+  elementType: Type;
 }
 
 /**
  * TypeSpec Union Type interface
- * Extends TypeSpec compiler Type with variants property
+ * Standalone interface with explicit kind definition
  */
-interface UnionType extends Type {
-  variants?: Array<{ type: Type }>;
+interface UnionType {
+  kind: "Union";
+  variants: readonly UnionVariant[];
 }
 
 /**
  * TypeSpec Named Type interface
- * Extends TypeSpec compiler Type with name property
+ * Standalone interface with explicit kind definition
  */
-interface NamedType extends Type {
-  name?: string;
+interface NamedType {
+  kind: "Model" | "Scalar";
+  name: string;
 }
 
 /**
