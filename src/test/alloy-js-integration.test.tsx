@@ -9,11 +9,12 @@ import { render, Output } from "@alloy-js/core";
 import { SourceFile, StructTypeDeclaration, StructMember } from "@alloy-js/go";
 import { TypeExpression } from "../components/TypeExpression.tsx";
 import { GoModel } from "../components/GoModel.tsx";
+import { TypeSpecMocks } from "./typespec-mocks.js";
 
-// Mock TypeSpec types for testing
-const mockStringType = { kind: "String" as const };
-const mockInt32Type = { kind: "Scalar" as const, name: "int32" };
-const mockBoolType = { kind: "Scalar" as const, name: "boolean" };
+// Professional TypeSpec mocks for testing
+const mockStringType = TypeSpecMocks.createString();
+const mockInt32Type = TypeSpecMocks.createNumber({ name: "int32" });
+const mockBoolType = TypeSpecMocks.createBoolean();
 const mockOptionalString = { 
   kind: "Union" as const,
   variants: new Map([
@@ -22,29 +23,27 @@ const mockOptionalString = {
   ])
 };
 
-// Mock Model for testing
-const mockModel = {
+// Professional TypeSpec Model mock
+const mockModel = TypeSpecMocks.createModel({
   name: "User",
-  kind: "Model" as const,
   properties: new Map([
-    ["id", { 
+    ["id", TypeSpecMocks.createModelProperty({ 
       name: "id", 
       type: mockInt32Type, 
       optional: false 
-    }],
-    ["name", { 
+    })],
+    ["name", TypeSpecMocks.createModelProperty({ 
       name: "name", 
       type: mockStringType, 
       optional: false 
-    }],
-    ["email", { 
+    })],
+    ["email", TypeSpecMocks.createModelProperty({ 
       name: "email", 
       type: mockOptionalString, 
       optional: true 
-    }]
+    })]
   ]),
-  doc: "User represents a user in the system"
-};
+});
 
 describe("TypeExpression Component", () => {
   it("should generate correct Go primitive types", () => {

@@ -21,6 +21,7 @@ export type FileName = string & { readonly __brand: "FileName" };
 export interface TypeSpecCompilerError {
   readonly _tag: "typespec_compiler_error";
   readonly message: string;
+  readonly details?: string; // Added for detailed error information
   readonly modelName?: ModelName;
   readonly propertyName?: PropertyName;
   readonly resolution?: string;
@@ -59,6 +60,7 @@ export interface SystemError {
 export interface ValidationError {
   readonly _tag: "validation_error";
   readonly message: string;
+  readonly details?: string; // Added for detailed error information
   readonly modelName?: ModelName;
   readonly propertyName?: PropertyName;
   readonly reason?: string; // Added for backward compatibility

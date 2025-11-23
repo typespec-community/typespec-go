@@ -34,7 +34,11 @@ interface TypeWithKind {
  * Type guard to validate TypeWithKind objects
  */
 const isTypeWithKind = (type: unknown): type is TypeWithKind => {
-  return type && typeof type === 'object' && 'kind' in type && typeof type.kind === 'string';
+  return type !== null && 
+         typeof type === 'object' && 
+         type !== undefined && 
+         'kind' in type && 
+         typeof (type as TypeWithKind).kind === 'string';
 };
 
 /**

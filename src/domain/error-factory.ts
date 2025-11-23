@@ -47,6 +47,7 @@ export class ErrorFactory {
   static createTypeSpecCompilerError(
     message: string,
     options?: {
+      details?: string;
       modelName?: string;
       propertyName?: string;
       resolution?: string;
@@ -55,6 +56,9 @@ export class ErrorFactory {
     return {
       _tag: "typespec_compiler_error",
       message,
+      ...(options?.details && {
+        details: options.details,
+      }),
       ...(options?.modelName && {
         modelName: Entities.createModelName(options.modelName),
       }),
