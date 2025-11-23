@@ -10,25 +10,28 @@
 import type {
   ModelProperty as TypeSpecModelProperty,
   Type as TypeSpecType,
+  Program,
 } from "@typespec/compiler";
 import type { MappedGoType } from "../domain/type-interfaces.js";
 import { GoTypeMapper } from "../domain/go-type-mapper.js";
+import { TypeSpecVisibilityDetector } from "./typespec-visibility-detector.js";
+import type { TypeSpecPropertyVisibility } from "../types/typespec-domain.js";
 
 /**
  * Transformed Go field information
  */
 export interface TransformedGoField {
-  /** Go field name (PascalCase) */
+  /** Go field name (PascalCase or camelCase based on visibility) */
   readonly name: string;
 
   /** Go type string */
   readonly type: string;
 
-  /** Whether field is exported (public) */
+  /** Whether field is exported (public) - based on visibility */
   readonly exported: boolean;
 
-  /** JSON struct tag */
-  readonly jsonTag: string;
+  /** JSON struct tag or undefined for invisible fields */
+  readonly jsonTag: string | undefined;
 
   /** Whether field is optional (pointer type) */
   readonly optional: boolean;
@@ -41,6 +44,9 @@ export interface TransformedGoField {
 
   /** Original TypeSpec property name (for XML tag generation) */
   readonly originalName?: string;
+
+  /** TypeSpec visibility information */
+  readonly visibility?: TypeSpecPropertyVisibility;
 }
 
 /**
@@ -50,13 +56,67 @@ export interface TransformedGoField {
  * - Naming conventions (TypeSpec camelCase → Go PascalCase)
  * - Type mapping with import management
  * - Optional property handling (pointer types)
+ * - Visibility-based export/import logic
  * - Struct tag generation
  */
 export class PropertyTransformer {
+  private static readonly visibilityDetector = new TypeSpecVisibilityDetector();
+
   /**
-   * Transform TypeSpec property to Go field
+   * Transform TypeSpec property to Go field with visibility support
    */
-  static transformProperty(prop: TypeSpecModelProperty): TransformedGoField {
+  static transformProperty(
+    program: Program,
+    prop: TypeSpecModelProperty
+  ): TransformedGoField {
+    // Validate input
+    if (!prop.name || !prop.type) {
+      throw new Error(`Invalid property: missing name or type`);
+    }
+
+    // Extract visibility information from TypeSpec decorators
+    const visibility = this.visibilityDetector.extractVisibility(program, prop);
+
+    // Map TypeSpec type to Go type
+    const mappedGoType = GoTypeMapper.mapTypeSpecType(prop.type);
+
+    // Generate Go field name with proper casing based on visibility
+    const fieldName = this.toGoFieldName(prop.name, visibility);
+
+    // Generate JSON tag based on visibility
+    const jsonTag = this.generateJsonTagWithVisibility(prop, visibility);
+
+    // Determine if field should be exported based on visibility
+    const isExported = this.visibilityDetector.shouldExportGoField(visibility);
+
+    // Determine if field should be optional (pointer type)
+    const isOptional = prop.optional || false;
+
+    // Generate Go type (pointer for optional, non-pointer for required)
+    const goType = this.generateGoType(mappedGoType, isOptional);
+
+    const baseField = {
+      name: fieldName,
+      type: goType,
+      exported: isExported, // Now based on visibility
+      jsonTag,
+      optional: isOptional,
+      requiresImport: mappedGoType.requiresImport ?? false,
+      originalName: prop.name, // Store original name for XML tag generation
+      visibility, // Store visibility information
+    };
+
+    return Object.assign(
+      baseField,
+      mappedGoType.importPath && { importPath: mappedGoType.importPath },
+    );
+  }
+
+  /**
+   * Legacy method for backward compatibility
+   * @deprecated Use transformProperty with program parameter
+   */
+  static transformPropertyLegacy(prop: TypeSpecModelProperty): TransformedGoField {
     // Validate input
     if (!prop.name || !prop.type) {
       throw new Error(`Invalid property: missing name or type`);
@@ -105,12 +165,54 @@ export class PropertyTransformer {
   }
 
   /**
-   * Transform TypeSpec property name to Go field name
+   * Transform TypeSpec property name to Go field name with visibility support
    *
-   * TypeSpec uses camelCase (userName) → Go uses PascalCase (UserName)
+   * TypeSpec uses camelCase (userName) → Go uses:
+   * - PascalCase (UserName) for exported fields (visible)
+   * - camelCase (userName) for private fields (invisible)
    * Also handles common initialisms (ID, URL, API)
    */
-  private static toGoFieldName(typeSpecName: string): string {
+  private static toGoFieldName(typeSpecName: string, visibility?: TypeSpecPropertyVisibility): string {
+    // For invisible fields, keep camelCase (private in Go)
+    if (visibility && visibility.isInvisible) {
+      return typeSpecName;
+    }
+
+    // For visible fields, use PascalCase (exported in Go)
+    return this.toPascalCase(typeSpecName);
+  }
+
+  /**
+   * Convert TypeSpec camelCase to Go PascalCase
+   * Handles common initialisms (ID, URL, API)
+   */
+  private static toPascalCase(typeSpecName: string): string {
+    // Handle common initialisms that should remain uppercase
+    const initialisms = [
+      "id",
+      "url", 
+      "api",
+      "http",
+      "https",
+      "json",
+      "xml",
+      "sql",
+      "uuid",
+    ];
+
+    return typeSpecName
+      .split(/[_-]/) // Split on underscores and hyphens
+      .map((word, index) => {
+        // All words: capitalize first letter for PascalCase
+        return this.capitalizeWord(word, initialisms);
+      })
+      .join("");
+  }
+
+  /**
+   * Legacy toGoFieldName for backward compatibility
+   */
+  private static toGoFieldNameLegacy(typeSpecName: string): string {
     // Handle common initialisms that should remain uppercase
     const initialisms = [
       "id",
@@ -174,6 +276,32 @@ export class PropertyTransformer {
   }
 
   /**
+   * Generate JSON struct tag for Go field with visibility support
+   *
+   * Visible fields get JSON tags, invisible fields get no JSON tags
+   */
+  private static generateJsonTagWithVisibility(
+    prop: TypeSpecModelProperty, 
+    visibility: TypeSpecPropertyVisibility
+  ): string | undefined {
+    // Invisible properties don't get JSON tags
+    if (visibility.isInvisible) {
+      return undefined;
+    }
+
+    const tagName = prop.name; // Use original TypeSpec name
+    const options: string[] = [];
+
+    // Add omitempty for optional fields
+    if (prop.optional) {
+      options.push("omitempty");
+    }
+
+    const optionsStr = options.length > 0 ? `,${options.join(",")}` : "";
+    return `json:"${tagName}${optionsStr}"`;
+  }
+
+  /**
    * Generate XML struct tag for Go field (if needed)
    */
   static generateXmlTag(
@@ -191,10 +319,15 @@ export class PropertyTransformer {
   }
 
   /**
-   * Generate complete Go struct field line
+   * Generate complete Go struct field line with visibility support
    */
   static generateGoFieldLine(field: TransformedGoField): string {
-    const tags = [field.jsonTag];
+    const tags: string[] = [];
+
+    // Add JSON tag only if field has one (visible fields)
+    if (field.jsonTag) {
+      tags.push(field.jsonTag);
+    }
 
     // Add XML tag for certain property names
     if (this.shouldHaveXmlTag(field.name)) {

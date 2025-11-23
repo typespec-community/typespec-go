@@ -28,12 +28,34 @@ export type TypeSpecKind =
   | "Tuple"
   | "UnionVariant";
 
+/**
+ * TypeSpec Visibility Lifecycle Enum
+ * Maps to TypeSpec's @visibility decorator lifecycle phases
+ */
+export type TypeSpecVisibilityLifecycle = 
+  | "Create"
+  | "Read" 
+  | "Update"
+  | "Delete"
+  | "Query";
+
+/**
+ * TypeSpec Property Visibility Information
+ * Extracted from @visibility and @invisible decorators
+ */
+export interface TypeSpecPropertyVisibility {
+  readonly visible: boolean;
+  readonly lifecycle: readonly TypeSpecVisibilityLifecycle[];
+  readonly isInvisible: boolean;
+}
+
 // Direct type definitions to avoid export issues
 export interface TypeSpecPropertyNode {
   readonly name: string;
   readonly type: TypeSpecTypeNode;
   readonly optional: boolean;
   readonly documentation?: string;
+  readonly visibility?: TypeSpecPropertyVisibility; // Added visibility support
 }
 
 export interface TypeSpecTypeNode {
