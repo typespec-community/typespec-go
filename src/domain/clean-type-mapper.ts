@@ -15,7 +15,7 @@ import type {
   Union,
   Enum,
 } from "@typespec/compiler";
-import type { MappedGoType } from "./type-interfaces.js";
+import { MappedGoType, TypeGuards, TypeConstructors, TypeValidators } from "./type-interfaces.js";
 import { SCALAR_TYPE_MAPPINGS, UPPER_CASE_SCALAR_MAPPINGS } from "./scalar-mappings.js";
 import type { UniversalType } from "./legacy-type-adapter.js";
 
@@ -51,16 +51,29 @@ export class CleanTypeMapper {
       return { kind: "basic", name: "interface{}", usePointerForOptional: true };
     }
 
-    // Handle arrays (special case for legacy test format)
+    // Handle union types
+    if (kind.toLowerCase() === "union") {
+      const unionType = this.handleUnionType(type);
+      if (unionType) {
+        return unionType;
+      }
+    }
+
+    // Handle arrays with proper element type extraction
     if (kind.toLowerCase() === "array") {
-      const elementType = this.getLegacyElementType(type);
+      const elementType = this.extractElementType(type);
       if (elementType) {
         const mappedElement = this.mapType(elementType);
-        return {
-          kind: "slice",
-          elementType: mappedElement,
-          usePointerForOptional: true,
-        };
+        return TypeConstructors.slice(mappedElement);
+      }
+    }
+
+    // Handle TypeSpec Array format specifically
+    if (type && typeof type === "object" && type.kind === "Array") {
+      const elementType = type.elementType;
+      if (elementType) {
+        const mappedElement = this.mapType(elementType);
+        return TypeConstructors.slice(mappedElement);
       }
     }
 
@@ -68,36 +81,32 @@ export class CleanTypeMapper {
     const goType = this.mapKindToGoType(kind);
     const usePointer = this.shouldUsePointer(goType);
 
-    return {
-      kind: goType === "interface{}" ? "unknown" : "basic",
-      name: goType,
-      usePointerForOptional: usePointer,
-    };
+    return TypeConstructors.basic(goType, usePointer);
   }
 
   /**
-   * Generate Go type string
+   * Generate Go type string with enhanced type support
    */
   static generateGoTypeString(type: MappedGoType): string {
-    switch (type.kind) {
-      case "basic":
-        return type.name;
-      case "slice":
-        return `[]${this.generateGoTypeString(type.elementType)}`;
-      case "model":
-      case "enum":
-        return type.name;
-      case "union":
-        return type.name; // Union interface name
-      case "unknown":
-        return "interface{}";
-      default:
-        // Handle special cases for test compatibility
-        if (typeof type.name === "string") {
-          return type.name;
-        }
-        return "interface{}";
+    // Use type guards for safe handling
+    if (TypeGuards.isArray(type)) {
+      return `[]${this.generateGoTypeString(type.elementType)}`;
     }
+    
+    if (TypeGuards.isPointer(type)) {
+      return `*${this.generateGoTypeString(type.baseType)}`;
+    }
+    
+    if (TypeGuards.isUnion(type)) {
+      return type.name || "interface{}"; // Union interface name
+    }
+    
+    if (TypeGuards.isBasic(type)) {
+      return type.name || "interface{}";
+    }
+    
+    // Fallback for safety
+    return type.name || "interface{}";
   }
 
   /**
@@ -139,16 +148,44 @@ export class CleanTypeMapper {
   }
 
   // Helper methods
-  private static getKindString(type: any): string | null {
-    if (type && typeof type === "object" && "kind" in type) {
-      return (type as { kind: string }).kind;
+  private static extractElementType(type: any): any {
+    // Handle legacy elementType property
+    if (type && typeof type === "object" && "elementType" in type) {
+      return (type as { elementType: any }).elementType;
+    }
+    // Handle TypeSpec Array format: { kind: "Array", elementType: ... }
+    if (type && typeof type === "object" && type.kind === "Array" && type.elementType) {
+      return type.elementType;
+    }
+    // Handle lowercase array kind
+    if (type && typeof type === "object" && type.kind === "array" && type.elementType) {
+      return type.elementType;
     }
     return null;
   }
 
-  private static getLegacyElementType(type: any): any {
-    if (type && typeof type === "object" && "elementType" in type) {
-      return (type as { elementType: any }).elementType;
+  private static handleUnionType(type: any): MappedGoType | null {
+    // Handle TypeSpec Union format
+    if (type && typeof type === "object" && type.kind === "Union") {
+      const variants = this.extractUnionVariants(type);
+      if (variants && variants.length > 0) {
+        return TypeConstructors.union(variants, type.name);
+      }
+    }
+    // Handle lowercase union kind
+    if (type && typeof type === "object" && type.kind === "union" && type.unionVariants) {
+      const mappedVariants = type.unionVariants.map((v: any) => this.mapType(v));
+      return TypeConstructors.union(mappedVariants, type.name);
+    }
+    return null;
+  }
+
+  private static extractUnionVariants(type: any): MappedGoType[] | null {
+    if (type.variants && Array.isArray(type.variants)) {
+      return type.variants.map((variant: any) => this.mapType(variant));
+    }
+    if (type.unionVariants && Array.isArray(type.unionVariants)) {
+      return type.unionVariants.map((variant: any) => this.mapType(variant));
     }
     return null;
   }

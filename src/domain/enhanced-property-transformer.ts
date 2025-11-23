@@ -132,16 +132,16 @@ export class EnhancedPropertyTransformer {
 
       // Step 3: Map TypeSpec type to Go type
       const mappedGoType = GoTypeMapper.mapTypeSpecTypeDomain(property.type);
-      const goType = this.generateGoType(mappedGoType, property.optional);
+      const goType = EnhancedPropertyTransformer.generateGoType(mappedGoType, property.optional);
 
       // Step 4: Generate JSON tag based on visibility
-      const jsonTag = this.generateJsonTagWithVisibility(property, visibility);
+      const jsonTag = EnhancedPropertyTransformer.generateJsonTagWithVisibility(property, visibility);
 
       // Step 5: Determine export status from visibility
-      const isExported = this.determineExportStatus(visibility);
+      const isExported = EnhancedPropertyTransformer.determineExportStatus(visibility);
 
       // Step 6: Calculate transformation confidence
-      const confidence = this.calculateTransformationConfidence(
+      const confidence = EnhancedPropertyTransformer.calculateTransformationConfidence(
         property, 
         visibility, 
         naming, 
@@ -180,11 +180,7 @@ export class EnhancedPropertyTransformer {
         stackTrace: error instanceof Error ? error.stack : undefined
       });
 
-      throw ErrorFactory.propertyTransformationError(
-        "Unknown", // Will be set by caller
-        property.name,
-        error instanceof Error ? error : String(error)
-      );
+      throw new Error(`Failed to transform property: ${property.name}. Error: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -221,16 +217,16 @@ export class EnhancedPropertyTransformer {
 
         // Map TypeSpec type to Go type
         const mappedGoType = GoTypeMapper.mapTypeSpecTypeDomain(property.type);
-        const goType = this.generateGoType(mappedGoType, property.optional);
+        const goType = EnhancedPropertyTransformer.generateGoType(mappedGoType, property.optional);
 
         // Generate JSON tag based on visibility
-        const jsonTag = this.generateJsonTagWithVisibility(property, visibility);
+        const jsonTag = EnhancedPropertyTransformer.generateJsonTagWithVisibility(property, visibility);
 
         // Determine export status
-        const isExported = this.determineExportStatus(visibility);
+        const isExported = EnhancedPropertyTransformer.determineExportStatus(visibility);
 
         // Calculate confidence
-        const confidence = this.calculateTransformationConfidence(
+        const confidence = EnhancedPropertyTransformer.calculateTransformationConfidence(
           property, 
           visibility, 
           naming, 
@@ -272,7 +268,7 @@ export class EnhancedPropertyTransformer {
       });
 
       // Fallback: return basic fields without visibility
-      return properties.map(property => this.createFallbackField(property));
+      return properties.map(property => EnhancedPropertyTransformer.createFallbackField(property));
     }
   }
 
