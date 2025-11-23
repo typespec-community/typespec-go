@@ -15,6 +15,7 @@ This is a **TypeSpec compiler plugin** that integrates seamlessly with the TypeS
 - 📦 **Package Generation:** Transforms TypeSpec namespaces into Go packages with proper directory structure
 - 🔗 **Native Integration:** Works with `tsp compile` command and TypeSpec compiler pipeline
 - 🎯 **Enterprise Focus:** Production-grade Go code with zero type safety violations
+- 🏗️ **Architecture Evolution:** Currently string-based generation, evolving toward component-based approach inspired by Alloy framework
 
 ### **Integration Pattern**
 ```yaml
@@ -78,6 +79,9 @@ export const $onEmit = createAssetEmitter(async (context: EmitContext) => {
 - Basic AssetEmitter integration
 - 79/83 tests passing (95% success rate)
 - Sub-millisecond generation performance
+- **Comprehensive AGENTS.md** development guide with architectural insights
+- **Zero Any Types Policy** with systematic elimination from codebase
+- **Alloy Framework Analysis** completed for future architecture evolution
 
 ### **🔧 BEING COMPLETED:**
 - **Full AssetEmitter Pattern:** Proper `createAssetEmitter` implementation
@@ -85,6 +89,13 @@ export const $onEmit = createAssetEmitter(async (context: EmitContext) => {
 - **Complete TypeSpec Coverage:** Enums, unions, templates, operations
 - **Go Decorator Support:** @go.name, @go.type, @go.tag, @go.package
 - **Advanced Features:** Discriminated unions, template instantiation, HTTP operations
+
+### **🚀 FUTURE ARCHITECTURE (Alloy-Inspired):**
+- **Component-Based Generation:** Declarative approach with JSX-like syntax
+- **Automatic Import Management:** refkey system for dependency tracking
+- **Enhanced Type Safety:** Component-level typing and error boundaries
+- **Improved Composition:** Higher-order components for complex patterns
+- **Hybrid Approach:** Maintain string generation for complex cases while adopting components for new features
 
 ---
 
@@ -337,17 +348,22 @@ namespace Demo {
 - **📋 Emitter Specification:** [doc/emitter.md](doc/emitter.md) - Complete TypeSpec feature mapping
 - **🏗️ Development Status:** [docs/status/](docs/status/) - Progress tracking and decisions
 - **🔧 Technical Research:** [docs/research/](docs/research/) - Implementation findings
+- **🤖 Agent Configuration:** [AGENTS.md](AGENTS.md) - Comprehensive development guide with architectural insights
 
 ### **Developer Resources**
-- **🤖 Agent Configuration:** [AGENTS.md](AGENTS.md) - Development team roles and standards
+- **🤖 AI Agent Guidelines:** [AGENTS.md](AGENTS.md) - Development standards and workflow patterns
 - **📋 Planning Documents:** [docs/planning/](docs/planning/) - Detailed task breakdowns
 - **📚 API Reference:** Complete type definitions and usage patterns
+- **🚀 Architecture Evolution:** Alloy framework insights for future component-based approach
 
 ### **Development Standards**
 - **Type Safety:** Zero any types, comprehensive type guards
 - **Performance:** Sub-millisecond generation with enterprise scalability
 - **Architecture:** Clean AssetEmitter patterns with domain intelligence
 - **Testing:** Comprehensive BDD scenarios with performance validation
+- **AI Agent Guidelines:** Follow [AGENTS.md](AGENTS.md) for all development work
+- **Zero Tolerance Policies:** No CLI development, no string manipulation for complex logic
+- **Evolutionary Approach:** Current string generation + future component-based architecture
 
 ---
 
