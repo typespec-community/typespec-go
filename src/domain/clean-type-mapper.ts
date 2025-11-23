@@ -15,9 +15,10 @@ import type {
   Union,
   Enum,
 } from "@typespec/compiler";
-import type { MappedGoType, TypeGuards, TypeConstructors, TypeValidators } from "./type-interfaces.js";
+import type { MappedGoType, TypeValidators } from "./type-interfaces.js";
+import { TypeGuards, TypeConstructors } from "./type-interfaces.js";
 import { SCALAR_TYPE_MAPPINGS, UPPER_CASE_SCALAR_MAPPINGS } from "./scalar-mappings.js";
-import { toGoIdentifier } from "./error-entities.js";
+import { EntityTransformation } from "./error-entities.js";
 import type { UniversalType } from "./legacy-type-adapter.js";
 
 /**
@@ -66,7 +67,8 @@ export class CleanTypeMapper {
     if (kind.toLowerCase() === "union") {
       // Check if union is wrapped in type property (common test pattern)
       const actualType = (type as any).type || type;
-      const unionName = fieldName || actualType.name || "interface{}";
+      // Convert fieldName to PascalCase for Go types when fieldName is provided
+      const unionName = fieldName ? EntityTransformation.toGoIdentifier(fieldName) : actualType.name || "interface{}";
       const unionType = this.handleUnionType(actualType, unionName);
       if (unionType) {
         return unionType;
