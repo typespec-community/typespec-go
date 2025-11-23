@@ -19,6 +19,8 @@ interface BasicGoType {
   readonly requiresImport?: boolean;
   readonly importPath?: string;
   readonly usePointerForOptional?: boolean;
+  readonly template?: string;
+  readonly baseTypes?: string[];
 }
 
 /**
@@ -55,6 +57,7 @@ interface UnionGoType {
   readonly importPath?: string;
   readonly usePointerForOptional?: boolean;
   readonly unionVariants: readonly MappedGoType[]; // Required
+  readonly variants?: readonly MappedGoType[]; // Backward compatibility
 }
 
 /**

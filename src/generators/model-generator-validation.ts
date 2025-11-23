@@ -21,22 +21,22 @@ export class ModelGeneratorValidation {
     try {
       // Check if program exists and is valid
       if (!program) {
-        return ErrorFactory.inputValidationError("Program is null or undefined");
+        return ErrorFactory.createValidationError("Program is null or undefined");
       }
 
       // Check if program has necessary compiler APIs
       if (typeof program !== 'object') {
-        return ErrorFactory.inputValidationError("Program is not a valid object");
+        return ErrorFactory.createValidationError("Program is not a valid object");
       }
 
       // Validate program has required methods
       if (!program.getGlobalNamespaceType || typeof program.getGlobalNamespaceType !== 'function') {
-        return ErrorFactory.inputValidationError("Program missing required compiler APIs");
+        return ErrorFactory.createValidationError("Program missing required compiler APIs");
       }
 
       return null; // Input is valid
     } catch (error) {
-      return ErrorFactory.inputValidationError(
+      return ErrorFactory.createValidationError(
         `Program validation failed: ${error instanceof Error ? error.message : String(error)}`
       );
     }
@@ -49,27 +49,27 @@ export class ModelGeneratorValidation {
     try {
       // Check model name
       if (!modelName || typeof modelName !== 'string') {
-        return ErrorFactory.modelValidationError("Invalid model name", modelName);
+        return ErrorFactory.createModelValidationError("Invalid model name", modelName);
       }
 
       // Check model object
       if (!model || typeof model !== 'object') {
-        return ErrorFactory.modelValidationError("Model is not a valid object", modelName);
+        return ErrorFactory.createModelValidationError("Model is not a valid object", modelName);
       }
 
       // Check required properties
       if (!model.properties || typeof model.properties !== 'object') {
-        return ErrorFactory.modelValidationError("Model missing properties map", modelName);
+        return ErrorFactory.createModelValidationError("Model missing properties map", modelName);
       }
 
       // Validate properties map
       if (!(model.properties instanceof Map) && !Array.isArray(model.properties)) {
-        return ErrorFactory.modelValidationError("Properties must be Map or Array", modelName);
+        return ErrorFactory.createModelValidationError("Properties must be Map or Array", modelName);
       }
 
       return null; // Model is valid
     } catch (error) {
-      return ErrorFactory.modelValidationError(
+      return ErrorFactory.createModelValidationError(
         `Model validation failed for ${modelName}: ${error instanceof Error ? error.message : String(error)}`,
         modelName
       );
@@ -83,27 +83,27 @@ export class ModelGeneratorValidation {
     try {
       // Check union name
       if (!unionName || typeof unionName !== 'string') {
-        return ErrorFactory.unionValidationError("Invalid union name", unionName);
+        return ErrorFactory.createValidationError("Invalid union name", unionName);
       }
 
       // Check union object
       if (!union || typeof union !== 'object') {
-        return ErrorFactory.unionValidationError("Union is not a valid object", unionName);
+        return ErrorFactory.createValidationError("Union is not a valid object", unionName);
       }
 
       // Check required variants
       if (!union.variants || typeof union.variants !== 'object') {
-        return ErrorFactory.unionValidationError("Union missing variants map", unionName);
+        return ErrorFactory.createValidationError("Union missing variants map", unionName);
       }
 
       // Validate variants map
       if (!(union.variants instanceof Map) && !Array.isArray(union.variants)) {
-        return ErrorFactory.unionValidationError("Variants must be Map or Array", unionName);
+        return ErrorFactory.createValidationError("Variants must be Map or Array", unionName);
       }
 
       return null; // Union is valid
     } catch (error) {
-      return ErrorFactory.unionValidationError(
+      return ErrorFactory.createValidationError(
         `Union validation failed for ${unionName}: ${error instanceof Error ? error.message : String(error)}`,
         unionName
       );
@@ -117,31 +117,31 @@ export class ModelGeneratorValidation {
     try {
       // Check operation name
       if (!operationName || typeof operationName !== 'string') {
-        return ErrorFactory.operationValidationError("Invalid operation name", operationName);
+      return ErrorFactory.createValidationError("Invalid operation name", operationName);
       }
 
       // Check operation object
       if (!operation || typeof operation !== 'object') {
-        return ErrorFactory.operationValidationError("Operation is not a valid object", operationName);
+      return ErrorFactory.createValidationError("Operation is not a valid object", operationName);
       }
 
       // Check required fields
       if (!operation.verb || typeof operation.verb !== 'string') {
-        return ErrorFactory.operationValidationError("Operation missing HTTP verb", operationName);
+        return ErrorFactory.createValidationError("Operation missing HTTP verb", operationName);
       }
 
       if (!operation.path || typeof operation.path !== 'string') {
-        return ErrorFactory.operationValidationError("Operation missing HTTP path", operationName);
+        return ErrorFactory.createValidationError("Operation missing HTTP path", operationName);
       }
 
       // Validate parameters
       if (operation.parameters && typeof operation.parameters !== 'object') {
-        return ErrorFactory.operationValidationError("Invalid parameters map", operationName);
+        return ErrorFactory.createValidationError("Invalid parameters map", operationName);
       }
 
       return null; // Operation is valid
     } catch (error) {
-      return ErrorFactory.operationValidationError(
+      return ErrorFactory.createValidationError(
         `Operation validation failed for ${operationName}: ${error instanceof Error ? error.message : String(error)}`,
         operationName
       );
@@ -185,21 +185,21 @@ export class ModelGeneratorValidation {
     try {
       // Check Go code
       if (!goCode || typeof goCode !== 'string') {
-        return ErrorFactory.generationValidationError("Generated Go code is invalid");
+        return ErrorFactory.createValidationError("Generated Go code is invalid");
       }
 
       // Check for basic Go structure
       if (!goCode.includes('package')) {
-        return ErrorFactory.generationValidationError("Generated Go code missing package declaration");
+        return ErrorFactory.createValidationError("Generated Go code missing package declaration");
       }
 
       if (!goCode.includes('type')) {
-        return ErrorFactory.generationValidationError("Generated Go code missing type declarations");
+        return ErrorFactory.createValidationError("Generated Go code missing type declarations");
       }
 
       return null; // Go code is valid
     } catch (error) {
-      return ErrorFactory.generationValidationError(
+      return ErrorFactory.createValidationError(
         `Go code validation failed: ${error instanceof Error ? error.message : String(error)}`
       );
     }
@@ -212,12 +212,12 @@ export class ModelGeneratorValidation {
     try {
       // Check result map
       if (!result || !(result instanceof Map)) {
-        return ErrorFactory.generationValidationError("Generation result is not a valid Map");
+        return ErrorFactory.createValidationError("Generation result is not a valid Map");
       }
 
       // Check if any files were generated
       if (result.size === 0) {
-        return ErrorFactory.generationValidationError("No files were generated");
+        return ErrorFactory.createValidationError("No files were generated");
       }
 
       // Validate each generated file
@@ -235,7 +235,7 @@ export class ModelGeneratorValidation {
 
       return null; // Generation result is valid
     } catch (error) {
-      return ErrorFactory.generationValidationError(
+      return ErrorFactory.createValidationError(
         `Generation result validation failed: ${error instanceof Error ? error.message : String(error)}`
       );
     }

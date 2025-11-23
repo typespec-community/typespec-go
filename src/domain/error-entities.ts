@@ -24,6 +24,7 @@ export namespace Entities {
     name as PropertyName;
   export const createErrorId = (id: string): ErrorId => id as ErrorId;
   export const createFileName = (name: string): FileName => name as FileName;
+  export const createErrorMessage = (message: string): string => message;
 }
 
 /**
@@ -120,8 +121,8 @@ export namespace EntityTransformation {
   /**
    * Create Error Message
    */
-  export const createErrorMessage = (message: string): ErrorMessage => 
-    Entities.createErrorMessage(message);
+  export const createErrorMessage = (message: string): string => 
+    message;
 
   /**
    * Create Extracted Visibility Info
@@ -171,7 +172,7 @@ export namespace EntityTransformation {
   } => ({
       decoratorType,
       isValid,
-      arguments
+      arguments: args
     });
 
   /**

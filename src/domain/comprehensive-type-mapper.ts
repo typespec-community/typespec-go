@@ -227,8 +227,10 @@ export class ComprehensiveTypeMapper {
       const goType = SCALAR_TYPE_MAPPINGS[scalarName];
       return {
         kind: "basic",
-        name: goType,
-        usePointerForOptional: goType !== "string" && goType !== "bool",
+        name: goType.name,
+        usePointerForOptional: goType.usePointerForOptional,
+        requiresImport: goType.requiresImport,
+        importPath: goType.importPath,
       };
     }
 
@@ -237,8 +239,10 @@ export class ComprehensiveTypeMapper {
       const goType = UPPER_CASE_SCALAR_MAPPINGS[scalarName];
       return {
         kind: "basic",
-        name: goType,
-        usePointerForOptional: goType !== "string" && goType !== "bool",
+        name: goType.name,
+        usePointerForOptional: goType.usePointerForOptional,
+        requiresImport: goType.requiresImport,
+        importPath: goType.importPath,
       };
     }
 
@@ -266,7 +270,7 @@ export class ComprehensiveTypeMapper {
     }
 
     return {
-      kind: "model",
+      kind: "struct",
       name: modelName,
       usePointerForOptional: true,
     };
@@ -285,7 +289,8 @@ export class ComprehensiveTypeMapper {
       kind: "union",
       name: unionName,
       usePointerForOptional: true,
-      variants: union.variants?.map(v => this.mapType(v, undefined)),
+      unionVariants: Array.from(union.variants.values()).map(v => this.mapType(v, undefined)),
+      variants: Array.from(union.variants.values()).map(v => this.mapType(v, undefined)), // Backward compatibility
     };
   }
 

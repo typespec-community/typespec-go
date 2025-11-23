@@ -47,6 +47,7 @@ export interface TypeSpecPropertyVisibility {
   readonly visible: boolean;
   readonly lifecycle: readonly TypeSpecVisibilityLifecycle[];
   readonly isInvisible: boolean;
+  readonly source: "decorator" | "default" | "inferred";
 }
 
 // Direct type definitions to avoid export issues

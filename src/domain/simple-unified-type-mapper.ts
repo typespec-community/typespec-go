@@ -150,7 +150,7 @@ export class SimpleUnifiedTypeMapper {
       case "Scalar":
         return { kind: "basic", name: "string", usePointerForOptional: false };
       case "Model":
-        return { kind: "model", name: type.name || "UnknownModel", usePointerForOptional: true };
+        return { kind: "struct", name: type.name || "UnknownModel", usePointerForOptional: true };
       default:
         return { kind: "basic", name: "interface{}", usePointerForOptional: true };
     }

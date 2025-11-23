@@ -45,26 +45,26 @@ interface NamedType extends Type {
  */
 function mapScalarToGoPrimitive(scalar: Scalar): GoPrimitiveType {
   switch (scalar.name) {
-    case "string": return GoPrimitiveTypeValues.STRING;
-    case "boolean": return GoPrimitiveTypeValues.BOOLEAN;
-    case "int8": return GoPrimitiveTypeValues.INT8;
-    case "int16": return GoPrimitiveTypeValues.INT16;
-    case "int32": return GoPrimitiveTypeValues.INT32;
-    case "int64": return GoPrimitiveTypeValues.INT64;
-    case "uint8": return GoPrimitiveTypeValues.UINT8;
-    case "uint16": return GoPrimitiveTypeValues.UINT16;
-    case "uint32": return GoPrimitiveTypeValues.UINT32;
-    case "uint64": return GoPrimitiveTypeValues.UINT64;
-    case "float32": return GoPrimitiveTypeValues.FLOAT32;
-    case "float64": return GoPrimitiveTypeValues.FLOAT64;
-    case "bytes": return GoPrimitiveTypeValues.BYTES;
-    case "plainDate": return GoPrimitiveTypeValues.TIME;
-    case "utcDateTime": return GoPrimitiveTypeValues.TIME;
-    case "duration": return GoPrimitiveTypeValues.DURATION;
+    case "string": return GoPrimitiveType.STRING;
+    case "boolean": return GoPrimitiveType.BOOLEAN;
+    case "int8": return GoPrimitiveType.INT8;
+    case "int16": return GoPrimitiveType.INT16;
+    case "int32": return GoPrimitiveType.INT32;
+    case "int64": return GoPrimitiveType.INT64;
+    case "uint8": return GoPrimitiveType.UINT8;
+    case "uint16": return GoPrimitiveType.UINT16;
+    case "uint32": return GoPrimitiveType.UINT32;
+    case "uint64": return GoPrimitiveType.UINT64;
+    case "float32": return GoPrimitiveType.FLOAT32;
+    case "float64": return GoPrimitiveType.FLOAT64;
+    case "bytes": return GoPrimitiveType.BYTES;
+    case "plainDate": return GoPrimitiveType.TIME;
+    case "utcDateTime": return GoPrimitiveType.TIME;
+    case "duration": return GoPrimitiveType.DURATION;
     default:
       // Log unsupported scalar for debugging
       console.warn(`Unsupported scalar type: ${scalar.name}`);
-      return GoPrimitiveTypeValues.INTERFACE;
+      return GoPrimitiveType.INTERFACE;
   }
 }
 

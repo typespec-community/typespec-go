@@ -41,7 +41,7 @@ export class ModelGeneratorCore {
 ${goFields.join('\n')}
 }`;
     } catch (error) {
-      throw ErrorFactory.goCodeGenerationError(
+      throw ErrorFactory.createGoCodeGenerationError(
         `Failed to generate Go struct for ${modelName}`,
         error instanceof Error ? error : String(error)
       );
@@ -65,7 +65,7 @@ ${goFields.join('\n')}
 ${variants.join('\n')}
 }`;
     } catch (error) {
-      throw ErrorFactory.goCodeGenerationError(
+      throw ErrorFactory.createGoCodeGenerationError(
         `Failed to generate Go union interface for ${unionName}`,
         error instanceof Error ? error : String(error)
       );
@@ -96,7 +96,7 @@ ${variants.join('\n')}
 ${methods.join('\n')}
 }`;
     } catch (error) {
-      throw ErrorFactory.goCodeGenerationError(
+      throw ErrorFactory.createGoCodeGenerationError(
         `Failed to generate Go service interface for ${serviceName}`,
         error instanceof Error ? error : String(error)
       );
@@ -125,7 +125,7 @@ ${methods.join('\n')}
   return nil, nil
 }`;
     } catch (error) {
-      throw ErrorFactory.goCodeGenerationError(
+      throw ErrorFactory.createGoCodeGenerationError(
         `Failed to generate HTTP handler for ${operationInfo.name}`,
         error instanceof Error ? error : String(error)
       );

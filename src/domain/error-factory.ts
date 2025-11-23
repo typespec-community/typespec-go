@@ -177,7 +177,7 @@ export class ErrorFactory {
       message,
       details: details,
       propertyName: Entities.createPropertyName(propertyName),
-      errorId: options?.errorId ?? this.createErrorId(),
+      errorId: options?.errorId as ErrorId ?? this.createErrorId(),
       resolution: "Check TypeSpec property decorators and ensure valid syntax",
       ...(cause instanceof Error && {
         originalError: Entities.createErrorMessage(cause.message)

@@ -69,6 +69,13 @@ export class GoTypeStringGenerator {
   }
 
   /**
+   * Alias for generateGoTypeString - for backward compatibility
+   */
+  static generate(type: MappedGoType): string {
+    return this.generateGoTypeString(type);
+  }
+
+  /**
    * Convert string to PascalCase (TypeSpec model name → Go struct name)
    * PROPER CONVENTIONS: Go naming standards
    */
