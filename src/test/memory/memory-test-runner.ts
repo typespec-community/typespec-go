@@ -31,6 +31,29 @@ export interface MemoryLeakTestResult {
 }
 
 /**
+ * Type-safe test property interface
+ * Eliminates need for 'any' types in test data
+ */
+interface TestProperty {
+  readonly name: string;
+  readonly type: {
+    readonly kind: string;
+    readonly element?: unknown;
+  };
+  readonly optional: boolean;
+}
+
+/**
+ * Type-safe test model factory interface
+ */
+interface TestModelFactory {
+  (): {
+    name: string;
+    properties: ReadonlyMap<string, unknown>;
+  };
+}
+
+/**
  * Memory usage testing utilities
  */
 export class MemoryTestRunner {
@@ -115,7 +138,7 @@ export class MemoryTestRunner {
    * Test for memory leaks over multiple iterations
    */
   testMemoryLeaks(
-    modelFactory: () => { name: string; properties: ReadonlyMap<string, any> },
+    modelFactory: TestModelFactory,
     iterations: number = 100,
   ): MemoryLeakTestResult {
     this.forceGarbageCollection();
@@ -185,7 +208,7 @@ export class MemoryTestRunner {
     name: string;
     properties: ReadonlyMap<string, unknown>;
   } {
-    const properties = new Map<string, any>();
+    const properties = new Map<string, TestProperty>();
 
     for (let i = 0; i < propertyCount; i++) {
       const typeIndex = i % 6; // Cycle through 6 basic types
