@@ -1,7 +1,7 @@
 {
   "name": "@typespec-community/typespec-go",
   "version": "0.0.1",
-  "main": "dist/src/emitter/main.js",
+  "main": "dist/main.js",
   "devDependencies": {
     "@alloy-js/core": "^0.21.0",
     "@alloy-js/go": "^0.1.0",
@@ -22,12 +22,12 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/src/emitter/main.d.ts",
-      "default": "./dist/src/emitter/main.js"
+      "types": "./dist/main.d.ts",
+      "default": "./dist/main.js"
     }
   },
   "scripts": {
-    "build": "bun build src/emitter/main.ts --outdir dist --target node --format esm",
+    "build": "bun build src/emitter/main.ts --outdir dist --target node --format esm --entry-naming main.js",
     "build:check": "bunx tsc --noEmit --strict",
     "test": "bun test",
     "test:typespec": "bun test --timeout 30000",

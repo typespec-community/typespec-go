@@ -148,6 +148,13 @@ export class CleanTypeMapper {
   }
 
   // Helper methods
+  private static getKindString(type: any): string | null {
+    if (type && typeof type === "object" && "kind" in type) {
+      return (type as { kind: string }).kind;
+    }
+    return null;
+  }
+
   private static extractElementType(type: any): any {
     // Handle legacy elementType property
     if (type && typeof type === "object" && "elementType" in type) {

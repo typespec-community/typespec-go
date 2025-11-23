@@ -30,13 +30,17 @@ function GoEmitterOutput({ program }: { program: Program }) {
   
   return (
     <Output program={program}>
-        <go.SourceFile path="models.go">
+      <go.ModuleDirectory name="github.com/example/project">
+        <go.SourceDirectory path="models">
+          <go.SourceFile path="models.go">
         
-        {/* Generate Go structs for all models in program */}
-        {Array.from(models.values()).map((model) => (
-          <GoModelStruct model={model} />
-        ))}
-      </go.SourceFile>
+            {/* Generate Go structs for all models in program */}
+            {Array.from(models.values()).map((model) => (
+              <GoModelStruct model={model} />
+            ))}
+          </go.SourceFile>
+        </go.SourceDirectory>
+      </go.ModuleDirectory>
     </Output>
   );
 }
@@ -52,7 +56,7 @@ function GoModelStruct({ model }: { model: Model }) {
         <go.StructMember 
           name={prop.name}
           type={mapTypeSpecToGo(prop.type)}
-          tag={`json:"${prop.name}"`}
+          tag={{json: prop.name}}
         />
       ))}
     </go.StructTypeDeclaration>
