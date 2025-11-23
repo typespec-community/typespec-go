@@ -1,5 +1,5 @@
 import type { Program, EmitContext, Model, Type, Scalar } from "@typespec/compiler";
-import { emitFile, EmitContext } from "@typespec/compiler";
+import { emitFile } from "@typespec/emitter-framework";
 import { Logger, LogContext } from "../domain/structured-logging.js";
 import type { GoEmitterOptions } from "../types/typespec-domain.js";
 import {

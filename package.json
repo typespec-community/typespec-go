@@ -9,6 +9,7 @@
     "@typespec/emitter-framework": "^0.14.0-dev.0"
   },
   "devDependencies": {
+    "@alloy-js/cli": "^0.21.0",
     "@alloy-js/typescript": "^0.21.0",
     "@types/node": "latest",
     "@typescript-eslint/eslint-plugin": "^8.47.0",
@@ -29,7 +30,8 @@
     }
   },
   "scripts": {
-    "build": "tsc --project tsconfig.json && npx webpack --mode=development",
+    "build": "npx alloy build",
+    "build:webpack": "tsc --project tsconfig.json && npx webpack --mode=development",
     "build:check": "bunx tsc --noEmit --strict",
     "test": "bun test",
     "test:typespec": "bun test --timeout 30000",
