@@ -73,7 +73,7 @@ export interface ExtractedModel {
   >;
   readonly extends?: string;
   readonly template?: string;
-  readonly propertiesFromExtends?: ReadonlyMap<string, any>;
+  readonly propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>;
 }
 
 /**

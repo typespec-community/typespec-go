@@ -6,6 +6,7 @@
  */
 
 import type { ExtractedOperation } from "../emitter/model-extractor-core.js";
+import type { TypeSpecPropertyNode, TypeSpecTypeNode } from "../types/typespec-domain.js";
 
 /**
  * Utility functions for model generation
@@ -246,7 +247,7 @@ ${body.map(line => `  ${line}`).join('\n')}
   /**
    * Extract type name from TypeSpec type object
    */
-  static extractTypeName(typeSpecType: any): string {
+  static extractTypeName(typeSpecType: TypeSpecTypeNode | TypeSpecPropertyNode | { kind?: string; name?: string }): string {
     if (!typeSpecType || typeof typeSpecType !== 'object') {
       return "interface{}";
     }
@@ -272,7 +273,7 @@ ${body.map(line => `  ${line}`).join('\n')}
   /**
    * Check if type is optional
    */
-  static isOptional(typeSpecType: any): boolean {
+  static isOptional(typeSpecType: TypeSpecTypeNode | TypeSpecPropertyNode | { optional?: boolean }): boolean {
     return typeSpecType && typeSpecType.optional === true;
   }
 

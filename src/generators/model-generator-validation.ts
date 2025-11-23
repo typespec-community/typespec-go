@@ -7,6 +7,7 @@
 
 import type { Program } from "@typespec/compiler";
 import type { GoEmitterResult } from "../domain/unified-errors.js";
+import type { ExtractedModel, ExtractedUnion, ExtractedOperation } from "../emitter/model-extractor-core.js";
 import { ErrorFactory } from "../domain/error-factory.js";
 
 /**
@@ -44,7 +45,7 @@ export class ModelGeneratorValidation {
   /**
    * Validate extracted model data
    */
-  static validateExtractedModel(modelName: string, model: any): GoEmitterResult | null {
+  static validateExtractedModel(modelName: string, model: ExtractedModel): GoEmitterResult | null {
     try {
       // Check model name
       if (!modelName || typeof modelName !== 'string') {
@@ -78,7 +79,7 @@ export class ModelGeneratorValidation {
   /**
    * Validate extracted union data
    */
-  static validateExtractedUnion(unionName: string, union: any): GoEmitterResult | null {
+  static validateExtractedUnion(unionName: string, union: ExtractedUnion): GoEmitterResult | null {
     try {
       // Check union name
       if (!unionName || typeof unionName !== 'string') {
@@ -112,7 +113,7 @@ export class ModelGeneratorValidation {
   /**
    * Validate extracted operation data
    */
-  static validateExtractedOperation(operationName: string, operation: any): GoEmitterResult | null {
+  static validateExtractedOperation(operationName: string, operation: ExtractedOperation): GoEmitterResult | null {
     try {
       // Check operation name
       if (!operationName || typeof operationName !== 'string') {

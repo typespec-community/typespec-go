@@ -6,6 +6,28 @@
  * IMPOSSIBLE STATES: Discriminated unions for all cases
  */
 
+/**
+ * TypeSpec Kind Type
+ * discriminated union for all TypeSpec node kinds
+ */
+export type TypeSpecKind =
+  | "Model"
+  | "Union"
+  | "Enum"
+  | "String"
+  | "Boolean"
+  | "Decorator"
+  | "EnumMember"
+  | "FunctionParameter"
+  | "Interface"
+  | "Intrinsic"
+  | "ModelProperty"
+  | "Namespace"
+  | "Number"
+  | "Scalar"
+  | "Tuple"
+  | "UnionVariant";
+
 // Direct type definitions to avoid export issues
 export interface TypeSpecPropertyNode {
   readonly name: string;
@@ -15,23 +37,7 @@ export interface TypeSpecPropertyNode {
 }
 
 export interface TypeSpecTypeNode {
-  readonly kind:
-    | "Model"
-    | "Union"
-    | "Enum"
-    | "String"
-    | "Boolean"
-    | "Decorator"
-    | "EnumMember"
-    | "FunctionParameter"
-    | "Interface"
-    | "Intrinsic"
-    | "ModelProperty"
-    | "Namespace"
-    | "Number"
-    | "Scalar"
-    | "Tuple"
-    | "UnionVariant";
+  readonly kind: TypeSpecKind;
   readonly name?: string;
   readonly properties?: ReadonlyMap<string, TypeSpecPropertyNode>;
   readonly optional?: boolean;

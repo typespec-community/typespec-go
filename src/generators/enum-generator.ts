@@ -11,6 +11,39 @@ import type { GoEmitterResult } from "../domain/unified-errors.js";
 import { ErrorFactory } from "../domain/error-factory.js";
 
 /**
+ * TypeSpec Enum Member Definition
+ * Represents individual enum members in TypeSpec
+ */
+interface TypeSpecEnumMember {
+  name?: string;
+  value?: unknown;
+}
+
+/**
+ * TypeSpec Enum Definition
+ * Represents enum definition structure in TypeSpec
+ */
+interface TypeSpecEnumDefinition {
+  members?: Record<string, TypeSpecEnumMember>;
+}
+
+/**
+ * TypeSpec Program Enum Collection
+ * Represents enum collection in TypeSpec program state
+ */
+interface TypeSpecProgramEnums {
+  [enumName: string]: TypeSpecEnumDefinition;
+}
+
+/**
+ * TypeSpec Program State
+ * Represents TypeSpec program internal state structure
+ */
+interface TypeSpecProgramState {
+  enums?: TypeSpecProgramEnums;
+}
+
+/**
  * TypeSpec Enum Generator
  * DOMAIN LOGIC: TypeSpec enums to Go enums conversion
  */
@@ -61,10 +94,11 @@ export class EnumGenerator extends BaseGenerator {
     try {
       // Access TypeSpec program enum definitions
       // Use fallback mechanisms for development
-      let extractedEnums: any;
+      let extractedEnums: TypeSpecProgramEnums;
       try {
         extractedEnums =
-          (program as any).state.enums || (program as any).enums || {};
+          (program as unknown as TypeSpecProgramState).state?.enums || 
+          (program as unknown as { enums?: TypeSpecProgramEnums }).enums || {};
       } catch (error) {
         console.log("Enum extraction from TypeSpec API failed, using fallback");
       }
@@ -81,7 +115,7 @@ export class EnumGenerator extends BaseGenerator {
         )) {
           const enumValues = this.processEnumDefinition(
             enumName,
-            enumDefinition as any,
+            enumDefinition as TypeSpecEnumDefinition,
           );
           if (enumValues.length > 0) {
             enums.set(enumName, enumValues);
@@ -102,7 +136,7 @@ export class EnumGenerator extends BaseGenerator {
    */
   private processEnumDefinition(
     enumName: string,
-    enumDefinition: any,
+    enumDefinition: TypeSpecEnumDefinition,
   ): string[] {
     try {
       if (!enumDefinition || typeof enumDefinition !== "object") {
@@ -111,7 +145,7 @@ export class EnumGenerator extends BaseGenerator {
 
       // Extract enum values
       const enumValues: string[] = [];
-      const members = (enumDefinition as any).members || {};
+      const members = enumDefinition.members || {};
 
       for (const [memberName, memberValue] of Object.entries(members)) {
         if (typeof memberName === "string" && memberName.length > 0) {

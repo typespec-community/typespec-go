@@ -1,6 +1,7 @@
 import type { Program, EmitContext, Model, Type, Scalar } from "@typespec/compiler";
-import { emitFile } from "@typespec/compiler";
+import { emitFile, EmitContext } from "@typespec/compiler";
 import { Logger, LogContext } from "../domain/structured-logging.js";
+import type { GoEmitterOptions } from "../types/typespec-domain.js";
 import {
   isModelType,
   isScalarType,
@@ -92,7 +93,7 @@ async function generateModelsGoFile(models: Model[], context: EmitContext): Prom
   
   // Generate error models section with native Go error types
   if (errorModels.length > 0) {
-    const errorPackageConfig = (context.options as any)["error-package"] as { enabled?: boolean; path?: string } | undefined;
+    const errorPackageConfig = (context.options as GoEmitterOptions)["error-package"];
     const errorPackageEnabled = errorPackageConfig?.enabled;
     const errorPackagePath = errorPackageConfig?.path || "pkg/errors";
     
@@ -244,7 +245,7 @@ function determinePackageName(context: EmitContext): string {
 }
 
 function mapTypeSpecToGo(type: Type): string {
-  // Use type guards instead of 'as any' casts
+  // Use type guards with proper format handling
   if (isScalarType(type)) {
     return mapScalarToGo(type);
   }

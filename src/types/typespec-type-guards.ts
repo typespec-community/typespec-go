@@ -21,12 +21,46 @@ import type {
 import { isErrorModel } from "@typespec/compiler";
 
 /**
+ * TypeSpec Model with Template Parameters
+ * Extends Model with templateParameters property
+ */
+interface ModelWithTemplateParameters extends Model {
+  templateParameters?: unknown[];
+}
+
+/**
+ * TypeSpec Operation with Parameters
+ * Extends Operation with parameters property
+ */
+interface OperationWithParameters extends Operation {
+  parameters: { properties: Map<string, unknown> };
+}
+
+/**
+ * TypeSpec Model Property
+ * Represents ModelProperty with type and optional properties
+ */
+interface ExtendedModelProperty {
+  type: Type;
+  optional?: boolean;
+}
+
+/**
+ * TypeSpec Model with Properties
+ * Extends Model with known properties
+ */
+interface ModelWithProperties extends Model {
+  properties: Map<string, unknown>;
+}
+
+/**
  * TypeGuard: Model Type
  * 
  * Determines if a Type is a Model type with proper type safety.
+ * Handles both capitalized TypeSpec format and lowercase test format.
  */
 export function isModelType(type: Type): type is Model {
-  return type.kind === "Model";
+  return type.kind === "Model" || type.kind === "model";
 }
 
 /**
@@ -51,27 +85,30 @@ export function isTemplateModel(type: Model): type is Model & { template: string
  * TypeGuard: Scalar Type
  * 
  * Determines if a Type is a Scalar type with proper type safety.
+ * Handles both capitalized TypeSpec format and lowercase test format.
  */
 export function isScalarType(type: Type): type is Scalar {
-  return type.kind === "Scalar";
+  return type.kind === "Scalar" || type.kind === "scalar";
 }
 
 /**
  * TypeGuard: Union Type
  * 
  * Determines if a Type is a Union type with proper type safety.
+ * Handles both capitalized TypeSpec format and lowercase test format.
  */
 export function isUnionType(type: Type): type is Union {
-  return type.kind === "Union";
+  return type.kind === "Union" || type.kind === "union";
 }
 
 /**
  * TypeGuard: Enum Type
  * 
  * Determines if a Type is an Enum type with proper type safety.
+ * Handles both capitalized TypeSpec format and lowercase test format.
  */
 export function isEnumType(type: Type): type is Enum {
-  return type.kind === "Enum";
+  return type.kind === "Enum" || type.kind === "enum";
 }
 
 /**
@@ -133,9 +170,9 @@ export function getEnumName(enumType: Enum): string {
  * 
  * Safely gets template parameters with fallback.
  */
-export function getTemplateParameters(type: Model): any[] {
+export function getTemplateParameters(type: Model): unknown[] {
   return isTemplateModel(type) && "templateParameters" in type ? 
-    (type as any).templateParameters || [] : [];
+    (type as ModelWithTemplateParameters).templateParameters || [] : [];
 }
 
 /**
@@ -188,7 +225,7 @@ export function hasReturnType(operation: Operation): operation is Operation & { 
  * 
  * Determines if an Operation has parameters.
  */
-export function hasParameters(operation: Operation): operation is Operation & { parameters: any[] } {
+export function hasParameters(operation: Operation): operation is OperationWithParameters {
   return "parameters" in operation;
 }
 
@@ -225,7 +262,7 @@ export function getArrayElementType(model: Model): Type | undefined {
  * 
  * Safely extracts type from ModelProperty with type safety.
  */
-export function getPropertyType(property: any): Type {
+export function getPropertyType(property: ExtendedModelProperty): Type {
   return property.type;
 }
 
@@ -234,7 +271,7 @@ export function getPropertyType(property: any): Type {
  * 
  * Safely extracts members from Model.
  */
-export function getModelMembers(model: Model): Map<string, any> | undefined {
+export function getModelMembers(model: Model): Map<string, unknown> | undefined {
   return model.properties;
 }
 
@@ -243,7 +280,7 @@ export function getModelMembers(model: Model): Map<string, any> | undefined {
  * 
  * Determines if Model has properties.
  */
-export function hasMembers(model: Model): model is Model & { properties: Map<string, any> } {
+export function hasMembers(model: Model): model is ModelWithProperties {
   return "properties" in model && !!model.properties;
 }
 
@@ -261,7 +298,7 @@ export function getOperationReturnType(operation: Operation): Type | undefined {
  * 
  * Safely extracts parameters from operation.
  */
-export function getOperationParameters(operation: Operation): Map<string, any> | undefined {
+export function getOperationParameters(operation: Operation): Map<string, unknown> | undefined {
   return hasParameters(operation) ? operation.parameters.properties : undefined;
 }
 
@@ -284,15 +321,15 @@ export const TypeSpecTypeSafeAccess = {
     return isNamedType(type) ? type.name : "UnknownType";
   },
   
-  getModelProperties: (model: Model): Map<string, any> => {
+  getModelProperties: (model: Model): Map<string, unknown> => {
     return hasMembers(model) ? model.properties : new Map();
   },
   
-  getModelPropertyType: (property: any): Type => {
+  getModelPropertyType: (property: ExtendedModelProperty): Type => {
     return getPropertyType(property);
   },
   
-  getModelPropertyOptional: (property: any): boolean => {
+  getModelPropertyOptional: (property: ExtendedModelProperty): boolean => {
     return property.optional || false;
   },
   

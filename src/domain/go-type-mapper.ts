@@ -15,6 +15,7 @@ import type {
 import type { MappedGoType } from "./type-interfaces.js";
 import { SCALAR_TYPE_MAPPINGS, UPPER_CASE_SCALAR_MAPPINGS } from "./scalar-mappings.js";
 import { GoTypeStringGenerator } from "./go-type-string-generator.js";
+import { LegacyTypeAdapter, type UniversalType } from "./legacy-type-adapter.js";
 import { isArrayModelType } from "@typespec/compiler";
 import {
   isScalarType,
@@ -60,12 +61,16 @@ export class GoTypeMapper {
   /**
    * Map TypeSpec domain type to Go type
    * Used for test data and standalone generation
+   * LEGACY COMPATIBILITY: Convert legacy test formats first
    */
   private static mapTypeSpecTypeDomain(type: TypeSpecType, fieldName?: string): MappedGoType {
+    // CRISIS RESOLUTION: Convert legacy test formats first
+    const typeSpecFormat = LegacyTypeAdapter.toTypeSpecFormat(type);
+    
     // Handle TEST DOMAIN TYPES with capitalized kind names
     // CRITICAL: Tests use { kind: "String", "Int32", "Uint32", "Boolean" } format
-    const kind = (type as any).kind;
-    console.log("🔍 DEBUG: mapTypeSpecTypeDomain called with kind:", kind, "type:", type);
+    const kind = (typeSpecFormat as UniversalType).kind;
+    console.log("🔍 DEBUG: mapTypeSpecTypeDomain called with kind:", kind, "type:", typeSpecFormat, "original:", type);
     if (kind && typeof kind === "string") {
       const kindLower = kind.toLowerCase();
       
@@ -138,10 +143,37 @@ export class GoTypeMapper {
     }
 
     // Handle test data with kind-based types (fallback for development/testing)
-    if ("kind" in type && typeof (type as any).kind === "string") {
-      const testKind = (type as any).kind;
+    if ("kind" in type && typeof (type as UniversalType).kind === "string") {
+      const testKind = (type as UniversalType).kind;
       
-      
+      // Handle scalar types directly
+      const scalarMappings: Record<string, string> = {
+        "string": "string",
+        "int8": "int8",
+        "int16": "int16",
+        "int32": "int32", 
+        "int64": "int64",
+        "uint8": "uint8",
+        "uint16": "uint16",
+        "uint32": "uint32",
+        "uint64": "uint64",
+        "float32": "float32",
+        "float64": "float64",
+        "boolean": "bool",
+      };
+
+      const goType = scalarMappings[testKind];
+      if (goType) {
+        // Apply domain intelligence for uint types
+        const finalGoType = this.applyUintDomainIntelligence(goType, testKind, fieldName);
+        
+        return {
+          kind: "basic",
+          name: finalGoType,
+          usePointerForOptional: false,
+          requiresImport: false,
+        };
+      }
     }
 
     // Handle model types using proper type guard

@@ -12,7 +12,24 @@ import type {
   GoStructField,
   GoGeneratorConfig
 } from "../types/emitter.types.js";
+import type { TypeSpecKind } from "../types/typespec-domain.js";
 import { createGoStructField } from "./type-mapping.service.js";
+
+/**
+ * Type mapping result for inline function
+ */
+interface TypeMappingResult {
+  _tag: "success";
+  result: string;
+}
+
+/**
+ * Type mapping error interface
+ */
+interface TypeMappingError {
+  message: string;
+  type?: string;
+}
 
 /**
  * Generate Go struct field code with proper formatting and validation
@@ -71,7 +88,7 @@ export function generateGoStruct(
   try {
     // Generate struct fields with type safety
     const fields: GoStructField[] = [];
-    const typeMappingErrors: any[] = [];
+    const typeMappingErrors: TypeMappingError[] = [];
     
     if (model.properties) {
       for (const [fieldName, prop] of model.properties) {
@@ -164,7 +181,7 @@ function generateStructCode(
 /**
  * Import the type mapping function (needed to avoid circular imports)
  */
-function mapTypeSpecType(program: Program, type: any): any {
+function mapTypeSpecType(program: Program, type: { kind: TypeSpecKind }): TypeMappingResult {
   // This would be imported from type-mapping.service
   // For now, inline to avoid circular imports
   switch (type.kind) {

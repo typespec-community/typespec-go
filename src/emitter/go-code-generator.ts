@@ -12,7 +12,7 @@ import type { ExtractedModel } from "./model-extractor-core.js";
 import { TypeSpecEntities } from "../types/errors.js";
 import { Entities } from "../domain/error-entities.js";
 import { GeneratorRegistry } from "../generators/index.js";
-import type { TypeSpecPropertyNode } from "../types/typespec-domain.js";
+import type { TypeSpecPropertyNode, TypeSpecKind } from "../types/typespec-domain.js";
 
 /**
  * Go code generation coordination
@@ -169,7 +169,7 @@ export class GoCodeGenerator {
     const convertedProperties = new Map<string, TypeSpecPropertyNode>();
     for (const [key, prop] of extractedModel.properties) {
       // Convert string kind to proper TypeSpecTypeNode format
-      const kind = prop.type.kind as any;
+      const kind = prop.type.kind as TypeSpecKind;
       convertedProperties.set(key, {
         name: prop.name,
         type: {

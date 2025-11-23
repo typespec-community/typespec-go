@@ -17,6 +17,7 @@ import type {
 import type { ExtractedModel, ExtractedOperation, ExtractedUnion } from "./model-extractor-core.js";
 import { getEffectiveModelType } from "@typespec/compiler";
 import { Logger, LogContext } from "../domain/structured-logging.js";
+import type { TypeSpecPropertyNode, TypeSpecKind } from "../types/typespec-domain.js";
 
 /**
  * Model processing utilities
@@ -53,7 +54,7 @@ export class ModelProcessingExtractor {
         LogContext.TYPESPEC_INTEGRATION,
         "Failed to process individual operation",
         { 
-          operationName: (operation as any)?.name,
+          operationName: (operation as TypeSpecOperation)?.name,
           error: error instanceof Error ? error.message : String(error)
         }
       );
@@ -89,7 +90,7 @@ export class ModelProcessingExtractor {
         LogContext.TYPESPEC_INTEGRATION,
         "Failed to process individual union",
         { 
-          unionName: (union as any)?.name,
+          unionName: (union as Union)?.name,
           error: error instanceof Error ? error.message : String(error)
         }
       );
@@ -128,7 +129,7 @@ export class ModelProcessingExtractor {
         LogContext.TYPESPEC_INTEGRATION,
         "Failed to process individual model",
         { 
-          modelName: (model as any)?.name,
+          modelName: (model as TypeSpecModelType)?.name,
           error: error instanceof Error ? error.message : String(error)
         }
       );
@@ -292,7 +293,7 @@ export class ModelProcessingExtractor {
       // TODO: Replace with proper property extraction
       // For now, using direct property access - needs TypeSpec API research
       if (model.properties && typeof model.properties === "object") {
-        Object.entries(model.properties).forEach(([key, property]: [string, any]) => {
+        Object.entries(model.properties).forEach(([key, property]: [string, TypeSpecPropertyNode]) => {
           if (property && typeof property === "object") {
             properties.set(key, {
               name: key,
@@ -354,7 +355,7 @@ export class ModelProcessingExtractor {
    * Extract inherited properties from effective model type
    * Domain logic: Inherited properties extraction for complete model view
    */
-  private static extractInheritedProperties(model: TypeSpecModelType): ReadonlyMap<string, any> | undefined {
+  private static extractInheritedProperties(model: TypeSpecModelType): ReadonlyMap<string, TypeSpecPropertyNode> | undefined {
     try {
       const effectiveModel = getEffectiveModelType(model);
       if (effectiveModel.name && effectiveModel.name !== model.name) {
@@ -379,7 +380,7 @@ export class ModelProcessingExtractor {
    * Map TypeSpec kind to simplified type representation
    * Domain logic: Type kind normalization for Go code generation
    */
-  static mapTypeSpecKind(property: any): string {
+  static mapTypeSpecKind(property: TypeSpecPropertyNode | { kind: TypeSpecKind }): string {
     if (!property || typeof property !== "object") {
       return "unknown";
     }

@@ -11,8 +11,21 @@ import { StandaloneGoGenerator } from "../standalone-generator.js";
 import { GoEmitterResult } from "../domain/unified-errors.js";
 
 // Real BDD testing with proper assertions
-declare const require: any;
-const expect = require("bun:test").expect;
+declare const require: (id: string) => unknown;
+const expect = require("bun:test").expect as unknown;
+
+/**
+ * BDD Validation Record Type
+ * Type-safe record for validation results
+ */
+interface BDDValidationRecord {
+  struct?: boolean;
+  pointers?: boolean;
+  json?: boolean;
+  package?: boolean;
+  imports?: boolean;
+  [key: string]: unknown;
+}
 
 /**
  * BDD Test Scenario Interface
@@ -221,7 +234,7 @@ export class BDDRunner {
       hasOptionalPointers?: boolean;
     },
   ): BDDValidation {
-    const validation: Record<string, any> = {};
+    const validation: BDDValidationRecord = {};
 
     // Check for struct definition
     if (expectedElements?.hasStruct) {

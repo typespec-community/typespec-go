@@ -17,6 +17,30 @@ import type {
 import { GoPrimitiveType as GoPrimitiveTypeValues } from "../types/emitter.types.js";
 
 /**
+ * TypeSpec Array Type interface
+ * Extends TypeSpec compiler Type with elementType property
+ */
+interface ArrayType extends Type {
+  elementType?: Type;
+}
+
+/**
+ * TypeSpec Union Type interface
+ * Extends TypeSpec compiler Type with variants property
+ */
+interface UnionType extends Type {
+  variants?: Array<{ type: Type }>;
+}
+
+/**
+ * TypeSpec Named Type interface
+ * Extends TypeSpec compiler Type with name property
+ */
+interface NamedType extends Type {
+  name?: string;
+}
+
+/**
  * Type-safe TypeSpec scalar to Go primitive mapping
  * No string literals - compile-time guarantees
  */
@@ -64,7 +88,7 @@ function mapArrayType(program: Program, type: Type): TypeMappingResult {
   
   // Handle potential Array type (check for elementType property)
   if ("elementType" in type) {
-    const elementType = (type as any).elementType as Type;
+    const elementType = (type as ArrayType).elementType;
     const elementMapping = mapTypeSpecType(program, elementType);
     
     if (elementMapping._tag === "success") {
@@ -107,7 +131,7 @@ function mapModelType(program: Program, type: Model): TypeMappingResult {
  */
 function mapUnionType(program: Program, type: Type): TypeMappingResult {
   if ("variants" in type) {
-    const variants = (type as any).variants as Array<{ type: Type }>;
+    const variants = (type as UnionType).variants;
     
     // If all variants are strings, map to string
     if (variants.every(v => v.type?.kind === "String")) {
@@ -126,7 +150,7 @@ function mapUnionType(program: Program, type: Type): TypeMappingResult {
  * Handle TypeSpec enum types
  */
 function mapEnumType(program: Program, type: Type): TypeMappingResult {
-  if (!("name" in type) || !(type as any).name) {
+  if (!("name" in type) || !(type as NamedType).name) {
     return { 
       _tag: "unsupported-type", 
       type, 

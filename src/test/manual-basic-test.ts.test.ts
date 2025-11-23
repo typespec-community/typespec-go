@@ -24,14 +24,14 @@ describe("Manual Basic Test", () => {
 
       properties.set("name", {
         name: "name",
-        type: { kind: "String" },
+        type: { kind: "scalar", name: "string" },
         optional: false,
         documentation: "User name",
       });
 
       properties.set("age", {
         name: "age",
-        type: { kind: "Uint8" },
+        type: { kind: "scalar", name: "uint8" },
         optional: true,
         documentation: "User age (0-255)",
       });
@@ -45,6 +45,8 @@ describe("Manual Basic Test", () => {
       const result = generator.generateModel(model);
 
       // Handle result using proper discriminated union
+      console.log("🔍 RESULT DEBUG:", JSON.stringify(result, null, 2));
+      
       if (result._tag === "success") {
         const goCode = Array.from(result.data.values())[0];
         console.log("✅ SUCCESS: Go code generated:");
@@ -61,10 +63,12 @@ describe("Manual Basic Test", () => {
         expect(Array.from(result.data.keys())[0]).toBe("User.go");
       } else {
         console.error("❌ FAILED:", result.message);
+        console.error("❌ RESULT DEBUG:", JSON.stringify(result, null, 2));
         throw new Error(`Go generation failed: ${result.message}`);
       }
     } catch (error) {
       console.error("❌ FAILED:", error);
+      console.error("❌ ERROR DETAILS:", error instanceof Error ? error.stack : error);
       throw error;
     }
   });
