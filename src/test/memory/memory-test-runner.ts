@@ -52,8 +52,8 @@ export class MemoryTestRunner {
    * Force garbage collection if available
    */
   private forceGarbageCollection(): void {
-    if (typeof global !== "undefined" && (global as any).gc) {
-      (global as any).gc();
+    if (typeof global !== "undefined" && (global as Record<string, unknown>).gc) {
+      (global as Record<string, () => void>).gc();
     }
   }
 
@@ -62,7 +62,7 @@ export class MemoryTestRunner {
    */
   measureMemoryUsage(model: {
     name: string;
-    properties: ReadonlyMap<string, any>;
+    properties: ReadonlyMap<string, unknown>;
   }): MemoryMetrics {
     const testId = `memory-test-${Date.now()}`;
     const propertyCount = model.properties.size;
@@ -183,7 +183,7 @@ export class MemoryTestRunner {
     propertyCount: number,
   ): {
     name: string;
-    properties: ReadonlyMap<string, any>;
+    properties: ReadonlyMap<string, unknown>;
   } {
     const properties = new Map<string, any>();
 

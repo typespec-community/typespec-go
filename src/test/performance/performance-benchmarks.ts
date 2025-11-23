@@ -11,7 +11,7 @@ export interface PerformanceBenchmark {
   expectedMaxTimeMs: number;
   expectedMaxMemoryMB: number;
   expectedMinThroughput: number;
-  modelFactory: () => any;
+  modelFactory: () => unknown;
 }
 
 export interface PerformanceTestResult {
@@ -236,7 +236,7 @@ export const PERFORMANCE_BENCHMARKS: PerformanceBenchmark[] = [
     expectedMaxMemoryMB: 25,
     expectedMinThroughput: 5,
     modelFactory: () => {
-      const properties: Record<string, any> = {
+      const properties: Record<string, { type: string; required: boolean }> = {
         id: { type: "string", required: true },
         name: { type: "string", required: true },
         description: { type: "string", required: false },

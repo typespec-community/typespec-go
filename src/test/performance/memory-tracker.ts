@@ -25,8 +25,8 @@ export class MemoryTracker {
     }
 
     // Fallback for browser or other environments
-    if (typeof performance !== "undefined" && (performance as any).memory) {
-      return (performance as any).memory.usedJSHeapSize || 0;
+    if (typeof performance !== "undefined" && (performance as Record<string, unknown>).memory) {
+      return (performance as { memory: { usedJSHeapSize?: number } }).memory.usedJSHeapSize || 0;
     }
 
     // Return 0 if memory tracking is not available
@@ -65,10 +65,10 @@ export class MemoryTracker {
    * Force garbage collection if available
    */
   forceGarbageCollection(): void {
-    if (typeof global !== "undefined" && (global as any).gc) {
-      (global as any).gc();
-    } else if (typeof window !== "undefined" && (window as any).gc) {
-      (window as any).gc();
+    if (typeof global !== "undefined" && (global as Record<string, unknown>).gc) {
+      (global as Record<string, () => void>).gc();
+    } else if (typeof window !== "undefined" && (window as Record<string, unknown>).gc) {
+      (window as Record<string, () => void>).gc();
     }
   }
 
@@ -100,8 +100,8 @@ export class MemoryTracker {
     }
 
     // Fallback for browser environments
-    if (typeof performance !== "undefined" && (performance as any).memory) {
-      const memory = (performance as any).memory;
+    if (typeof performance !== "undefined" && (performance as Record<string, unknown>).memory) {
+      const memory = (performance as { memory: { usedJSHeapSize?: number; totalJSHeapSize?: number } }).memory;
       return {
         heapUsed: memory.usedJSHeapSize || 0,
         heapTotal: memory.totalJSHeapSize || 0,

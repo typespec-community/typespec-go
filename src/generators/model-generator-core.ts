@@ -145,7 +145,7 @@ ${methods.join('\n')}
       })
       .join(", ");
 
-    return `  ${operationInfo.name}(${parameters}) (${returnType}, error)`;
+    return `  ${operationInfo.name}(ctx context.Context, ${parameters}) (${returnType}, error)`;
   }
 
   /**

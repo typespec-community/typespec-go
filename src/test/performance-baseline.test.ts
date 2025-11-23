@@ -42,7 +42,7 @@ class PerformanceTester {
   private async runPerformanceTest(
     testName: string,
     modelComplexity: string,
-    modelFactory: () => any,
+    modelFactory: () => unknown,
     iterations: number = 100,
   ): Promise<PerformanceMetrics> {
     console.log(`🧪 Running performance test: ${testName}`);

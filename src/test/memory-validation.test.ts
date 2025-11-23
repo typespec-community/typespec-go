@@ -33,8 +33,8 @@ class MemoryValidationSuite {
   runFullMemoryValidation(): {
     efficiencyMetrics: MemoryMetrics[];
     leakTestResult: MemoryLeakTestResult;
-    validationResults: any;
-    summary: any;
+    validationResults: Record<string, unknown>;
+    summary: Record<string, unknown>;
   } {
     console.log("🧠 Starting Memory Validation Test Suite");
     console.log("=".repeat(50));
@@ -98,7 +98,7 @@ class MemoryValidationSuite {
    */
   testModelMemory(model: {
     name: string;
-    properties: ReadonlyMap<string, any>;
+    properties: ReadonlyMap<string, unknown>;
   }): MemoryMetrics {
     const metrics = this.memoryRunner.measureMemoryUsage(model);
 
@@ -120,7 +120,7 @@ class MemoryValidationSuite {
    * Test memory leaks for specific model pattern
    */
   testModelPatternLeaks(
-    modelFactory: () => { name: string; properties: ReadonlyMap<string, any> },
+    modelFactory: () => { name: string; properties: ReadonlyMap<string, unknown> },
     iterations: number = 50,
   ): MemoryLeakTestResult {
     console.log(`🔄 Testing memory leaks with ${iterations} iterations`);
@@ -163,7 +163,7 @@ describe("Memory Validation Tests", () => {
 
   it("should test individual model memory usage", () => {
     // Create test model
-    const properties = new Map<string, any>();
+    const properties = new Map<string, unknown>();
     for (let i = 0; i < 50; i++) {
       properties.set(`field${i}`, {
         name: `field${i}`,
@@ -182,7 +182,7 @@ describe("Memory Validation Tests", () => {
 
   it("should detect memory leaks in model generation", () => {
     const result = memorySuite.testModelPatternLeaks(() => {
-      const properties = new Map<string, any>();
+      const properties = new Map<string, unknown>();
       for (let i = 0; i < 25; i++) {
         properties.set(`field${i}`, {
           name: `field${i}`,

@@ -37,7 +37,7 @@ class LargeModelPerformanceTester {
   /**
    * Generate a large test model with specified property count
    */
-  private generateLargeModel(propertyCount: number): any {
+  private generateLargeModel(propertyCount: number): Record<string, unknown> {
     const properties = new Map();
     const baseTypes = [
       "String",

@@ -150,6 +150,50 @@ export class ModelGenerator extends BaseGenerator {
   }
 
   /**
+   * Generate Go service interface from operations
+   * PUBLIC API: Exposed for testing and external usage
+   */
+  public generateGoServiceInterface(operations: ReadonlyMap<string, ExtractedOperation>): string {
+    return ModelGeneratorCore.generateGoServiceInterface("ApiService", operations);
+  }
+
+  /**
+   * Generate HTTP handlers for all operations
+   * PUBLIC API: Exposed for testing and external usage
+   */
+  public generateGoHttpHandlers(operations: ReadonlyMap<string, ExtractedOperation>): string {
+    return this.generateHttpHandlers(operations);
+  }
+
+  /**
+   * Generate route registration function
+   * PUBLIC API: Exposed for testing and external usage
+   */
+  public generateGoRouteRegistration(operations: ReadonlyMap<string, ExtractedOperation>): string {
+    return this.generateRouteRegistration(operations);
+  }
+
+  /**
+   * Extract path parameters from route pattern
+   * PUBLIC API: Exposed for testing and external usage
+   */
+  public extractPathParameters(path: string): Array<{ name: string; position: number }> {
+    const pathParams: Array<{ name: string; position: number }> = [];
+    const segments = path.split('/');
+    let position = 0;
+    
+    for (const segment of segments) {
+      if (segment.startsWith('{') && segment.endsWith('}')) {
+        const paramName = segment.slice(1, -1);
+        pathParams.push({ name: paramName, position });
+      }
+      position++;
+    }
+    
+    return pathParams;
+  }
+
+  /**
    * Generate HTTP handlers for all operations
    */
   private generateHttpHandlers(operations: ReadonlyMap<string, ExtractedOperation>): string {

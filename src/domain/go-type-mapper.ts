@@ -75,8 +75,8 @@ export class GoTypeMapper {
       const kindLower = kind.toLowerCase();
       
       // Handle Array types in test data format
-      if (kindLower === "array" && (typeSpecFormat as any).elementType) {
-        const elementType = (typeSpecFormat as any).elementType;
+      if (kindLower === "array" && typeSpecFormat.elementType) {
+        const elementType = typeSpecFormat.elementType;
         const mappedElementType = this.mapTypeSpecTypeDomain(elementType);
         return {
           kind: "slice",

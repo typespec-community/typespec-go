@@ -67,7 +67,7 @@ describe("Real BDD Framework Integration", () => {
       name: "Go Emitter Failure",
       description: "Verify proper error handling in BDD framework",
       given: () => {
-        const mockProgram = null as any; // This will cause failure
+        const mockProgram = undefined; // This will cause failure
         const emitter = new GoEmitter();
         return { emitter, program: mockProgram };
       },
@@ -140,7 +140,7 @@ describe("Real BDD Framework Integration", () => {
       {
         name: "Scenario 3 (Fails)",
         description: "Intentionally failing scenario",
-        given: () => null as any,
+        given: () => undefined,
         when: (context) => {
           throw new Error("Intentional failure");
         },

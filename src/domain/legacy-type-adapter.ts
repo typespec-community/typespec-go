@@ -32,7 +32,7 @@ interface TypeSpecType {
 /**
  * Universal type that can be legacy or TypeSpec format
  */
-interface UniversalType {
+export interface UniversalType {
   kind: string;
   name?: string;
   elementType?: unknown;

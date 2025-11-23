@@ -156,7 +156,7 @@ describe("Performance Regression Tests", () => {
       for (let i = 0; i < iterations; i++) {
         complexFields.forEach((field) => {
           GoTypeMapper.mapTypeSpecType(
-            { kind: "scalar", name: "int32" } as any,
+            { kind: "scalar", name: "int32" },
             field,
           );
         });
