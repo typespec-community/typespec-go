@@ -2,15 +2,17 @@
   "name": "@typespec-community/typespec-go",
   "version": "0.0.1",
   "main": "dist/main.js",
-  "devDependencies": {
+  "dependencies": {
     "@alloy-js/core": "^0.21.0",
     "@alloy-js/go": "^0.1.0",
+    "@typespec/compiler": "1.7.0-dev.2",
+    "@typespec/emitter-framework": "^0.14.0-dev.0"
+  },
+  "devDependencies": {
     "@alloy-js/typescript": "^0.21.0",
     "@types/node": "latest",
     "@typescript-eslint/eslint-plugin": "^8.47.0",
     "@typescript-eslint/parser": "^8.47.0",
-    "@typespec/compiler": "1.7.0-dev.2",
-    "@typespec/emitter-framework": "^0.14.0-dev.0",
     "bun": "latest",
     "eslint": "^9.39.1",
     "prettier": "^4.0.0-alpha.12",
@@ -27,7 +29,7 @@
     }
   },
   "scripts": {
-    "build": "bun build src/emitter/simple-alloy-emitter.tsx --outdir dist --target node --format esm --entry-naming '[name].js'",
+    "build": "tsc --project tsconfig.json && npx webpack --mode=development",
     "build:check": "bunx tsc --noEmit --strict",
     "test": "bun test",
     "test:typespec": "bun test --timeout 30000",

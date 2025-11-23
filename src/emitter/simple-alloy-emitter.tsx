@@ -1,7 +1,10 @@
 import type { Program, EmitContext, Model, Type, ModelProperty } from "@typespec/compiler";
 import { writeOutput } from "@typespec/emitter-framework";
-import { Output, jsx, jsxs } from "@alloy-js/core";
+import { Output } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
+
+// Import JSX runtime explicitly
+import { jsx } from "@alloy-js/core/jsx-runtime";
 
 /**
  * Simple TypeSpec Go Emitter using Alloy-JS Framework
