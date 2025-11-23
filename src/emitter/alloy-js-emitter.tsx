@@ -2,7 +2,8 @@ import type { Program, EmitContext, Model, Type, ModelProperty } from "@typespec
 import { writeOutput } from "@typespec/emitter-framework";
 import { Output } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
-import { isNullType, isTemplateInstance, isString, isNumber, isBoolean } from "@typespec/compiler";
+import { isNullType, isTemplateInstance, isStringType, isNumeric } from "@typespec/compiler";
+import { isModelType, isScalarType, isUnionType } from "../types/typespec-type-guards.js";
 import { Logger, LogContext } from "../domain/structured-logging.js";
 
 /**
@@ -130,7 +131,7 @@ function mapTypeSpecToGoType(type: Type): any {
   }
   
   // Handle scalar types
-  if (isScalar(type)) {
+  if (isScalarType(type)) {
     const scalarName = type.name?.toLowerCase() || "";
     const scalarMap: Record<string, string> = {
       "int8": "int8",
@@ -154,12 +155,12 @@ function mapTypeSpecToGoType(type: Type): any {
   }
   
   // Handle model types
-  if (isModel(type)) {
+  if (isModelType(type)) {
     return type.name || "interface{}";
   }
   
   // Handle union types (optional types)
-  if (isUnion(type)) {
+  if (isUnionType(type)) {
     const variants = Array.from(type.variants.values());
     if (variants.length === 2) {
       const hasNull = variants.some(v => isNullType(v.type));

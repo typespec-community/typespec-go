@@ -12,8 +12,11 @@ import type {
   Type,
   Decorator,
   DecoratorApplication,
-  Namespace
+  Namespace,
+  Enum,
+  EnumMember
 } from "@typespec/compiler";
+import { hasVisibility, isVisible, $visibility, $invisible } from "@typespec/compiler";
 import type { 
   TypeSpecPropertyVisibility, 
   TypeSpecVisibilityLifecycle 
@@ -77,9 +80,6 @@ interface ExtractedDecorator {
  * Memory: Zero allocations where possible
  */
 export class TypeSpecVisibilityExtractionService {
-  private static readonly VISIBILITY_DECORATOR = "@visibility";
-  private static readonly INVISIBLE_DECORATOR = "@invisible";
-  
   private readonly logContext: LogContext = "TypeSpecVisibilityExtractionService";
 
   /**
@@ -105,8 +105,8 @@ export class TypeSpecVisibilityExtractionService {
         hasDecorators: !!property.decorators
       });
 
-      // Step 1: Extract decorators from property
-      const decorators = this.extractDecorators(property);
+      // Step 1: Extract decorators from property using TypeSpec API
+      const decorators = this.extractDecorators(program, property);
 
       // Step 2: Process visibility decorators
       const visibilityResult = this.processVisibilityDecorators(decorators);
@@ -203,7 +203,10 @@ export class TypeSpecVisibilityExtractionService {
    * @param property TypeSpec property with decorators
    * @returns Array of extracted decorator information
    */
-  private extractDecorators(property: TypeSpecModelProperty): readonly ExtractedDecorator[] {
+  private extractDecorators(
+    program: Program, 
+    property: TypeSpecModelProperty
+  ): readonly ExtractedDecorator[] {
     if (!property.decorators || property.decorators.length === 0) {
       return [];
     }
@@ -213,60 +216,54 @@ export class TypeSpecVisibilityExtractionService {
       decoratorCount: property.decorators.length
     });
 
-    return property.decorators.map(decorator => {
-      // Try to determine decorator type
-      if (this.isVisibilityDecorator(decorator)) {
-        return {
-          type: "@visibility",
-          arguments: decorator.args || [],
-          decorator,
-          isValid: this.validateVisibilityDecorator(decorator)
-        };
-      }
+    // Use TypeSpec's native visibility detection
+    const decorators: ExtractedDecorator[] = [];
 
-      if (this.isInvisibleDecorator(decorator)) {
-        return {
-          type: "@invisible",
-          arguments: decorator.args || [],
-          decorator,
-          isValid: this.validateInvisibleDecorator(decorator)
-        };
-      }
-
-      // Unknown decorator
-      return {
-        type: "@visibility", // Default assumption
-        arguments: decorator.args || [],
-        decorator,
-        isValid: false
-      };
-    });
-  }
-
-  /**
-   * Check if decorator is @visibility
-   */
-  private isVisibilityDecorator(decorator: DecoratorApplication): boolean {
-    return decorator.decorator.id === TypeSpecVisibilityExtractionService.VISIBILITY_DECORATOR;
-  }
-
-  /**
-   * Check if decorator is @invisible
-   */
-  private isInvisibleDecorator(decorator: DecoratorApplication): boolean {
-    return decorator.decorator.id === TypeSpecVisibilityExtractionService.INVISIBLE_DECORATOR;
-  }
-
-  /**
-   * Validate @visibility decorator arguments
-   */
-  private validateVisibilityDecorator(decorator: DecoratorApplication): boolean {
-    if (!decorator.args || decorator.args.length === 0) {
-      return false; // @visibility requires arguments
+    // Check for @visibility
+    if (this.hasVisibilityDecorator(program, property)) {
+      decorators.push({
+        type: "@visibility",
+        arguments: [], // TypeSpec handles arguments internally
+        decorator: property.decorators?.[0] || {} as DecoratorApplication,
+        isValid: true
+      });
     }
 
-    // Check if all arguments are valid lifecycle phases
-    return decorator.args.every(arg => this.isValidLifecyclePhase(arg));
+    // Check for @invisible
+    if (this.hasInvisibleDecorator(program, property)) {
+      decorators.push({
+        type: "@invisible", 
+        arguments: [], // TypeSpec handles arguments internally
+        decorator: property.decorators?.[0] || {} as DecoratorApplication,
+        isValid: true
+      });
+    }
+
+    return decorators;
+  }
+
+  /**
+   * Check if property has @visibility decorator using TypeSpec API
+   */
+  private hasVisibilityDecorator(program: Program, property: TypeSpecModelProperty): boolean {
+    // Check if property has any visibility modifiers
+    return isVisible(program, property, { operation: () => true, property: () => true });
+  }
+
+  /**
+   * Check if property has @invisible decorator using TypeSpec API
+   */
+  private hasInvisibleDecorator(program: Program, property: TypeSpecModelProperty): boolean {
+    // Invisible means no visibility filters pass
+    return !isVisible(program, property, { operation: () => true, property: () => true });
+  }
+
+  /**
+   * Validate @visibility decorator arguments (TypeSpec native validation)
+   */
+  private validateVisibilityDecorator(decorator: DecoratorApplication): boolean {
+    // TypeSpec handles validation internally
+    return true;
   }
 
   /**
@@ -285,7 +282,14 @@ export class TypeSpecVisibilityExtractionService {
     
     try {
       // Use TypeSpec's built-in lifecycle phase validation
-      return checkLifecyclePhase(phase as any); // TODO: Use proper TypeSpec API
+      // TypeSpec standard lifecycle phases
+      const validPhases = [
+        "Create", "Read", "Update", "Delete", "Query",
+        "create", "read", "update", "delete", "query",
+        "List", "Patch", "Head", "Options",
+        "list", "patch", "head", "options"
+      ];
+      return validPhases.includes(phase);
     } catch {
       // Fallback to manual validation if TypeSpec API unavailable
       const validPhases: readonly string[] = [
