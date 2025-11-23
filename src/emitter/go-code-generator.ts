@@ -8,7 +8,7 @@
 import { StandaloneGoGenerator } from "../standalone-generator.js";
 import type { GoEmitterResult } from "../domain/unified-errors.js";
 import { Logger, LogContext } from "../domain/structured-logging.js";
-import type { ExtractedModel } from "./model-extractor.js";
+import type { ExtractedModel } from "./model-extractor-core.js";
 import { TypeSpecEntities } from "../types/errors.js";
 import { Entities } from "../domain/error-entities.js";
 import { GeneratorRegistry } from "../generators/index.js";

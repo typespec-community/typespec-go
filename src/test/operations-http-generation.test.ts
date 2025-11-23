@@ -7,7 +7,7 @@
 
 import { describe, it, expect, beforeAll } from "bun:test";
 import { ModelGenerator } from "../generators/model-generator.js";
-import type { ExtractedOperation } from "../emitter/model-extractor.js";
+import type { ExtractedOperation } from "../emitter/model-extractor-core.js";
 
 describe("Operations HTTP Generation", () => {
   let generator: ModelGenerator;

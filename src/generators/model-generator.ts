@@ -10,7 +10,7 @@ import { BaseGenerator } from "./base-generator.js";
 import type { GoEmitterResult } from "../domain/unified-errors.js";
 import { ErrorFactory } from "../domain/error-factory.js";
 import { GoTypeMapper } from "../domain/go-type-mapper.js";
-import { ModelExtractor } from "../emitter/model-extractor.js";
+import { ModelExtractor } from "../emitter/model-extractor-core.js";
 
 /**
  * TypeSpec Model Generator

@@ -13,7 +13,7 @@ import {
   type GoEmitterResult,
 } from "../domain/unified-errors.js";
 import { Logger, LogContext } from "../domain/structured-logging.js";
-import { ModelExtractor } from "./model-extractor.js";
+import { ModelExtractor } from "./model-extractor-core.js";
 import { GoCodeGenerator } from "./go-code-generator.js";
 import type { GoEmitterOptions } from "./emitter-config.js";
 
