@@ -97,7 +97,7 @@ export class ComprehensiveTypeMapper {
    * Legacy format compatibility - StandaloneGoGenerator
    */
   static mapTypeSpecTypeLegacy(
-    type: any,
+    type: Type | UniversalType | string,
     fieldName?: string
   ): GoTypeMapping {
     const mappedGoType = this.mapType(type, fieldName);
