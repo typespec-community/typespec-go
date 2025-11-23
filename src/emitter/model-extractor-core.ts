@@ -22,6 +22,8 @@ import {
   walkPropertiesInherited
 } from "@typespec/compiler";
 import { Logger, LogContext } from "../domain/structured-logging.js";
+import { ModelValidationExtractor } from "./model-extractor-validation.js";
+import { ModelProcessingExtractor } from "./model-extractor-utility.js";
 
 /**
  * Extracted TypeSpec operation with metadata
@@ -103,7 +105,7 @@ export class ModelExtractor {
         // Navigation using TypeSpec compiler API
         navigateProgram(program, {
           operation(operation) {
-            const extracted = this.processTypeSpecOperation(operation, program);
+            const extracted = ModelProcessingExtractor.processTypeSpecOperation(operation, program);
             if (extracted) {
               operations.set(extracted.name, extracted);
             }
