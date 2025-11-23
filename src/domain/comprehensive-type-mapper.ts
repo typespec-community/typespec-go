@@ -82,8 +82,13 @@ export class ComprehensiveTypeMapper {
       return this.mapLegacyType(input as UniversalType, fieldName);
     }
 
-    // Fallback to string mapping
-    return this.mapStringType(input as string);
+    // Fallback to string mapping with type safety
+    if (input && typeof input === "string") {
+      return this.mapStringType(input);
+    }
+    
+    // Default fallback for unknown types
+    return this.mapStringType("interface{}");
   }
 
   /**
@@ -213,7 +218,12 @@ export class ComprehensiveTypeMapper {
     type: UniversalType,
     fieldName?: string
   ): MappedGoType {
-    return GoTypeMapper.mapTypeSpecType(type, fieldName);
+    // Convert UniversalType to TypeSpec Type for compatibility
+    if (type === null || typeof type !== "object") {
+      return GoTypeMapper.mapTypeSpecType({ kind: "String", name: "string" }, fieldName);
+    }
+    
+    return GoTypeMapper.mapTypeSpecType(type as any, fieldName);
   }
 
   /**

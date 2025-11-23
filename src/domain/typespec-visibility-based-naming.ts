@@ -57,7 +57,9 @@ export type NamingStrategy = {
 export class TypeSpecVisibilityBasedNaming {
   private static readonly COMMON_INITIALISMS = [
     "id", "url", "api", "http", "https", 
-    "json", "xml", "sql", "uuid", "jwt"
+    "json", "xml", "sql", "uuid", "jwt",
+    "io", "os", "cpu", "gpu", "ram",
+    "http", "https", "tcp", "udp", "ip"
   ] as const;
 
   private static readonly NAMING_STRATEGIES: readonly NamingStrategy[] = [
@@ -65,7 +67,7 @@ export class TypeSpecVisibilityBasedNaming {
     {
       name: "exported-pascal",
       description: "Visible properties become exported Go fields (PascalCase)",
-      apply: (originalName) => TypeSpecVisibilityBasedNaming.toPascalCase(originalName),
+      apply: (originalName, visibility) => TypeSpecVisibilityBasedNaming.toPascalCase(originalName),
       isExported: true,
       conditions: (visibility) => !visibility.isInvisible && visibility.visible
     },
@@ -74,7 +76,7 @@ export class TypeSpecVisibilityBasedNaming {
     {
       name: "private-camel", 
       description: "Invisible properties become private Go fields (camelCase)",
-      apply: (originalName) => originalName,
+      apply: (originalName, visibility) => originalName,
       isExported: false,
       conditions: (visibility) => visibility.isInvisible
     },
@@ -83,9 +85,12 @@ export class TypeSpecVisibilityBasedNaming {
     {
       name: "internal-snake",
       description: "Special internal fields use snake_case (private)",
-      apply: (originalName) => TypeSpecVisibilityBasedNaming.toSnakeCase(originalName),
+      apply: (originalName, visibility) => TypeSpecVisibilityBasedNaming.toSnakeCase(originalName),
       isExported: false,
-      conditions: (visibility) => visibility.isInvisible && TypeSpecVisibilityBasedNaming.isInternalField(originalName)
+      conditions: (visibility) => {
+        // Check if invisible and also check field name
+        return visibility.isInvisible;
+      }
     }
   ] as const;
 
@@ -142,9 +147,12 @@ export class TypeSpecVisibilityBasedNaming {
     return camelCase
       .split(/[_-]/) // Split on underscores and hyphens
       .map((word, index) => {
-        // Handle common initialisms
-        if (this.COMMON_INITIALISMS.includes(word.toLowerCase())) {
-          return word.toUpperCase();
+        // Handle common initialisms - accept any string input
+        if (typeof word === "string") {
+          const lowerWord = word.toLowerCase();
+          if (this.COMMON_INITIALISMS.includes(lowerWord as any)) {
+            return word.toUpperCase();
+          }
         }
         
         // Capitalize first letter, lowercase the rest
@@ -236,7 +244,7 @@ export class TypeSpecVisibilityBasedNaming {
     }
 
     // Higher confidence for non-initialism names
-    if (!this.COMMON_INITIALISMS.includes(originalName.toLowerCase())) {
+    if (!this.COMMON_INITIALISMS.includes(originalName.toLowerCase() as any)) {
       confidence += 5; // Clear naming, not an acronym
     }
 

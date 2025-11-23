@@ -93,7 +93,9 @@ export class LegacyTypeAdapter {
 
       // Handle array types in legacy format
       if (legacyType.kind === "Array" && legacyType.elementType) {
-        const convertedElement = this.convertLegacyToTypeSpecFormat(legacyType.elementType);
+        const convertedElement = legacyType.elementType ? 
+          this.convertLegacyToTypeSpecFormat(legacyType.elementType) : 
+          { kind: "String", name: "string" };
         return {
           kind: "Array",
           elementType: convertedElement,
@@ -143,10 +145,12 @@ export class LegacyTypeAdapter {
    * DETECTION LOGIC: Identify legacy vs TypeSpec vs Unified formats
    */
   static isLegacyFormat(type: UniversalType): boolean {
-    return type && typeof type === 'object' && 
-           type.kind && !type.name && 
-           typeof type.kind === 'string' &&
-           !["scalar", "model", "union", "enum", "template"].includes(type.kind.toLowerCase());
+    return type !== null && 
+           typeof type === 'object' && 
+           'kind' in type && 
+           !('name' in type) && 
+           typeof (type as any).kind === 'string' &&
+           !["scalar", "model", "union", "enum", "template"].includes((type as any).kind.toLowerCase());
   }
 
   /**

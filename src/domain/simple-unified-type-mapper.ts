@@ -52,7 +52,8 @@ export class SimpleUnifiedTypeMapper {
 
     // Handle legacy test formats by delegating to GoTypeMapper
     if (this.isLegacyType(input)) {
-      return GoTypeMapper.mapTypeSpecType(input as UniversalType, fieldName);
+      const safeInput = input !== null && typeof input === "object" ? input : { kind: "String", name: "string" };
+      return GoTypeMapper.mapTypeSpecType(safeInput as any, fieldName);
     }
 
     // Handle TypeSpec compiler types with simple mapping
@@ -107,7 +108,6 @@ export class SimpleUnifiedTypeMapper {
     } catch (error) {
       return { 
         _tag: "unsupported-type", 
-        type,
         reason: error instanceof Error ? error.message : "Unknown error"
       };
     }

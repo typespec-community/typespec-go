@@ -134,8 +134,8 @@ export class CleanTypeMapper {
 
     // Handle TypeSpec Array format specifically
     if (type && typeof type === "object" && type.kind === "Array") {
-      const elementType = type.elementType;
-      if (elementType) {
+      const elementType = this.extractElementType(type);
+      if (elementType && elementType !== null) {
         const mappedElement = this.mapType(elementType);
         return TypeConstructors.slice(mappedElement);
       }
@@ -174,7 +174,10 @@ export class CleanTypeMapper {
     }
     
     // Fallback for safety
-    return type.name || "interface{}";
+    if (type && typeof type === "object" && "name" in type && typeof (type as any).name === "string") {
+      return (type as any).name || "interface{}";
+    }
+    return "interface{}";
   }
 
   /**
