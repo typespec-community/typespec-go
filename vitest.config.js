@@ -7,9 +7,7 @@ export default defineConfig({
     environment: "node",
   },
   esbuild: {
-    jsx: "transform",
-    jsxFactory: "React.createElement",
-    jsxFragment: "React.Fragment",
+    jsx: "preserve",  // Preserve JSX to match tsconfig.json
     sourcemap: "both"
   },
 });

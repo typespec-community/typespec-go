@@ -99,7 +99,7 @@ class LargeModelPerformanceTester {
     for (let i = 0; i < iterations; i++) {
       const result = this.generator.generateModel(model);
 
-      if (result._tag === "Success") {
+      if (result._tag === "success") {
         const goCode = result.data.get(`${model.name}.go`) || "";
         totalGoCodeSize += goCode.length;
       }
