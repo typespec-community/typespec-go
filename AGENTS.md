@@ -140,6 +140,44 @@ EOF
 
 ---
 
+## 🚨 CRITICAL DEVELOPMENT MANDATES - UPDATED
+
+### **ABSOLUTE PROHIBITIONS - ZERO TOLERANCE**
+
+1. **🚨 CLI IMPLEMENTATION**
+   - VIOLATION: Any CLI code (commander.js, etc.)
+   - CORRECTION: Immediately remove and focus on AssetEmitter
+   - AGENT RESPONSIBLE: Software Architect
+
+2. **🚨 ANY TYPES IN CODEBASE**
+   - VIOLATION: Any `(type as any)` casts
+   - CORRECTION: Replace with proper type guards
+   - AGENT RESPONSIBLE: Type Safety Specialist
+
+3. **🚨 AS CASTS IN CODEBASE**
+   - VIOLATION: Any `(type as Something)` casts
+   - CORRECTION: Use proper type guards and discriminated unions
+   - AGENT RESPONSIBLE: Type Safety Specialist
+
+4. **🚨 WRONG TYPESPEC INTEGRATION**
+   - VIOLATION: Not using createAssetEmitter pattern
+   - CORRECTION: Implement proper TypeSpec AssetEmitter
+   - AGENT RESPONSIBLE: Software Architect
+
+5. **🚨 TYPE SAFETY VIOLATIONS**
+   - VIOLATION: Using `(something as any)` to bypass TypeScript
+   - CORRECTION: Remove all `as any` and `as` casts, implement proper type guards
+   - AGENT RESPONSIBLE: Type Safety Specialist
+
+### **IMMEDIATE ACTIONS REQUIRED**
+
+- **AUDIT**: Search entire codebase for `as any` and `as` casts
+- **ELIMINATE**: Replace with proper type guards
+- **VALIDATE**: Ensure TypeScript strict compilation passes
+- **DOCUMENT**: Add examples of proper type guard patterns
+
+---
+
 ## 🧠 ARCHITECTURAL INSIGHTS FROM ALLOY
 
 ### **Current vs Future Approach**

@@ -5,6 +5,35 @@
  */
 
 import type { Type, Model, Scalar, Union } from "@typespec/compiler";
+import { isNullType } from "@typespec/compiler";
+
+/**
+ * Type guard for Scalar types
+ */
+function isScalar(type: Type): type is Scalar {
+  return type.kind === "Scalar";
+}
+
+/**
+ * Type guard for Model types
+ */
+function isModel(type: Type): type is Model {
+  return type.kind === "Model";
+}
+
+/**
+ * Type guard for Union types
+ */
+function isUnion(type: Type): type is Union {
+  return type.kind === "Union";
+}
+
+/**
+ * Type guard for TemplateParameter types
+ */
+function isTemplateParameter(type: Type): boolean {
+  return type.kind === "TemplateParameter";
+}
 
 /**
  * Maps TypeSpec scalar types to Go types
@@ -34,33 +63,30 @@ const SCALAR_MAPPINGS: Record<string, string> = {
 /**
  * Type Expression Component
  * Converts TypeSpec types to proper Go type strings
- * Follows guide's component-based generation pattern
- * 
- * NOTE: Alloy-JS Go uses string types for type expressions, not JSX components
- * This follows the pattern from working examples
+ * Uses proper type guards, NO 'as' casts
  */
 export function TypeExpression({ type }: { type: Type }): string {
   // Handle Scalar types (string, int32, bool, etc.)
-  if (type.kind === "Scalar") {
-    const scalar = type as Scalar;
-    const scalarName = scalar.name?.toLowerCase() || "";
+  if (isScalar(type)) {
+    const scalarName = type.name?.toLowerCase() || "";
     return SCALAR_MAPPINGS[scalarName] || "interface{}";
   }
   
   // Handle Model types (user-defined structs)
-  if (type.kind === "Model") {
-    const model = type as Model;
-    return model.name || "interface{}";
+  if (isModel(type)) {
+    return type.name || "interface{}";
   }
   
   // Handle Union types (string | number | boolean)
-  if (type.kind === "Union") {
-    const union = type as Union;
-    if (union.variants && Array.from(union.variants).length === 2) {
-      // Handle optional types (T | null)
-      const nonNullVariant = Array.from(union.variants).find(v => v.kind !== "Null");
-      if (nonNullVariant && Array.from(union.variants).some(v => v.kind === "Null")) {
-        const innerType = TypeExpression({ type: nonNullVariant });
+  if (isUnion(type)) {
+    // Check if this is an optional type (T | null)
+    const variants = Array.from(type.variants.values());
+    if (variants.length === 2) {
+      const nonNullVariant = variants.find(v => !isNullType(v.type));
+      const hasNull = variants.some(v => isNullType(v.type));
+      
+      if (nonNullVariant && hasNull) {
+        const innerType = TypeExpression({ type: nonNullVariant.type });
         return `*${innerType}`;
       }
     }
@@ -69,17 +95,8 @@ export function TypeExpression({ type }: { type: Type }): string {
     return "interface{}";
   }
   
-  // Handle Array types
-  if (type.kind === "Model" && (type as Model).indexer) {
-    const model = type as Model;
-    if (model.indexer) {
-      const innerType = TypeExpression({ type: model.indexer.value });
-      return `[]${innerType}`;
-    }
-  }
-  
   // Handle Template instantiations (List<T>, Map<K,V>)
-  if (type.kind === "TemplateParameter") {
+  if (isTemplateParameter(type)) {
     return "interface{}";
   }
   

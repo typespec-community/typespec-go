@@ -13,7 +13,7 @@ import {
   ErrorHandler,
   InvalidModelReason,
 } from "./domain/unified-errors.js";
-import { GoTypeMapper } from "./domain/go-type-mapper.js";
+import { CleanTypeMapper } from "./domain/clean-type-mapper.js";
 import type {
   TypeSpecModel,
   TypeSpecPropertyNode,
@@ -103,25 +103,8 @@ export class StandaloneGoGenerator {
     type: TypeSpecPropertyNode["type"],
     fieldName?: string,
   ): GoTypeMapping {
-    // Special handling for Model types (arrays are models in TypeSpec)
-    if (type.kind === "Model" && (type as TypeSpecTypeWithIndexer).indexer?.value) {
-      const elementType = this.mapTypeSpecType((type as TypeSpecTypeWithIndexer).indexer.value!);
-      return {
-        goType: `[]${elementType.goType}`,
-        usePointerForOptional: true, // Arrays should use pointer when optional
-      };
-    }
-
-    // Convert StandaloneGoGenerator type format to GoTypeMapper format
-    const mappedType = this.convertToGoTypeMapperFormat(type);
-    const mappedGoType = GoTypeMapper.mapTypeSpecType(mappedType, fieldName);
-    const goTypeString = GoTypeMapper.generateGoTypeString(mappedGoType);
-
-    // Convert back to StandaloneGoGenerator format for compatibility
-    return {
-      goType: goTypeString,
-      usePointerForOptional: mappedGoType.usePointerForOptional || true,
-    };
+    // DELEGATE TO CLEAN UNIFIED SYSTEM: Single source of truth
+    return CleanTypeMapper.mapTypeSpecTypeLegacy(type, fieldName);
   }
 
   /**

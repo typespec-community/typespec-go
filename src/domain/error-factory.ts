@@ -162,6 +162,30 @@ export class ErrorFactory {
   }
 
   /**
+   * Create Visibility Extraction Error
+   */
+  static visibilityExtractionError(
+    propertyName: string,
+    cause: unknown,
+    options?: { errorId?: string }
+  ): ValidationError {
+    const message = `Failed to extract TypeSpec visibility for property: ${propertyName}`;
+    const details = cause instanceof Error ? cause.message : String(cause);
+
+    return {
+      _tag: "validation_error",
+      message,
+      details: details,
+      propertyName: Entities.createPropertyName(propertyName),
+      errorId: options?.errorId ?? this.createErrorId(),
+      resolution: "Check TypeSpec property decorators and ensure valid syntax",
+      ...(cause instanceof Error && {
+        originalError: Entities.createErrorMessage(cause.message)
+      })
+    };
+  }
+
+  /**
    * Create Success Result
    */
   static createSuccess(

@@ -116,4 +116,164 @@ export namespace EntityTransformation {
       .toLowerCase()
       .replace(/[^a-z0-9_]/g, ""); // Remove invalid characters
   };
+
+  /**
+   * Create Error Message
+   */
+  export const createErrorMessage = (message: string): ErrorMessage => 
+    Entities.createErrorMessage(message);
+
+  /**
+   * Create Extracted Visibility Info
+   */
+  export const createExtractedVisibilityInfo = (
+    property: string,
+    decorator: string,
+    phases: readonly string[]
+  ): {
+    property: string;
+    decorator: string;
+    phases: readonly string[];
+  } => ({
+      property,
+      decorator,
+      phases
+    });
+
+  /**
+   * Create Extraction Context
+   */
+  export const createExtractionContext = (
+    modelName: string,
+    propertyName: string,
+    extractionPhase: string
+  ): {
+    modelName: string;
+    propertyName: string;
+    extractionPhase: string;
+  } => ({
+      modelName,
+      propertyName,
+      extractionPhase
+    });
+
+  /**
+   * Create Decorator Analysis
+   */
+  export const createDecoratorAnalysis = (
+    decoratorType: string,
+    isValid: boolean,
+    args: readonly unknown[]
+  ): {
+    decoratorType: string;
+    isValid: boolean;
+    arguments: readonly unknown[];
+  } => ({
+      decoratorType,
+      isValid,
+      arguments
+    });
+
+  /**
+   * Create Performance Metrics
+   */
+  export const createPerformanceMetrics = (
+    propertyCount: number,
+    totalTime: number,
+    errors: number
+  ): {
+    propertyCount: number;
+    totalTime: number;
+    avgTime: number;
+    throughput: number;
+    errorCount: number;
+    errorRate: number;
+  } => {
+      const avgTime = totalTime / propertyCount;
+      const throughput = 1000 / avgTime;
+      const errorRate = errors / propertyCount;
+
+      return {
+        propertyCount,
+        totalTime,
+        avgTime,
+        throughput,
+        errorCount: errors,
+        errorRate
+      };
+  };
+
+  /**
+   * Create Visibility Validation Result
+   */
+  export const createVisibilityValidationResult = (
+    isVisible: boolean,
+    lifecyclePhases: readonly string[],
+    isInvisible: boolean,
+    errors: readonly string[],
+    warnings: readonly string[]
+  ): {
+    isVisible: boolean;
+    lifecyclePhases: readonly string[];
+    isInvisible: boolean;
+    isValid: boolean;
+    errors: readonly string[];
+    warnings: readonly string[];
+  } => ({
+      isVisible,
+      lifecyclePhases,
+      isInvisible,
+      isValid: errors.length === 0,
+      errors,
+      warnings
+    });
+
+  /**
+   * Create Naming Analysis
+   */
+  export const createNamingAnalysis = (
+    originalName: string,
+    goFieldName: string,
+    isExported: boolean,
+    namingStrategy: string
+  ): {
+    originalName: string;
+    goFieldName: string;
+    isExported: boolean;
+    namingStrategy: string;
+  } => ({
+      originalName,
+      goFieldName,
+      isExported,
+      namingStrategy
+    });
+
+  /**
+   * Create Transformation Metrics
+   */
+  export const createTransformationMetrics = (
+    processedCount: number,
+    successCount: number,
+    failureCount: number,
+    processingTime: number
+  ): {
+    processedCount: number;
+    successCount: number;
+    failureCount: number;
+    successRate: number;
+    processingTime: number;
+    throughput: number;
+  } => {
+      const successRate = processedCount > 0 ? successCount / processedCount : 0;
+      const throughput = processingTime > 0 ? 1000 * successCount / processingTime : 0;
+
+      return {
+        processedCount,
+        successCount,
+        failureCount,
+        successRate,
+        processingTime,
+        throughput
+      };
+  };
 }
