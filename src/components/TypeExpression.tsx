@@ -22,6 +22,13 @@ function isModel(type: Type): type is Model {
 }
 
 /**
+ * Type guard for Model types with array indexers
+ */
+function isArrayModel(type: Model): type is Model & { indexer: { key: Scalar; value: Type } } {
+  return !!type.indexer;
+}
+
+/**
  * Type guard for Union types
  */
 function isUnion(type: Type): type is Union {
@@ -33,6 +40,13 @@ function isUnion(type: Type): type is Union {
  */
 function isTemplateParameter(type: Type): boolean {
   return type.kind === "TemplateParameter";
+}
+
+/**
+ * Gets element type from array model safely
+ */
+function getArrayElementType(model: Model & { indexer: { key: Scalar; value: Type } }): Type {
+  return model.indexer.value;
 }
 
 /**
@@ -74,6 +88,13 @@ export function TypeExpression({ type }: { type: Type }): string {
   
   // Handle Model types (user-defined structs)
   if (isModel(type)) {
+    // Handle array models (Models with indexers)
+    if (isArrayModel(type)) {
+      const elementType = getArrayElementType(type);
+      const elementGoType = TypeExpression({ type: elementType });
+      return `[]${elementGoType}`;
+    }
+    
     return type.name || "interface{}";
   }
   
