@@ -52,7 +52,7 @@ export class SimpleUnifiedTypeMapper {
 
     // Handle legacy test formats by delegating to GoTypeMapper
     if (this.isLegacyType(input)) {
-      return GoTypeMapper.mapTypeSpecType(input as any, fieldName);
+      return GoTypeMapper.mapTypeSpecType(input as UniversalType, fieldName);
     }
 
     // Handle TypeSpec compiler types with simple mapping
@@ -79,7 +79,7 @@ export class SimpleUnifiedTypeMapper {
    * Legacy compatibility - StandaloneGoGenerator
    */
   static mapTypeSpecTypeLegacy(
-    type: any,
+    type: Type | UniversalType | string,
     fieldName?: string
   ): { goType: string; usePointerForOptional: boolean } {
     const mappedGoType = this.mapType(type, fieldName);
