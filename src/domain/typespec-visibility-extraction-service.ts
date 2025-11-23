@@ -58,7 +58,7 @@ interface ExtractedDecorator {
   readonly arguments: readonly unknown[];
   
   /** Original decorator node */
-  readonly decorator: Decorator;
+  readonly decorator: DecoratorApplication;
   
   /** Whether decorator arguments are valid */
   readonly isValid: boolean;
@@ -245,21 +245,21 @@ export class TypeSpecVisibilityExtractionService {
   /**
    * Check if decorator is @visibility
    */
-  private isVisibilityDecorator(decorator: Decorator): boolean {
-    return decorator.decorator.id === this.VISIBILITY_DECORATOR;
+  private isVisibilityDecorator(decorator: DecoratorApplication): boolean {
+    return decorator.decorator.id === TypeSpecVisibilityExtractionService.VISIBILITY_DECORATOR;
   }
 
   /**
    * Check if decorator is @invisible
    */
-  private isInvisibleDecorator(decorator: Decorator): boolean {
-    return decorator.decorator.id === this.INVISIBLE_DECORATOR;
+  private isInvisibleDecorator(decorator: DecoratorApplication): boolean {
+    return decorator.decorator.id === TypeSpecVisibilityExtractionService.INVISIBLE_DECORATOR;
   }
 
   /**
    * Validate @visibility decorator arguments
    */
-  private validateVisibilityDecorator(decorator: Decorator): boolean {
+  private validateVisibilityDecorator(decorator: DecoratorApplication): boolean {
     if (!decorator.args || decorator.args.length === 0) {
       return false; // @visibility requires arguments
     }
@@ -271,7 +271,7 @@ export class TypeSpecVisibilityExtractionService {
   /**
    * Validate @invisible decorator
    */
-  private validateInvisibleDecorator(decorator: Decorator): boolean {
+  private validateInvisibleDecorator(decorator: DecoratorApplication): boolean {
     // @invisible doesn't take arguments
     return !decorator.args || decorator.args.length === 0;
   }

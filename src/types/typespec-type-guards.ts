@@ -33,7 +33,7 @@ interface ModelWithTemplateParameters extends Model {
  * Extends Operation with parameters property
  */
 interface OperationWithParameters extends Operation {
-  parameters: { properties: Map<string, unknown> };
+  parameters: { properties: Map<string, ModelProperty> };
 }
 
 /**
@@ -50,7 +50,7 @@ interface ExtendedModelProperty {
  * Extends Model with known properties
  */
 interface ModelWithProperties extends Model {
-  properties: Map<string, unknown>;
+  properties: Map<string, ModelProperty>;
 }
 
 /**
@@ -217,6 +217,16 @@ export function getUnionVariants(union: Union): Array<{ type: Type }> {
   } else if (Array.isArray(union.variants)) {
     for (const variant of union.variants) {
       result.push({ type: variant.type });
+    }
+  } else if (typeof union.variants === 'object') {
+    // Handle object-style variants
+    for (const key in union.variants) {
+      if (Object.prototype.hasOwnProperty.call(union.variants, key)) {
+        const variant = union.variants[key];
+        if (variant && typeof variant === 'object' && 'type' in variant) {
+          result.push({ type: variant.type });
+        }
+      }
     }
   }
   

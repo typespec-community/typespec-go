@@ -16,6 +16,7 @@ import { TypeGuards, TypeConstructors } from "./type-interfaces.js";
 import { SCALAR_TYPE_MAPPINGS, UPPER_CASE_SCALAR_MAPPINGS } from "./scalar-mappings.js";
 import { EntityTransformation } from "./error-entities.js";
 import type { UniversalType } from "./legacy-type-adapter.js";
+import { TypeSpecTypeGuards } from "../types/typespec-type-guards.js";
 
 /**
  * Type-safe interface for objects with kind property
