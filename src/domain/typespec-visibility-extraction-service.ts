@@ -19,20 +19,28 @@ import type {
 } from "../domain/typespec-visibility-domain.js";
 import { ErrorFactory } from "../domain/error-factory.js";
 
+/**
+ * Type-safe logger data interface
+ * Eliminates need for 'any' types in logging
+ */
+interface LoggerData {
+  readonly [key: string]: unknown;
+}
+
 // Simple logger fallback for testing
 const SimpleLogger = {
-  debug: (context: string, message: string, data?: any) => {
+  debug: (context: string, message: string, data?: LoggerData) => {
     if (process.env.DEBUG === "true") {
       console.debug(`[${context}] ${message}`, data);
     }
   },
-  info: (context: string, message: string, data?: any) => {
+  info: (context: string, message: string, data?: LoggerData) => {
     console.log(`[${context}] ${message}`, data);
   },
-  warn: (context: string, message: string, data?: any) => {
+  warn: (context: string, message: string, data?: LoggerData) => {
     console.warn(`[${context}] ${message}`, data);
   },
-  error: (context: string, message: string, data?: any) => {
+  error: (context: string, message: string, data?: LoggerData) => {
     console.error(`[${context}] ${message}`, data);
   }
 };
