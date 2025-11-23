@@ -1,4 +1,5 @@
 import { defineConfig } from "vitest/config";
+import alloyPlugin from "@alloy-js/rollup-plugin";
 
 export default defineConfig({
   test: {
@@ -7,7 +8,10 @@ export default defineConfig({
     environment: "node",
   },
   esbuild: {
-    jsx: "preserve",  // Preserve JSX to match tsconfig.json
+    jsx: "preserve",
     sourcemap: "both"
   },
+  plugins: [
+    alloyPlugin(),
+  ],
 });

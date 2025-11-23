@@ -12,6 +12,7 @@
       },
       "devDependencies": {
         "@alloy-js/cli": "^0.21.0",
+        "@alloy-js/rollup-plugin": "^0.1.0",
         "@alloy-js/typescript": "^0.21.0",
         "@types/node": "latest",
         "@typescript-eslint/eslint-plugin": "^8.47.0",
@@ -41,6 +42,8 @@
     "@alloy-js/csharp": ["@alloy-js/csharp@0.20.0", "", { "dependencies": { "@alloy-js/core": "0.20.0", "change-case": "5.4.4", "marked": "16.4.2", "pathe": "2.0.3" } }, "sha512-Yn8oua43tVWYGN9Gt5DDtGUdLIB9io6/nL8dK4qDvL019w9uK7f3wosr+/JtSm14PuToN4jM1s7HNVzqh41KUA=="],
 
     "@alloy-js/go": ["@alloy-js/go@0.1.0", "", { "dependencies": { "@alloy-js/core": "~0.21.0", "change-case": "^5.4.4", "pathe": "^2.0.3" } }, "sha512-wWDzDU0LeQCjuEp+khZhuL6ZwAD6tu9BKEP4vz0vB93ylbQPbahk4+lyz3ehoB2swhewhImLcZRZWxo39IIZnA=="],
+
+    "@alloy-js/rollup-plugin": ["@alloy-js/rollup-plugin@0.1.0", "", { "dependencies": { "@alloy-js/babel-preset": "~0.2.0", "@babel/preset-typescript": "^7.24.7", "@rollup/plugin-babel": "^6.0.4" } }, "sha512-MXR8mBdSh/pxMP8kIXAcMYKsm5yOWZ+igxcaRX1vBXFiHU4eK7gE/5q6Fk8Vdydh+MItWtgekwIhUWvcszdNFQ=="],
 
     "@alloy-js/typescript": ["@alloy-js/typescript@0.21.0", "", { "dependencies": { "@alloy-js/core": "0.21.0", "change-case": "5.4.4", "pathe": "2.0.3" } }, "sha512-SsxdYkXhrP8jjO2gENav9bHPHaonNrreW469RaOot3cRqhsHPA1RmBrzNPJov37YknzTg4Wlk0JsEFT4Qibgfg=="],
 
@@ -253,6 +256,10 @@
     "@oven/bun-windows-x64-baseline": ["@oven/bun-windows-x64-baseline@1.3.2", "", { "os": "win32", "cpu": "x64" }, "sha512-s00T99MjB+xLOWq+t+wVaVBrry+oBOZNiTJijt+bmkp/MJptYS3FGvs7a+nkjLNzoNDoWQcXgKew6AaHES37Bg=="],
 
     "@prettier/cli": ["@prettier/cli@0.7.6", "", { "dependencies": { "atomically": "^2.0.3", "fast-ignore": "^1.1.3", "find-up-json": "^2.0.5", "function-once": "^3.0.1", "import-meta-resolve": "^4.1.0", "is-binary-path": "^3.0.0", "js-yaml": "^4.1.0", "json-sorted-stringify": "^1.0.1", "json5": "^2.2.3", "kasi": "^1.1.1", "lomemo": "^1.0.1", "pioppo": "^1.2.1", "promise-resolve-timeout": "^2.0.1", "smol-toml": "^1.3.3", "specialist": "^1.4.5", "tiny-editorconfig": "^1.0.0", "tiny-jsonc": "^1.0.2", "tiny-readdir": "^2.7.4", "tiny-readdir-glob": "^1.23.2", "tiny-spinner": "^2.0.5", "worktank": "^2.7.3", "zeptomatch": "^2.0.1", "zeptomatch-escape": "^1.0.1", "zeptomatch-is-static": "^1.0.1" }, "peerDependencies": { "prettier": "^3.1.0 || ^4.0.0-alpha" }, "bin": { "prettier-next": "dist/bin.js" } }, "sha512-akQoMNuOQa5rtJkI9H5oC74rCp9ABnuBulHJaAYKAWESYYFydC3RfrYwObJW4PcbfNE5LUya0XXqT//5z46g0Q=="],
+
+    "@rollup/plugin-babel": ["@rollup/plugin-babel@6.1.0", "", { "dependencies": { "@babel/helper-module-imports": "^7.18.6", "@rollup/pluginutils": "^5.0.1" }, "peerDependencies": { "@babel/core": "^7.0.0", "@types/babel__core": "^7.1.9", "rollup": "^1.20.0||^2.0.0||^3.0.0||^4.0.0" }, "optionalPeers": ["@types/babel__core", "rollup"] }, "sha512-dFZNuFD2YRcoomP4oYf+DvQNSUA9ih+A3vUqopQx5EdtPGo3WBnQcI/S8pwpz91UsGfL0HsMSOlaMld8HrbubA=="],
+
+    "@rollup/pluginutils": ["@rollup/pluginutils@5.3.0", "", { "dependencies": { "@types/estree": "^1.0.0", "estree-walker": "^2.0.2", "picomatch": "^4.0.2" }, "peerDependencies": { "rollup": "^1.20.0||^2.0.0||^3.0.0||^4.0.0" }, "optionalPeers": ["rollup"] }, "sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q=="],
 
     "@rollup/rollup-android-arm-eabi": ["@rollup/rollup-android-arm-eabi@4.53.3", "", { "os": "android", "cpu": "arm" }, "sha512-mRSi+4cBjrRLoaal2PnqH82Wqyb+d3HsPUN/W+WslCXsZsyHa9ZeQQX/pQsZaVIWDkPcpV6jJ+3KLbTbgnwv8w=="],
 
@@ -815,6 +822,8 @@
     "@eslint/eslintrc/ignore": ["ignore@5.3.2", "", {}, "sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g=="],
 
     "@inquirer/core/wrap-ansi": ["wrap-ansi@6.2.0", "", { "dependencies": { "ansi-styles": "4.3.0", "string-width": "4.2.3", "strip-ansi": "6.0.1" } }, "sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA=="],
+
+    "@rollup/pluginutils/estree-walker": ["estree-walker@2.0.2", "", {}, "sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w=="],
 
     "@typescript-eslint/typescript-estree/minimatch": ["minimatch@9.0.5", "", { "dependencies": { "brace-expansion": "2.0.2" } }, "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow=="],
 
