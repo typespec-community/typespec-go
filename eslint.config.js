@@ -21,7 +21,7 @@ export default [
     rules: {
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "warn", // Downgrade to warn for Phase 1
-      "@typescript-eslint/no-explicit-any": "warn", // Downgrade to warn for Phase 1
+      "@typescript-eslint/no-explicit-any": "error", // Enforce as error - zero any types policy
     },
   },
 ];
