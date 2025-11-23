@@ -204,8 +204,20 @@ export function isErrorType(type: Type): boolean {
 export function getUnionVariants(union: Union): Array<{ type: Type }> {
   const result: Array<{ type: Type }> = [];
   
-  for (const [_, variant] of union.variants) {
-    result.push({ type: variant.type });
+  // Check if variants exists and is iterable
+  if (!union.variants) {
+    return result;
+  }
+  
+  // Handle both Map and array structures for variants
+  if (union.variants instanceof Map) {
+    for (const [_, variant] of union.variants) {
+      result.push({ type: variant.type });
+    }
+  } else if (Array.isArray(union.variants)) {
+    for (const variant of union.variants) {
+      result.push({ type: variant.type });
+    }
   }
   
   return result;
