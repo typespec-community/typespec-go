@@ -154,13 +154,13 @@ export class UnifiedTypeMapper {
     // Try exact match first
     const exactMatch = SCALAR_TYPE_MAPPINGS[scalarName as keyof typeof SCALAR_TYPE_MAPPINGS];
     if (exactMatch) {
-      return exactMatch.goType || exactMatch.name || "interface{}";
+      return exactMatch.name || "interface{}";
     }
     
     // Try uppercase match
     const upperMatch = UPPER_CASE_SCALAR_MAPPINGS[scalarName as keyof typeof UPPER_CASE_SCALAR_MAPPINGS];
     if (upperMatch) {
-      return upperMatch.goType || upperMatch.name || "interface{}";
+      return upperMatch.name || "interface{}";
     }
     
     // Safe fallback
@@ -185,9 +185,9 @@ export class UnifiedTypeMapper {
     // This needs proper implementation based on MappedGoType structure
     switch (type.kind) {
       case "basic":
-        return type.name;
+        return type.name || "interface{}";
       case "struct":
-        return type.name;
+        return type.name || "AnonymousStruct";
       case "array":
         const elementString = this.generateGoTypeString(type.elementType);
         return `[${elementString}]`;
@@ -197,9 +197,14 @@ export class UnifiedTypeMapper {
       case "union":
         return "interface{}"; // Complex case - needs proper implementation
       case "enum":
-        return type.name;
-      case "interface":
-        return type.name;
+        return type.name || "AnonymousEnum";
+      case "pointer":
+        const baseString = this.generateGoTypeString(type.baseType);
+        return `*${baseString}`;
+      case "template":
+        return type.name || "AnonymousTemplate";
+      case "spread":
+        return type.name || "interface{}";
       default:
         return "interface{}";
     }
