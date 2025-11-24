@@ -7,7 +7,7 @@
  */
 
 import type { Program, EmitContext } from "@typespec/compiler";
-import { emitFile } from "@typespec/compiler";
+import { emitFile } from "@typespec/emitter-framework";
 
 import type { 
   EmitterExecutionResult,

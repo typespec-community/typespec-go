@@ -53,10 +53,20 @@ export class UnifiedTypeMapper {
     // Convert universal type to TypeSpec format using CleanTypeMapper
     if (typeof type === 'object' && type !== null && 'kind' in type) {
       // Check if it's already a MappedGoType from CleanTypeMapper
-      if (['basic', 'struct', 'enum', 'array', 'slice', 'union', 'template', 'spread', 'unknown'].includes((type as MappedGoType).kind)) {
-        return type as MappedGoType;
+      // TODO: PROPER TYPE GUARDS - Replace this with discriminated unions
+      // CRITICAL: This type conversion is unsafe and needs refactoring
+      // ARCHITECTURE VIOLATION: Creating impossible states through type union
+      
+      // TEMPORARY FIX: Handle readonly array incompatibility
+      if ((type as any).variants && Array.isArray((type as any).variants)) {
+        // DANGER: Type assertion without proper validation
+        // TODO: Replace with proper type guard and conversion
+        const mutableType = {
+          ...type,
+          variants: [...(type as any).variants] as unknown[]
+        };
+        return CleanTypeMapper.mapType(mutableType, fieldName);
       }
-      // Otherwise it's a UniversalType that needs mapping
       return CleanTypeMapper.mapType(type, fieldName);
     }
     

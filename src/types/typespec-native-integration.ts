@@ -13,9 +13,6 @@ import type {
   Scalar,
   Union,
   Enum,
-  String as StringType,
-  Number as NumberType,
-  Boolean as BooleanType,
   ModelProperty,
   UnionVariant,
   Program,
@@ -29,9 +26,6 @@ import type {
 import {
   isNullType,
   isTemplateInstance,
-  isString,
-  isNumber,
-  isBoolean,
   isErrorModel,
   getEffectiveModelType,
   walkPropertiesInherited,
@@ -41,7 +35,6 @@ import {
 import {
   hasVisibility,
   getVisibilityForClass,
-  getVisibilityClasses,
   isSealed,
   addVisibilityModifiers,
   removeVisibilityModifiers,
@@ -74,16 +67,21 @@ export namespace TypeSpecNative {
     return type.kind === "Enum";
   };
 
-  export const isStringType = (type: Type): type is StringType => {
-    return type.kind === "String";
+  export const isStringType = (type: Type): boolean => {
+    return type.kind === "Scalar" && type.name === "string";
   };
 
-  export const isNumberType = (type: Type): type is NumberType => {
-    return type.kind === "Number";
+  export const isNumberType = (type: Type): boolean => {
+    return type.kind === "Scalar" && (
+      type.name === "int8" || type.name === "int16" || type.name === "int32" || 
+      type.name === "int64" || type.name === "uint8" || type.name === "uint16" || 
+      type.name === "uint32" || type.name === "uint64" || type.name === "float32" || 
+      type.name === "float64"
+    );
   };
 
-  export const isBooleanType = (type: Type): type is BooleanType => {
-    return type.kind === "Boolean";
+  export const isBooleanType = (type: Type): boolean => {
+    return type.kind === "Scalar" && type.name === "boolean";
   };
 
   export const isTemplate = (type: Type): boolean => {

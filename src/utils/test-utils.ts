@@ -1,5 +1,5 @@
 // Test utilities for TypeSpec testing
-import { createProgram, createScalar } from "@typespec/compiler";
+import { createTestHost } from "@typespec/compiler";
 
 /**
  * Test Program Specification
@@ -21,8 +21,9 @@ interface TestModelProperty {
   [key: string]: unknown;
 }
 
-export function createTestProgram(spec: TestProgramSpec) {
-  return createProgram({
+export async function createTestProgram(spec: TestProgramSpec) {
+  const host = createTestHost();
+  return host.createProgram({
     main: false,
     options: {},
     ref: null

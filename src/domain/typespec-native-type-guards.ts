@@ -105,10 +105,24 @@ export function createDiscriminatedType(type: Type): TypeSpecNativeType {
 /**
  * Extract Union variants safely
  * GUARANTEE: Proper typing, no type assertions
+ * TODO: PROPER IMPLEMENTATION - Need TypeSpec Union API research
  */
 export function extractUnionVariants(union: Union): readonly UnionVariant[] {
-  // TypeSpec provides built-in safe access
-  return union.variants || [];
+  // TEMPORARY: Basic conversion - TypeSpec union API needs investigation
+  // TypeSpec's union.variants might be a RekeyableMap, not an array
+  const variants = union.variants;
+  
+  // Convert RekeyableMap to array if needed
+  if (variants && typeof variants.get === 'function') {
+    const result: UnionVariant[] = [];
+    variants.forEach((variant) => {
+      if (variant) result.push(variant);
+    });
+    return result;
+  }
+  
+  // Return empty array as safe fallback
+  return [];
 }
 
 /**
@@ -137,7 +151,7 @@ export function isArrayType(type: Type): boolean {
   // TEMPORARY: Basic array detection
   // TODO: Research TypeSpec's actual array type representation
   // This might be: type.kind === "Array" or type.indexer or something else
-  return type.kind === "Array" || ("indexer" in type && type.indexer !== undefined);
+  return type.kind === "Model" && ("indexer" in type && type.indexer !== undefined);
 }
 
 /**

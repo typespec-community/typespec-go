@@ -19,7 +19,7 @@ import type {
   Decorator,
   DecoratorApplication,
 } from "@typespec/compiler";
-import { isErrorModel, isNullType, isTemplateInstance, isString, isNumber, isBoolean } from "@typespec/compiler";
+import { isErrorModel, isNullType, isTemplateInstance } from "@typespec/compiler";
 
 /**
  * TypeSpec Model with Template Parameters
