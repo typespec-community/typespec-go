@@ -93,9 +93,11 @@ export class LegacyTypeAdapter {
 
       // Handle array types in legacy format
       if (legacyType.kind === "Array" && legacyType.elementType) {
-        const convertedElement = legacyType.elementType ? 
-          this.convertLegacyToTypeSpecFormat(legacyType.elementType) : 
-          "string";
+        // Ensure elementType is a proper LegacyType, not empty object
+        const elementType = legacyType.elementType && typeof legacyType.elementType === 'object' && 'kind' in legacyType.elementType
+          ? legacyType.elementType as LegacyType
+          : { kind: "primitive", name: "string" };
+        const convertedElement = this.convertLegacyToTypeSpecFormat(elementType);
         return {
           kind: "Array",
           elementType: convertedElement,

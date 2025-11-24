@@ -10,6 +10,8 @@ import type { MappedGoType } from "./type-interfaces.js";
 import { GoTypeMapper } from "./go-type-mapper.js";
 import { GoTypeStringGenerator } from "./go-type-string-generator.js";
 import type { UniversalType } from "./legacy-type-adapter.js";
+import type { Type } from "@typespec/compiler";
+import { CleanTypeMapper } from "./clean-type-mapper.js";
 
 /**
  * Unified Type Mapping Interface
@@ -33,7 +35,7 @@ export class UnifiedTypeMapper {
   static mapTypeSpecType(type: UniversalType | string | MappedGoType, fieldName?: string): MappedGoType {
     // Handle direct MappedGoType (already processed)
     if (type && typeof type === 'object' && 'kind' in type && 
-        (type as UniversalType).name !== undefined) {
+        ['basic', 'struct', 'enum', 'array', 'slice', 'union', 'template', 'spread', 'unknown'].includes((type as MappedGoType).kind)) {
       return type as MappedGoType;
     }
 
@@ -50,11 +52,16 @@ export class UnifiedTypeMapper {
     // This is the SINGLE SOURCE OF TRUTH for all type mapping
     // Convert universal type to TypeSpec format using CleanTypeMapper
     if (typeof type === 'object' && type !== null && 'kind' in type) {
-      return CleanTypeMapper.mapTypeToGo(type, fieldName);
+      // Check if it's already a MappedGoType from CleanTypeMapper
+      if (['basic', 'struct', 'enum', 'array', 'slice', 'union', 'template', 'spread', 'unknown'].includes((type as MappedGoType).kind)) {
+        return type as MappedGoType;
+      }
+      // Otherwise it's a UniversalType that needs mapping
+      return CleanTypeMapper.mapType(type, fieldName);
     }
     
     // Fallback for TypeSpec types - use CleanTypeMapper
-    return CleanTypeMapper.mapTypeToGo(type as Type, fieldName);
+    return CleanTypeMapper.mapType(type as Type, fieldName);
   }
 
   /**
