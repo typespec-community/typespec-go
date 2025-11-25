@@ -120,7 +120,7 @@ export class ModelProcessingExtractor {
       return {
         name: typeSpecModel.name || "UnknownModel",
         properties: this.extractModelProperties(typeSpecModel),
-        extends: this.extractModelInheritance(typeSpecModel),
+        extends: this.extractModelInheritance(typeSpecModel, program),
         template: this.extractModelTemplate(typeSpecModel),
         propertiesFromExtends: this.extractInheritedProperties(typeSpecModel),
       };
@@ -255,10 +255,16 @@ export class ModelProcessingExtractor {
     const variants = new Map();
     
     union.variants.forEach((variant, index) => {
-      const name = variant.name || `Variant${index}`;
+      let name: string;
+      if (variant.name) {
+        name = String(variant.name);
+      } else {
+        name = `Variant${index}`;
+      }
+      
       variants.set(name, {
         name,
-        type: this.mapTypeSpecKind(variant.type),
+        type: this.mapTypeSpecKind({ kind: variant.kind }),
       });
     });
     
@@ -321,9 +327,9 @@ export class ModelProcessingExtractor {
    * Extract model inheritance information
    * Domain logic: Model inheritance chain extraction
    */
-  private static extractModelInheritance(model: TypeSpecModelType): string | undefined {
+  private static extractModelInheritance(model: TypeSpecModelType, program: Program): string | undefined {
     try {
-      const effectiveModel = getEffectiveModelType(model);
+      const effectiveModel = getEffectiveModelType(program, model);
       if (effectiveModel.name && effectiveModel.name !== model.name) {
         return effectiveModel.name;
       }
