@@ -9,6 +9,7 @@
 /**
  * TypeSpec Kind Type
  * discriminated union for all TypeSpec node kinds
+ * EXTENDED: Union with string to handle all TypeSpec types dynamically
  */
 export type TypeSpecKind =
   | "Model"
@@ -31,7 +32,21 @@ export type TypeSpecKind =
   | "Int64"
   | "Float32"
   | "Float64"
-  | "Array";
+  | "Array"
+  | "Operation"
+  | "Uint8"
+  | "Uint16"
+  | "Uint32"
+  | "Uint64"
+  | "Int8"
+  | "Int16"
+  | "Float"
+  | "Double"
+  | "Void"
+  | "Unknown"
+  | "Any"
+  | "ScalarConstructor"
+  | string; // Fallback for any TypeSpec type
 
 /**
  * TypeSpec Visibility Lifecycle Enum
