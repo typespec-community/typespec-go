@@ -53,7 +53,7 @@ export interface ExtractedUnion {
     string,
     {
       name: string;
-      type: { kind: string };
+      type: Type;
     }
   >;
 }
@@ -67,7 +67,7 @@ export interface ExtractedModel {
     string,
     {
       name: string;
-      type: { kind: string };
+      type: Type;
       optional: boolean;
     }
   >;
