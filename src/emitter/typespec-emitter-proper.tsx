@@ -10,32 +10,42 @@ import type { Program, EmitContext, Model, Type, ModelProperty, Scalar } from "@
 import { navigateProgram } from "@typespec/compiler";
 import { writeOutput } from "@typespec/emitter-framework";
 import { Output } from "@typespec/emitter-framework";
-import * as go from "@alloy-js/go";
+import { ModuleDirectory, SourceFile, StructTypeDeclaration, StructMember } from "@alloy-js/go";
 
 /**
- * Main TypeSpec Go Emitter Output Component
- * Generates Go files from TypeSpec program using Alloy-JS components
+ * Generate Go code from TypeSpec program using Alloy-JS
+ * PROPER INTEGRATION: Correct component usage and APIs
  */
-function GoEmitterOutput({ program }: { program: Program }) {
-  const models = new Map();
+export async function $onEmit(context: EmitContext) {
+  const { program } = context;
   
+  // Extract all models from TypeSpec program
+  const models = new Map<string, Model>();
+  
+  // Navigate TypeSpec program to find all models
   navigateProgram(program, {
-    model: (model: Model) => {
-      models.set(model.name || "unnamed", model);
+    model(model) {
+      models.set(model.name!, model);
     }
   });
   
-  return (
+  const result = (
     <Output program={program}>
-        <go.SourceFile path="models.go">
-          <go.Package name="api" />
-          
-          {/* Generate Go structs for all models in the program */}
+      <ModuleDirectory name="api">
+        <SourceFile path="models.go">
+          {/* Generate Go structs for all models in program */}
           {Array.from(models.values()).map((model) => (
             <GoModelStruct model={model} />
           ))}
-        </go.SourceFile>
+        </SourceFile>
+      </ModuleDirectory>
     </Output>
+  );
+  
+  return await writeOutput(
+    context.program,
+    result,
+    context.emitterOutputDir,
   );
 }
 
@@ -44,29 +54,38 @@ function GoEmitterOutput({ program }: { program: Program }) {
  */
 function GoModelStruct({ model }: { model: Model }) {
   return (
-    <go.TypeDeclaration name={model.name}>
-      <go.Struct>
-        {/* Generate struct fields for model properties */}
-        {Array.from(model.properties?.values() || []).map((prop: ModelProperty) => (
-          <go.StructMember 
-            name={prop.name}
-            type={<TypeExpression type={prop.type} />}
-            tag={`json:"${prop.name}"`}
-          />
-        ))}
-      </go.Struct>
-    </go.TypeDeclaration>
+    <StructTypeDeclaration name={model.name}>
+      {/* Generate struct fields for model properties */}
+      {Array.from(model.properties?.values() || []).map((prop: ModelProperty) => (
+        <StructMember 
+          name={prop.name}
+          type={mapTypeToGo(prop.type)}
+          tag={`json:"${prop.name}"`}
+        />
+      ))}
+    </StructTypeDeclaration>
   );
 }
 
 /**
- * Type Expression Component using TypeSpec compiler APIs
- * 
- * PROPER TYPESPEC: Uses real TypeSpec type system
- * ALLOY-JS: Generates proper Go type expressions
+ * Convert TypeSpec type to Go type string
+ * Simplified mapping that avoids complex Alloy.js type components
  */
-function TypeExpression({ type }: { type: Type }) {
-  // Handle scalar types using TypeSpec compiler API
+function mapTypeToGo(type: Type): string {
+  // Handle scalar types
+  if (type.kind === "String") {
+    return "string";
+  }
+  
+  if (type.kind === "Boolean") {
+    return "bool";
+  }
+  
+  if (type.kind === "Number") {
+    return "int64";
+  }
+  
+  // Handle scalar types
   if (type.kind === "Scalar") {
     const scalar = type as Scalar;
     const scalarName = scalar.name.toLowerCase();
@@ -81,66 +100,44 @@ function TypeExpression({ type }: { type: Type }) {
       "int32": "int32",
       "int64": "int64",
       "uint8": "uint8",
-      "uint16": "uint16",
+      "uint16": "uint16", 
       "uint32": "uint32",
       "uint64": "uint64",
       "float32": "float32",
       "float64": "float64",
       "plaindate": "time.Time",
-      "plaintime": "time.Time",
-      "utcdatetime": "time.Time",
-      "offsetdatetime": "time.Time",
+      "plaintext": "string",
+      "url": "string",
       "duration": "time.Duration",
+      "offsetdatetime": "time.Time",
     };
 
     const goType = scalarMappings[scalarName] || "interface{}";
-    return <go.NamedType name={goType} />;
-  }
-
-  // Handle model types
-  if (type.kind === "Model") {
-    return <go.NamedType name={(type as Model).name || "interface{}"} />;
+    return goType;
   }
 
   // Handle array types (TypeSpec arrays are models with indexer)
-  if (type.kind === "Model" && (type as Model).indexer) {
+  if (type.kind === "Model") {
     const model = type as Model;
     if (model.indexer) {
-      return <go.ArrayType>
-        <TypeExpression type={model.indexer.value} />
-      </go.ArrayType>;
+      return `[]${mapTypeToGo(model.indexer.value)}`;
     }
+    return model.name || "interface{}";
   }
 
   // Handle union types
   if (type.kind === "Union") {
-    return <go.NamedType name="interface{}" />;
+    return "interface{}"; // Go doesn't have union types
   }
 
-  // Handle enum types
-  if (type.kind === "Enum") {
-    return <go.NamedType name="string" />;
-  }
-
-  // Default fallback
-  return <go.NamedType name="interface{}" />;
+  // Default to interface{} for unknown types
+  return "interface{}";
 }
 
 /**
  * TypeSpec Go Emitter Entry Point
  * This is the proper TypeSpec emitter integration using Alloy-JS
- * 
- * Usage: tsp compile --emit-go my-spec.tsp
  */
-export async function $onEmit(context: EmitContext) {
-  try {
-    await writeOutput(
-      context.program,
-      <GoEmitterOutput program={context.program} />,
-      context.emitterOutputDir,
-    );
-  } catch (error) {
-    console.error("TypeSpec Go Emitter Error:", error);
-    throw error;
-  }
-}
+export const TypeSpecGoEmitter = {
+  $onEmit
+};
