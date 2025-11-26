@@ -26,7 +26,12 @@ export type TypeSpecKind =
   | "Number"
   | "Scalar"
   | "Tuple"
-  | "UnionVariant";
+  | "UnionVariant"
+  | "Int32"
+  | "Int64"
+  | "Float32"
+  | "Float64"
+  | "Array";
 
 /**
  * TypeSpec Visibility Lifecycle Enum

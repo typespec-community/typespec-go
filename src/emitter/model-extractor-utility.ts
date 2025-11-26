@@ -122,7 +122,7 @@ export class ModelProcessingExtractor {
         properties: this.extractModelProperties(typeSpecModel),
         extends: this.extractModelInheritance(typeSpecModel, program),
         template: this.extractModelTemplate(typeSpecModel),
-        propertiesFromExtends: this.extractInheritedProperties(typeSpecModel),
+        propertiesFromExtends: this.extractInheritedProperties(typeSpecModel, program),
       };
     } catch (error) {
       Logger.error(
@@ -259,7 +259,7 @@ export class ModelProcessingExtractor {
       if (variant.name) {
         name = String(variant.name);
       } else {
-        name = `Variant${index}`;
+        name = `Variant${String(index)}`;
       }
       
       variants.set(name, {
@@ -275,14 +275,7 @@ export class ModelProcessingExtractor {
    * Extract model properties from TypeSpec model
    * Domain logic: Property extraction with type and optionality information
    */
-  private static extractModelProperties(model: TypeSpecModelType): ReadonlyMap<
-    string,
-    {
-      name: string;
-      type: { kind: string };
-      optional: boolean;
-    }
-  > {
+  private static extractModelProperties(model: TypeSpecModelType): ReadonlyMap<string, TypeSpecPropertyNode> {
     const properties = new Map();
     
     try {
@@ -361,9 +354,9 @@ export class ModelProcessingExtractor {
    * Extract inherited properties from effective model type
    * Domain logic: Inherited properties extraction for complete model view
    */
-  private static extractInheritedProperties(model: TypeSpecModelType): ReadonlyMap<string, TypeSpecPropertyNode> | undefined {
+  private static extractInheritedProperties(model: TypeSpecModelType, program: Program): ReadonlyMap<string, TypeSpecPropertyNode> | undefined {
     try {
-      const effectiveModel = getEffectiveModelType(model);
+      const effectiveModel = getEffectiveModelType(program, model);
       if (effectiveModel.name && effectiveModel.name !== model.name) {
         // Extract properties from inherited model
         return this.extractModelProperties(effectiveModel);
@@ -391,7 +384,10 @@ export class ModelProcessingExtractor {
       return "unknown";
     }
 
-    switch (property.kind) {
+    // Handle both TypeSpecPropertyNode and simple object with kind
+    const kind = "kind" in property ? property.kind : property.type.kind;
+    
+    switch (kind) {
       case "String":
         return "string";
       case "Int32":
@@ -415,7 +411,7 @@ export class ModelProcessingExtractor {
       case "Scalar":
         return "scalar";
       default:
-        return property.kind || "unknown";
+        return kind || "unknown";
     }
   }
 }

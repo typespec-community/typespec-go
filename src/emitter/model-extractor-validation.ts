@@ -7,6 +7,7 @@
 
 import type { Model as TypeSpecModelType, Union, Program } from "@typespec/compiler";
 import type { ExtractedModel, ExtractedUnion } from "./model-extractor-core.js";
+import { getEffectiveModelType } from "@typespec/compiler";
 import { Logger, LogContext } from "../domain/structured-logging.js";
 
 /**
@@ -20,7 +21,8 @@ export class ModelValidationExtractor {
   static detectCyclicDependency(
     model: TypeSpecModelType,
     visited: Set<string>,
-    processing: Set<string> = new Set()
+    processing: Set<string> = new Set(),
+    program?: Program
   ): boolean {
     if (!model.name) return false;
 
@@ -36,10 +38,10 @@ export class ModelValidationExtractor {
     processing.add(model.name);
 
     try {
-      const effectiveModel = getEffectiveModelType(model);
+      const effectiveModel = getEffectiveModelType(program!, model);
       if (effectiveModel.name && effectiveModel.name !== model.name) {
         // Check inheritance chain for cycles
-        return this.detectCyclicDependency(effectiveModel, visited, processing);
+        return this.detectCyclicDependency(effectiveModel, visited, processing, program);
       }
     } catch (error) {
       Logger.warn(
