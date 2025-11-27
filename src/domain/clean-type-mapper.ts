@@ -222,32 +222,33 @@ export class CleanTypeMapper {
       }
 
       // Handle special cases including all TypeSpec numeric types
+      // ALL types use pointers for optional fields - Go best practice
       switch (kind) {
         case "String":
-          return { goType: "string", usePointerForOptional: false };
+          return { goType: "string", usePointerForOptional: true };
         case "Boolean":
-          return { goType: "bool", usePointerForOptional: false };
+          return { goType: "bool", usePointerForOptional: true };
         case "Number":
           return { goType: "float64", usePointerForOptional: true };
         // Handle TypeSpec v1.7.0 numeric types
         case "Int8":
-          return { goType: "int8", usePointerForOptional: false };
+          return { goType: "int8", usePointerForOptional: true };
         case "Int16":
-          return { goType: "int16", usePointerForOptional: false };
+          return { goType: "int16", usePointerForOptional: true };
         case "Int32":
-          return { goType: "int32", usePointerForOptional: false };
+          return { goType: "int32", usePointerForOptional: true };
         case "Int64":
           return { goType: "int64", usePointerForOptional: true };
         case "Uint8":
-          return { goType: "uint8", usePointerForOptional: false };
+          return { goType: "uint8", usePointerForOptional: true };
         case "Uint16":
-          return { goType: "uint16", usePointerForOptional: false };
+          return { goType: "uint16", usePointerForOptional: true };
         case "Uint32":
-          return { goType: "uint32", usePointerForOptional: false };
+          return { goType: "uint32", usePointerForOptional: true };
         case "Uint64":
           return { goType: "uint64", usePointerForOptional: true };
         case "Float32":
-          return { goType: "float32", usePointerForOptional: false };
+          return { goType: "float32", usePointerForOptional: true };
         case "Float64":
           return { goType: "float64", usePointerForOptional: true };
         default:
