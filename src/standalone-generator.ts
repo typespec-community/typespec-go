@@ -92,7 +92,7 @@ export class StandaloneGoGenerator {
         }
       );
     } catch (error) {
-      return ErrorHandler.handleError(error, {
+      return defaultErrorHandler(error, {
         operation: "generateModel",
         modelName: model.name,
         properties: Array.from(model.properties.keys())
@@ -232,7 +232,7 @@ export class StandaloneGoGenerator {
           );
         }
       } catch (error) {
-        return ErrorHandler.handleError(error, {
+        return defaultErrorHandler(error, {
           operation: "validateProperty",
           modelName: model.name,
           propertyName: propName,

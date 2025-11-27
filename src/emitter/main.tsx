@@ -46,7 +46,7 @@ export async function $onEmit(context: EmitContext): Promise<void> {
       Logger.info(LogContext.TYPESPEC_INTEGRATION, `Generating Go code for model: ${modelName}`);
       
       // Convert TypeSpec model to expected format
-      const modelData = convertTypeSpecToGoModel(model);
+      const modelData = convertTypeSpecToGoModel(model, context.program);
       
       // Generate using existing logic
       const result = generator.generateModel(modelData);
@@ -74,7 +74,7 @@ export async function $onEmit(context: EmitContext): Promise<void> {
 /**
  * Convert TypeSpec Model to StandaloneGoGenerator expected format
  */
-function convertTypeSpecToGoModel(model: Model): any {
+function convertTypeSpecToGoModel(model: Model, program: Program): any {
   const properties = new Map();
   
   if (model.properties) {
@@ -90,6 +90,6 @@ function convertTypeSpecToGoModel(model: Model): any {
   return {
     name: getModelName(model),
     properties: properties,
-    isErrorModel: hasErrorDecorator(context.program, model)
+    isErrorModel: hasErrorDecorator(program, model)
   };
 }
