@@ -199,6 +199,14 @@ export class CleanTypeMapper {
       };
     }
 
+    // Handle case where model type is just { kind: "model" }
+    if (typeof type === "object" && type !== null && "kind" in type && (type as { kind: string }).kind === "model") {
+      return {
+        goType: "interface{}",
+        usePointerForOptional: true,
+      };
+    }
+
     return ErrorFactory.createTypeMappingError(`Invalid model type for field ${fieldName}`, {
       typeSpecType: JSON.stringify(type),
       fieldName,
@@ -303,7 +311,9 @@ export class CleanTypeMapper {
       typeof type === "object" &&
       type !== null &&
       "name" in type &&
-      typeof (type as { name: string }).name === "string"
+      typeof (type as { name: string }).name === "string" &&
+      // Exclude model types (they have both name and kind)
+      (!("kind" in type) || (type as { kind: string }).kind !== "model")
     );
   }
 
@@ -315,7 +325,7 @@ export class CleanTypeMapper {
       typeof type === "object" &&
       type !== null &&
       "kind" in type &&
-      (type as { kind: string }).kind === "Model"
+      (type as { kind: string }).kind === "model"
     );
   }
 

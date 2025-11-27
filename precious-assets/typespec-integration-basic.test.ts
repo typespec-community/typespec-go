@@ -35,7 +35,7 @@ test("TypeSpec Integration - Basic Model Generation", async () => {
 
     // Verify basic Go struct generation
     expect(goCode).toContain("type User struct {");
-    expect(goCode).toContain("Id string");
+    expect(goCode).toContain("ID string");
     expect(goCode).toContain("Name string");
     expect(goCode).toContain("Age *uint8"); // Optional fields should be pointers
     expect(goCode).toContain("}");

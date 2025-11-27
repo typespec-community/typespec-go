@@ -113,7 +113,7 @@ describe("Model Composition Implementation", () => {
       const goCode = Array.from(result.data.values())[0];
       expect(goCode).toContain("BaseEntity  // Embedded struct");
       expect(goCode).toContain("Username string");
-      expect(goCode).toContain("Profile *model");
+      expect(goCode).toContain("Profile *interface{}"); // Generic model type
     });
   });
 
@@ -188,8 +188,11 @@ describe("Model Composition Implementation", () => {
       
       expect(goCodeA).toContain("type ModelA struct {");
       expect(goCodeB).toContain("type ModelB struct {");
-      expect(goCodeA).toContain("B *model");
-      expect(goCodeB).toContain("A *model");
+      expect(goCodeA).toContain("B *ModelB");
+      expect(goCodeB).toContain("A *ModelA");
+      
+      expect(goCodeA).toContain("\tB *ModelB `json:\"b\",omitempty`");
+      expect(goCodeB).toContain("\tA *ModelA `json:\"a\",omitempty`");
     });
   });
 

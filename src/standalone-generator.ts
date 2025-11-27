@@ -13,6 +13,7 @@ import {
   GoEmitterResult,
   ErrorHandler,
   InvalidModelReason,
+  defaultErrorHandler,
 } from "./domain/unified-errors.js";
 import { CleanTypeMapper } from "./domain/clean-type-mapper.js";
 import type {
@@ -159,12 +160,18 @@ export class StandaloneGoGenerator {
 
     // Delegate to CleanTypeMapper for type mapping with pointer support
     const mappedType = CleanTypeMapper.mapTypeSpecType(propNode.type, propName);
+    
     if (!mappedType || !mappedType.goType) {
       return null;
     }
 
     // Generate Go field name (capitalize first letter for export)
-    const goFieldName = propName.charAt(0).toUpperCase() + propName.slice(1);
+    let goFieldName = propName.charAt(0).toUpperCase() + propName.slice(1);
+    
+    // Special case: 'id' -> 'ID' for Go naming conventions
+    if (propName.toLowerCase() === 'id') {
+      goFieldName = 'ID';
+    }
 
     // Generate JSON tag
     const jsonTag = `json:"${propName}"`;

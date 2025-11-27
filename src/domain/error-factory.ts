@@ -35,7 +35,8 @@ export type GoEmitterResult<T = Map<string, string>> =
   | TypeSpecCompilerError
   | GoCodeGenerationError
   | ValidationError
-  | SystemError;
+  | SystemError
+  | TypeMappingError;
 
 /**
  * TypeSpec Compiler Error
@@ -183,6 +184,28 @@ export class ErrorFactory {
       propertyName: options?.propertyName,
       invalidValue: options?.invalidValue,
       resolution: options?.resolution || "Validate input data and model structure",
+    };
+  }
+
+  /**
+   * Create type mapping error
+   */
+  static createTypeMappingError(
+    message: string,
+    options?: {
+      typeSpecType?: string;
+      fieldName?: string;
+      supportedTypes?: string[];
+      resolution?: string;
+    },
+  ): TypeMappingError {
+    const base = ErrorFactory.createBaseError("type_mapping", message);
+    return {
+      ...base,
+      typeSpecType: options?.typeSpecType,
+      fieldName: options?.fieldName,
+      supportedTypes: options?.supportedTypes,
+      resolution: options?.resolution || "Check TypeSpec type mapping configuration",
     };
   }
 
