@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
+    "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
@@ -11,13 +11,14 @@
     "moduleDetection": "force",
     "noEmit": false,
     "jsx": "react-jsx",
+    "jsxImportSource": "@alloy-js/core",
     "strict": true,
     "skipLibCheck": true,
-    "lib": ["ES2018", "DOM"],
+    "lib": ["ES2022", "DOM"],
     "downlevelIteration": true,
     "declaration": true,
     "outDir": "./dist"
   },
-  "include": ["src/**/*"],
+  "include": ["src/main.ts", "src/emitter/**/*"],
   "exclude": ["node_modules", "dist"]
 }
