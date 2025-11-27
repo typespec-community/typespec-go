@@ -227,7 +227,7 @@ export class StandaloneGoGenerator {
             { 
               modelName: model.name, 
               propertyName: propName,
-              type: typeof propNode.type === 'object' ? (propNode.type as any).kind : propNode.type
+              type: typeof propNode.type === 'object' && propNode.type && 'kind' in propNode.type ? propNode.type.kind : propNode.type
             }
           );
         }

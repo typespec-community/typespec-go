@@ -121,7 +121,7 @@ export class TypeSpecTypeMapper {
     // Built-in scalars
     if (TypeSpecTypeGuards.isString(type)) return "string";
     if (TypeSpecTypeGuards.isBoolean(type)) return "bool";
-    if (TypeSpecTypeGuards.isNumber(type)) return this.mapNumberType(type);
+    if (TypeSpecTypeGuards.isNumber(type)) return this.mapNumericByName(type);
     if (TypeSpecTypeGuards.isScalar(type)) return this.mapScalarType(type);
     
     // Model types
@@ -135,7 +135,7 @@ export class TypeSpecTypeMapper {
    * Get model name from TypeSpec model
    */
   private static getModelName(model: Model): string {
-    return (model as any).name || "UnknownModel";
+    return model.name || "UnknownModel";
   }
   
   /**
@@ -143,26 +143,50 @@ export class TypeSpecTypeMapper {
    */
   private static mapNumberType(type: NumberType): string {
     // TypeSpec v1.7.0 number types
-    switch ((type as any).name) {
-      case "int8": return "int8";
-      case "int16": return "int16";
-      case "int32": return "int32";
-      case "int64": return "int64";
-      case "uint8": return "uint8";
-      case "uint16": return "uint16";
-      case "uint32": return "uint32";
-      case "uint64": return "uint64";
-      case "float32": return "float32";
-      case "float64": return "float64";
-      default: return "float64";
+    // NumericLiteral doesn't have name, use value to determine type
+    const value = type.value;
+    if (Number.isInteger(value)) {
+      if (value >= 0) {
+        if (value <= 255) return "uint8";
+        if (value <= 65535) return "uint16";
+        if (value <= 4294967295) return "uint32";
+        return "uint64";
+      } else {
+        if (value >= -128 && value <= 127) return "int8";
+        if (value >= -32768 && value <= 32767) return "int16";
+        if (value >= -2147483648 && value <= 2147483647) return "int32";
+        return "int64";
+      }
     }
+    return "float64";
+  }
+  
+  /**
+   * Map numeric type based on intrinsic scalar name if available
+   */
+  private static mapNumericByName(type: NumberType): string {
+    // Check if this is a numeric type with a name (intrinsic scalar)
+    const typeString = type.valueAsString;
+    if (typeString === "int8") return "int8";
+    if (typeString === "int16") return "int16";
+    if (typeString === "int32") return "int32";
+    if (typeString === "int64") return "int64";
+    if (typeString === "uint8") return "uint8";
+    if (typeString === "uint16") return "uint16";
+    if (typeString === "uint32") return "uint32";
+    if (typeString === "uint64") return "uint64";
+    if (typeString === "float32") return "float32";
+    if (typeString === "float64") return "float64";
+    
+    // Fallback to value-based mapping
+    return this.mapNumberType(type);
   }
   
   /**
    * Map TypeSpec scalar types to Go types
    */
   private static mapScalarType(scalar: Scalar): string {
-    const scalarName = (scalar as any).name;
+    const scalarName = scalar.name;
     return GoCoreTypes[scalarName] || "interface{}";
   }
 }
