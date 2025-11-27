@@ -121,7 +121,7 @@ export class StandaloneGoGenerator {
 
     // Handle struct embedding if extends is provided
     if (model.extends) {
-      lines.push(`\t${model.extends}`);
+      lines.push(`\t${model.extends}  // Embedded struct`);
     }
 
     // Add properties from extends (spread operator support)
@@ -179,6 +179,177 @@ export class StandaloneGoGenerator {
     }
 
     return `${goFieldName} ${finalGoType} \`${jsonTag}${optionalTag}\``;
+  }
+
+  /**
+   * Generate Go union type (sealed interface pattern)
+   * UNIFIED ERROR SYSTEM: Returns GoEmitterResult instead of throwing
+   */
+  generateUnionType(unionModel: {
+    name: string;
+    kind: "union";
+    variants: Array<{ name: string; type: any }>;
+    properties?: ReadonlyMap<string, TypeSpecPropertyNode>;
+  }): GoEmitterResult {
+    // Input validation
+    if (!unionModel.name || typeof unionModel.name !== "string") {
+      return ErrorFactory.createValidationError("Invalid union: name must be a non-empty string", {
+        unionName: unionModel.name || "unknown",
+      });
+    }
+
+    if (!unionModel.variants || unionModel.variants.length === 0) {
+      return ErrorFactory.createValidationError("Invalid union: must have at least one variant", {
+        unionName: unionModel.name,
+      });
+    }
+
+    try {
+      // Generate Go union code using sealed interface pattern
+      const unionCode = this.generateUnionCode(unionModel);
+
+      return ErrorFactory.createSuccess(new Map([[`${unionModel.name}.go`, unionCode]]), {
+        generatedFiles: [`${unionModel.name}.go`],
+        unionName: unionModel.name,
+      });
+    } catch (error) {
+      return defaultErrorHandler(error, {
+        operation: "generateUnionType",
+        unionName: unionModel.name,
+        variants: unionModel.variants.map(v => v.name),
+      });
+    }
+  }
+
+  /**
+   * Validate union before generation
+   * CONSISTENT VALIDATION: Unified error system
+   */
+  validateUnion(unionModel: {
+    name: string;
+    kind: "union";
+    variants: Array<{ name: string; type: any }>;
+  }): GoEmitterResult {
+    if (!unionModel.name) {
+      return ErrorFactory.createValidationError("Union name is required", {
+        unionName: unionModel.name || "undefined",
+      });
+    }
+
+    if (!unionModel.variants || unionModel.variants.length === 0) {
+      return ErrorFactory.createValidationError("Union must have at least one variant", {
+        unionName: unionModel.name,
+      });
+    }
+
+    return ErrorFactory.createSuccess(new Map(), { validUnion: true, unionName: unionModel.name });
+  }
+
+  /**
+   * Generate Go union code using sealed interface pattern
+   */
+  private generateUnionCode(unionModel: {
+    name: string;
+    kind: "union";
+    variants: Array<{ name: string; type: any; discriminator?: string }>;
+    discriminator?: string;
+  }): string {
+    const lines: string[] = [];
+
+    // Package declaration
+    lines.push("package api");
+    lines.push("");
+
+    // Model documentation
+    lines.push(`// ${unionModel.name} - TypeSpec generated union`);
+    lines.push("");
+
+    // Handle discriminated unions
+    if (unionModel.discriminator) {
+      return this.generateDiscriminatedUnionCode(unionModel);
+    }
+
+    // Sealed interface definition
+    lines.push(`type ${unionModel.name} interface {`);
+    lines.push(`\tis${unionModel.name}()`);
+    lines.push("}");
+    lines.push("");
+
+    // Generate variant structs
+    for (const variant of unionModel.variants) {
+      // Use variant type name if available, otherwise fall back to variant name
+      let variantName = variant.type?.name || variant.name;
+      
+      // Ensure the variant name is properly capitalized
+      variantName = this.capitalizeFirst(variantName);
+      
+      lines.push(`// ${variantName} - ${unionModel.name} variant`);
+      lines.push(`type ${variantName} struct {`);
+      // For now, empty struct - can be enhanced later
+      lines.push("}");
+      lines.push("");
+
+      // Method to implement the interface
+      lines.push(`func (e ${variantName}) is${unionModel.name}() {}`);
+      lines.push("");
+    }
+
+    return lines.join("\n");
+  }
+
+  /**
+   * Generate discriminated union code with discriminator field
+   */
+  private generateDiscriminatedUnionCode(unionModel: {
+    name: string;
+    kind: "union";
+    variants: Array<{ name: string; type: any; discriminator?: string }>;
+    discriminator: string;
+  }): string {
+    const lines: string[] = [];
+
+    // Sealed interface definition
+    lines.push(`type ${unionModel.name} interface {`);
+    lines.push(`\tgetType() string`);
+    lines.push("}");
+    lines.push("");
+
+    // Generate variant structs with discriminator field
+    for (const variant of unionModel.variants) {
+      // Use variant type name if available, otherwise fall back to variant name
+      let variantName = variant.type?.name || variant.name;
+      variantName = this.capitalizeFirst(variantName);
+      
+      lines.push(`// ${variantName} - ${unionModel.name} variant`);
+      lines.push(`type ${variantName} struct {`);
+      lines.push(`\tType string \`json:"type"\``);
+      lines.push("}");
+      lines.push("");
+
+      // Method to implement the interface
+      lines.push(`func (e ${variantName}) getType() string {`);
+      lines.push(`\treturn "${variant.discriminator}"`);
+      lines.push("}");
+      lines.push("");
+    }
+
+    // Generate type constants
+    const constantPrefix = this.capitalizeFirst(unionModel.discriminator);
+    for (const variant of unionModel.variants) {
+      const constantName = `${constantPrefix}${this.capitalizeFirst(variant.name)}`;
+      const constantValue = variant.discriminator || variant.name;
+      lines.push(`const ${constantName} = "${constantValue}"`);
+    }
+    lines.push("");
+
+    return lines.join("\n");
+  }
+
+  /**
+   * Capitalize first letter of a string
+   */
+  private capitalizeFirst(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
   /**

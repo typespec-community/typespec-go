@@ -22,7 +22,7 @@ test("Union Types - Should generate sealed interface", () => {
   };
 
   // Act
-  const result = generator.generateModel(unionModel);
+  const result = generator.generateUnionType(unionModel);
 
   // Assert
   if (result._tag === "success") {
@@ -63,7 +63,7 @@ test("Union Types - Should handle discriminated unions", () => {
   };
 
   // Act
-  const result = generator.generateModel(discriminatedUnion);
+  const result = generator.generateUnionType(discriminatedUnion);
 
   // Assert
   if (result._tag === "success") {

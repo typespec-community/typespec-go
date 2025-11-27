@@ -13,13 +13,13 @@ import {
   GoEmitterResult,
   ErrorHandler,
   InvalidModelReason,
-} from "./domain/unified-errors.js";
-import { CleanTypeMapper } from "./domain/clean-type-mapper.js";
+} from "../src/domain/unified-errors.js";
+import { CleanTypeMapper } from "../src/domain/clean-type-mapper.js";
 import type {
   TypeSpecModel,
   TypeSpecPropertyNode,
   GoEmitterOptions,
-} from "./types/typespec-domain.js";
+} from "../src/types/typespec-domain.js";
 
 /**
  * Go type mapping configuration

@@ -19,18 +19,18 @@ import type {
   TypeScriptExternalError,
   GoCompilationExternalError,
   ErrorRecoveryStrategy,
-} from "./error-types.js";
+} from "../src/domain/error-types.js";
 
-import type { TypeSpecId, ModelName, PropertyName, ErrorId, FileName } from "./error-entities.js";
+import type { TypeSpecId, ModelName, PropertyName, ErrorId, FileName } from "../src/domain/error-entities.js";
 
-import { Entities, EntityValidation, EntityTransformation } from "./error-entities.js";
+import { Entities, EntityValidation, EntityTransformation } from "../src/domain/error-entities.js";
 
-import { ErrorFactory } from "./error-factory.js";
+import { ErrorFactory } from "../src/domain/error-factory.js";
 
-import { ErrorAnalysis } from "./error-types.js";
+import { ErrorAnalysis } from "../src/domain/error-types.js";
 
 // Then re-export
-export type { TypeSpecId, ModelName, PropertyName, ErrorId, FileName } from "./error-entities.js";
+export type { TypeSpecId, ModelName, PropertyName, ErrorId, FileName } from "../src/domain/error-entities.js";
 
 export type {
   TypeSpecCompilerError,
@@ -43,13 +43,13 @@ export type {
   TypeScriptExternalError,
   GoCompilationExternalError,
   ErrorRecoveryStrategy,
-} from "./error-types.js";
+} from "../src/domain/error-types.js";
 
-export { Entities, EntityValidation, EntityTransformation } from "./error-entities.js";
+export { Entities, EntityValidation, EntityTransformation } from "../src/domain/error-entities.js";
 
-export { ErrorFactory } from "./error-factory.js";
+export { ErrorFactory } from "../src/domain/error-factory.js";
 
-export { ErrorAnalysis } from "./error-types.js";
+export { ErrorAnalysis } from "../src/domain/error-types.js";
 
 // Export TypeSpec entities for compatibility
 export { InvalidModelReason, TypeSpecEntities } from "../types/errors.js";
