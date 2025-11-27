@@ -14,28 +14,28 @@ import type { Program, Model, Type, Scalar, Union } from "@typespec/compiler";
 export interface GeneratorConfig {
   /** Package name for generated Go code */
   packageName: string;
-  
+
   /** Go module path */
   modulePath: string;
-  
+
   /** Include JSON tags in struct fields */
   includeJSONTags: boolean;
-  
+
   /** Include validation tags for struct fields */
   includeValidationTags: boolean;
-  
+
   /** Include documentation comments */
   includeDocumentation: boolean;
-  
+
   /** Naming convention for struct fields */
   fieldNaming: "camelCase" | "PascalCase" | "snake_case";
-  
+
   /** Include godoc comments */
   includeGoDoc: boolean;
-  
+
   /** Generate test files */
   generateTests: boolean;
-  
+
   /** Default export pattern */
   exportPattern: "default" | "named";
 }
@@ -47,28 +47,28 @@ export interface GeneratorConfig {
 export interface GeneratorContext {
   /** TypeSpec program containing all models and types */
   program: Program;
-  
+
   /** Generator configuration options */
   config: GeneratorConfig;
-  
+
   /** Current file being generated */
   currentFile?: string;
-  
+
   /** Current model being processed */
   currentModel?: Model;
-  
+
   /** Helper to resolve type references */
   resolveReference: (ref: string) => Model | Type | undefined;
-  
+
   /** Helper to check if type is already generated */
   isTypeGenerated: (typeName: string) => boolean;
-  
+
   /** Register a type as generated */
   registerGeneratedType: (typeName: string) => void;
-  
+
   /** Get all models from program */
   getAllModels: () => Model[];
-  
+
   /** Get model by name */
   getModelByName: (name: string) => Model | undefined;
 }
@@ -86,7 +86,7 @@ export const defaultConfig: GeneratorConfig = {
   fieldNaming: "PascalCase",
   includeGoDoc: true,
   generateTests: false,
-  exportPattern: "default"
+  exportPattern: "default",
 };
 
 /**
@@ -99,11 +99,11 @@ export const GeneratorContext = createContext<GeneratorContext>();
  * Generator Provider Component
  * Provides context to child components
  */
-export function GeneratorProvider({ 
-  program, 
-  config = defaultConfig, 
-  children 
-}: { 
+export function GeneratorProvider({
+  program,
+  config = defaultConfig,
+  children,
+}: {
   program: Program;
   config?: GeneratorConfig;
   children: any;
@@ -111,15 +111,15 @@ export function GeneratorProvider({
   // Internal state for tracking generated types
   const generatedTypes = new Set<string>();
   const allModels = new Map<string, Model>();
-  
+
   // Extract all models from program
   // TODO: Use proper TypeSpec navigation API
   const models: Model[] = []; // Extract models from program
-  
+
   for (const model of models) {
     allModels.set(model.name || "unnamed", model);
   }
-  
+
   const context: GeneratorContext = {
     program,
     config: { ...defaultConfig, ...config },
@@ -135,14 +135,10 @@ export function GeneratorProvider({
     getAllModels: () => models,
     getModelByName: (name: string) => {
       return allModels.get(name);
-    }
+    },
   };
-  
-  return (
-    <GeneratorContext.Provider value={context}>
-      {children}
-    </GeneratorContext.Provider>
-  );
+
+  return <GeneratorContext.Provider value={context}>{children}</GeneratorContext.Provider>;
 }
 
 /**
@@ -151,11 +147,11 @@ export function GeneratorProvider({
  */
 export function useGenerator(): GeneratorContext {
   const context = useContext(GeneratorContext);
-  
+
   if (!context) {
     throw new Error("useGenerator must be used within a GeneratorProvider");
   }
-  
+
   return context;
 }
 
@@ -183,11 +179,11 @@ export function useProgram(): Program {
  */
 export function useModels() {
   const { getAllModels, getModelByName, registerGeneratedType, isTypeGenerated } = useGenerator();
-  
+
   return {
     getAllModels,
     getModelByName,
     registerGeneratedType,
-    isTypeGenerated
+    isTypeGenerated,
   };
 }

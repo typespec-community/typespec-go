@@ -37,7 +37,7 @@ try {
       type: "string",
       optional: false,
       jsonTag: "test_field",
-      documentation: "Test field for testing"
+      documentation: "Test field for testing",
     };
     return { ...baseField, ...overrides };
   };
@@ -47,17 +47,17 @@ try {
     const baseStruct = {
       name: "TestStruct",
       fields: [
-        createTestField({name: "id", type: "string", jsonTag: "id"}),
-        createTestField({name: "name", type: "string", jsonTag: "name"})
+        createTestField({ name: "id", type: "string", jsonTag: "id" }),
+        createTestField({ name: "name", type: "string", jsonTag: "name" }),
       ],
-      documentation: "Test struct for testing"
+      documentation: "Test struct for testing",
     };
     return { ...baseStruct, ...overrides };
   };
 
   // Test basic functionality
   console.log("📋 Testing basic utilities...");
-  
+
   const testField = createTestField();
   assertValidField(testField);
 
@@ -65,7 +65,7 @@ try {
     name: "optionalField",
     type: "string",
     optional: true,
-    jsonTag: "optional_field"
+    jsonTag: "optional_field",
   });
   assertValidField(optionalField);
 
@@ -75,21 +75,21 @@ try {
   const complexStruct = createTestStruct({
     name: "ComplexStruct",
     fields: [
-      createTestField({name: "ID", type: "string", jsonTag: "id"}),
-      createTestField({name: "Age", type: "int32", optional: true, jsonTag: "age"}),
-      createTestField({name: "Active", type: "bool", jsonTag: "active"})
-    ]
+      createTestField({ name: "ID", type: "string", jsonTag: "id" }),
+      createTestField({ name: "Age", type: "int32", optional: true, jsonTag: "age" }),
+      createTestField({ name: "Active", type: "bool", jsonTag: "active" }),
+    ],
   });
   assertValidStruct(complexStruct);
 
   // Test performance utilities
   console.log("⚡ Testing performance utilities...");
   const startTime = performance.now();
-  
+
   for (let i = 0; i < 100; i++) {
-    createTestStruct({name: `Struct${i}`});
+    createTestStruct({ name: `Struct${i}` });
   }
-  
+
   const endTime = performance.now();
   const rate = 100 / ((endTime - startTime) / 1000);
   console.log(`✅ Component creation benchmark: ${rate.toFixed(0)} components/sec`);
@@ -99,15 +99,15 @@ try {
   const calculateSimilarity = (str1: string, str2: string): number => {
     const longer = str1.length > str2.length ? str1 : str2;
     const shorter = str1.length > str2.length ? str2 : str1;
-    
+
     if (longer.length === 0) return 1.0;
-    
+
     // Simple similarity for testing
     let matches = 0;
     for (let i = 0; i < Math.min(str1.length, str2.length); i++) {
       if (str1[i] === str2[i]) matches++;
     }
-    
+
     return matches / longer.length;
   };
 
@@ -117,14 +117,14 @@ try {
   // Test error handling
   console.log("🛡️ Testing error handling...");
   try {
-    assertValidField({name: "", type: "string", jsonTag: "test"});
+    assertValidField({ name: "", type: "string", jsonTag: "test" });
     console.error("❌ Should have thrown error for empty field name");
   } catch (error) {
     console.log("✅ Proper error handling for empty field name");
   }
 
   try {
-    assertValidStruct({name: "Test", fields: []});
+    assertValidStruct({ name: "Test", fields: [] });
     console.error("❌ Should have thrown error for empty fields");
   } catch (error) {
     console.log("✅ Proper error handling for empty fields");
@@ -137,7 +137,6 @@ try {
   console.log("   ✅ Performance testing utilities");
   console.log("   ✅ Integration testing utilities");
   console.log("   ✅ Error handling utilities");
-  
 } catch (error) {
   console.error("❌ JSX Testing Infrastructure test failed:", error);
   process.exit(1);

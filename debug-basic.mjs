@@ -1,4 +1,4 @@
-import { StandaloneGoGenerator } from './src/standalone-generator.js';
+import { StandaloneGoGenerator } from "./src/standalone-generator.js";
 
 const generator = new StandaloneGoGenerator();
 
@@ -11,19 +11,19 @@ const basicModel = {
   ]),
 };
 
-console.log('Testing basic model...');
+console.log("Testing basic model...");
 try {
   const result1 = generator.generateModel(basicModel);
-  console.log('Basic result:', result1._tag);
+  console.log("Basic result:", result1._tag);
   if (result1._tag === "success") {
-    console.log('✅ Basic model works!');
+    console.log("✅ Basic model works!");
     console.log(Array.from(result1.data.values())[0]);
   } else {
-    console.log('❌ Basic model failed:', result1.message);
+    console.log("❌ Basic model failed:", result1.message);
     if (result1.details) {
-      console.log('Details:', result1.details);
+      console.log("Details:", result1.details);
     }
   }
 } catch (error) {
-  console.log('❌ Basic model exception:', error.message);
+  console.log("❌ Basic model exception:", error.message);
 }

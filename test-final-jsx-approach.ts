@@ -6,30 +6,30 @@ console.log("🚀 REAL JSX INTEGRATION TEST - Pure TypeScript Final");
 
 try {
   console.log("📋 Testing pure TypeScript approach...");
-  
+
   // I need to avoid JSX syntax entirely to prevent runtime issues
   // But I still need to create proper component tree
-  
+
   // Let me try the most minimal approach possible
   console.log("   Attempting minimal component creation...");
-  
+
   const simpleMember = StructMember({
     exported: true,
     name: "ID",
     type: "string",
-    tag: {json: "id"}
+    tag: { json: "id" },
   });
   console.log("   ✅ Simple member created:", typeof simpleMember);
 
   const simpleStruct = StructTypeDeclaration({
     name: "User",
-    children: [simpleMember]
+    children: [simpleMember],
   });
   console.log("   ✅ Simple struct created:", typeof simpleStruct);
 
   const simpleFile = SourceFile({
     path: "user.go",
-    children: simpleStruct
+    children: simpleStruct,
   });
   console.log("   ✅ Simple file created:", typeof simpleFile);
 
@@ -42,26 +42,26 @@ try {
   if (output.contents && output.contents.length > 0) {
     const file = output.contents[0];
     console.log("   📝 File path:", file.path);
-    
-    if ('contents' in file) {
+
+    if ("contents" in file) {
       const goCode = file.contents;
       console.log("   📄 Generated Go code:");
       console.log("==================");
       console.log(goCode);
       console.log("==================");
-      
+
       // Validate generated Go code
       const hasPackage = /package\s+\w+/.test(goCode);
       const hasUserStruct = /type\s+User\s+struct/.test(goCode);
       const hasIDField = /ID\s+string/.test(goCode);
       const hasJSONTag = /json:"id"/.test(goCode);
-      
+
       console.log("   🔍 Validation results:");
-      console.log(`      Package declaration: ${hasPackage ? '✅' : '❌'}`);
-      console.log(`      User struct: ${hasUserStruct ? '✅' : '❌'}`);
-      console.log(`      ID field: ${hasIDField ? '✅' : '❌'}`);
-      console.log(`      JSON tag: ${hasJSONTag ? '✅' : '❌'}`);
-      
+      console.log(`      Package declaration: ${hasPackage ? "✅" : "❌"}`);
+      console.log(`      User struct: ${hasUserStruct ? "✅" : "❌"}`);
+      console.log(`      ID field: ${hasIDField ? "✅" : "❌"}`);
+      console.log(`      JSON tag: ${hasJSONTag ? "✅" : "❌"}`);
+
       if (hasPackage && hasUserStruct && hasIDField && hasJSONTag) {
         console.log("🎉 REAL JSX INTEGRATION WORKING!");
         console.log("✅ All validation checks passed");
@@ -92,18 +92,17 @@ try {
   } else {
     console.log("❌ No files in output");
   }
-
 } catch (error) {
   console.error("❌ Pure TypeScript approach failed:", error);
   console.error("Error type:", error.constructor.name);
   console.error("Error message:", error.message);
-  
+
   if (error.stack) {
     console.error("Stack trace (first 8 lines):");
-    const stackLines = error.stack.split('\n').slice(0, 8);
-    stackLines.forEach(line => console.error("  ", line));
+    const stackLines = error.stack.split("\n").slice(0, 8);
+    stackLines.forEach((line) => console.error("  ", line));
   }
-  
+
   console.error("\n🤔 ISSUE ANALYSIS:");
   console.error("   • This appears to be a fundamental scope context issue");
   console.error("   • Alloy.js Go components require proper context");
@@ -115,6 +114,6 @@ try {
   console.error("     3. Use testing utilities properly");
   console.error("     4. Consult Alloy.js documentation");
   console.error("     5. Look for working examples");
-  
+
   process.exit(1);
 }

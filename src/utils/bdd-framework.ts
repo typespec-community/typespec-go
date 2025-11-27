@@ -125,18 +125,14 @@ export class BDDRunner {
     const passed = results.filter((r) => r.passed).length;
     const failed = results.filter((r) => !r.passed).length;
 
-    console.log(
-      `\n🎯 BDD EXECUTION SUMMARY: ${passed} passed, ${failed} failed`,
-    );
+    console.log(`\n🎯 BDD EXECUTION SUMMARY: ${passed} passed, ${failed} failed`);
 
     // Detailed results for debugging
     if (failed > 0) {
       console.log("\n❌ Failed Scenarios:");
       results.forEach((result) => {
         if (!result.passed) {
-          console.log(
-            `  ❌ ${result.name}: ${result.error?.message || "Unknown error"}`,
-          );
+          console.log(`  ❌ ${result.name}: ${result.error?.message || "Unknown error"}`);
         }
       });
     }
@@ -167,31 +163,21 @@ export class BDDRunner {
     errorDetails?: Record<string, unknown>,
   ): BDDValidation {
     const baseValidation = { success, message };
-    return Object.assign(
-      baseValidation,
-      errorDetails && { details: errorDetails },
-    );
+    return Object.assign(baseValidation, errorDetails && { details: errorDetails });
   }
 
   /**
    * Validate Go emitter result
    * DOMAIN INTELLIGENCE: Proper result validation
    */
-  static validateGoEmitterResult(
-    result: GoEmitterResult,
-    expectedFiles?: string[],
-  ): BDDValidation {
+  static validateGoEmitterResult(result: GoEmitterResult, expectedFiles?: string[]): BDDValidation {
     if (result._tag === "success") {
       const generatedFiles = Array.from(result.data.keys());
 
       // Check expected files if provided
       if (expectedFiles) {
-        const missingFiles = expectedFiles.filter(
-          (file) => !generatedFiles.includes(file),
-        );
-        const extraFiles = generatedFiles.filter(
-          (file) => !expectedFiles.includes(file),
-        );
+        const missingFiles = expectedFiles.filter((file) => !generatedFiles.includes(file));
+        const extraFiles = generatedFiles.filter((file) => !expectedFiles.includes(file));
 
         if (missingFiles.length > 0 || extraFiles.length > 0) {
           return this.createValidation(
@@ -212,11 +198,10 @@ export class BDDRunner {
         { generatedFiles: Array.from(result.data.entries()) },
       );
     } else {
-      return this.createValidation(
-        false,
-        `Go emitter failed: ${result.message}`,
-        { error: result, errorId: result.errorId },
-      );
+      return this.createValidation(false, `Go emitter failed: ${result.message}`, {
+        error: result,
+        errorId: result.errorId,
+      });
     }
   }
 
@@ -241,11 +226,7 @@ export class BDDRunner {
       validation.struct = hasStruct;
 
       if (!hasStruct) {
-        return this.createValidation(
-          false,
-          "Generated code missing struct definition",
-          validation,
-        );
+        return this.createValidation(false, "Generated code missing struct definition", validation);
       }
     }
 
@@ -255,11 +236,7 @@ export class BDDRunner {
       validation.jsonTags = hasJsonTags;
 
       if (!hasJsonTags) {
-        return this.createValidation(
-          false,
-          "Generated code missing JSON struct tags",
-          validation,
-        );
+        return this.createValidation(false, "Generated code missing JSON struct tags", validation);
       }
     }
 
@@ -291,10 +268,6 @@ export class BDDRunner {
       }
     }
 
-    return this.createValidation(
-      true,
-      "Generated Go code validation passed",
-      validation,
-    );
+    return this.createValidation(true, "Generated Go code validation passed", validation);
   }
 }

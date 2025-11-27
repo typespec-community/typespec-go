@@ -1,16 +1,16 @@
 /**
  * Domain-Driven Go Struct Generation Service
- * 
+ *
  * COMPREHENSIVE ERROR HANDLING WITH DISCRIMINATED UNIONS
  * TYPE-SAFE STRUCT GENERATION
  * PURE FUNCTIONS ONLY
  */
 
 import type { Program, Model } from "@typespec/compiler";
-import type { 
+import type {
   GoStructGenerationResult,
   GoStructField,
-  GoGeneratorConfig
+  GoGeneratorConfig,
 } from "../types/emitter.types.js";
 import type { TypeSpecKind } from "../types/typespec-domain.js";
 import { createGoStructField } from "./type-mapping.service.js";
@@ -44,26 +44,26 @@ function generateGoFieldCode(field: GoStructField): string {
  */
 function validateGoStruct(model: Model): readonly string[] {
   const errors: string[] = [];
-  
+
   // Validate struct name
   if (!model.name || model.name.trim() === "") {
     errors.push("Struct name cannot be empty");
   }
-  
+
   // Validate field names
   if (model.properties) {
     for (const [fieldName] of model.properties) {
       if (!fieldName || fieldName.trim() === "") {
         errors.push(`Field name cannot be empty in struct ${model.name}`);
       }
-      
+
       // Check for invalid Go identifiers
       if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(fieldName)) {
         errors.push(`Invalid Go field name: ${fieldName} in struct ${model.name}`);
       }
     }
   }
-  
+
   return errors;
 }
 
@@ -73,7 +73,7 @@ function validateGoStruct(model: Model): readonly string[] {
 export function generateGoStruct(
   program: Program,
   model: Model,
-  config: GoGeneratorConfig
+  config: GoGeneratorConfig,
 ): GoStructGenerationResult {
   // Validate model first
   const validationErrors = validateGoStruct(model);
@@ -81,15 +81,15 @@ export function generateGoStruct(
     return {
       _tag: "invalid-model",
       modelName: model.name || "<unnamed>",
-      errors: validationErrors
+      errors: validationErrors,
     };
   }
-  
+
   try {
     // Generate struct fields with type safety
     const fields: GoStructField[] = [];
     const typeMappingErrors: TypeMappingError[] = [];
-    
+
     if (model.properties) {
       for (const [fieldName, prop] of model.properties) {
         try {
@@ -97,20 +97,19 @@ export function generateGoStruct(
             program,
             fieldName,
             prop.type,
-            prop.optional || false
+            prop.optional || false,
           );
-          
+
           fields.push(goField);
-          
+
           // Track type mapping failures for later
           const typeMapping = mapTypeSpecType(program, prop.type);
           if (typeMapping._tag !== "success") {
             typeMappingErrors.push({
               fieldName,
-              typeError: typeMapping
+              typeError: typeMapping,
             });
           }
-          
         } catch (error) {
           return {
             _tag: "type-mapping-failure",
@@ -118,36 +117,35 @@ export function generateGoStruct(
             typeError: {
               _tag: "unsupported-type",
               type: prop.type,
-              reason: error instanceof Error ? error.message : String(error)
-            }
+              reason: error instanceof Error ? error.message : String(error),
+            },
           };
         }
       }
     }
-    
+
     // Return if we have type mapping failures
     if (typeMappingErrors.length > 0) {
       return {
         _tag: "type-mapping-failure",
         fieldName: typeMappingErrors[0].fieldName,
-        typeError: typeMappingErrors[0].typeError
+        typeError: typeMappingErrors[0].typeError,
       };
     }
-    
+
     // Generate struct code
     const structCode = generateStructCode(model.name, fields, config);
-    
+
     return {
       _tag: "success",
       structCode,
-      fieldCount: fields.length
+      fieldCount: fields.length,
     };
-    
   } catch (error) {
     return {
       _tag: "invalid-model",
       modelName: model.name || "<unnamed>",
-      errors: [error instanceof Error ? error.message : String(error)]
+      errors: [error instanceof Error ? error.message : String(error)],
     };
   }
 }
@@ -158,7 +156,7 @@ export function generateGoStruct(
 function generateStructCode(
   structName: string,
   fields: GoStructField[],
-  config: GoGeneratorConfig
+  config: GoGeneratorConfig,
 ): string {
   if (fields.length === 0) {
     if (!config.omitEmpty) {
@@ -166,15 +164,15 @@ function generateStructCode(
     }
     return "";
   }
-  
+
   let code = `type ${structName} struct {\n`;
-  
+
   for (const field of fields) {
     code += generateGoFieldCode(field) + "\n";
   }
-  
+
   code += "}\n\n";
-  
+
   return code;
 }
 
@@ -185,9 +183,12 @@ function mapTypeSpecType(program: Program, type: { kind: TypeSpecKind }): TypeMa
   // This would be imported from type-mapping.service
   // For now, inline to avoid circular imports
   switch (type.kind) {
-    case "String": return { _tag: "success", result: "string" };
-    case "Boolean": return { _tag: "success", result: "bool" };
-    default: return { _tag: "success", result: "interface{}" };
+    case "String":
+      return { _tag: "success", result: "string" };
+    case "Boolean":
+      return { _tag: "success", result: "bool" };
+    default:
+      return { _tag: "success", result: "interface{}" };
   }
 }
 
@@ -196,11 +197,11 @@ function mapTypeSpecType(program: Program, type: { kind: TypeSpecKind }): TypeMa
  */
 export function generatePackageHeader(config: GoGeneratorConfig): string {
   let header = `package ${config.packageName}\n\n`;
-  
+
   // Add time import if needed
   if (config.generateTimePackage) {
     header += `import "time"\n\n`;
   }
-  
+
   return header;
 }

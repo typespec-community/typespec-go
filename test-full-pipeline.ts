@@ -6,40 +6,40 @@ console.log("🚀 REAL JSX INTEGRATION TEST - Full Pipeline");
 
 try {
   console.log("📋 Testing full render pipeline approach...");
-  
+
   // Let's render system handle everything - no manual component creation
   // But I need to avoid JSX syntax due to runtime issues
   // So I'll try building the component tree programmatically
-  
+
   const idMember = StructMember({
     exported: true,
     name: "ID",
     type: "string",
-    tag: {json: "id"}
+    tag: { json: "id" },
   });
 
   const nameMember = StructMember({
     exported: true,
     name: "Name",
     type: "string",
-    tag: {json: "name"}
+    tag: { json: "name" },
   });
 
   const optionalMember = StructMember({
     name: "OptionalField",
     type: "string",
     optional: true,
-    tag: {json: "optionalField"}
+    tag: { json: "optionalField" },
   });
 
   const userStruct = StructTypeDeclaration({
     name: "User",
-    children: [idMember, nameMember, optionalMember]
+    children: [idMember, nameMember, optionalMember],
   });
 
   const userFile = SourceFile({
     path: "user.go",
-    children: userStruct
+    children: userStruct,
   });
 
   console.log("✅ Component tree built programmatically");
@@ -59,13 +59,13 @@ try {
     const file = output.contents[0];
     console.log("📝 File path:", file.path);
     console.log("📝 File kind:", file.kind);
-    
-    if ('contents' in file) {
+
+    if ("contents" in file) {
       console.log("📄 Generated Go code:");
       console.log("==================");
       console.log(file.contents);
       console.log("==================");
-      
+
       // Validate generated Go code
       const goCode = file.contents;
       const expectedPatterns = [
@@ -73,18 +73,18 @@ try {
         /type\s+User\s+struct\s*\{/,
         /ID\s+string.*json:"id"/,
         /Name\s+string.*json:"name"/,
-        /OptionalField\s+\*string.*json:"optionalField"/
+        /OptionalField\s+\*string.*json:"optionalField"/,
       ];
 
       console.log("🔍 Validating Go code patterns...");
       const results = expectedPatterns.map((pattern, index) => {
         const matches = pattern.test(goCode);
-        console.log(`   Pattern ${index + 1}: ${matches ? '✅' : '❌'} ${pattern}`);
+        console.log(`   Pattern ${index + 1}: ${matches ? "✅" : "❌"} ${pattern}`);
         return matches;
       });
 
       const allPatternsMatch = results.every(Boolean);
-      
+
       if (allPatternsMatch) {
         console.log("🎉 REAL JSX INTEGRATION WORKING!");
         console.log("✅ All expected Go code patterns found");
@@ -115,17 +115,16 @@ try {
   } else {
     console.log("❌ No files generated");
   }
-
 } catch (error) {
   console.error("❌ Full render pipeline failed:", error);
   console.error("Error type:", error.constructor.name);
   console.error("Error message:", error.message);
-  
+
   if (error.stack) {
     console.error("Stack trace (last 5 lines):");
-    const stackLines = error.stack.split('\n').slice(0, 5);
-    stackLines.forEach(line => console.error("  ", line));
+    const stackLines = error.stack.split("\n").slice(0, 5);
+    stackLines.forEach((line) => console.error("  ", line));
   }
-  
+
   process.exit(1);
 }

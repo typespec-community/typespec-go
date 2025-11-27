@@ -66,17 +66,8 @@ export class StructuredLogger {
    * Log debug message
    * DEVELOPMENT: Detailed debugging information
    */
-  static debug(
-    context: LogContext,
-    message: string,
-    details?: Record<string, unknown>,
-  ): void {
-    const entry = this.createLogEntry(
-      LogLevel.DEBUG,
-      context,
-      message,
-      details,
-    );
+  static debug(context: LogContext, message: string, details?: Record<string, unknown>): void {
+    const entry = this.createLogEntry(LogLevel.DEBUG, context, message, details);
     this.writeLog(entry);
   }
 
@@ -84,11 +75,7 @@ export class StructuredLogger {
    * Log info message
    * PRODUCTION: General operational information
    */
-  static info(
-    context: LogContext,
-    message: string,
-    details?: Record<string, unknown>,
-  ): void {
+  static info(context: LogContext, message: string, details?: Record<string, unknown>): void {
     const entry = this.createLogEntry(LogLevel.INFO, context, message, details);
     this.writeLog(entry);
   }
@@ -97,11 +84,7 @@ export class StructuredLogger {
    * Log warning message
    * OPERATIONAL: Potential issues that need attention
    */
-  static warn(
-    context: LogContext,
-    message: string,
-    details?: Record<string, unknown>,
-  ): void {
+  static warn(context: LogContext, message: string, details?: Record<string, unknown>): void {
     const entry = this.createLogEntry(LogLevel.WARN, context, message, details);
     this.writeLog(entry);
   }
@@ -116,13 +99,7 @@ export class StructuredLogger {
     details?: Record<string, unknown>,
     errorId?: string,
   ): void {
-    const entry = this.createLogEntry(
-      LogLevel.ERROR,
-      context,
-      message,
-      details,
-      errorId,
-    );
+    const entry = this.createLogEntry(LogLevel.ERROR, context, message, details, errorId);
     this.writeLog(entry);
   }
 
@@ -177,11 +154,8 @@ export class StructuredLogger {
         this.info(context, message, details),
       warn: (message: string, details?: Record<string, unknown>) =>
         this.warn(context, message, details),
-      error: (
-        message: string,
-        details?: Record<string, unknown>,
-        errorId?: string,
-      ) => this.error(context, message, details, errorId),
+      error: (message: string, details?: Record<string, unknown>, errorId?: string) =>
+        this.error(context, message, details, errorId),
     };
   }
 }
@@ -245,11 +219,7 @@ export class DevelopmentLogger {
 export class Logger {
   private static isDevelopment = process.env.NODE_ENV !== "production";
 
-  static debug(
-    context: LogContext,
-    message: string,
-    details?: Record<string, unknown>,
-  ): void {
+  static debug(context: LogContext, message: string, details?: Record<string, unknown>): void {
     if (this.isDevelopment) {
       DevelopmentLogger.log(LogLevel.DEBUG, context, message, details);
     } else {
@@ -257,11 +227,7 @@ export class Logger {
     }
   }
 
-  static info(
-    context: LogContext,
-    message: string,
-    details?: Record<string, unknown>,
-  ): void {
+  static info(context: LogContext, message: string, details?: Record<string, unknown>): void {
     if (this.isDevelopment) {
       DevelopmentLogger.log(LogLevel.INFO, context, message, details);
     } else {
@@ -269,11 +235,7 @@ export class Logger {
     }
   }
 
-  static warn(
-    context: LogContext,
-    message: string,
-    details?: Record<string, unknown>,
-  ): void {
+  static warn(context: LogContext, message: string, details?: Record<string, unknown>): void {
     if (this.isDevelopment) {
       DevelopmentLogger.log(LogLevel.WARN, context, message, details);
     } else {
@@ -302,11 +264,8 @@ export class Logger {
         this.info(context, message, details),
       warn: (message: string, details?: Record<string, unknown>) =>
         this.warn(context, message, details),
-      error: (
-        message: string,
-        details?: Record<string, unknown>,
-        errorId?: string,
-      ) => this.error(context, message, details, errorId),
+      error: (message: string, details?: Record<string, unknown>, errorId?: string) =>
+        this.error(context, message, details, errorId),
     };
   }
 }

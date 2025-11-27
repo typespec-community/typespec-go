@@ -65,10 +65,7 @@ export class PropertyTransformer {
   /**
    * Transform TypeSpec property to Go field with visibility support
    */
-  static transformProperty(
-    program: Program,
-    prop: TypeSpecModelProperty
-  ): TransformedGoField {
+  static transformProperty(program: Program, prop: TypeSpecModelProperty): TransformedGoField {
     // Validate input
     if (!prop.name || !prop.type) {
       throw new Error(`Invalid property: missing name or type`);
@@ -157,10 +154,7 @@ export class PropertyTransformer {
    * Generate Go type with optional handling
    * DELEGATED TO DOMAIN: Uses GoTypeMapper for consistency
    */
-  private static generateGoType(
-    mappedType: MappedGoType,
-    isOptional: boolean,
-  ): string {
+  private static generateGoType(mappedType: MappedGoType, isOptional: boolean): string {
     return GoTypeMapper.generateGoTypeString(mappedType);
   }
 
@@ -172,7 +166,10 @@ export class PropertyTransformer {
    * - camelCase (userName) for private fields (invisible)
    * Also handles common initialisms (ID, URL, API)
    */
-  private static toGoFieldName(typeSpecName: string, visibility?: TypeSpecPropertyVisibility): string {
+  private static toGoFieldName(
+    typeSpecName: string,
+    visibility?: TypeSpecPropertyVisibility,
+  ): string {
     // For invisible fields, keep camelCase (private in Go)
     if (visibility && visibility.isInvisible) {
       return typeSpecName;
@@ -188,17 +185,7 @@ export class PropertyTransformer {
    */
   private static toPascalCase(typeSpecName: string): string {
     // Handle common initialisms that should remain uppercase
-    const initialisms = [
-      "id",
-      "url", 
-      "api",
-      "http",
-      "https",
-      "json",
-      "xml",
-      "sql",
-      "uuid",
-    ];
+    const initialisms = ["id", "url", "api", "http", "https", "json", "xml", "sql", "uuid"];
 
     return typeSpecName
       .split(/[_-]/) // Split on underscores and hyphens
@@ -214,17 +201,7 @@ export class PropertyTransformer {
    */
   private static toGoFieldNameLegacy(typeSpecName: string): string {
     // Handle common initialisms that should remain uppercase
-    const initialisms = [
-      "id",
-      "url",
-      "api",
-      "http",
-      "https",
-      "json",
-      "xml",
-      "sql",
-      "uuid",
-    ];
+    const initialisms = ["id", "url", "api", "http", "https", "json", "xml", "sql", "uuid"];
 
     return typeSpecName
       .split(/[_-]/) // Split on underscores and hyphens
@@ -242,10 +219,7 @@ export class PropertyTransformer {
   /**
    * Capitalize a word, handling initialisms
    */
-  private static capitalizeWord(
-    word: string,
-    initialisms: readonly string[],
-  ): string {
+  private static capitalizeWord(word: string, initialisms: readonly string[]): string {
     const lowerWord = word.toLowerCase();
 
     // Check if word is a common initialism
@@ -281,8 +255,8 @@ export class PropertyTransformer {
    * Visible fields get JSON tags, invisible fields get no JSON tags
    */
   private static generateJsonTagWithVisibility(
-    prop: TypeSpecModelProperty, 
-    visibility: TypeSpecPropertyVisibility
+    prop: TypeSpecModelProperty,
+    visibility: TypeSpecPropertyVisibility,
   ): string | undefined {
     // Invisible properties don't get JSON tags
     if (visibility.isInvisible) {
@@ -304,9 +278,7 @@ export class PropertyTransformer {
   /**
    * Generate XML struct tag for Go field (if needed)
    */
-  static generateXmlTag(
-    prop: TypeSpecModelProperty | TransformedGoField,
-  ): string {
+  static generateXmlTag(prop: TypeSpecModelProperty | TransformedGoField): string {
     const tagName = "originalName" in prop ? prop.originalName : prop.name;
     const options: string[] = [];
 
@@ -346,9 +318,7 @@ export class PropertyTransformer {
   private static shouldHaveXmlTag(fieldName: string): boolean {
     // Common fields that benefit from XML tags
     const xmlFields = ["content", "data", "body", "text"];
-    return xmlFields.some((xmlField) =>
-      fieldName.toLowerCase().includes(xmlField),
-    );
+    return xmlFields.some((xmlField) => fieldName.toLowerCase().includes(xmlField));
   }
 
   /**
@@ -383,9 +353,7 @@ export class PropertyTransformer {
     }
 
     if (field.name.includes(" ") || field.name.includes("-")) {
-      throw new Error(
-        `Invalid Go field name: '${field.name}' contains spaces or hyphens`,
-      );
+      throw new Error(`Invalid Go field name: '${field.name}' contains spaces or hyphens`);
     }
   }
 

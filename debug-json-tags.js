@@ -39,12 +39,6 @@ const goCode = generator.generateModel(customerModel);
 
 console.log("🔍 DEBUG: Generated Go code:");
 console.log(goCode);
-console.log(
-  "🔍 DEBUG: Contains userId JSON tag:",
-  goCode.includes('json:"userId"'),
-);
-console.log(
-  "🔍 DEBUG: Contains email JSON tag:",
-  goCode.includes('json:"email"'),
-);
+console.log("🔍 DEBUG: Contains userId JSON tag:", goCode.includes('json:"userId"'));
+console.log("🔍 DEBUG: Contains email JSON tag:", goCode.includes('json:"email"'));
 console.log("🔍 DEBUG: All JSON tags:", goCode.match(/json:"[^"]*"/g));

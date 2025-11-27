@@ -12,11 +12,7 @@ export interface DecoratorTarget {
 /**
  * @name decorator implementation
  */
-export function $name(
-  context: DecoratorContext,
-  target: DecoratorTarget,
-  name: string,
-) {
+export function $name(context: DecoratorContext, target: DecoratorTarget, name: string) {
   // Store custom name in state for later use during emission
   // Note: This will be simplified for now to focus on core functionality
   console.log(`@name decorator called with: ${name} for target:`, target);
@@ -37,44 +33,28 @@ export function $structTag(
 /**
  * @nullable decorator implementation
  */
-export function $nullable(
-  context: DecoratorContext,
-  target: DecoratorTarget,
-  mode: string,
-) {
+export function $nullable(context: DecoratorContext, target: DecoratorTarget, mode: string) {
   console.log(`@nullable decorator called with: ${mode} for target:`, target);
 }
 
 /**
  * @type decorator implementation
  */
-export function $type(
-  context: DecoratorContext,
-  target: DecoratorTarget,
-  type: string,
-) {
+export function $type(context: DecoratorContext, target: DecoratorTarget, type: string) {
   console.log(`@type decorator called with: ${type} for target:`, target);
 }
 
 /**
  * @pkg decorator implementation
  */
-export function $pkg(
-  context: DecoratorContext,
-  target: DecoratorTarget,
-  path: string,
-) {
+export function $pkg(context: DecoratorContext, target: DecoratorTarget, path: string) {
   console.log(`@pkg decorator called with: ${path} for target:`, target);
 }
 
 /**
  * @enumMode decorator implementation
  */
-export function $enumMode(
-  context: DecoratorContext,
-  target: DecoratorTarget,
-  mode: string,
-) {
+export function $enumMode(context: DecoratorContext, target: DecoratorTarget, mode: string) {
   console.log(`@enumMode decorator called with: ${mode} for target:`, target);
 }
 

@@ -12,7 +12,7 @@ import { SourceFile, StructTypeDeclaration, StructMember } from "@alloy-js/go";
 function generateWorkingStruct() {
   // Create Go scope first
   const goScope = createGoScope();
-  
+
   const userStruct = StructTypeDeclaration({
     name: "User",
     children: [
@@ -20,26 +20,26 @@ function generateWorkingStruct() {
         exported: true,
         name: "ID",
         type: "string",
-        tag: {json: "id"}
+        tag: { json: "id" },
       }),
       StructMember({
         exported: true,
-        name: "Name", 
+        name: "Name",
         type: "string",
-        tag: {json: "name"}
+        tag: { json: "name" },
       }),
       StructMember({
         exported: true,
         name: "Email",
-        type: "string", 
-        tag: {json: "email"}
-      })
-    ]
+        type: "string",
+        tag: { json: "email" },
+      }),
+    ],
   });
 
   const goFile = SourceFile({
     path: "models/user.go",
-    children: [userStruct]
+    children: [userStruct],
   });
 
   const goOutput = render([goFile]);

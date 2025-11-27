@@ -26,7 +26,7 @@ export async function createTestProgram(spec: TestProgramSpec) {
   return host.createProgram({
     main: false,
     options: {},
-    ref: null
+    ref: null,
   });
 }
 
@@ -34,16 +34,18 @@ export function createTestModel(name: string, properties: Record<string, TestMod
   return {
     name,
     kind: "Model",
-    properties: new Map(Object.entries(properties).map(([key, value]: [string, TestModelProperty]) => [
-      key,
-      { ...value, name: key }
-    ]))
+    properties: new Map(
+      Object.entries(properties).map(([key, value]: [string, TestModelProperty]) => [
+        key,
+        { ...value, name: key },
+      ]),
+    ),
   };
 }
 
 export function createTestType(kind: string, name?: string) {
   return {
     kind,
-    name: name || kind.toLowerCase()
+    name: name || kind.toLowerCase(),
   };
 }

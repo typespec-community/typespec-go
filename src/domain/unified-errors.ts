@@ -21,32 +21,16 @@ import type {
   ErrorRecoveryStrategy,
 } from "./error-types.js";
 
-import type {
-  TypeSpecId,
-  ModelName,
-  PropertyName,
-  ErrorId,
-  FileName,
-} from "./error-entities.js";
+import type { TypeSpecId, ModelName, PropertyName, ErrorId, FileName } from "./error-entities.js";
 
-import {
-  Entities,
-  EntityValidation,
-  EntityTransformation,
-} from "./error-entities.js";
+import { Entities, EntityValidation, EntityTransformation } from "./error-entities.js";
 
 import { ErrorFactory } from "./error-factory.js";
 
 import { ErrorAnalysis } from "./error-types.js";
 
 // Then re-export
-export type {
-  TypeSpecId,
-  ModelName,
-  PropertyName,
-  ErrorId,
-  FileName,
-} from "./error-entities.js";
+export type { TypeSpecId, ModelName, PropertyName, ErrorId, FileName } from "./error-entities.js";
 
 export type {
   TypeSpecCompilerError,
@@ -61,18 +45,14 @@ export type {
   ErrorRecoveryStrategy,
 } from "./error-types.js";
 
-export {
-  Entities,
-  EntityValidation,
-  EntityTransformation,
-} from "./error-entities.js";
+export { Entities, EntityValidation, EntityTransformation } from "./error-entities.js";
 
 export { ErrorFactory } from "./error-factory.js";
 
 export { ErrorAnalysis } from "./error-types.js";
 
 // Export TypeSpec entities for compatibility
-export { InvalidModelReason, TypeSpecEntities } from "../types/errors.js";
+// export { InvalidModelReason, TypeSpecEntities } from "../types/errors.js";
 
 // Legacy exports for backward compatibility
 export type TypeSpecModel = {
@@ -118,11 +98,21 @@ export type ModelValidationError = ValidationError & {
 export type TypeSpecIntegrationError = TypeSpecCompilerError;
 
 /**
- * Default error handler
- * LEGACY COMPATIBILITY: Existing error handling
+ * Default error handler for legacy compatibility
  */
-export const defaultErrorHandler: ErrorHandler = (error) => {
-  console.error("Go Emitter Error:", error);
+export const defaultErrorHandler = (
+  error: unknown,
+  context?: Record<string, unknown>,
+): GoEmitterResult => {
+  if (error instanceof Error) {
+    return ErrorFactory.createSystemError(`Unexpected error: ${error.message}`, error, {
+      resolution: "Check system logs and restart if necessary",
+    });
+  }
+
+  return ErrorFactory.createSystemError(`Unknown error: ${String(error)}`, undefined, {
+    resolution: "Check input data and system state",
+  });
 };
 
 /**

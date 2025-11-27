@@ -83,9 +83,7 @@ function railwayProgrammingExample() {
   // Railway composition (simplified - normally would use Effect.TS pipe)
   const model = {
     name: "User",
-    properties: new Map([
-      ["id", { name: "id", type: { kind: "String" }, optional: false }],
-    ]),
+    properties: new Map([["id", { name: "id", type: { kind: "String" }, optional: false }]]),
   };
 
   try {
@@ -128,10 +126,7 @@ function typeSpecificErrorHandling() {
       model: {
         name: "User",
         properties: new Map([
-          [
-            "field",
-            { name: "field", type: { kind: "InvalidType" }, optional: false },
-          ],
+          ["field", { name: "field", type: { kind: "InvalidType" }, optional: false }],
         ]),
       },
       expectedError: "GoCodeGenerationError", // May vary
@@ -160,8 +155,7 @@ function typeSpecificErrorHandling() {
         console.log("💻 Code Generation Error:");
         console.log(`   Message: ${result.message}`);
         if (result.fileName) console.log(`   File: ${result.fileName}`);
-        if (result.goCode)
-          console.log(`   Code: ${result.goCode.substring(0, 100)}...`);
+        if (result.goCode) console.log(`   Code: ${result.goCode.substring(0, 100)}...`);
         console.log(`   Resolution: ${result.resolution}`);
         break;
 
@@ -169,8 +163,7 @@ function typeSpecificErrorHandling() {
         console.log("📝 TypeSpec Compiler Error:");
         console.log(`   Message: ${result.message}`);
         if (result.modelName) console.log(`   Model: ${result.modelName}`);
-        if (result.propertyName)
-          console.log(`   Property: ${result.propertyName}`);
+        if (result.propertyName) console.log(`   Property: ${result.propertyName}`);
         console.log(`   Resolution: ${result.resolution}`);
         break;
 
@@ -186,8 +179,7 @@ function typeSpecificErrorHandling() {
       case "SystemError":
         console.log("⚙️  System Error:");
         console.log(`   Message: ${result.message}`);
-        if (result.originalError)
-          console.log(`   Original: ${result.originalError.message}`);
+        if (result.originalError) console.log(`   Original: ${result.originalError.message}`);
         console.log(`   Resolution: ${result.resolution}`);
         break;
 
@@ -221,10 +213,7 @@ function advancedErrorRecovery() {
     console.log(`🔧 Attempting recovery...`);
 
     // Try recovery strategies
-    if (
-      result._tag === "ModelValidationError" &&
-      result.reason === "empty-name"
-    ) {
+    if (result._tag === "ModelValidationError" && result.reason === "empty-name") {
       // Recovery: Provide default name
       const recoveredModel = {
         ...model,
@@ -257,16 +246,12 @@ function advancedErrorRecovery() {
   // Test recovery scenarios
   const invalidModel = {
     name: "",
-    properties: new Map([
-      ["id", { name: "id", type: { kind: "String" }, optional: false }],
-    ]),
+    properties: new Map([["id", { name: "id", type: { kind: "String" }, optional: false }]]),
   };
 
   const fallbackModel = {
     name: "FallbackUser",
-    properties: new Map([
-      ["id", { name: "id", type: { kind: "String" }, optional: false }],
-    ]),
+    properties: new Map([["id", { name: "id", type: { kind: "String" }, optional: false }]]),
   };
 
   const finalResult = recoverWithErrorHandling(invalidModel, fallbackModel);
@@ -319,10 +304,7 @@ async function asyncErrorHandling() {
     name: "AsyncUser",
     properties: new Map([
       ["id", { name: "id", type: { kind: "String" }, optional: false }],
-      [
-        "createdAt",
-        { name: "createdAt", type: { kind: "String" }, optional: true },
-      ],
+      ["createdAt", { name: "createdAt", type: { kind: "String" }, optional: true }],
     ]),
   };
 
@@ -362,9 +344,7 @@ function errorLoggingAndMonitoring() {
     const duration = Date.now() - startTime;
 
     if (result._tag === "Success") {
-      console.log(
-        `📊 Metrics: Generated ${result.generatedFiles.length} files in ${duration}ms`,
-      );
+      console.log(`📊 Metrics: Generated ${result.generatedFiles.length} files in ${duration}ms`);
     } else {
       const errorRecord = {
         timestamp: new Date().toISOString(),
@@ -375,9 +355,7 @@ function errorLoggingAndMonitoring() {
       };
 
       errors.push(errorRecord);
-      console.log(
-        `📝 Error logged: ${errorRecord.errorType} (${errorRecord.errorId})`,
-      );
+      console.log(`📝 Error logged: ${errorRecord.errorType} (${errorRecord.errorId})`);
       console.log(`⏰ Timestamp: ${errorRecord.timestamp}`);
       console.log(`💬 Message: ${errorRecord.message}`);
     }
@@ -389,15 +367,11 @@ function errorLoggingAndMonitoring() {
   const testModels = [
     {
       name: "ValidUser",
-      properties: new Map([
-        ["id", { name: "id", type: { kind: "String" }, optional: false }],
-      ]),
+      properties: new Map([["id", { name: "id", type: { kind: "String" }, optional: false }]]),
     },
     {
       name: "",
-      properties: new Map([
-        ["id", { name: "id", type: { kind: "String" }, optional: false }],
-      ]),
+      properties: new Map([["id", { name: "id", type: { kind: "String" }, optional: false }]]),
     },
   ];
 
@@ -411,9 +385,7 @@ function errorLoggingAndMonitoring() {
   if (errors.length > 0) {
     console.log("📊 Error Summary:");
     console.log(`   Total Errors: ${errors.length}`);
-    console.log(
-      `   Error Types: ${[...new Set(errors.map((e) => e.errorType))].join(", ")}`,
-    );
+    console.log(`   Error Types: ${[...new Set(errors.map((e) => e.errorType))].join(", ")}`);
 
     errors.forEach((error, index) => {
       console.log(`   ${index + 1}. ${error.errorType}: ${error.message}`);

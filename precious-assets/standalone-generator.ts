@@ -46,10 +46,7 @@ export class StandaloneGoGenerator {
    * ZERO ANY TYPES: Comprehensive coverage with proper error handling
    * DELEGATION PATTERN: Single source of truth for all type mappings
    */
-  static mapTypeSpecType(
-    type: TypeSpecPropertyNode["type"],
-    fieldName?: string,
-  ): GoTypeMapping {
+  static mapTypeSpecType(type: TypeSpecPropertyNode["type"], fieldName?: string): GoTypeMapping {
     // DELEGATE TO CLEAN UNIFIED SYSTEM: Single source of truth
     return CleanTypeMapper.mapTypeSpecTypeLegacy(type, fieldName);
   }
@@ -66,36 +63,30 @@ export class StandaloneGoGenerator {
   }): GoEmitterResult {
     // Input validation
     if (!model.name || typeof model.name !== "string") {
-      return ErrorFactory.createValidationError(
-        "Invalid model: name must be a non-empty string", {
-          modelName: model.name || "unknown",
-        },
-      );
+      return ErrorFactory.createValidationError("Invalid model: name must be a non-empty string", {
+        modelName: model.name || "unknown",
+      });
     }
 
     if (!model.properties || model.properties.size === 0) {
-      return ErrorFactory.createValidationError(
-        "Invalid model: must have at least one property",
-        { modelName: model.name }
-      );
+      return ErrorFactory.createValidationError("Invalid model: must have at least one property", {
+        modelName: model.name,
+      });
     }
 
     try {
       // Generate Go struct code using CleanTypeMapper
       const structCode = this.generateStructCode(model);
-      
-      return ErrorFactory.createSuccess(
-        new Map([[`${model.name}.go`, structCode]]),
-        { 
-          generatedFiles: [`${model.name}.go`],
-          modelName: model.name 
-        }
-      );
+
+      return ErrorFactory.createSuccess(new Map([[`${model.name}.go`, structCode]]), {
+        generatedFiles: [`${model.name}.go`],
+        modelName: model.name,
+      });
     } catch (error) {
       return defaultErrorHandler(error, {
         operation: "generateModel",
         modelName: model.name,
-        properties: Array.from(model.properties.keys())
+        properties: Array.from(model.properties.keys()),
       });
     }
   }
@@ -111,7 +102,7 @@ export class StandaloneGoGenerator {
     propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>;
   }): string {
     const lines: string[] = [];
-    
+
     // Package declaration
     lines.push("package api");
     lines.push("");
@@ -161,10 +152,7 @@ export class StandaloneGoGenerator {
    * Generate Go struct field using CleanTypeMapper
    * DELEGATION: No duplicate type mapping logic
    */
-  private generateStructField(
-    propName: string,
-    propNode: TypeSpecPropertyNode
-  ): string | null {
+  private generateStructField(propName: string, propNode: TypeSpecPropertyNode): string | null {
     if (!propNode || !propNode.type) {
       return null;
     }
@@ -177,13 +165,13 @@ export class StandaloneGoGenerator {
 
     // Generate Go field name (capitalize first letter for export)
     const goFieldName = propName.charAt(0).toUpperCase() + propName.slice(1);
-    
+
     // Generate JSON tag
     const jsonTag = `json:"${propName}"`;
-    
+
     // Add omitempty for optional fields
     const optionalTag = propNode.optional ? ",omitempty" : "";
-    
+
     return `${goFieldName} ${mappedType.goType} \`${jsonTag}${optionalTag}\``;
   }
 
@@ -196,54 +184,46 @@ export class StandaloneGoGenerator {
     properties: ReadonlyMap<string, TypeSpecPropertyNode>;
   }): GoEmitterResult {
     if (!model.name) {
-      return ErrorFactory.createValidationError(
-        "Model name is required",
-        { modelName: model.name || "undefined" }
-      );
+      return ErrorFactory.createValidationError("Model name is required", {
+        modelName: model.name || "undefined",
+      });
     }
 
     if (!model.properties || model.properties.size === 0) {
-      return ErrorFactory.createValidationError(
-        "Model must have at least one property",
-        { modelName: model.name }
-      );
+      return ErrorFactory.createValidationError("Model must have at least one property", {
+        modelName: model.name,
+      });
     }
 
     // Validate each property
     for (const [propName, propNode] of model.properties) {
       if (!propNode || !propNode.type) {
-        return ErrorFactory.createValidationError(
-          `Invalid property: ${propName}`,
-          { modelName: model.name, propertyName: propName }
-        );
+        return ErrorFactory.createValidationError(`Invalid property: ${propName}`, {
+          modelName: model.name,
+          propertyName: propName,
+        });
       }
 
       // Validate type using CleanTypeMapper
       try {
         const mappedType = CleanTypeMapper.mapTypeSpecTypeLegacy(propNode.type, propName);
         if (!mappedType || !mappedType.goType) {
-          return ErrorFactory.createValidationError(
-            `Unsupported type for property: ${propName}`,
-            { 
-              modelName: model.name, 
-              propertyName: propName,
-              type: typeof propNode.type === 'object' ? (propNode.type as any).kind : propNode.type
-            }
-          );
+          return ErrorFactory.createValidationError(`Unsupported type for property: ${propName}`, {
+            modelName: model.name,
+            propertyName: propName,
+            type: typeof propNode.type === "object" ? (propNode.type as any).kind : propNode.type,
+          });
         }
       } catch (error) {
         return defaultErrorHandler(error, {
           operation: "validateProperty",
           modelName: model.name,
           propertyName: propName,
-          type: propNode.type
+          type: propNode.type,
         });
       }
     }
 
-    return ErrorFactory.createSuccess(
-      new Map(),
-      { validModel: true, modelName: model.name }
-    );
+    return ErrorFactory.createSuccess(new Map(), { validModel: true, modelName: model.name });
   }
 }

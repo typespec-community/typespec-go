@@ -72,9 +72,7 @@ runTest("BDD framework functional", () => {
       encoding: "utf8",
       stdio: "pipe",
     });
-    return (
-      output.includes("pass") && output.includes("BDD Framework Integration")
-    );
+    return output.includes("pass") && output.includes("BDD Framework Integration");
   } catch {
     return false;
   }
@@ -142,10 +140,7 @@ runTest("Error handling works correctly", () => {
 runTest("Professional GoEmitterResult architecture", () => {
   try {
     // Check that discriminated union patterns are used
-    const testFile = readFileSync(
-      "src/test/standalone-generator.test.ts",
-      "utf8",
-    );
+    const testFile = readFileSync("src/test/standalone-generator.test.ts", "utf8");
     const exampleFile = readFileSync("examples/basic-usage.ts", "utf8");
 
     const patternChecks = [
@@ -165,9 +160,7 @@ runTest("Professional GoEmitterResult architecture", () => {
 runTest("Documentation files created", () => {
   const docsExist = [
     existsSync("examples/basic-usage.ts"),
-    existsSync(
-      "docs/planning/2025-11-19_23_44-COMPREHENSIVE-EXECUTION-PLAN.md",
-    ),
+    existsSync("docs/planning/2025-11-19_23_44-COMPREHENSIVE-EXECUTION-PLAN.md"),
     existsSync("docs/planning/2025-11-19_23_44-DETAILED-125-TASK-PLAN.md"),
   ];
 
@@ -200,9 +193,7 @@ runTest("No critical regressions", () => {
 console.log("\n" + "=".repeat(50));
 console.log("📊 VERIFICATION RESULTS");
 console.log(`✅ Tests Passed: ${testsPassed}/${testsTotal}`);
-console.log(
-  `📈 Success Rate: ${Math.round((testsPassed / testsTotal) * 100)}%`,
-);
+console.log(`📈 Success Rate: ${Math.round((testsPassed / testsTotal) * 100)}%`);
 
 if (testsPassed === testsTotal) {
   console.log("\n🎉 ALL CRITICAL FIXES VERIFIED SUCCESSFULLY!");

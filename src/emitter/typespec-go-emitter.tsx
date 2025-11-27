@@ -16,27 +16,26 @@ export async function $onEmit(context: EmitContext): Promise<void> {
     const program = context.program;
     const globalNamespace = program.getGlobalNamespaceType();
     const models = [...globalNamespace.models.values()];
-    
+
     if (models.length === 0) {
       console.log("No models found in TypeSpec program");
       return;
     }
-    
+
     console.log(`Generating Go code for ${models.length} models`);
-    
+
     // Generate JSX Output using proper TypeSpec pattern
     await writeOutput(
       context.program,
       <Output>
         <SourceDirectory path="api">
-          {models.map(model => generateGoModelFile(model))}
+          {models.map((model) => generateGoModelFile(model))}
         </SourceDirectory>
       </Output>,
       context.emitterOutputDir,
     );
-    
+
     console.log("✅ TypeSpec Go emission completed successfully");
-    
   } catch (error) {
     console.error("❌ TypeSpec Go emission failed:", error);
     throw error;
@@ -48,7 +47,7 @@ export async function $onEmit(context: EmitContext): Promise<void> {
  */
 function generateGoModelFile(model: Model) {
   const goStruct = convertModelToGoStruct(model);
-  
+
   return (
     <SourceFile path={`${model.name.toLowerCase()}.go`} filetype="go">
       {`package api
@@ -62,7 +61,7 @@ import (
 )
 
 type ${goStruct.name} struct {
-${goStruct.fields.map(field => `    ${field.name} ${field.type} \`${field.jsonTag}\``).join('\n')}
+${goStruct.fields.map((field) => `    ${field.name} ${field.type} \`${field.jsonTag}\``).join("\n")}
 }`}
     </SourceFile>
   );
@@ -74,9 +73,9 @@ ${goStruct.fields.map(field => `    ${field.name} ${field.type} \`${field.jsonTa
 function convertModelToGoStruct(model: Model) {
   return {
     name: model.name,
-    fields: model.properties 
+    fields: model.properties
       ? Array.from(model.properties.values()).map(convertPropertyToGoField)
-      : []
+      : [],
   };
 }
 
@@ -88,7 +87,7 @@ function convertPropertyToGoField(prop: ModelProperty) {
     name: capitalize(prop.name),
     type: mapTypeSpecToGo(prop.type),
     pointer: prop.optional || false,
-    jsonTag: `json:"${prop.name}${prop.optional ? ',omitempty' : ''}"`
+    jsonTag: `json:"${prop.name}${prop.optional ? ",omitempty" : ""}"`,
   };
 }
 
@@ -99,36 +98,51 @@ function mapTypeSpecToGo(type: Type): string {
   switch (type.kind) {
     case "String":
       return "string";
-      
+
     case "Boolean":
       return "bool";
-      
+
     case "Scalar":
       const scalar = type as Scalar;
       switch (scalar.name) {
-        case "int8": return "int8";
-        case "int16": return "int16";
-        case "int32": return "int32";
-        case "int64": return "int64";
-        case "uint8": return "uint8";
-        case "uint16": return "uint16";
-        case "uint32": return "uint32";
-        case "uint64": return "uint64";
-        case "float32": return "float32";
-        case "float64": return "float64";
-        case "bytes": return "[]byte";
-        case "plainDate": return "time.Time";
-        case "plainTime": return "time.Time";
-        case "utcDateTime": return "time.Time";
-        case "duration": return "time.Duration";
+        case "int8":
+          return "int8";
+        case "int16":
+          return "int16";
+        case "int32":
+          return "int32";
+        case "int64":
+          return "int64";
+        case "uint8":
+          return "uint8";
+        case "uint16":
+          return "uint16";
+        case "uint32":
+          return "uint32";
+        case "uint64":
+          return "uint64";
+        case "float32":
+          return "float32";
+        case "float64":
+          return "float64";
+        case "bytes":
+          return "[]byte";
+        case "plainDate":
+          return "time.Time";
+        case "plainTime":
+          return "time.Time";
+        case "utcDateTime":
+          return "time.Time";
+        case "duration":
+          return "time.Duration";
         default:
           return scalar.name;
       }
-      
+
     case "Model":
       const model = type as Model;
       return model.name;
-      
+
     default:
       console.warn(`Unsupported TypeSpec type: ${type.kind}`);
       return "interface{}";

@@ -60,14 +60,8 @@ function generateProductStruct(): void {
       ["id", { name: "id", type: { kind: "String" }, optional: false }],
       ["name", { name: "name", type: { kind: "String" }, optional: false }],
       ["price", { name: "price", type: { kind: "Float64" }, optional: false }],
-      [
-        "quantity",
-        { name: "quantity", type: { kind: "Uint16" }, optional: false },
-      ],
-      [
-        "inStock",
-        { name: "inStock", type: { kind: "Boolean" }, optional: false },
-      ],
+      ["quantity", { name: "quantity", type: { kind: "Uint16" }, optional: false }],
+      ["inStock", { name: "inStock", type: { kind: "Boolean" }, optional: false }],
       [
         "tags",
         {

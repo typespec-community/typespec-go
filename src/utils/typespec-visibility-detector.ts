@@ -6,21 +6,21 @@
  * Provides clean API for visibility-based Go field generation
  */
 
-import type { 
-  Program, 
+import type {
+  Program,
   ModelProperty as TypeSpecModelProperty,
   Type,
-  Namespace
+  Namespace,
 } from "@typespec/compiler";
 import { Logger, LogContext } from "../domain/structured-logging.js";
-import type { 
-  TypeSpecPropertyVisibility, 
-  TypeSpecVisibilityLifecycle 
+import type {
+  TypeSpecPropertyVisibility,
+  TypeSpecVisibilityLifecycle,
 } from "../types/typespec-domain.js";
 
 /**
  * TypeSpec Visibility Detector
- * 
+ *
  * Core responsibility: Extract visibility from TypeSpec decorators
  * Converts TypeSpec compiler visibility API to our domain model
  */
@@ -35,46 +35,42 @@ export class TypeSpecVisibilityDetector {
 
   /**
    * Extract visibility information from a TypeSpec property
-   * 
+   *
    * @param program TypeSpec compiler program
    * @param property TypeSpec model property
    * @returns Extracted visibility information
    */
-  extractVisibility(
-    program: Program, 
-    property: TypeSpecModelProperty
-  ): TypeSpecPropertyVisibility {
+  extractVisibility(program: Program, property: TypeSpecModelProperty): TypeSpecPropertyVisibility {
     try {
       this.logger.debug(this.logContext, "Extracting visibility", {
         propertyName: property.name,
-        propertyType: property.type.kind
+        propertyType: property.type.kind,
       });
 
       // Try to get TypeSpec visibility information
       // Note: This will require proper TypeSpec compiler integration
       const typeSpecVisibility = this.getTypeSpecVisibility(program, property);
-      
+
       if (typeSpecVisibility.isInvisible) {
         return {
           visible: false,
           lifecycle: [],
-          isInvisible: true
+          isInvisible: true,
         };
       }
 
       // Convert TypeSpec lifecycle phases to our domain model
       const lifecyclePhases = this.mapLifecyclePhases(typeSpecVisibility.lifecycle);
-      
+
       return {
         visible: lifecyclePhases.length > 0,
         lifecycle: lifecyclePhases,
-        isInvisible: false
+        isInvisible: false,
       };
-
     } catch (error) {
       this.logger.error(this.logContext, "Failed to extract visibility", {
         propertyName: property.name,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
 
       // Default to full visibility on error
@@ -84,14 +80,14 @@ export class TypeSpecVisibilityDetector {
 
   /**
    * Check if a property should be included in generated Go code
-   * 
+   *
    * @param visibility Extracted visibility information
    * @param targetLifecycle Target lifecycle phase (e.g., "Read" for response models)
    * @returns Whether to include the property
    */
   shouldIncludeProperty(
     visibility: TypeSpecPropertyVisibility,
-    targetLifecycle: TypeSpecVisibilityLifecycle = "Read"
+    targetLifecycle: TypeSpecVisibilityLifecycle = "Read",
   ): boolean {
     // Invisible properties are never included
     if (visibility.isInvisible) {
@@ -104,7 +100,7 @@ export class TypeSpecVisibilityDetector {
 
   /**
    * Determine if a Go field should be exported based on visibility
-   * 
+   *
    * @param visibility Extracted visibility information
    * @returns Whether Go field should be exported
    */
@@ -120,14 +116,14 @@ export class TypeSpecVisibilityDetector {
 
   /**
    * Generate JSON tag for property based on visibility
-   * 
+   *
    * @param propertyName Original TypeSpec property name
    * @param visibility Extracted visibility information
    * @returns JSON tag or undefined for invisible properties
    */
   generateJsonTag(
-    propertyName: string, 
-    visibility: TypeSpecPropertyVisibility
+    propertyName: string,
+    visibility: TypeSpecPropertyVisibility,
   ): string | undefined {
     // Invisible properties don't get JSON tags
     if (visibility.isInvisible || !visibility.visible) {
@@ -140,17 +136,17 @@ export class TypeSpecVisibilityDetector {
 
   /**
    * Get TypeSpec compiler visibility information
-   * 
+   *
    * NOTE: This is a placeholder implementation
    * Requires proper TypeSpec compiler integration with getVisibility API
    */
   private getTypeSpecVisibility(
-    program: Program, 
-    property: TypeSpecModelProperty
+    program: Program,
+    property: TypeSpecModelProperty,
   ): { lifecycle: readonly string[]; isInvisible: boolean } {
     // TODO: Replace with actual TypeSpec compiler API calls
     // import { getVisibility } from "@typespec/compiler";
-    
+
     // Placeholder logic for testing
     if (property.name.includes("secret") || property.name.includes("internal")) {
       return { lifecycle: [], isInvisible: true };
@@ -165,21 +161,19 @@ export class TypeSpecVisibilityDetector {
     }
 
     // Default: full visibility
-    return { 
-      lifecycle: ["Create", "Read", "Update", "Delete", "Query"], 
-      isInvisible: false 
+    return {
+      lifecycle: ["Create", "Read", "Update", "Delete", "Query"],
+      isInvisible: false,
     };
   }
 
   /**
    * Map TypeSpec lifecycle strings to our domain model
    */
-  private mapLifecyclePhases(
-    lifecycle: readonly string[]
-  ): readonly TypeSpecVisibilityLifecycle[] {
+  private mapLifecyclePhases(lifecycle: readonly string[]): readonly TypeSpecVisibilityLifecycle[] {
     return lifecycle
-      .filter(phase => this.isValidLifecyclePhase(phase))
-      .map(phase => phase as TypeSpecVisibilityLifecycle);
+      .filter((phase) => this.isValidLifecyclePhase(phase))
+      .map((phase) => phase as TypeSpecVisibilityLifecycle);
   }
 
   /**
@@ -197,7 +191,7 @@ export class TypeSpecVisibilityDetector {
     return {
       visible: true,
       lifecycle: ["Create", "Read", "Update", "Delete", "Query"],
-      isInvisible: false
+      isInvisible: false,
     };
   }
 }
@@ -211,8 +205,8 @@ export const visibilityDetector = new TypeSpecVisibilityDetector();
  * Convenience function for visibility extraction
  */
 export function extractVisibility(
-  program: Program, 
-  property: TypeSpecModelProperty
+  program: Program,
+  property: TypeSpecModelProperty,
 ): TypeSpecPropertyVisibility {
   return visibilityDetector.extractVisibility(program, property);
 }

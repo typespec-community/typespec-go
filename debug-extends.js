@@ -1,4 +1,4 @@
-import { StandaloneGoGenerator } from '../standalone-generator.js';
+import { StandaloneGoGenerator } from "../standalone-generator.js";
 
 const generator = new StandaloneGoGenerator();
 

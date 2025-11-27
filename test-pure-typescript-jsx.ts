@@ -7,14 +7,14 @@ console.log("🚀 REAL JSX INTEGRATION TEST - Pure TypeScript");
 
 try {
   console.log("📋 Testing component creation without JSX syntax...");
-  
+
   // Create components programmatically (avoid JSX syntax issues)
   console.log("   Creating struct members...");
   const idMember = StructMember({
     exported: true,
     name: "ID",
     type: "string",
-    tag: {json: "id"}
+    tag: { json: "id" },
   });
   console.log("   ✅ ID member created:", typeof idMember);
 
@@ -22,7 +22,7 @@ try {
     exported: true,
     name: "Name",
     type: "string",
-    tag: {json: "name"}
+    tag: { json: "name" },
   });
   console.log("   ✅ Name member created:", typeof nameMember);
 
@@ -30,7 +30,7 @@ try {
     name: "OptionalField",
     type: "string",
     optional: true,
-    tag: {json: "optionalField"}
+    tag: { json: "optionalField" },
   });
   console.log("   ✅ Optional member created:", typeof optionalMember);
 
@@ -38,7 +38,7 @@ try {
   console.log("   Creating struct declaration...");
   const structDecl = StructTypeDeclaration({
     name: "User",
-    children: [idMember, nameMember, optionalMember]
+    children: [idMember, nameMember, optionalMember],
   });
   console.log("   ✅ Struct declaration created:", typeof structDecl);
 
@@ -46,7 +46,7 @@ try {
   console.log("   Creating source file...");
   const sourceFile = SourceFile({
     path: "user.go",
-    children: structDecl
+    children: structDecl,
   });
   console.log("   ✅ Source file created:", typeof sourceFile);
 
@@ -72,12 +72,12 @@ try {
     if (output.contents.length > 0) {
       const file = output.contents[0];
       console.log("   📝 File:", file.path);
-      if ('contents' in file) {
+      if ("contents" in file) {
         console.log("   📄 File content:");
         console.log("==================");
         console.log(file.contents);
         console.log("==================");
-        
+
         // Validate generated Go code
         const goCode = file.contents;
         const expectedPatterns = [
@@ -85,13 +85,13 @@ try {
           /type\s+User\s+struct\s*\{/,
           /ID\s+string.*json:"id"/,
           /Name\s+string.*json:"name"/,
-          /OptionalField\s+\*string.*json:"optionalField"/
+          /OptionalField\s+\*string.*json:"optionalField"/,
         ];
 
         console.log("   🔍 Validating Go code patterns...");
         const results = expectedPatterns.map((pattern, index) => {
           const matches = pattern.test(goCode);
-          console.log(`      Pattern ${index + 1}: ${matches ? '✅' : '❌'}`);
+          console.log(`      Pattern ${index + 1}: ${matches ? "✅" : "❌"}`);
           return matches;
         });
 
@@ -118,7 +118,6 @@ try {
     console.log("   ❌ render from core module failed:", error2.message);
     console.log("   Stack:", error2.stack);
   }
-
 } catch (error) {
   console.error("❌ Real JSX integration failed:", error);
   console.error("Stack trace:", error.stack);

@@ -9,7 +9,7 @@ try {
     name: "testField",
     type: "string",
     optional: false,
-    jsonTag: "test_field"
+    jsonTag: "test_field",
   });
 
   console.log("✅ Valid field creation:", validField.name);
@@ -24,15 +24,15 @@ try {
         name: "id",
         type: "string",
         optional: false,
-        jsonTag: "id"
+        jsonTag: "id",
       },
       {
         name: "optionalField",
-        type: "string", 
+        type: "string",
         optional: true,
-        jsonTag: "optional_field"
-      }
-    ]
+        jsonTag: "optional_field",
+      },
+    ],
   });
 
   console.log("✅ Valid struct creation:", validStruct.name);
@@ -51,10 +51,10 @@ try {
   // Test error handling
   try {
     GoJsxComponents.ComponentFactory.createField({
-      name: "",  // Invalid empty name
+      name: "", // Invalid empty name
       type: "string",
       optional: false,
-      jsonTag: "test"
+      jsonTag: "test",
     });
     console.error("❌ Should have thrown error for empty field name");
   } catch (error) {
@@ -69,7 +69,6 @@ try {
   }
 
   console.log("🎉 JSX Type Safety Layer working perfectly!");
-  
 } catch (error) {
   console.error("❌ JSX Type Safety Layer test failed:", error);
   process.exit(1);

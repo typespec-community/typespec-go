@@ -2,7 +2,7 @@
 
 // Test the core type mapping logic from our fixed emitter
 console.log("🧪 TESTING PHASE 1: TYPE MAPPING LOGIC");
-console.log("=" .repeat(50));
+console.log("=".repeat(50));
 
 // Core type mapping function from our fixed emitter
 function mapTypeSpecToGo(type) {
@@ -13,42 +13,47 @@ function mapTypeSpecToGo(type) {
     if (type.name === "unknown") return "interface{}";
     return "interface{}";
   }
-  
+
   // Handle string types
   if (type.kind === "String") {
     return "string";
   }
-  
+
   // Handle boolean types
   if (type.kind === "Boolean") {
     return "bool";
   }
-  
+
   // Handle number types with proper type checking (NO 'as any'!)
   if (type.kind === "Number") {
-    if ('name' in type && type.name) {
+    if ("name" in type && type.name) {
       const numberName = type.name.toLowerCase();
       switch (numberName) {
-        case "int32": return "int32";
-        case "int64": return "int64";
-        case "uint32": return "uint32";
-        case "uint64": return "uint64";
-        default: return "int";
+        case "int32":
+          return "int32";
+        case "int64":
+          return "int64";
+        case "uint32":
+          return "uint32";
+        case "uint64":
+          return "uint64";
+        default:
+          return "int";
       }
     }
     return "int";
   }
-  
+
   // Handle model types
   if (type.kind === "Model") {
     return type.name || "interface{}";
   }
-  
+
   // Handle union types
   if (type.kind === "Union") {
     return "interface{}";
   }
-  
+
   // Fallback
   return "interface{}";
 }
@@ -74,12 +79,14 @@ let totalTests = testCases.length;
 testCases.forEach((testCase, index) => {
   const result = mapTypeSpecToGo(testCase);
   const passed = result === testCase.expected;
-  
+
   if (passed) {
     passedTests++;
     console.log(`✅ Test ${index + 1}: ${testCase.kind} → ${result}`);
   } else {
-    console.log(`❌ Test ${index + 1}: ${testCase.kind} → ${result} (expected ${testCase.expected})`);
+    console.log(
+      `❌ Test ${index + 1}: ${testCase.kind} → ${result} (expected ${testCase.expected})`,
+    );
   }
 });
 

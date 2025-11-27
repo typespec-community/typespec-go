@@ -1,20 +1,20 @@
 /**
  * TypeSpec v1.7.0 Core Type System
- * 
+ *
  * MINIMAL ESSENTIAL TYPES - Clean slate architecture
  * Only types required for StandaloneGoGenerator integration
  */
 
-import type { 
-  Model, 
-  Type, 
-  ModelProperty, 
-  Scalar, 
+import type {
+  Model,
+  Type,
+  ModelProperty,
+  Scalar,
   Union,
   Enum,
   String as StringType,
   Boolean as BooleanType,
-  Number as NumberType
+  Number as NumberType,
 } from "@typespec/compiler";
 
 /**
@@ -26,7 +26,7 @@ export interface TypeSpecModel extends Model {
 }
 
 /**
- * Enhanced Property interface  
+ * Enhanced Property interface
  */
 export interface TypeSpecProperty extends ModelProperty {
   /** Proper type reference */
@@ -63,24 +63,24 @@ export interface TypeSpecEnum extends Enum {
 export const TypeSpecTypeGuards = {
   /** Check if type is String */
   isString: (type: Type): type is StringType => type.kind === "String",
-  
-  /** Check if type is Boolean */  
+
+  /** Check if type is Boolean */
   isBoolean: (type: Type): type is BooleanType => type.kind === "Boolean",
-  
+
   /** Check if type is Number */
   isNumber: (type: Type): type is NumberType => type.kind === "Number",
-  
+
   /** Check if type is Model */
   isModel: (type: Type): type is Model => type.kind === "Model",
-  
+
   /** Check if type is Scalar */
   isScalar: (type: Type): type is Scalar => type.kind === "Scalar",
-  
+
   /** Check if type is Union */
   isUnion: (type: Type): type is Union => type.kind === "Union",
-  
+
   /** Check if type is Enum */
-  isEnum: (type: Type): type is Enum => type.kind === "Enum"
+  isEnum: (type: Type): type is Enum => type.kind === "Enum",
 } as const;
 
 /**
@@ -95,10 +95,10 @@ export interface GoTypeMapping {
  */
 export const GoCoreTypes: GoTypeMapping = {
   String: "string",
-  Boolean: "bool", 
+  Boolean: "bool",
   Int8: "int8",
   UInt8: "uint8",
-  UInt16: "uint16", 
+  UInt16: "uint16",
   UInt32: "uint32",
   UInt64: "uint64",
   Float32: "float32",
@@ -107,7 +107,7 @@ export const GoCoreTypes: GoTypeMapping = {
   PlainDate: "time.Time",
   PlainTime: "time.Time",
   UTCDateTime: "time.Time",
-  Duration: "time.Duration"
+  Duration: "time.Duration",
 } as const;
 
 /**
@@ -123,21 +123,21 @@ export class TypeSpecTypeMapper {
     if (TypeSpecTypeGuards.isBoolean(type)) return "bool";
     if (TypeSpecTypeGuards.isNumber(type)) return this.mapNumericByName(type);
     if (TypeSpecTypeGuards.isScalar(type)) return this.mapScalarType(type);
-    
+
     // Model types
     if (TypeSpecTypeGuards.isModel(type)) return this.getModelName(type);
-    
+
     // Complex types - fallback
     return "interface{}";
   }
-  
+
   /**
    * Get model name from TypeSpec model
    */
   private static getModelName(model: Model): string {
     return model.name || "UnknownModel";
   }
-  
+
   /**
    * Map TypeSpec number types to Go types
    */
@@ -160,7 +160,7 @@ export class TypeSpecTypeMapper {
     }
     return "float64";
   }
-  
+
   /**
    * Map numeric type based on intrinsic scalar name if available
    */
@@ -177,11 +177,11 @@ export class TypeSpecTypeMapper {
     if (typeString === "uint64") return "uint64";
     if (typeString === "float32") return "float32";
     if (typeString === "float64") return "float64";
-    
+
     // Fallback to value-based mapping
     return this.mapNumberType(type);
   }
-  
+
   /**
    * Map TypeSpec scalar types to Go types
    */
@@ -194,8 +194,8 @@ export class TypeSpecTypeMapper {
 /**
  * Export for external usage
  */
-export type { 
+export type {
   Model as TypeSpecModelBase,
   Type as TypeSpecTypeBase,
-  ModelProperty as TypeSpecPropertyBase
+  ModelProperty as TypeSpecPropertyBase,
 };

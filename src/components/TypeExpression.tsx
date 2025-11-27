@@ -54,24 +54,24 @@ function getArrayElementType(model: Model & { indexer: { key: Scalar; value: Typ
  * Comprehensive scalar mapping following guide examples
  */
 const SCALAR_MAPPINGS: Record<string, string> = {
-  "string": "string",
-  "boolean": "bool", 
-  "int8": "int8",
-  "int16": "int16",
-  "int32": "int32",
-  "int64": "int64",
-  "uint8": "uint8",
-  "uint16": "uint16", 
-  "uint32": "uint32",
-  "uint64": "uint64",
-  "float32": "float32",
-  "float64": "float64",
-  "bytes": "[]byte",
-  "plaindate": "time.Time",
-  "plainTime": "time.Time",
-  "duration": "time.Duration",
-  "utcDateTime": "time.Time",
-  "offsetDateTime": "time.Time",
+  string: "string",
+  boolean: "bool",
+  int8: "int8",
+  int16: "int16",
+  int32: "int32",
+  int64: "int64",
+  uint8: "uint8",
+  uint16: "uint16",
+  uint32: "uint32",
+  uint64: "uint64",
+  float32: "float32",
+  float64: "float64",
+  bytes: "[]byte",
+  plaindate: "time.Time",
+  plainTime: "time.Time",
+  duration: "time.Duration",
+  utcDateTime: "time.Time",
+  offsetDateTime: "time.Time",
 } as const;
 
 /**
@@ -85,7 +85,7 @@ export function TypeExpression({ type }: { type: Type }): string {
     const scalarName = type.name?.toLowerCase() || "";
     return SCALAR_MAPPINGS[scalarName] || "interface{}";
   }
-  
+
   // Handle Model types (user-defined structs)
   if (isModel(type)) {
     // Handle array models (Models with indexers)
@@ -94,33 +94,33 @@ export function TypeExpression({ type }: { type: Type }): string {
       const elementGoType = TypeExpression({ type: elementType });
       return `[]${elementGoType}`;
     }
-    
+
     return type.name || "interface{}";
   }
-  
+
   // Handle Union types (string | number | boolean)
   if (isUnion(type)) {
     // Check if this is an optional type (T | null)
     const variants = Array.from(type.variants.values());
     if (variants.length === 2) {
-      const nonNullVariant = variants.find(v => !isNullType(v.type));
-      const hasNull = variants.some(v => isNullType(v.type));
-      
+      const nonNullVariant = variants.find((v) => !isNullType(v.type));
+      const hasNull = variants.some((v) => isNullType(v.type));
+
       if (nonNullVariant && hasNull) {
         const innerType = TypeExpression({ type: nonNullVariant.type });
         return `*${innerType}`;
       }
     }
-    
+
     // For complex unions, use interface{}
     return "interface{}";
   }
-  
+
   // Handle Template instantiations (List<T>, Map<K,V>)
   if (isTemplateParameter(type)) {
     return "interface{}";
   }
-  
+
   // Fallback for unknown types
   return "interface{}";
 }

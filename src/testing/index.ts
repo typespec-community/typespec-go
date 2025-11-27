@@ -1,7 +1,4 @@
-import {
-  findTestPackageRoot,
-  createTestLibrary,
-} from "@typespec/compiler/testing";
+import { findTestPackageRoot, createTestLibrary } from "@typespec/compiler/testing";
 
 /**
  * TypeSpec Go Emitter Test Library Factory

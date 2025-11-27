@@ -21,32 +21,16 @@ import type {
   ErrorRecoveryStrategy,
 } from "./error-types.js";
 
-import type {
-  TypeSpecId,
-  ModelName,
-  PropertyName,
-  ErrorId,
-  FileName,
-} from "./error-entities.js";
+import type { TypeSpecId, ModelName, PropertyName, ErrorId, FileName } from "./error-entities.js";
 
-import {
-  Entities,
-  EntityValidation,
-  EntityTransformation,
-} from "./error-entities.js";
+import { Entities, EntityValidation, EntityTransformation } from "./error-entities.js";
 
 import { ErrorFactory } from "./error-factory.js";
 
 import { ErrorAnalysis } from "./error-types.js";
 
 // Then re-export
-export type {
-  TypeSpecId,
-  ModelName,
-  PropertyName,
-  ErrorId,
-  FileName,
-} from "./error-entities.js";
+export type { TypeSpecId, ModelName, PropertyName, ErrorId, FileName } from "./error-entities.js";
 
 export type {
   TypeSpecCompilerError,
@@ -61,11 +45,7 @@ export type {
   ErrorRecoveryStrategy,
 } from "./error-types.js";
 
-export {
-  Entities,
-  EntityValidation,
-  EntityTransformation,
-} from "./error-entities.js";
+export { Entities, EntityValidation, EntityTransformation } from "./error-entities.js";
 
 export { ErrorFactory } from "./error-factory.js";
 

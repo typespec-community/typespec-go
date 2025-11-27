@@ -5,17 +5,17 @@
  */
 
 // Core Generation Components
-export { TypeExpression } from './TypeExpression.js';
-export { GoModel } from './GoModel.js';
+export { TypeExpression } from "./TypeExpression.js";
+export { GoModel } from "./GoModel.js";
 
 // Re-export Alloy-JS Go components for convenience
-export { 
-  SourceFile, 
-  StructTypeDeclaration, 
+export {
+  SourceFile,
+  StructTypeDeclaration,
   StructDeclaration,
   StructMember,
   FunctionDeclaration,
   VariableDeclaration,
   ImportStatements,
-  InterfaceDeclaration
+  InterfaceDeclaration,
 } from "@alloy-js/go";
