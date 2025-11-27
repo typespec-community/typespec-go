@@ -157,8 +157,8 @@ export class StandaloneGoGenerator {
       return null;
     }
 
-    // Delegate to CleanTypeMapper for type mapping
-    const mappedType = CleanTypeMapper.mapTypeSpecTypeLegacy(propNode.type, propName);
+    // Delegate to CleanTypeMapper for type mapping with pointer support
+    const mappedType = CleanTypeMapper.mapTypeSpecType(propNode.type, propName);
     if (!mappedType || !mappedType.goType) {
       return null;
     }
@@ -172,7 +172,13 @@ export class StandaloneGoGenerator {
     // Add omitempty for optional fields
     const optionalTag = propNode.optional ? ",omitempty" : "";
 
-    return `${goFieldName} ${mappedType.goType} \`${jsonTag}${optionalTag}\``;
+    // Apply pointer for optional fields if configured
+    let finalGoType = mappedType.goType;
+    if (propNode.optional && mappedType.usePointerForOptional) {
+      finalGoType = `*${finalGoType}`;
+    }
+
+    return `${goFieldName} ${finalGoType} \`${jsonTag}${optionalTag}\``;
   }
 
   /**

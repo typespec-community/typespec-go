@@ -201,13 +201,19 @@ export function createGoStructField(
   type: Type,
   isOptional: boolean = false,
 ): GoStructField {
-  const typeMapping = mapTypeSpecType(program, type);
+  // Use CleanTypeMapper for proper type mapping with pointer support
+  const typeMapping = CleanTypeMapper.mapTypeSpecType(type, fieldName);
 
-  if (typeMapping._tag !== "success") {
-    // For now, use interface{} for failed mappings
-    // In production, this would trigger compilation failure
-    console.warn(`Type mapping failed for field ${fieldName}:`, typeMapping);
+  let finalGoType = typeMapping.goType;
+  
+  // Apply pointer for optional fields if configured
+  if (isOptional && typeMapping.usePointerForOptional) {
+    finalGoType = `*${finalGoType}`;
+  }
 
+  // Handle failed mappings gracefully
+  if (!finalGoType || finalGoType === "interface{}") {
+    console.warn(`Type mapping failed for field ${fieldName}:`, type);
     return {
       name: fieldName,
       goType: "interface{}",
@@ -218,8 +224,8 @@ export function createGoStructField(
 
   return {
     name: fieldName,
-    goType: typeMapping.result,
-    jsonTag: `json:"${fieldName}"`,
+    goType: finalGoType,
+    jsonTag: isOptional ? `json:"${fieldName},omitempty"` : `json:"${fieldName}"`,
     isOptional,
   };
 }

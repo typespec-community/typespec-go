@@ -56,38 +56,38 @@ export class CleanTypeMapper {
    */
   private static readonly SCALAR_MAPPINGS: Record<string, GoTypeMapping> = {
     // String types
-    string: { goType: "string", usePointerForOptional: false },
+    string: { goType: "string", usePointerForOptional: true },
     plainDate: { goType: "time.Time", usePointerForOptional: true, requiresImport: "time" },
     plainTime: { goType: "time.Time", usePointerForOptional: true, requiresImport: "time" },
     utcDateTime: { goType: "time.Time", usePointerForOptional: true, requiresImport: "time" },
     duration: { goType: "time.Duration", usePointerForOptional: true, requiresImport: "time" },
 
     // Integer types
-    int8: { goType: "int8", usePointerForOptional: false },
-    int16: { goType: "int16", usePointerForOptional: false },
-    int32: { goType: "int32", usePointerForOptional: false },
+    int8: { goType: "int8", usePointerForOptional: true },
+    int16: { goType: "int16", usePointerForOptional: true },
+    int32: { goType: "int32", usePointerForOptional: true },
     int64: { goType: "int64", usePointerForOptional: true },
-    uint8: { goType: "uint8", usePointerForOptional: false },
-    uint16: { goType: "uint16", usePointerForOptional: false },
-    uint32: { goType: "uint32", usePointerForOptional: false },
+    uint8: { goType: "uint8", usePointerForOptional: true },
+    uint16: { goType: "uint16", usePointerForOptional: true },
+    uint32: { goType: "uint32", usePointerForOptional: true },
     uint64: { goType: "uint64", usePointerForOptional: true },
 
     // Float types
-    float32: { goType: "float32", usePointerForOptional: false },
+    float32: { goType: "float32", usePointerForOptional: true },
     float64: { goType: "float64", usePointerForOptional: true },
 
     // Special types
-    bytes: { goType: "[]byte", usePointerForOptional: false },
-    boolean: { goType: "bool", usePointerForOptional: false },
-    bool: { goType: "bool", usePointerForOptional: false },
+    bytes: { goType: "[]byte", usePointerForOptional: true },
+    boolean: { goType: "bool", usePointerForOptional: true },
+    bool: { goType: "bool", usePointerForOptional: true },
   };
 
   /**
    * TypeSpec built-in type mappings
    */
   private static readonly BUILTIN_MAPPINGS: Record<string, GoTypeMapping> = {
-    String: { goType: "string", usePointerForOptional: false },
-    Boolean: { goType: "bool", usePointerForOptional: false },
+    String: { goType: "string", usePointerForOptional: true },
+    Boolean: { goType: "bool", usePointerForOptional: true },
     Number: { goType: "float64", usePointerForOptional: true }, // Fallback
   };
 

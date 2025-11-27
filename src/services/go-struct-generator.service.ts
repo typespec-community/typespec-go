@@ -35,8 +35,8 @@ interface TypeMappingError {
  * Generate Go struct field code with proper formatting and validation
  */
 function generateGoFieldCode(field: GoStructField): string {
-  const optionalMarker = field.isOptional ? "*" : "";
-  return `\t${field.name}${optionalMarker} ${field.goType} \`${field.jsonTag}\``;
+  const optionalPointer = field.isOptional ? "*" : "";
+  return `\t${field.name} ${optionalPointer}${field.goType} \`${field.jsonTag}\``;
 }
 
 /**
