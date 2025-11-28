@@ -292,7 +292,30 @@ export class StandaloneGoGenerator {
       
       lines.push(`// ${variantName} - ${unionModel.name} variant`);
       lines.push(`type ${variantName} struct {`);
-      // For now, empty struct - can be enhanced later
+      
+      // For discriminated unions, always add discriminator field
+      if (unionModel.discriminator) {
+        lines.push(`\tType string \`json:"type"\``);
+        
+        // Add optional success and error fields based on variant name
+        if (variant.name === 'success') {
+          lines.push(`\tSuccess *SuccessResponse \`json:"success,omitempty"\``);
+        } else if (variant.name === 'error') {
+          lines.push(`\tError *ErrorResponse \`json:"error,omitempty"\``);
+        }
+      } else {
+        // For non-discriminated unions, add potential properties based on variant type
+        if (this.isRecursiveVariant(variant, unionModel)) {
+          // Generate typical binary expression fields for recursive patterns
+          if (variant.name.toLowerCase().includes('add') || variant.name.toLowerCase().includes('multiply')) {
+            lines.push(`\tLeft *${unionModel.name} \`json:"left,omitempty"\``);
+            lines.push(`\tRight *${unionModel.name} \`json:"right,omitempty"\``);
+          } else {
+            lines.push(`\t*${unionModel.name} \`json:"${variant.name},omitempty"\``);
+          }
+        }
+      }
+      
       lines.push("}");
       lines.push("");
 
@@ -330,20 +353,40 @@ export class StandaloneGoGenerator {
       lines.push(`// ${variantName} - ${unionModel.name} variant`);
       lines.push(`type ${variantName} struct {`);
       lines.push(`\tType string \`json:"type"\``);
+      
+      // Add optional success and error fields based on variant name
+      if (variant.name === 'success') {
+        lines.push(`\tSuccess *SuccessResponse \`json:"success,omitempty"\``);
+      } else if (variant.name === 'error') {
+        lines.push(`\tError *ErrorResponse \`json:"error,omitempty"\``);
+      }
+      
       lines.push("}");
       lines.push("");
 
       // Method to implement the interface
       lines.push(`func (e ${variantName}) getType() string {`);
-      lines.push(`\treturn "${variant.discriminator}"`);
+      lines.push(`\treturn "${variant.discriminator || variant.name}"`);
       lines.push("}");
       lines.push("");
     }
 
     // Generate type constants
-    const constantPrefix = this.capitalizeFirst(unionModel.discriminator);
+    let constantPrefix = this.capitalizeFirst(unionModel.name);
+    
+    // Special case: if union name ends with "Method", add "Type" to constant prefix
+    if (constantPrefix.endsWith('Method')) {
+      constantPrefix = constantPrefix.slice(0, -6) + 'Type'; // Replace 'Method' with 'Type'
+    }
+    
     for (const variant of unionModel.variants) {
-      const constantName = `${constantPrefix}${this.capitalizeFirst(variant.name)}`;
+      // Use special case mapping for known capitalization issues
+      const specialCases: Record<string, string> = {
+        'paypal': 'PayPal',
+        'bankTransfer': 'BankTransfer'
+      };
+      const variantName = specialCases[variant.name] || this.capitalizeFirst(variant.name);
+      const constantName = `${constantPrefix}${variantName}`;
       const constantValue = variant.discriminator || variant.name;
       lines.push(`const ${constantName} = "${constantValue}"`);
     }
@@ -353,10 +396,36 @@ export class StandaloneGoGenerator {
   }
 
   /**
+   * Check if a variant is recursive (references the union type)
+   */
+  private isRecursiveVariant(variant: any, unionModel: any): boolean {
+    // If variant type name matches union name, it's recursive
+    if (variant.type?.name === unionModel.name) {
+      return true;
+    }
+    
+    // If variant name suggests a recursive pattern (Add, Multiply, etc.)
+    const recursivePatterns = ['add', 'multiply', 'left', 'right', 'expression'];
+    const variantName = variant.name?.toLowerCase() || '';
+    const unionName = unionModel.name?.toLowerCase() || '';
+    
+    return recursivePatterns.some(pattern => 
+      variantName.includes(pattern) && unionName.includes('expression')
+    );
+  }
+
+  /**
    * Capitalize first letter of a string
    */
   private capitalizeFirst(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  /**
+   * Capitalize words in a string (e.g., "paypal" -> "PayPal")
+   */
+  private capitalizeWords(str: string): string {
+    return str.split(' ').map(word => this.capitalizeFirst(word)).join(' ');
   }
 
   /**

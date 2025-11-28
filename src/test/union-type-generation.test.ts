@@ -97,7 +97,7 @@ test("Union Types - Should handle recursive union types", () => {
   };
 
   // Act
-  const result = generator.generateModel(recursiveUnion);
+  const result = generator.generateUnionType(recursiveUnion);
 
   // Assert
   if (result._tag === "success") {
@@ -124,7 +124,7 @@ test("Union Types - Should handle empty union gracefully", () => {
   };
 
   // Act
-  const result = generator.generateModel(emptyUnion);
+  const result = generator.generateUnionType(emptyUnion);
 
   // Assert
   // Should either succeed with minimal interface or fail gracefully
@@ -145,15 +145,16 @@ test("Union Types - Should generate proper JSON tags", () => {
   const unionWithJson = {
     name: "ApiResponse",
     kind: "union",
+    discriminator: "type",
     variants: [
-      { name: "success", type: { kind: "Model", name: "SuccessResponse" } },
-      { name: "error", type: { kind: "Model", name: "ErrorResponse" } }
+      { name: "success", type: { kind: "Model", name: "SuccessResponse" }, discriminator: "success" },
+      { name: "error", type: { kind: "Model", name: "ErrorResponse" }, discriminator: "error" }
     ],
     properties: new Map()
   };
 
   // Act
-  const result = generator.generateModel(unionWithJson);
+  const result = generator.generateUnionType(unionWithJson);
 
   // Assert
   if (result._tag === "success") {
@@ -184,7 +185,7 @@ test("Union Types - Should handle union performance efficiently", () => {
 
   // Act
   const startTime = performance.now();
-  const result = generator.generateModel(largeUnion);
+  const result = generator.generateUnionType(largeUnion);
   const endTime = performance.now();
   const duration = endTime - startTime;
 
