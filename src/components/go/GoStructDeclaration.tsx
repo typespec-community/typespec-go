@@ -110,6 +110,7 @@ function mapTypeSpecToGoType(type: Type): string {
     case "Scalar":
       const scalarName = type.name?.toLowerCase() || "";
       const scalarMap: Record<string, string> = {
+        // Integer types
         int8: "int8",
         int16: "int16", 
         int32: "int32",
@@ -118,22 +119,43 @@ function mapTypeSpecToGoType(type: Type): string {
         uint16: "uint16",
         uint32: "uint32",
         uint64: "uint64",
+        integer: "int",
+        safeint: "int64",
+        
+        // Float types
         float32: "float32",
         float64: "float64",
+        float: "float64",
+        numeric: "float64",
+        decimal: "float64",
+        decimal64: "float64",
+        decimal128: "float64",
+        
+        // Binary types
         bytes: "[]byte",
+        
+        // String types
         string: "string",
+        url: "string",
+        uri: "string",
+        email: "string",
+        uuid: "string",
+        
+        // Boolean
         boolean: "bool",
+        
+        // Date/Time types
         plaindate: "time.Time",
         plaintime: "time.Time",
         utcdatetime: "time.Time",
         offsetdatetime: "time.Time",
         duration: "time.Duration",
-        // Extended scalar types
-        uuid: "string", // UUID as string, could use github.com/google/uuid
-        url: "string",
-        email: "string",
-        decimal128: "float64", // Could use shopspring/decimal
-        decimal64: "float64",  // Could use shopspring/decimal
+        zoneddatetime: "time.Time",
+        
+        // Network types
+        ipaddress: "string",
+        ipv4address: "string",
+        ipv6address: "string",
       };
       return scalarMap[scalarName] || type.name || "interface{}";
     
