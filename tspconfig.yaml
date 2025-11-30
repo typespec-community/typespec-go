@@ -1,2 +1,5 @@
 emit:
   - "@typespec-community/typespec-go"
+options:
+  "@typespec-community/typespec-go":
+    emitter-output-dir: "{project-root}/generated"

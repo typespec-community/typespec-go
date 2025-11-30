@@ -255,13 +255,13 @@ export class StandaloneGoGenerator {
     // Input validation
     if (!unionModel.name || typeof unionModel.name !== "string") {
       return ErrorFactory.createValidationError("Invalid union: name must be a non-empty string", {
-        unionName: unionModel.name || "unknown",
+        modelName: unionModel.name || "unknown",
       });
     }
 
     if (!unionModel.variants || unionModel.variants.length === 0) {
       return ErrorFactory.createValidationError("Invalid union: must have at least one variant", {
-        unionName: unionModel.name,
+        modelName: unionModel.name,
       });
     }
 
@@ -271,12 +271,12 @@ export class StandaloneGoGenerator {
 
       return ErrorFactory.createSuccess(new Map([[`${unionModel.name}.go`, unionCode]]), {
         generatedFiles: [`${unionModel.name}.go`],
-        unionName: unionModel.name,
+        modelName: unionModel.name,
       });
     } catch (error) {
       return defaultErrorHandler(error, {
         operation: "generateUnionType",
-        unionName: unionModel.name,
+        modelName: unionModel.name,
         variants: unionModel.variants.map(v => v.name),
       });
     }
@@ -293,17 +293,17 @@ export class StandaloneGoGenerator {
   }): GoEmitterResult {
     if (!unionModel.name) {
       return ErrorFactory.createValidationError("Union name is required", {
-        unionName: unionModel.name || "undefined",
+        modelName: unionModel.name || "undefined",
       });
     }
 
     if (!unionModel.variants || unionModel.variants.length === 0) {
       return ErrorFactory.createValidationError("Union must have at least one variant", {
-        unionName: unionModel.name,
+        modelName: unionModel.name,
       });
     }
 
-    return ErrorFactory.createSuccess(new Map(), { validUnion: true, unionName: unionModel.name });
+    return ErrorFactory.createSuccess(new Map(), { validUnion: true, modelName: unionModel.name });
   }
 
   /**
@@ -327,7 +327,10 @@ export class StandaloneGoGenerator {
 
     // Handle discriminated unions
     if (unionModel.discriminator) {
-      return this.generateDiscriminatedUnionCode(unionModel);
+      return this.generateDiscriminatedUnionCode({
+        ...unionModel,
+        discriminator: unionModel.discriminator,
+      });
     }
 
     // Sealed interface definition
@@ -339,7 +342,8 @@ export class StandaloneGoGenerator {
     // Generate variant structs
     for (const variant of unionModel.variants) {
       // Use variant type name if available, otherwise fall back to variant name
-      let variantName = variant.type?.name || variant.name;
+      const typeName = this.getTypeName(variant.type);
+      let variantName = typeName || variant.name;
       
       // Ensure the variant name is properly capitalized
       variantName = this.capitalizeFirst(variantName);
@@ -401,7 +405,8 @@ export class StandaloneGoGenerator {
     // Generate variant structs with discriminator field
     for (const variant of unionModel.variants) {
       // Use variant type name if available, otherwise fall back to variant name
-      let variantName = variant.type?.name || variant.name;
+      const typeName = this.getTypeName(variant.type);
+      let variantName = typeName || variant.name;
       variantName = this.capitalizeFirst(variantName);
       
       lines.push(`// ${variantName} - ${unionModel.name} variant`);
@@ -457,7 +462,8 @@ export class StandaloneGoGenerator {
     unionModel: { name: string }
   ): boolean {
     // If variant type name matches union name, it's recursive
-    if (variant.type?.name === unionModel.name) {
+    const typeName = variant.type ? this.getTypeName(variant.type) : undefined;
+    if (typeName === unionModel.name) {
       return true;
     }
     
@@ -483,6 +489,20 @@ export class StandaloneGoGenerator {
    */
   private capitalizeWords(str: string): string {
     return str.split(' ').map(word => this.capitalizeFirst(word)).join(' ');
+  }
+
+  /**
+   * Get type name from TypeSpecTypeNode safely
+   * Only scalar, model, enum, and template types have name property
+   */
+  private getTypeName(type?: TypeSpecTypeNode): string | undefined {
+    if (!type) return undefined;
+    
+    if ('name' in type) {
+      return (type as { name: string }).name;
+    }
+    
+    return undefined;
   }
 
   /**
@@ -521,7 +541,7 @@ export class StandaloneGoGenerator {
           return ErrorFactory.createValidationError(`Unsupported type for property: ${propName}`, {
             modelName: model.name,
             propertyName: propName,
-            type:
+            invalidValue:
               typeof propNode.type === "object" && propNode.type && "kind" in propNode.type
                 ? propNode.type.kind
                 : propNode.type,
@@ -532,7 +552,6 @@ export class StandaloneGoGenerator {
           operation: "validateProperty",
           modelName: model.name,
           propertyName: propName,
-          type: propNode.type,
         });
       }
     }

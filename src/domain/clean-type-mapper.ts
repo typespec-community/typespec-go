@@ -178,12 +178,9 @@ export class CleanTypeMapper {
       }
     }
 
-    return ErrorFactory.createTypeMappingError(`Unknown scalar type for field ${fieldName}`, {
-      typeSpecType: JSON.stringify(type),
-      fieldName,
-      supportedTypes: Object.keys(this.SCALAR_MAPPINGS),
-      resolution: "Use supported scalar types or define custom mapping",
-    }) as GoTypeMapping;
+    // Return fallback type for unknown scalars
+    console.warn(`Unknown scalar type for field ${fieldName}: ${JSON.stringify(type)}`);
+    return { goType: "interface{}", usePointerForOptional: true };
   }
 
   /**
@@ -209,11 +206,9 @@ export class CleanTypeMapper {
       };
     }
 
-    return ErrorFactory.createTypeMappingError(`Invalid model type for field ${fieldName}`, {
-      typeSpecType: JSON.stringify(type),
-      fieldName,
-      resolution: "Ensure model type has valid name property",
-    }) as GoTypeMapping;
+    // Return fallback type for invalid model types
+    console.warn(`Invalid model type for field ${fieldName}: ${JSON.stringify(type)}`);
+    return { goType: "interface{}", usePointerForOptional: true };
   }
 
   /**

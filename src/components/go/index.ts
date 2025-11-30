@@ -7,6 +7,8 @@
 // Core generation components
 export { GoStructDeclaration } from "./GoStructDeclaration.js";
 export { GoPackageDirectory } from "./GoPackageDirectory.js";
+export { GoEnumDeclaration, getEnumValues } from "./GoEnumDeclaration.js";
+export { GoUnionDeclaration } from "./GoUnionDeclaration.js";
 
 // Re-export Alloy-JS Go components for convenience
 export {

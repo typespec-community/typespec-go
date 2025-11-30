@@ -7,8 +7,8 @@ import { expect, test } from "vitest";
 import { render } from "@alloy-js/core";
 
 test("Alloy-JS For component import", async () => {
-  // Test we can import For component
-  const { For } = await import("@alloy-js/go");
+  // Test we can import For component from @alloy-js/core
+  const { For } = await import("@alloy-js/core");
   expect(For).toBeDefined();
 });
 

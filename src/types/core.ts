@@ -12,16 +12,16 @@ import type {
   Scalar,
   Union,
   Enum,
-  String as StringType,
-  Boolean as BooleanType,
-  Number as NumberType,
+  UnionVariant,
+  EnumMember,
 } from "@typespec/compiler";
 
 /**
  * Enhanced Model interface with required TypeSpec v1.7.0 properties
  */
-export interface TypeSpecModel extends Model {
-  /** All properties with proper typing */
+export interface TypeSpecModel {
+  name: string;
+  kind: "Model";
   properties?: ReadonlyMap<string, ModelProperty>;
 }
 
@@ -44,16 +44,18 @@ export interface TypeSpecScalar extends Scalar {
 /**
  * TypeSpec Union types
  */
-export interface TypeSpecUnion extends Union {
-  /** All union variants */
+export interface TypeSpecUnion {
+  name?: string;
+  kind: "Union";
   variants: ReadonlyMap<string | symbol, UnionVariant>;
 }
 
 /**
  * TypeSpec Enum types
  */
-export interface TypeSpecEnum extends Enum {
-  /** All enum members */
+export interface TypeSpecEnum {
+  name?: string;
+  kind: "Enum";
   members: ReadonlyMap<string, EnumMember>;
 }
 
@@ -62,13 +64,13 @@ export interface TypeSpecEnum extends Enum {
  */
 export const TypeSpecTypeGuards = {
   /** Check if type is String */
-  isString: (type: Type): type is StringType => type.kind === "String",
+  isString: (type: Type): boolean => type.kind === "String",
 
   /** Check if type is Boolean */
-  isBoolean: (type: Type): type is BooleanType => type.kind === "Boolean",
+  isBoolean: (type: Type): boolean => type.kind === "Boolean",
 
   /** Check if type is Number */
-  isNumber: (type: Type): type is NumberType => type.kind === "Number",
+  isNumber: (type: Type): boolean => type.kind === "Number",
 
   /** Check if type is Model */
   isModel: (type: Type): type is Model => type.kind === "Model",
@@ -121,7 +123,7 @@ export class TypeSpecTypeMapper {
     // Built-in scalars
     if (TypeSpecTypeGuards.isString(type)) return "string";
     if (TypeSpecTypeGuards.isBoolean(type)) return "bool";
-    if (TypeSpecTypeGuards.isNumber(type)) return this.mapNumericByName(type);
+    if (TypeSpecTypeGuards.isNumber(type)) return "float64";
     if (TypeSpecTypeGuards.isScalar(type)) return this.mapScalarType(type);
 
     // Model types
@@ -136,50 +138,6 @@ export class TypeSpecTypeMapper {
    */
   private static getModelName(model: Model): string {
     return model.name || "UnknownModel";
-  }
-
-  /**
-   * Map TypeSpec number types to Go types
-   */
-  private static mapNumberType(type: NumberType): string {
-    // TypeSpec v1.7.0 number types
-    // NumericLiteral doesn't have name, use value to determine type
-    const value = type.value;
-    if (Number.isInteger(value)) {
-      if (value >= 0) {
-        if (value <= 255) return "uint8";
-        if (value <= 65535) return "uint16";
-        if (value <= 4294967295) return "uint32";
-        return "uint64";
-      } else {
-        if (value >= -128 && value <= 127) return "int8";
-        if (value >= -32768 && value <= 32767) return "int16";
-        if (value >= -2147483648 && value <= 2147483647) return "int32";
-        return "int64";
-      }
-    }
-    return "float64";
-  }
-
-  /**
-   * Map numeric type based on intrinsic scalar name if available
-   */
-  private static mapNumericByName(type: NumberType): string {
-    // Check if this is a numeric type with a name (intrinsic scalar)
-    const typeString = type.valueAsString;
-    if (typeString === "int8") return "int8";
-    if (typeString === "int16") return "int16";
-    if (typeString === "int32") return "int32";
-    if (typeString === "int64") return "int64";
-    if (typeString === "uint8") return "uint8";
-    if (typeString === "uint16") return "uint16";
-    if (typeString === "uint32") return "uint32";
-    if (typeString === "uint64") return "uint64";
-    if (typeString === "float32") return "float32";
-    if (typeString === "float64") return "float64";
-
-    // Fallback to value-based mapping
-    return this.mapNumberType(type);
   }
 
   /**

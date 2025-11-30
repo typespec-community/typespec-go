@@ -9,13 +9,13 @@
  * Type mapping result with discriminated union
  */
 export interface TypeMappingResult {
-  _tag: "success" | "invalid-model" | "type-mapping-failure" | "unsupported-type";
+  _tag: "success" | "invalid-model" | "type-mapping-failure" | "unsupported-type" | "invalid-array";
   result?: string;
   modelName?: string;
   fieldName?: string;
-  type?: any;
+  type?: unknown;
   reason?: string;
-  elementType?: any;
+  elementType?: unknown;
   errors?: readonly string[];
 }
 

@@ -1,8 +1,7 @@
 /**
  * Type Mapping Service - Unified Delegation
  *
- * SINGLE SOURCE OF TRUTH: Delegates to ComprehensiveTypeMapper
- * ELIMINATES DUPLICATION: Removes 200+ lines of duplicate logic
+ * SINGLE SOURCE OF TRUTH: TypeSpec type mapping for Go code generation
  * ZERO ANY TYPES: Professional type safety throughout
  */
 
@@ -13,7 +12,6 @@ import type {
   GoStructField,
 } from "../types/emitter.types.js";
 import { GoPrimitiveType } from "../types/emitter.types.js";
-import { CleanTypeMapper } from "../domain/clean-type-mapper.js";
 
 /**
  * TypeSpec Array Type interface
@@ -106,7 +104,7 @@ function mapArrayType(program: Program, type: Type): TypeMappingResult {
 
   // Handle potential Array type (check for elementType property)
   if ("elementType" in type) {
-    const elementType = (type as ArrayType).elementType;
+    const elementType = (type as unknown as ArrayType).elementType;
     const elementMapping = mapTypeSpecType(program, elementType);
 
     if (elementMapping._tag === "success") {
@@ -148,8 +146,9 @@ function mapModelType(program: Program, type: Model): TypeMappingResult {
  * Handle TypeSpec union types with smart mapping
  */
 function mapUnionType(program: Program, type: Type): TypeMappingResult {
-  if ("variants" in type) {
-    const variants = (type as UnionType).variants;
+  if ("variants" in type && type.kind === "Union") {
+    // TypeSpec Union has RekeyableMap, convert to array
+    const variants = Array.from((type as { variants: Map<unknown, UnionVariant> }).variants.values());
 
     // If all variants are strings, map to string
     if (variants.every((v) => v.type?.kind === "String")) {
@@ -188,8 +187,29 @@ function mapEnumType(program: Program, type: Type): TypeMappingResult {
  * Compile-time type safety
  */
 export function mapTypeSpecType(program: Program, type: Type): TypeMappingResult {
-  // DELEGATE TO CLEAN UNIFIED SYSTEM: Single source of truth
-  return CleanTypeMapper.mapTypeSpecTypeService(program, type);
+  // Handle based on TypeSpec type kind
+  switch (type.kind) {
+    case "String":
+      return { _tag: "success", result: "string" };
+    case "Boolean":
+      return { _tag: "success", result: "bool" };
+    case "Number":
+      return { _tag: "success", result: "float64" };
+    case "Scalar":
+      return { _tag: "success", result: mapScalarToGoPrimitive(type as Scalar) };
+    case "Model":
+      return mapModelType(program, type as Model);
+    case "Union":
+      return mapUnionType(program, type);
+    case "Enum":
+      return mapEnumType(program, type);
+    default:
+      return {
+        _tag: "unsupported-type",
+        type,
+        reason: `Unknown type kind: ${type.kind}`,
+      };
+  }
 }
 
 /**
@@ -201,25 +221,43 @@ export function createGoStructField(
   type: Type,
   isOptional: boolean = false,
 ): GoStructField {
-  // Use CleanTypeMapper for proper type mapping with pointer support
-  const typeMapping = CleanTypeMapper.mapTypeSpecType(type, fieldName);
-
-  let finalGoType = typeMapping.goType;
+  // Map TypeSpec compiler type to Go type string
+  let goType = "interface{}";
+  let usePointerForOptional = true;
   
+  switch (type.kind) {
+    case "String":
+      goType = "string";
+      break;
+    case "Boolean":
+      goType = "bool";
+      break;
+    case "Number":
+      goType = "float64";
+      break;
+    case "Scalar":
+      goType = mapScalarToGoPrimitive(type as Scalar);
+      break;
+    case "Model":
+      goType = (type as Model).name || "interface{}";
+      break;
+    case "Enum":
+      goType = "string"; // Enums map to strings
+      break;
+    case "Union":
+      goType = "interface{}"; // Unions require interface{}
+      break;
+  }
+
   // Apply pointer for optional fields if configured
-  if (isOptional && typeMapping.usePointerForOptional) {
+  let finalGoType = goType;
+  if (isOptional && usePointerForOptional) {
     finalGoType = `*${finalGoType}`;
   }
 
   // Handle failed mappings gracefully
   if (!finalGoType || finalGoType === "interface{}") {
-    console.warn(`Type mapping failed for field ${fieldName}:`, type);
-    return {
-      name: fieldName,
-      goType: "interface{}",
-      jsonTag: `json:"${fieldName}"`,
-      isOptional,
-    };
+    console.warn(`Type mapping fallback for field ${fieldName}:`, type.kind);
   }
 
   return {

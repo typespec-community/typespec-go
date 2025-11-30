@@ -6,29 +6,21 @@
  * PURE FUNCTIONS ONLY
  */
 
-import type { Program, Model } from "@typespec/compiler";
+import type { Program, Model, Type } from "@typespec/compiler";
 import type {
   GoStructGenerationResult,
   GoStructField,
   GoGeneratorConfig,
+  TypeMappingResult,
 } from "../types/emitter.types.js";
-import type { TypeSpecKind } from "../types/typespec-domain.js";
 import { createGoStructField } from "./type-mapping.service.js";
 
 /**
- * Type mapping result for inline function
+ * Type mapping error interface with field tracking
  */
-interface TypeMappingResult {
-  _tag: "success";
-  result: string;
-}
-
-/**
- * Type mapping error interface
- */
-interface TypeMappingError {
-  message: string;
-  type?: string;
+interface FieldTypeMappingError {
+  fieldName: string;
+  typeError: TypeMappingResult;
 }
 
 /**
@@ -88,7 +80,7 @@ export function generateGoStruct(
   try {
     // Generate struct fields with type safety
     const fields: GoStructField[] = [];
-    const typeMappingErrors: TypeMappingError[] = [];
+    const typeMappingErrors: FieldTypeMappingError[] = [];
 
     if (model.properties) {
       for (const [fieldName, prop] of model.properties) {
@@ -179,7 +171,7 @@ function generateStructCode(
 /**
  * Import the type mapping function (needed to avoid circular imports)
  */
-function mapTypeSpecType(program: Program, type: { kind: TypeSpecKind }): TypeMappingResult {
+function mapTypeSpecType(program: Program, type: Type): TypeMappingResult {
   // This would be imported from type-mapping.service
   // For now, inline to avoid circular imports
   switch (type.kind) {
@@ -187,6 +179,12 @@ function mapTypeSpecType(program: Program, type: { kind: TypeSpecKind }): TypeMa
       return { _tag: "success", result: "string" };
     case "Boolean":
       return { _tag: "success", result: "bool" };
+    case "Number":
+      return { _tag: "success", result: "float64" };
+    case "Scalar":
+      return { _tag: "success", result: "interface{}" };
+    case "Model":
+      return { _tag: "success", result: (type as Model).name || "interface{}" };
     default:
       return { _tag: "success", result: "interface{}" };
   }

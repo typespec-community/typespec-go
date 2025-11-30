@@ -28,21 +28,9 @@ export interface Success<T> {
 }
 
 /**
- * Go Emitter Result union type
- */
-export type GoEmitterResult<T = Map<string, string>> =
-  | Success<T>
-  | TypeSpecCompilerError
-  | GoCodeGenerationError
-  | ValidationError
-  | SystemError
-  | TypeMappingError;
-
-/**
  * TypeSpec Compiler Error
  */
 export interface TypeSpecCompilerError extends BaseError {
-  readonly _tag: "error";
   readonly kind: "typespec_compiler";
   readonly modelName?: string;
   readonly propertyName?: string;
@@ -54,7 +42,6 @@ export interface TypeSpecCompilerError extends BaseError {
  * Go Code Generation Error
  */
 export interface GoCodeGenerationError extends BaseError {
-  readonly _tag: "error";
   readonly kind: "go_code_generation";
   readonly fileName?: string;
   readonly goCode?: string;
@@ -66,7 +53,6 @@ export interface GoCodeGenerationError extends BaseError {
  * Validation Error
  */
 export interface ValidationError extends BaseError {
-  readonly _tag: "error";
   readonly kind: "validation";
   readonly modelName?: string;
   readonly propertyName?: string;
@@ -78,12 +64,39 @@ export interface ValidationError extends BaseError {
  * System Error
  */
 export interface SystemError extends BaseError {
-  readonly _tag: "error";
   readonly kind: "system";
   readonly stack?: string;
   readonly cause?: Error;
   readonly resolution?: string;
 }
+
+/**
+ * Type Mapping Error
+ */
+export interface TypeMappingError extends BaseError {
+  readonly kind: "type_mapping";
+  readonly typeSpecType?: string;
+  readonly fieldName?: string;
+  readonly supportedTypes?: string[];
+  readonly resolution?: string;
+}
+
+/**
+ * All error types union
+ */
+export type AnyError = 
+  | TypeSpecCompilerError
+  | GoCodeGenerationError
+  | ValidationError
+  | SystemError
+  | TypeMappingError;
+
+/**
+ * Go Emitter Result union type
+ */
+export type GoEmitterResult<T = Map<string, string>> =
+  | Success<T>
+  | AnyError;
 
 /**
  * Error Factory - Single source of truth for error creation
@@ -95,19 +108,6 @@ export class ErrorFactory {
    */
   private static generateErrorId(): string {
     return `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  /**
-   * Create base error structure
-   */
-  private static createBaseError(kind: string, message: string): BaseError {
-    return {
-      _tag: "error",
-      kind,
-      message,
-      timestamp: new Date(),
-      errorId: ErrorFactory.generateErrorId(),
-    };
   }
 
   /**
@@ -133,9 +133,12 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): TypeSpecCompilerError {
-    const base = ErrorFactory.createBaseError("typespec_compiler", message);
     return {
-      ...base,
+      _tag: "error",
+      kind: "typespec_compiler",
+      message,
+      timestamp: new Date(),
+      errorId: ErrorFactory.generateErrorId(),
       modelName: options?.modelName,
       propertyName: options?.propertyName,
       typeSpecSource: options?.typeSpecSource,
@@ -155,9 +158,12 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): GoCodeGenerationError {
-    const base = ErrorFactory.createBaseError("go_code_generation", message);
     return {
-      ...base,
+      _tag: "error",
+      kind: "go_code_generation",
+      message,
+      timestamp: new Date(),
+      errorId: ErrorFactory.generateErrorId(),
       fileName: options?.fileName,
       goCode: options?.goCode,
       line_number: options?.line_number,
@@ -177,9 +183,12 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): ValidationError {
-    const base = ErrorFactory.createBaseError("validation", message);
     return {
-      ...base,
+      _tag: "error",
+      kind: "validation",
+      message,
+      timestamp: new Date(),
+      errorId: ErrorFactory.generateErrorId(),
       modelName: options?.modelName,
       propertyName: options?.propertyName,
       invalidValue: options?.invalidValue,
@@ -199,9 +208,12 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): TypeMappingError {
-    const base = ErrorFactory.createBaseError("type_mapping", message);
     return {
-      ...base,
+      _tag: "error",
+      kind: "type_mapping",
+      message,
+      timestamp: new Date(),
+      errorId: ErrorFactory.generateErrorId(),
       typeSpecType: options?.typeSpecType,
       fieldName: options?.fieldName,
       supportedTypes: options?.supportedTypes,
@@ -219,9 +231,12 @@ export class ErrorFactory {
       resolution?: string;
     },
   ): SystemError {
-    const base = ErrorFactory.createBaseError("system", message);
     return {
-      ...base,
+      _tag: "error",
+      kind: "system",
+      message,
+      timestamp: new Date(),
+      errorId: ErrorFactory.generateErrorId(),
       stack: error?.stack,
       cause: error,
       resolution: options?.resolution || "Check system resources and configuration",
@@ -238,7 +253,7 @@ export class ErrorFactory {
   /**
    * Check if result is error
    */
-  static isError(result: GoEmitterResult): result is BaseError {
+  static isError(result: GoEmitterResult): result is AnyError {
     return result._tag === "error";
   }
 

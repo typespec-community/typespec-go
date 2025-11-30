@@ -206,10 +206,16 @@ export class ErrorAnalysis {
   /**
    * Get recovery strategy for error
    */
-  static getRecoveryStrategy(error: BaseError): ErrorRecoveryStrategy {
+  static getRecoveryStrategy(error: GoEmitterResult): ErrorRecoveryStrategy {
+    if (error._tag === "success") {
+      return "log_and_continue";
+    }
+    
     switch (error.kind) {
-      case "validation":
-        return error.propertyName ? "skip_invalid_property" : "skip_invalid_model";
+      case "validation": {
+        const validationError = error as ValidationError;
+        return validationError.propertyName ? "skip_invalid_property" : "skip_invalid_model";
+      }
       case "type_mapping":
         return "use_fallback_type";
       case "system":
