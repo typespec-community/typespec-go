@@ -8,7 +8,7 @@
  * - cyclic dependency detection with pointer breaking
  */
 
-import { describe, it, expect, beforeAll } from "bun:test";
+import { describe, it, expect, beforeAll } from "vitest";
 import { StandaloneGoGenerator } from "../standalone-generator.js";
 
 describe("Model Composition Implementation", () => {

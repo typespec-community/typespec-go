@@ -118,6 +118,8 @@ export class CleanTypeMapper {
       result = this.mapUnionType(type, fieldName);
     } else if (this.isTypeSpecEnum(type)) {
       result = this.mapEnumType(type, fieldName);
+    } else if (this.isTypeSpecTemplate(type)) {
+      result = this.mapTemplateType(type, fieldName);
     } else {
       // Fallback with error
       result = {
@@ -304,6 +306,25 @@ export class CleanTypeMapper {
   }
 
   /**
+   * Map TypeSpec template type
+   */
+  private static mapTemplateType(
+    type: TypeSpecPropertyNode["type"],
+    fieldName?: string,
+  ): GoTypeMapping {
+    if (typeof type === "object" && type !== null && "name" in type) {
+      const templateName = (type as { name: string }).name;
+      // Template types become their parameter name in Go
+      return {
+        goType: templateName,
+        usePointerForOptional: false,
+      };
+    }
+
+    return { goType: "interface{}", usePointerForOptional: true };
+  }
+
+  /**
    * Type guard: Check if type is TypeSpec scalar
    */
   private static isTypeSpecScalar(type: unknown): boolean {
@@ -313,7 +334,10 @@ export class CleanTypeMapper {
       "name" in type &&
       typeof (type as { name: string }).name === "string" &&
       // Exclude model types (they have both name and kind)
-      (!("kind" in type) || (type as { kind: string }).kind !== "model")
+      (!("kind" in type) || (
+        (type as { kind: string }).kind !== "model" && 
+        (type as { kind: string }).kind !== "template"
+      ))
     );
   }
 
@@ -377,6 +401,18 @@ export class CleanTypeMapper {
       type !== null &&
       "kind" in type &&
       (type as { kind: string }).kind === "Enum"
+    );
+  }
+
+  /**
+   * Type guard: Check if type is TypeSpec template
+   */
+  private static isTypeSpecTemplate(type: unknown): boolean {
+    return (
+      typeof type === "object" &&
+      type !== null &&
+      "kind" in type &&
+      (type as { kind: string }).kind === "template"
     );
   }
 

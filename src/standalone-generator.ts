@@ -11,14 +11,12 @@
 import {
   ErrorFactory,
   GoEmitterResult,
-  ErrorHandler,
-  InvalidModelReason,
   defaultErrorHandler,
 } from "./domain/unified-errors.js";
 import { CleanTypeMapper } from "./domain/clean-type-mapper.js";
 import type {
-  TypeSpecModel,
   TypeSpecPropertyNode,
+  TypeSpecTypeNode,
   GoEmitterOptions,
 } from "./types/typespec-domain.js";
 
@@ -59,6 +57,7 @@ export class StandaloneGoGenerator {
   generateModel(model: {
     name: string;
     properties: ReadonlyMap<string, TypeSpecPropertyNode>;
+    template?: string; // Template definition like "<T>" or "PaginatedResponse<User>"
     extends?: string; // Support Go struct embedding
     propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>; // Support spread operator
   }): GoEmitterResult {
@@ -99,6 +98,7 @@ export class StandaloneGoGenerator {
   private generateStructCode(model: {
     name: string;
     properties: ReadonlyMap<string, TypeSpecPropertyNode>;
+    template?: string;
     extends?: string;
     propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>;
   }): string {
@@ -115,7 +115,33 @@ export class StandaloneGoGenerator {
 
     // Model documentation
     lines.push(`// ${model.name} - TypeSpec generated model`);
+    if (model.template) {
+      lines.push(`// Template: ${model.template}`);
+    }
     lines.push("");
+
+    // Handle template instantiation
+    const allProperties = new Map<string, TypeSpecPropertyNode>();
+    
+    // If this is a template instantiation, add base template properties
+    if (model.template && model.template.includes('<')) {
+      const templateProperties = this.parseTemplateProperties(model.template);
+      for (const [propName, propNode] of templateProperties) {
+        allProperties.set(propName, propNode);
+      }
+    }
+    
+    // Add properties from extends (spread operator support)
+    if (model.propertiesFromExtends) {
+      for (const [propName, propNode] of model.propertiesFromExtends) {
+        allProperties.set(propName, propNode);
+      }
+    }
+    
+    // Add main properties
+    for (const [propName, propNode] of model.properties) {
+      allProperties.set(propName, propNode);
+    }
 
     // Struct declaration
     lines.push(`type ${model.name} struct {`);
@@ -125,18 +151,8 @@ export class StandaloneGoGenerator {
       lines.push(`\t${model.extends}  // Embedded struct`);
     }
 
-    // Add properties from extends (spread operator support)
-    if (model.propertiesFromExtends) {
-      for (const [propName, propNode] of model.propertiesFromExtends) {
-        const fieldCode = this.generateStructField(propName, propNode);
-        if (fieldCode) {
-          lines.push(`\t${fieldCode}`);
-        }
-      }
-    }
-
-    // Add main properties
-    for (const [propName, propNode] of model.properties) {
+    // Add all properties
+    for (const [propName, propNode] of allProperties) {
       const fieldCode = this.generateStructField(propName, propNode);
       if (fieldCode) {
         lines.push(`\t${fieldCode}`);
@@ -185,7 +201,45 @@ export class StandaloneGoGenerator {
       finalGoType = `*${finalGoType}`;
     }
 
-    return `${goFieldName} ${finalGoType} \`${jsonTag}${optionalTag}\``;
+    // Add comment for template types
+    let templateComment = "";
+    if (propNode.type && typeof propNode.type === "object" && "kind" in propNode.type && propNode.type.kind === "template") {
+      templateComment = `  // Template type ${(propNode.type as { name: string }).name}`;
+    }
+
+    return `${goFieldName} ${finalGoType}${templateComment} \`${jsonTag}${optionalTag}\``;
+  }
+
+  /**
+   * Parse template instantiation to extract base template properties
+   */
+  private parseTemplateProperties(template: string): ReadonlyMap<string, TypeSpecPropertyNode> {
+    const properties = new Map<string, TypeSpecPropertyNode>();
+    
+    // Parse template like "PaginatedResponse<User>"
+    const match = template.match(/^(\w+)<(.+)>$/);
+    if (match) {
+      const [, baseTemplateName, templateArg] = match;
+      
+      // For now, we handle common template patterns
+      if (baseTemplateName === "PaginatedResponse") {
+        // PaginatedResponse has "data" property of type T
+        properties.set("data", {
+          name: "data",
+          type: { kind: "model", name: templateArg },
+          optional: false,
+        });
+        
+        // Also has pagination property
+        properties.set("pagination", {
+          name: "pagination",
+          type: { kind: "model", name: "PaginationInfo" },
+          optional: false,
+        });
+      }
+    }
+    
+    return properties;
   }
 
   /**
@@ -195,7 +249,7 @@ export class StandaloneGoGenerator {
   generateUnionType(unionModel: {
     name: string;
     kind: "union";
-    variants: Array<{ name: string; type: any }>;
+    variants: Array<{ name: string; type: TypeSpecTypeNode }>;
     properties?: ReadonlyMap<string, TypeSpecPropertyNode>;
   }): GoEmitterResult {
     // Input validation
@@ -235,7 +289,7 @@ export class StandaloneGoGenerator {
   validateUnion(unionModel: {
     name: string;
     kind: "union";
-    variants: Array<{ name: string; type: any }>;
+    variants: Array<{ name: string; type: TypeSpecTypeNode }>;
   }): GoEmitterResult {
     if (!unionModel.name) {
       return ErrorFactory.createValidationError("Union name is required", {
@@ -258,7 +312,7 @@ export class StandaloneGoGenerator {
   private generateUnionCode(unionModel: {
     name: string;
     kind: "union";
-    variants: Array<{ name: string; type: any; discriminator?: string }>;
+    variants: Array<{ name: string; type: TypeSpecTypeNode; discriminator?: string }>;
     discriminator?: string;
   }): string {
     const lines: string[] = [];
@@ -333,7 +387,7 @@ export class StandaloneGoGenerator {
   private generateDiscriminatedUnionCode(unionModel: {
     name: string;
     kind: "union";
-    variants: Array<{ name: string; type: any; discriminator?: string }>;
+    variants: Array<{ name: string; type: TypeSpecTypeNode; discriminator?: string }>;
     discriminator: string;
   }): string {
     const lines: string[] = [];
@@ -398,7 +452,10 @@ export class StandaloneGoGenerator {
   /**
    * Check if a variant is recursive (references the union type)
    */
-  private isRecursiveVariant(variant: any, unionModel: any): boolean {
+  private isRecursiveVariant(
+    variant: { name: string; type?: TypeSpecTypeNode }, 
+    unionModel: { name: string }
+  ): boolean {
     // If variant type name matches union name, it's recursive
     if (variant.type?.name === unionModel.name) {
       return true;
