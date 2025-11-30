@@ -1,6 +1,6 @@
 package reflection
 
-import "time"import "encoding/json"// Go types from TypeSpec namespace: Reflection
+// Go types from TypeSpec namespace: Reflection
 type Model struct {
 
 }

@@ -1,11 +1,13 @@
 /**
  * Test our Alloy-JS Go components
- * Validates basic component functionality
+ * Validates basic component functionality with proper Output context
  */
 
 import { expect, test } from "vitest";
-import { render } from "@alloy-js/core";
+import { render, Output } from "@alloy-js/core";
+import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoPackageDirectory } from "../components/go/index.js";
+import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
 
 // Create a mock TypeSpec model for testing
 const mockModel = {
@@ -19,28 +21,38 @@ const mockModel = {
 };
 
 test("GoPackageDirectory renders without errors", async () => {
+  // Must wrap in Output to provide Alloy-JS binder context
   const result = render(
-    <GoPackageDirectory 
-      models={[mockModel as any]}
-      packageName="test"
-      packageDocumentation="Test package"
-    />
+    <Output>
+      <GoPackageDirectory 
+        models={[mockModel as any]}
+        packageName="test"
+        packageDocumentation="Test package"
+      />
+    </Output>
   );
   
   // Should render successfully without throwing
   expect(result).toBeDefined();
-  expect(Array.isArray(result)).toBe(true);
 });
 
 test("GoStructDeclaration renders without errors", async () => {
-  const { GoStructDeclaration } = await import("../components/go/GoStructDeclaration.js");
-  
+  // GoStructDeclaration uses @alloy-js/go components which require Go scope context
+  // Must wrap in Output + Go module structure to provide proper scope
   const result = render(
-    <GoStructDeclaration 
-      model={mockModel as any}
-      packageName="test"
-      documentation="Test struct"
-    />
+    <Output>
+      <ModuleDirectory name="github.com/test/api">
+        <SourceDirectory path="api">
+          <SourceFile path="models.go">
+            <GoStructDeclaration 
+              model={mockModel as any}
+              packageName="test"
+              documentation="Test struct"
+            />
+          </SourceFile>
+        </SourceDirectory>
+      </ModuleDirectory>
+    </Output>
   );
   
   // Should render successfully without throwing

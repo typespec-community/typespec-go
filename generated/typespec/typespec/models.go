@@ -1,6 +1,6 @@
 package typespec
 
-import "time"import "encoding/json"// Go types from TypeSpec namespace: TypeSpec
+// Go types from TypeSpec namespace: TypeSpec
 type Array struct {
 
 }
@@ -54,9 +54,9 @@ type OperationExample struct {
 }
 // Go types from TypeSpec namespace: TypeSpec
 type VisibilityFilter struct {
-  Any Array `json:"any,omitempty"`
-  All Array `json:"all,omitempty"`
-  None Array `json:"none,omitempty"`
+  Any []EnumMember `json:"any,omitempty"`
+  All []EnumMember `json:"all,omitempty"`
+  None []EnumMember `json:"none,omitempty"`
 }
 // Go types from TypeSpec namespace: TypeSpec
 type Create struct {

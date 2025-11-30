@@ -67,6 +67,7 @@ function capitalize(str: string): string {
 /**
  * TypeSpec to Go type mapping with proper type safety
  * Maps TypeSpec scalar types to Go equivalent types
+ * Handles arrays, enums, models, and unions
  */
 function mapTypeSpecToGoType(type: any): string {
   switch (type.kind) {
@@ -76,6 +77,7 @@ function mapTypeSpecToGoType(type: any): string {
       return "bool";
     case "Number":
       return "float64"; // Default number type in Go
+    
     case "Scalar":
       const scalarName = type.name?.toLowerCase() || "";
       const scalarMap: Record<string, string> = {
@@ -90,9 +92,12 @@ function mapTypeSpecToGoType(type: any): string {
         float32: "float32",
         float64: "float64",
         bytes: "[]byte",
+        string: "string",
+        boolean: "bool",
         plaindate: "time.Time",
         plaintime: "time.Time",
         utcdatetime: "time.Time",
+        offsetdatetime: "time.Time",
         duration: "time.Duration",
         // Extended scalar types
         uuid: "string", // UUID as string, could use github.com/google/uuid
@@ -102,10 +107,38 @@ function mapTypeSpecToGoType(type: any): string {
         decimal64: "float64",  // Could use shopspring/decimal
       };
       return scalarMap[scalarName] || type.name || "interface{}";
+    
     case "Model":
+      // Handle TypeSpec's built-in Array model
+      if (type.name === "Array" && type.templateMapper) {
+        const elementType = type.templateMapper.args?.[0];
+        if (elementType) {
+          return `[]${mapTypeSpecToGoType(elementType)}`;
+        }
+        return "[]interface{}";
+      }
+      // Handle TypeSpec's built-in Record model
+      if (type.name === "Record" && type.templateMapper) {
+        const keyType = type.templateMapper.args?.[0];
+        const valueType = type.templateMapper.args?.[1];
+        const goKey = keyType ? mapTypeSpecToGoType(keyType) : "string";
+        const goValue = valueType ? mapTypeSpecToGoType(valueType) : "interface{}";
+        return `map[${goKey}]${goValue}`;
+      }
       return type.name || "interface{}";
+    
+    case "Enum":
+      // Use the enum name directly - it will be defined in enums.go
+      return type.name || "interface{}";
+    
     case "Union":
-      return "interface{}"; // Unions require interface{} or custom handling
+      // Use the union interface name if named, otherwise interface{}
+      return type.name || "interface{}";
+    
+    case "Tuple":
+      // Go doesn't have tuples, use slice
+      return "[]interface{}";
+    
     default:
       return "interface{}";
   }
