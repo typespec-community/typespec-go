@@ -16,6 +16,8 @@ interface GoStructDeclarationProps {
   documentation?: string;
   /** Package name for struct */
   packageName?: string;
+  /** Use pointers for optional model/struct fields (default: true) */
+  usePointersForOptional?: boolean;
 }
 
 /**
@@ -26,7 +28,8 @@ interface GoStructDeclarationProps {
 export function GoStructDeclaration({ 
   model, 
   documentation, 
-  packageName = "api" 
+  packageName = "api",
+  usePointersForOptional = true
 }: GoStructDeclarationProps) {
   // Generate struct fields using Alloy-JS components with <For> iteration
   return (
@@ -39,7 +42,13 @@ export function GoStructDeclaration({
         <For each={Array.from(model.properties?.values() || [])}>
           {(prop: ModelProperty) => {
             const fieldName = capitalize(prop.name);
-            const goType = mapTypeSpecToGoType(prop.type);
+            let goType = mapTypeSpecToGoType(prop.type);
+            
+            // Add pointer for optional model/struct fields
+            if (prop.optional && usePointersForOptional && isNestedModelType(prop.type)) {
+              goType = `*${goType}`;
+            }
+            
             const jsonTag = prop.optional 
               ? {json: `${prop.name},omitempty`}
               : {json: prop.name};
@@ -56,6 +65,17 @@ export function GoStructDeclaration({
       </StructDeclaration>
     </TypeDeclaration>
   );
+}
+
+/**
+ * Check if type is a nested model that should use pointer for optional fields
+ * Returns true for Model types (excluding Array and Record)
+ */
+function isNestedModelType(type: Type): boolean {
+  if (type.kind !== "Model") return false;
+  // Don't use pointer for built-in collection types
+  if (type.name === "Array" || type.name === "Record") return false;
+  return true;
 }
 
 /**
