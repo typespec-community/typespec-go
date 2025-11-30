@@ -5,7 +5,7 @@
  */
 
 import type { Enum, EnumMember } from "@typespec/compiler";
-import { refkey, For } from "@alloy-js/core";
+import { capitalize } from "../../utils/strings.js";
 
 interface GoEnumDeclarationProps {
   /** TypeSpec enum to convert to Go constants */
@@ -92,13 +92,6 @@ function generateEnumCode(
   lines.push(`}`);
   
   return lines.join("\n");
-}
-
-/**
- * Capitalize first letter
- */
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 /**

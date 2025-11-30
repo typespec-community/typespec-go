@@ -8,7 +8,7 @@ import type { EmitContext, Program, Model, Namespace, Enum, Union } from "@types
 import { writeOutput } from "@typespec/emitter-framework";
 import { Output } from "@alloy-js/core";
 import { GoPackageDirectory } from "../components/go/index.js";
-import { join, relative } from "path";
+import { join } from "path";
 
 /** Namespace group containing models, enums, and unions */
 interface NamespaceGroup {

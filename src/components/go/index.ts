@@ -9,6 +9,7 @@ export { GoStructDeclaration } from "./GoStructDeclaration.js";
 export { GoPackageDirectory } from "./GoPackageDirectory.js";
 export { GoEnumDeclaration, getEnumValues } from "./GoEnumDeclaration.js";
 export { GoUnionDeclaration } from "./GoUnionDeclaration.js";
+export { GoModFile } from "./GoModFile.js";
 
 // Re-export Alloy-JS Go components for convenience
 export {

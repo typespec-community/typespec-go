@@ -4,12 +4,22 @@
  * Eliminates all string-based logic in favor of component-based generation
  */
 
-import type { Model, Enum, Union } from "@typespec/compiler";
+import type { Model, Enum, Union, Type } from "@typespec/compiler";
 import { For } from "@alloy-js/core";
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoStructDeclaration } from "./GoStructDeclaration.js";
 import { GoEnumDeclaration } from "./GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "./GoUnionDeclaration.js";
+import { GoModFile } from "./GoModFile.js";
+
+/**
+ * Type guard to check if a TypeSpec Type is a time-related scalar
+ */
+function isTimeType(type: Type): boolean {
+  if (type.kind !== "Scalar") return false;
+  const scalarName = type.name?.toLowerCase() || "";
+  return ["plaindate", "plaintime", "utcdatetime", "offsetdatetime", "duration"].includes(scalarName);
+}
 
 interface GoPackageDirectoryProps {
   /** Models to include in package */
@@ -24,6 +34,10 @@ interface GoPackageDirectoryProps {
   packageDocumentation?: string;
   /** Module path for Go module */
   modulePath?: string;
+  /** Generate go.mod file */
+  generateGoMod?: boolean;
+  /** Go version for go.mod (default: "1.21") */
+  goVersion?: string;
 }
 
 /**
@@ -56,7 +70,9 @@ export function GoPackageDirectory({
   unions = [],
   packageName = "api",
   packageDocumentation,
-  modulePath
+  modulePath,
+  generateGoMod = false,
+  goVersion = "1.21"
 }: GoPackageDirectoryProps) {
   const moduleDirectory = getModulePath(packageName, modulePath);
   const hasEnums = enums.length > 0;
@@ -67,12 +83,8 @@ export function GoPackageDirectory({
   const needsTimeImport = models.some(model => {
     if (!model.properties) return false;
     for (const prop of model.properties.values()) {
-      const propType = prop.type as any;
-      if (propType.kind === "Scalar") {
-        const scalarName = propType.name?.toLowerCase() || "";
-        if (["plaindate", "plaintime", "utcdatetime", "offsetdatetime", "duration"].includes(scalarName)) {
-          return true;
-        }
+      if (isTimeType(prop.type)) {
+        return true;
       }
     }
     return false;
@@ -80,6 +92,12 @@ export function GoPackageDirectory({
   
   return (
     <ModuleDirectory name={moduleDirectory}>
+      {/* go.mod file at module root */}
+      {generateGoMod && (
+        <SourceFile path="go.mod">
+          {GoModFile({ modulePath: moduleDirectory, goVersion })}
+        </SourceFile>
+      )}
       <SourceDirectory path={packageName}>
         {/* Main models file with proper import block */}
         <SourceFile path="models.go">

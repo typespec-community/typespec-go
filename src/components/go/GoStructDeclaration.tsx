@@ -4,9 +4,10 @@
  * Following Alloy-JS patterns with zero string-based logic
  */
 
-import type { Model, ModelProperty } from "@typespec/compiler";
+import type { Model, ModelProperty, Type } from "@typespec/compiler";
 import { TypeDeclaration, StructDeclaration, StructMember } from "@alloy-js/go";
 import { For, refkey } from "@alloy-js/core";
+import { capitalize } from "../../utils/strings.js";
 
 interface GoStructDeclarationProps {
   /** TypeSpec model to convert to Go struct */
@@ -58,10 +59,18 @@ export function GoStructDeclaration({
 }
 
 /**
- * Capitalize first letter for Go field names (export convention)
+ * Helper to safely get Type from template argument
+ * Template args can be Type | Value | IndeterminateEntity
  */
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+function getTypeFromTemplateArg(arg: unknown): Type | undefined {
+  if (arg && typeof arg === "object" && "kind" in arg) {
+    const argObj = arg as { kind: string };
+    // Check if it's a valid Type kind
+    if (["Model", "Scalar", "Enum", "Union", "String", "Boolean", "Number", "Tuple"].includes(argObj.kind)) {
+      return arg as Type;
+    }
+  }
+  return undefined;
 }
 
 /**
@@ -69,7 +78,7 @@ function capitalize(str: string): string {
  * Maps TypeSpec scalar types to Go equivalent types
  * Handles arrays, enums, models, and unions
  */
-function mapTypeSpecToGoType(type: any): string {
+function mapTypeSpecToGoType(type: Type): string {
   switch (type.kind) {
     case "String":
       return "string";
@@ -111,7 +120,7 @@ function mapTypeSpecToGoType(type: any): string {
     case "Model":
       // Handle TypeSpec's built-in Array model
       if (type.name === "Array" && type.templateMapper) {
-        const elementType = type.templateMapper.args?.[0];
+        const elementType = getTypeFromTemplateArg(type.templateMapper.args?.[0]);
         if (elementType) {
           return `[]${mapTypeSpecToGoType(elementType)}`;
         }
@@ -119,8 +128,8 @@ function mapTypeSpecToGoType(type: any): string {
       }
       // Handle TypeSpec's built-in Record model
       if (type.name === "Record" && type.templateMapper) {
-        const keyType = type.templateMapper.args?.[0];
-        const valueType = type.templateMapper.args?.[1];
+        const keyType = getTypeFromTemplateArg(type.templateMapper.args?.[0]);
+        const valueType = getTypeFromTemplateArg(type.templateMapper.args?.[1]);
         const goKey = keyType ? mapTypeSpecToGoType(keyType) : "string";
         const goValue = valueType ? mapTypeSpecToGoType(valueType) : "interface{}";
         return `map[${goKey}]${goValue}`;

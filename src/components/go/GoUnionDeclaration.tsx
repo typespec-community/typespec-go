@@ -5,6 +5,7 @@
  */
 
 import type { Union, UnionVariant } from "@typespec/compiler";
+import { capitalize } from "../../utils/strings.js";
 
 interface GoUnionDeclarationProps {
   /** TypeSpec union to convert to Go interface */
@@ -139,11 +140,4 @@ function getVariantGoType(variant: UnionVariant): string {
     default:
       return "interface{}";
   }
-}
-
-/**
- * Capitalize first letter
- */
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
