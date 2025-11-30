@@ -4,18 +4,18 @@
  * Following guide's "Domain-Specific Component Libraries" pattern
  */
 
-// Core Generation Components
-export { TypeExpression } from "./TypeExpression.js";
-export { GoModel } from "./GoModel.js";
+// Core Go Generation Components
+export * from "./go/index.js";
 
-// Re-export Alloy-JS Go components for convenience
+// Legacy Components (to be removed)
+// export { TypeExpression } from "./TypeExpression.js";
+// export { GoModel } from "./GoModel.js";
+
+// Re-export Alloy-JS core components
 export {
+  Output,
+  SourceDirectory,
   SourceFile,
-  StructTypeDeclaration,
-  StructDeclaration,
-  StructMember,
-  FunctionDeclaration,
-  VariableDeclaration,
-  ImportStatements,
-  InterfaceDeclaration,
-} from "@alloy-js/go";
+  refkey,
+  createRefkey,
+} from "@alloy-js/core";

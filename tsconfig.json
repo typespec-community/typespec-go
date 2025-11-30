@@ -19,6 +19,6 @@
     "declaration": true,
     "outDir": "./dist"
   },
-  "include": ["src/main.ts", "src/emitter/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

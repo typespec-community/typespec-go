@@ -5,6 +5,8 @@
   "dependencies": {
     "@alloy-js/core": "^0.21.0",
     "@alloy-js/go": "^0.1.0",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "@typespec/compiler": "1.7.0-dev.2",
     "@typespec/emitter-framework": "^0.14.0-dev.0"
   },
