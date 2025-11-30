@@ -43,7 +43,7 @@ function collectTypesByNamespace(globalNamespace: Namespace): Map<string, Namesp
   // Helper to ensure a group exists
   const ensureGroup = (name: string, namespace?: Namespace): NamespaceGroup => {
     if (!namespaceGroups.has(name)) {
-      namespaceGroups.set(name, { namespace, models: [], enums: [], unions: [] });
+      namespaceGroups.set(name, { namespace, models: [], enums: [], unions: [], operations: [] });
     }
     return namespaceGroups.get(name)!;
   };

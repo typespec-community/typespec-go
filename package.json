@@ -7,21 +7,22 @@
     "@alloy-js/go": "^0.1.0",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "@typespec/compiler": "1.7.0-dev.2",
-    "@typespec/emitter-framework": "^0.14.0-dev.0"
+    "@typespec/compiler": "^1.6.0",
+    "@typespec/emitter-framework": "^0.14.0-dev.0",
+    "@typespec/http": "^1.6.0"
   },
   "devDependencies": {
     "@alloy-js/cli": "^0.21.0",
     "@alloy-js/rollup-plugin": "^0.1.0",
     "@alloy-js/typescript": "^0.21.0",
     "@types/node": "latest",
-    "@typescript-eslint/eslint-plugin": "^8.47.0",
-    "@typescript-eslint/parser": "^8.47.0",
+    "@typescript-eslint/eslint-plugin": "^8.48.0",
+    "@typescript-eslint/parser": "^8.48.0",
     "bun": "latest",
     "eslint": "^9.39.1",
     "prettier": "^4.0.0-alpha.12",
     "typescript": "6.0.0-dev.20251114",
-    "vitest": "^4.0.13"
+    "vitest": "^4.0.14"
   },
   "peerDependencies": {
     "@typespec/compiler": "1.7.0-dev.2"
