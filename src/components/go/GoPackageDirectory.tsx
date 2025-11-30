@@ -4,13 +4,16 @@
  * Eliminates all string-based logic in favor of component-based generation
  */
 
-import type { Model, Enum, Union, Type, Program } from "@typespec/compiler";
+import type { Model, Enum, Union, Operation, Type, Program } from "@typespec/compiler";
 import { For } from "@alloy-js/core";
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoStructDeclaration } from "./GoStructDeclaration.js";
 import { GoEnumDeclaration } from "./GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "./GoUnionDeclaration.js";
 import { GoModFile } from "./GoModFile.js";
+import { GoInterfaceDeclaration } from "./GoInterfaceDeclaration.js";
+import { GoHandlerStub } from "./GoHandlerStub.js";
+import { capitalize } from "../../utils/strings.js";
 
 /**
  * Type guard to check if a TypeSpec Type is a time-related scalar
@@ -28,6 +31,8 @@ interface GoPackageDirectoryProps {
   enums?: Enum[];
   /** Unions to include in package */
   unions?: Union[];
+  /** Operations to include in package */
+  operations?: Operation[];
   /** Package name for directory */
   packageName?: string;
   /** Additional documentation for package */
@@ -70,6 +75,7 @@ export function GoPackageDirectory({
   models, 
   enums = [],
   unions = [],
+  operations = [],
   packageName = "api",
   packageDocumentation,
   modulePath,
@@ -80,6 +86,7 @@ export function GoPackageDirectory({
   const moduleDirectory = getModulePath(packageName, modulePath);
   const hasEnums = enums.length > 0;
   const hasUnions = unions.length > 0;
+  const hasOperations = operations.length > 0;
   const needsFmt = needsFmtPackage(unions);
   
   // Check if any model has time.Time fields
@@ -133,6 +140,33 @@ export function GoPackageDirectory({
                 />
               )}
             </For>
+          </SourceFile>
+        )}
+
+        {/* Handlers file - only if we have operations */}
+        {hasOperations && (
+          <SourceFile path="handlers.go">
+            {<GoHandlerStub 
+              operations={operations}
+              serviceName={`${capitalize(packageName)}Service`}
+              packageName={packageName}
+              program={program}
+            />}
+          </SourceFile>
+        )}
+
+        {/* Interfaces file - only if we have operations */}
+        {hasOperations && (
+          <SourceFile path="interfaces.go">
+            {`// Service interfaces generated from TypeSpec operations
+
+`}
+            <GoInterfaceDeclaration 
+              name={`${capitalize(packageName)}Service`}
+              operations={operations}
+              packageName={packageName}
+              program={program}
+            />
           </SourceFile>
         )}
 
