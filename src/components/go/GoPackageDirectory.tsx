@@ -4,7 +4,7 @@
  * Eliminates all string-based logic in favor of component-based generation
  */
 
-import type { Model, Enum, Union, Type } from "@typespec/compiler";
+import type { Model, Enum, Union, Type, Program } from "@typespec/compiler";
 import { For } from "@alloy-js/core";
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoStructDeclaration } from "./GoStructDeclaration.js";
@@ -38,6 +38,8 @@ interface GoPackageDirectoryProps {
   generateGoMod?: boolean;
   /** Go version for go.mod (default: "1.21") */
   goVersion?: string;
+  /** TypeSpec program for accessing @doc decorators */
+  program?: Program;
 }
 
 /**
@@ -72,7 +74,8 @@ export function GoPackageDirectory({
   packageDocumentation,
   modulePath,
   generateGoMod = false,
-  goVersion = "1.21"
+  goVersion = "1.21",
+  program
 }: GoPackageDirectoryProps) {
   const moduleDirectory = getModulePath(packageName, modulePath);
   const hasEnums = enums.length > 0;
@@ -112,6 +115,7 @@ export function GoPackageDirectory({
                 model={model}
                 packageName={packageName}
                 documentation={packageDocumentation}
+                program={program}
               />
             )}
           </For>
@@ -125,6 +129,7 @@ export function GoPackageDirectory({
                 <GoEnumDeclaration 
                   enum={enumType}
                   packageName={packageName}
+                  program={program}
                 />
               )}
             </For>
@@ -150,6 +155,7 @@ export function GoPackageDirectory({
                   union={union}
                   packageName={packageName}
                   discriminator="type"
+                  program={program}
                 />
               )}
             </For>

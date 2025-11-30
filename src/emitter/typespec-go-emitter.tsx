@@ -178,6 +178,7 @@ export async function $onEmit(context: EmitContext): Promise<void> {
             unions={unions}
             packageName={packageName}
             packageDocumentation={packageDocumentation}
+            program={program}
           />
         </Output>,
         outputDirectory,

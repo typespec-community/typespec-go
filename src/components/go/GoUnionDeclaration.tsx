@@ -4,8 +4,9 @@
  * Supports discriminated unions with type field
  */
 
-import type { Union, UnionVariant } from "@typespec/compiler";
+import type { Union, UnionVariant, Program } from "@typespec/compiler";
 import { capitalize } from "../../utils/strings.js";
+import { getDocumentation } from "../../utils/typespec-utils.js";
 
 interface GoUnionDeclarationProps {
   /** TypeSpec union to convert to Go interface */
@@ -14,6 +15,8 @@ interface GoUnionDeclarationProps {
   packageName?: string;
   /** Discriminator field name for tagged unions */
   discriminator?: string;
+  /** TypeSpec program for accessing @doc decorators */
+  program?: Program;
 }
 
 /**
@@ -23,12 +26,16 @@ interface GoUnionDeclarationProps {
 export function GoUnionDeclaration({ 
   union, 
   packageName = "api",
-  discriminator
+  discriminator,
+  program
 }: GoUnionDeclarationProps) {
   const typeName = union.name || "UnnamedUnion";
   const variants = Array.from(union.variants?.values() || []);
   
-  return generateUnionCode(typeName, variants, discriminator);
+  // Get documentation from @doc decorator
+  const doc = program ? getDocumentation(program, union) : undefined;
+  
+  return generateUnionCode(typeName, variants, discriminator, doc);
 }
 
 /**
@@ -37,12 +44,14 @@ export function GoUnionDeclaration({
 function generateUnionCode(
   typeName: string,
   variants: UnionVariant[],
-  discriminator?: string
+  discriminator?: string,
+  doc?: string
 ): string {
   const lines: string[] = [];
   
-  // Sealed interface
-  lines.push(`// ${typeName} is a sealed interface representing a union type`);
+  // Sealed interface with documentation
+  const docComment = doc ? `${doc} ` : "";
+  lines.push(`// ${typeName} is a sealed interface ${docComment}representing a union type`);
   lines.push(`type ${typeName} interface {`);
   lines.push(`\tis${typeName}()`);
   if (discriminator) {

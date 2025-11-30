@@ -4,20 +4,23 @@
  * Following Alloy-JS patterns with zero string-based logic
  */
 
-import type { Model, ModelProperty, Type } from "@typespec/compiler";
+import type { Model, ModelProperty, Type, Program } from "@typespec/compiler";
 import { TypeDeclaration, StructDeclaration, StructMember } from "@alloy-js/go";
 import { For, refkey } from "@alloy-js/core";
 import { capitalize } from "../../utils/strings.js";
+import { getDocumentation } from "../../utils/typespec-utils.js";
 
 interface GoStructDeclarationProps {
   /** TypeSpec model to convert to Go struct */
   model: Model;
-  /** Optional struct documentation */
+  /** Optional struct documentation (overrides @doc) */
   documentation?: string;
   /** Package name for struct */
   packageName?: string;
   /** Use pointers for optional model/struct fields (default: true) */
   usePointersForOptional?: boolean;
+  /** TypeSpec program for accessing @doc decorators */
+  program?: Program;
 }
 
 /**
@@ -29,14 +32,20 @@ export function GoStructDeclaration({
   model, 
   documentation, 
   packageName = "api",
-  usePointersForOptional = true
+  usePointersForOptional = true,
+  program
 }: GoStructDeclarationProps) {
+  // Get documentation from @doc decorator if program is provided
+  const modelDoc = documentation || 
+    (program ? getDocumentation(program, model) : undefined) ||
+    `Generated from TypeSpec model ${model.name}`;
+
   // Generate struct fields using Alloy-JS components with <For> iteration
   return (
     <TypeDeclaration 
       name={model.name}
       refkey={refkey(model)}
-      doc={documentation || `Generated from TypeSpec model ${model.name}`}
+      doc={modelDoc}
     >
       <StructDeclaration>
         <For each={Array.from(model.properties?.values() || [])}>

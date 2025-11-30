@@ -4,8 +4,9 @@
  * Supports both string and iota patterns
  */
 
-import type { Enum, EnumMember } from "@typespec/compiler";
+import type { Enum, EnumMember, Program } from "@typespec/compiler";
 import { capitalize } from "../../utils/strings.js";
+import { getDocumentation } from "../../utils/typespec-utils.js";
 
 interface GoEnumDeclarationProps {
   /** TypeSpec enum to convert to Go constants */
@@ -14,6 +15,8 @@ interface GoEnumDeclarationProps {
   packageName?: string;
   /** Whether to use iota for integer enums */
   useIota?: boolean;
+  /** TypeSpec program for accessing @doc decorators */
+  program?: Program;
 }
 
 /**
@@ -23,15 +26,19 @@ interface GoEnumDeclarationProps {
 export function GoEnumDeclaration({ 
   enum: enumType, 
   packageName = "api",
-  useIota = false
+  useIota = false,
+  program
 }: GoEnumDeclarationProps) {
   const typeName = enumType.name || "UnnamedEnum";
   const members = Array.from(enumType.members?.values() || []);
   
+  // Get documentation from @doc decorator
+  const doc = program ? getDocumentation(program, enumType) : undefined;
+  
   // Determine if this is a string enum or numeric enum
   const isStringEnum = members.some(m => typeof m.value === "string");
   
-  return generateEnumCode(typeName, members, isStringEnum, useIota);
+  return generateEnumCode(typeName, members, isStringEnum, useIota, doc);
 }
 
 /**
@@ -41,9 +48,15 @@ function generateEnumCode(
   typeName: string,
   members: EnumMember[],
   isStringEnum: boolean,
-  useIota: boolean
+  useIota: boolean,
+  doc?: string
 ): string {
   const lines: string[] = [];
+  
+  // Add documentation comment if present
+  if (doc) {
+    lines.push(`// ${typeName} ${doc}`);
+  }
   
   // Type declaration
   if (isStringEnum) {
