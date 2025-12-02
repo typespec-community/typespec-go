@@ -26,7 +26,8 @@ export type TypeSpecTypeNode =
   | TypeSpecBuiltinType
   | TypeSpecUnionType
   | TypeSpecEnumType
-  | TypeSpecTemplateType;
+  | TypeSpecTemplateType
+  | TypeSpecArrayType;
 
 /**
  * TypeSpec scalar type
@@ -73,6 +74,14 @@ export interface TypeSpecEnumType {
 export interface TypeSpecTemplateType {
   kind: "template";
   name: string;
+}
+
+/**
+ * TypeSpec array type (NEW - CRITICAL FEATURE)
+ */
+export interface TypeSpecArrayType {
+  kind: "array";
+  elementType: TypeSpecTypeNode;
 }
 
 /**
