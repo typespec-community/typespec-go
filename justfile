@@ -64,25 +64,9 @@ check:
 
 # Find duplicate code patterns
 find-duplicates:
-	@echo "🔍 Finding duplicate code..."
-	@if command -v similarity-go >/dev/null 2>&1; then \
-		echo "=== USING SIMILARITY-GO FOR ADVANCED ANALYSIS ==="; \
-		similarity-go --threshold 0.8 --format json --output reports/duplicates.json src/ && \
-		echo "📊 Similarity analysis saved to reports/duplicates.json" && \
-		if [ -f reports/duplicates.json ]; then \
-			echo "=== TOP DUPLICATIONS FOUND ===" && \
-			cat reports/duplicates.json | head -20; \
-		fi; \
-	else \
-		echo "⚠️ similarity-go not found, using basic analysis"; \
-		echo "Install similarity-go for better analysis: go install github.com/paveg/similarity-go/cmd/similarity-go@latest"; \
-		echo "=== DUPLICATE GENERATORS ==="; \
-		find src/ -name "*.ts" -exec grep -l "class.*Generator\|export.*Generator" {} \; | sort; \
-		echo "=== DUPLICATE TYPE MAPPERS ==="; \
-		find src/ -name "*.ts" -exec grep -l "TypeMapper\|type.*Mapper" {} \; | sort; \
-		echo "=== LARGE FILES (>300 LINES) ==="; \
-		find src/ -name "*.ts" -exec wc -l {} \; | awk '$1 > 300' | sort -nr; \
-	fi
+	@echo "🔍 Finding duplicate code with jscpd..."
+	@mkdir -p reports/jscpd
+	@bunx jscpd src
 	@echo "✅ Duplicate analysis complete"
 
 # Alias for find-duplicates
