@@ -233,11 +233,11 @@ describe("Map/Record Type Generation", () => {
     });
 
     it("should handle maps with missing key type", () => {
-      const invalidMapType = {
+      const invalidMapType: TypeSpecTypeNode = {
         kind: "map",
         valueType: { kind: "scalar", name: "string" }
         // Missing keyType
-      } as any;
+      };
 
       const property: TypeSpecPropertyNode = {
         name: "invalidMap",
@@ -253,11 +253,11 @@ describe("Map/Record Type Generation", () => {
     });
 
     it("should handle maps with missing value type", () => {
-      const invalidMapType = {
+      const invalidMapType: TypeSpecTypeNode = {
         kind: "map",
         keyType: { kind: "scalar", name: "string" }
         // Missing valueType
-      } as any;
+      };
 
       const property: TypeSpecPropertyNode = {
         name: "invalidMap",
@@ -276,7 +276,7 @@ describe("Map/Record Type Generation", () => {
       const invalidMapType = {
         kind: "map"
         // Missing both keyType and valueType
-      } as any;
+      };
 
       const property: TypeSpecPropertyNode = {
         name: "invalidMap",
@@ -319,7 +319,7 @@ describe("Map/Record Type Generation", () => {
       const settingsMap: TypeSpecTypeNode = {
         kind: "map",
         keyType: { kind: "scalar", name: "string" },
-        valueType: { kind: "built-in" as any } // Would be "any" in real TypeSpec
+        valueType: { kind: "built-in" } // Would be "any" in real TypeSpec
       };
 
       const property: TypeSpecPropertyNode = {

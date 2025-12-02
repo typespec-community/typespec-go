@@ -136,7 +136,7 @@ describe("Array Type Generation", () => {
     it("should handle arrays with unknown element types gracefully", () => {
       const arrayType: TypeSpecTypeNode = {
         kind: "array",
-        elementType: { kind: "unknown" as any }
+        elementType: { kind: "unknown" }
       };
 
       const property: TypeSpecPropertyNode = {
@@ -153,10 +153,10 @@ describe("Array Type Generation", () => {
     });
 
     it("should handle invalid array types gracefully", () => {
-      const invalidArrayType = {
+      const invalidArrayType: TypeSpecTypeNode = {
         kind: "array"
         // Missing elementType
-      } as any;
+      };
 
       const property: TypeSpecPropertyNode = {
         name: "invalidArray",
