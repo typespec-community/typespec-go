@@ -1,15 +1,21 @@
+import type { Program } from "@typespec/compiler";
+
 /**
  * TypeSpec Documentation Utilities
  * Simplified version focused on @doc decorator extraction
  */
 
-import type { Program, Type } from "@typespec/compiler";
+interface Documentable {
+  name?: string;
+  kind?: string;
+  [key: string]: unknown;
+}
 
 /**
  * Get documentation from TypeSpec decorator
  * Currently provides fallback for testing without full TypeSpec program
  */
-export function getDocumentation(program: Program, node: any): string | undefined {
+export function getDocumentation(program: Program, node: Documentable): string | undefined {
   // For now, provide fallback documentation based on type
   if (node?.name) {
     const kind = node.kind?.toLowerCase() || "";

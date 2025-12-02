@@ -3,7 +3,7 @@
  * Helper functions for working with TypeSpec types and decorators
  */
 
-import type { Model, ModelProperty, Enum, Union, Type, Program } from "@typespec/compiler";
+import type { Model, ModelProperty, Enum, Union, Program } from "@typespec/compiler";
 import { getDoc, getSummary } from "@typespec/compiler";
 
 /**

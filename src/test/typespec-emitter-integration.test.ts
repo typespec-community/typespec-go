@@ -1,6 +1,6 @@
 import { test, expect } from "vitest";
 import { $onEmit } from "../emitter/main.js";
-import type { EmitContext, Model, Namespace } from "@typespec/compiler";
+import type { EmitContext, Model, Scalar } from "@typespec/compiler";
 
 /**
  * Test our AssetEmitter with a mock TypeSpec program
@@ -8,21 +8,34 @@ import type { EmitContext, Model, Namespace } from "@typespec/compiler";
  */
 test("TypeSpec AssetEmitter Integration - Mock Program", async () => {
   // Create a minimal mock model matching TypeSpec Model interface
+  const stringScalar: Scalar = {
+    kind: "Scalar",
+    name: "string",
+    baseScalar: { kind: "String" },
+    isFinished: true,
+    node: {
+      id: "mock-string-scalar",
+      kind: "Scalar",
+      sym: "string",
+    } as any,
+    projections: [],
+  };
+
   const mockModel: Partial<Model> = {
     name: "TestUser",
     kind: "Model",
     properties: new Map([
       ["id", { 
         name: "id", 
-        type: { kind: "String" } as any,
+        type: stringScalar,
         optional: false 
       }],
       ["name", { 
         name: "name", 
-        type: { kind: "String" } as any, 
+        type: stringScalar, 
         optional: false 
       }],
-    ]) as any,
+    ]),
   };
 
   // Create a mock namespace
@@ -36,7 +49,10 @@ test("TypeSpec AssetEmitter Integration - Mock Program", async () => {
   // Create mock program with minimal interface
   const mockProgram = {
     getGlobalNamespaceType: () => mockNamespace,
-    checker: {},
+    checker: {
+      getTypeName: (type: Type) => "string",
+      isString: (type: Type) => type === stringScalar,
+    },
     sourceFiles: new Map(),
     hasError: () => false,
     diagnostics: [],
@@ -44,11 +60,11 @@ test("TypeSpec AssetEmitter Integration - Mock Program", async () => {
 
   // Create mock emit context
   const mockContext: EmitContext = {
-    program: mockProgram as any,
+    program: mockProgram as EmitContext["program"],
     emitterOutputDir: "./test-output",
     options: {},
-    getAssetEmitter: () => ({ writeOutput: async () => {} }) as any,
-  } as any;
+    getAssetEmitter: () => ({ writeOutput: async () => {} }),
+  };
 
   // Store console output to verify execution
   const consoleOutput: string[] = [];

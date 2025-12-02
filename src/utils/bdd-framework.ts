@@ -7,7 +7,6 @@
  * UNIFIED ERROR SYSTEM: Single source of truth for error handling
  */
 
-import { StandaloneGoGenerator } from "../standalone-generator.js";
 import { GoEmitterResult } from "../domain/unified-errors.js";
 
 // Real BDD testing with proper assertions
