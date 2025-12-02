@@ -27,7 +27,8 @@ export type TypeSpecTypeNode =
   | TypeSpecUnionType
   | TypeSpecEnumType
   | TypeSpecTemplateType
-  | TypeSpecArrayType;
+  | TypeSpecArrayType
+  | TypeSpecMapType;
 
 /**
  * TypeSpec scalar type
@@ -82,6 +83,15 @@ export interface TypeSpecTemplateType {
 export interface TypeSpecArrayType {
   kind: "array";
   elementType: TypeSpecTypeNode;
+}
+
+/**
+ * TypeSpec map/record type (NEW - IMPORTANT FEATURE)
+ */
+export interface TypeSpecMapType {
+  kind: "map" | "record";
+  keyType: TypeSpecTypeNode;
+  valueType: TypeSpecTypeNode;
 }
 
 /**

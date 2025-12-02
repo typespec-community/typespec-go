@@ -5,6 +5,7 @@
  */
 
 import type { Model, ModelProperty, Type, Program } from "@typespec/compiler";
+import { TypeSpecModel } from "../../types/typespec-domain.js";
 import { TypeDeclaration, StructDeclaration, StructMember } from "@alloy-js/go";
 import { For, refkey } from "@alloy-js/core";
 import { capitalize } from "../../utils/strings.js";
@@ -12,7 +13,7 @@ import { getDocumentation } from "../../utils/typespec-utils.js";
 
 interface GoStructDeclarationProps {
   /** TypeSpec model to convert to Go struct */
-  model: Model;
+  model: TypeSpecModel;
   /** Optional struct documentation (overrides @doc) */
   documentation?: string;
   /** Package name for struct */

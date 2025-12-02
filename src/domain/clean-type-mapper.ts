@@ -7,7 +7,7 @@
  * MAINTAINABILITY: Clear separation of concerns
  */
 
-import type { TypeSpecPropertyNode } from "../types/typespec-domain.js";
+import type { TypeSpecPropertyNode, TypeSpecArrayType, TypeSpecMapType } from "../types/typespec-domain.js";
 import type { GoTypeMapping } from "../types/emitter.types.js";
 
 /**
@@ -108,6 +108,10 @@ export class CleanTypeMapper {
       result = this.mapEnumType(type, fieldName);
     } else if (this.isTypeSpecTemplate(type)) {
       result = this.mapTemplateType(type, fieldName);
+    } else if (this.isTypeSpecArray(type)) {
+      result = this.mapArrayType(type, fieldName);
+    } else if (this.isTypeSpecMap(type)) {
+      result = this.mapMapType(type, fieldName);
     } else {
       // Fallback with error
       result = {
@@ -292,6 +296,98 @@ export class CleanTypeMapper {
   }
 
   /**
+   * Map TypeSpec array type
+   */
+  private static mapArrayType(
+    type: TypeSpecPropertyNode["type"],
+    fieldName?: string,
+  ): GoTypeMapping {
+    if (typeof type === "object" && type !== null && "kind" in type && (type as { kind: string }).kind === "array") {
+      const arrayType = type as { elementType?: TypeSpecPropertyNode["type"] };
+      
+      // Check if elementType exists
+      if (!arrayType.elementType) {
+        console.warn(`Array type missing elementType for field ${fieldName}: ${JSON.stringify(type)}`);
+        return { goType: "[]interface{}", usePointerForOptional: true };
+      }
+      
+      // Recursively map the element type
+      const elementMapping = this.mapTypeSpecType(arrayType.elementType, `${fieldName}Element`);
+      
+      // Generate Go slice type: []ElementType
+      const goSliceType = `[]${elementMapping.goType}`;
+      
+      return {
+        goType: goSliceType,
+        usePointerForOptional: true, // Arrays/slices are reference types in Go
+        requiresImport: elementMapping.requiresImport,
+      };
+    }
+
+    // Return fallback type for invalid array types
+    console.warn(`Invalid array type for field ${fieldName}: ${JSON.stringify(type)}`);
+    return { goType: "[]interface{}", usePointerForOptional: true };
+  }
+
+  /**
+   * Map TypeSpec map/record type
+   */
+  private static mapMapType(
+    type: TypeSpecPropertyNode["type"],
+    fieldName?: string,
+  ): GoTypeMapping {
+    if (typeof type === "object" && type !== null && "kind" in type) {
+      const kind = (type as { kind: string }).kind;
+      if (kind === "map" || kind === "record") {
+        const mapType = type as { keyType?: TypeSpecPropertyNode["type"]; valueType?: TypeSpecPropertyNode["type"] };
+        
+        // Check if keyType and valueType exist
+        if (!mapType.keyType || !mapType.valueType) {
+          console.warn(`Map/record type missing keyType or valueType for field ${fieldName}: ${JSON.stringify(type)}`);
+          return { goType: "map[string]interface{}", usePointerForOptional: true };
+        }
+        
+        // Map the key and value types
+        const keyMapping = this.mapTypeSpecType(mapType.keyType, `${fieldName}Key`);
+        const valueMapping = this.mapTypeSpecType(mapType.valueType, `${fieldName}Value`);
+        
+        // For Go maps, keys must be comparable types
+        let goKeyType = keyMapping.goType;
+        
+        // Ensure key type is comparable in Go
+        if (!this.isGoComparableType(goKeyType)) {
+          console.warn(`Non-comparable map key type for field ${fieldName}: ${goKeyType}, defaulting to string`);
+          goKeyType = "string";
+        }
+        
+        // Generate Go map type: map[keyType]valueType
+        const goMapType = `map[${goKeyType}]${valueMapping.goType}`;
+        
+        return {
+          goType: goMapType,
+          usePointerForOptional: true, // Maps are reference types in Go
+          requiresImport: valueMapping.requiresImport || keyMapping.requiresImport,
+        };
+      }
+    }
+
+    // Return fallback type for invalid map types
+    console.warn(`Invalid map/record type for field ${fieldName}: ${JSON.stringify(type)}`);
+    return { goType: "map[string]interface{}", usePointerForOptional: true };
+  }
+
+  /**
+   * Check if a Go type is comparable (can be used as map key)
+   */
+  private static isGoComparableType(goType: string): boolean {
+    // Go comparable types: string, int, float, bool, pointers, arrays, structs, interfaces
+    // Non-comparable: slice, map, function, complex numbers
+    const nonComparable = ["[]", "map[", "func", "complex64", "complex128"];
+    
+    return !nonComparable.some(pattern => goType.includes(pattern));
+  }
+
+  /**
    * Map TypeSpec template type
    */
   private static mapTemplateType(
@@ -400,6 +496,32 @@ export class CleanTypeMapper {
       type !== null &&
       "kind" in type &&
       (type as { kind: string }).kind === "template"
+    );
+  }
+
+  /**
+   * Type guard: Check if type is TypeSpec array
+   */
+  private static isTypeSpecArray(type: unknown): boolean {
+    return (
+      typeof type === "object" &&
+      type !== null &&
+      "kind" in type &&
+      (type as { kind: string }).kind === "array"
+      // Note: elementType check moved to mapArrayType for better error handling
+    );
+  }
+
+  /**
+   * Type guard: Check if type is TypeSpec map/record
+   */
+  private static isTypeSpecMap(type: unknown): boolean {
+    return (
+      typeof type === "object" &&
+      type !== null &&
+      "kind" in type &&
+      ((type as { kind: string }).kind === "map" || (type as { kind: string }).kind === "record")
+      // Note: keyType/valueType check moved to mapMapType for better error handling
     );
   }
 
