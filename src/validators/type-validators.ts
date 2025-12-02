@@ -72,7 +72,7 @@ export function validateModel(model: {
 export function validateUnion(unionModel: {
   name: string;
   kind: "union";
-  variants: Array<{ name: string; type: any }>;
+  variants: Array<{ name: string; type: TypeSpecPropertyNode }>;
 }): GoEmitterResult {
   if (!unionModel.name) {
     return ErrorFactory.createValidationError("Union name is required", {
