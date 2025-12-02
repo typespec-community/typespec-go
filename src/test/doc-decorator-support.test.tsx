@@ -35,7 +35,7 @@ describe("@doc Decorator Support", () => {
             <SourceDirectory path="api">
               <SourceFile path="models.go">
                 <GoStructDeclaration 
-                  model={mockModel as any}
+                  model={mockModel}
                   documentation="A user in the system"
                 />
               </SourceFile>
@@ -69,7 +69,7 @@ describe("@doc Decorator Support", () => {
           <ModuleDirectory name="github.com/test/api">
             <SourceDirectory path="api">
               <SourceFile path="models.go">
-                <GoStructDeclaration model={mockModel as any} />
+                <GoStructDeclaration model={mockModel} />
               </SourceFile>
             </SourceDirectory>
           </ModuleDirectory>
@@ -90,7 +90,7 @@ describe("@doc Decorator Support", () => {
             ["pending", { kind: "EnumMember", name: "pending", value: "pending" }],
             ["completed", { kind: "EnumMember", name: "completed", value: "completed" }]
           ])
-        } as any,
+        },
         packageName: "api"
       });
 
@@ -110,7 +110,7 @@ describe("@doc Decorator Support", () => {
             ["success", { kind: "UnionVariant", name: "success", type: { kind: "String" } }],
             ["error", { kind: "UnionVariant", name: "error", type: { kind: "String" } }]
           ])
-        } as any,
+        },
         packageName: "api"
       });
 

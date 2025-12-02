@@ -23,7 +23,7 @@ test("Component Integration - Proper Context", async () => {
       render(
         <Output>
           <GoPackageDirectory 
-            models={[mockModel as any]}
+            models={[mockModel]}
             packageName="test"
             packageDocumentation="Test package"
           />

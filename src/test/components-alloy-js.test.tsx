@@ -25,7 +25,7 @@ test("GoPackageDirectory renders without errors", async () => {
   const result = render(
     <Output>
       <GoPackageDirectory 
-        models={[mockModel as any]}
+        models={[mockModel]}
         packageName="test"
         packageDocumentation="Test package"
       />
@@ -45,7 +45,7 @@ test("GoStructDeclaration renders without errors", async () => {
         <SourceDirectory path="api">
           <SourceFile path="models.go">
             <GoStructDeclaration 
-              model={mockModel as any}
+              model={mockModel}
               packageName="test"
               documentation="Test struct"
             />

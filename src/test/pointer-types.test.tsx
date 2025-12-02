@@ -46,7 +46,7 @@ describe("Pointer Type Generation", () => {
           <SourceDirectory path="api">
             <SourceFile path="models.go">
               <GoStructDeclaration 
-                model={mockTaskModel as any}
+                model={mockTaskModel}
                 packageName="api"
                 usePointersForOptional={true}
               />
@@ -84,7 +84,7 @@ describe("Pointer Type Generation", () => {
           <SourceDirectory path="api">
             <SourceFile path="models.go">
               <GoStructDeclaration 
-                model={mockTaskModel as any}
+                model={mockTaskModel}
                 packageName="api"
                 usePointersForOptional={true}
               />
@@ -116,7 +116,7 @@ describe("Pointer Type Generation", () => {
           <SourceDirectory path="api">
             <SourceFile path="models.go">
               <GoStructDeclaration 
-                model={mockProjectModel as any}
+                model={mockProjectModel}
                 packageName="api"
                 usePointersForOptional={true}
               />
