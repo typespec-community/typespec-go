@@ -69,6 +69,18 @@ export interface TypeMappingConfig {
 }
 
 /**
+ * Go type mapping configuration
+ */
+export interface GoTypeMapping {
+  /** Go type string */
+  readonly goType: string;
+  /** Whether to use pointer for optional fields */
+  readonly usePointerForOptional: boolean;
+  /** Whether this type requires imports */
+  readonly requiresImport?: string;
+}
+
+/**
  * Go primitive types enum
  */
 export enum GoPrimitiveType {

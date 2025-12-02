@@ -8,7 +8,6 @@
 import type { Program, Type, Scalar, Model, UnionVariant } from "@typespec/compiler";
 import type {
   TypeMappingResult,
-  TypeMappingConfig,
   GoStructField,
 } from "../types/emitter.types.js";
 import { GoPrimitiveType } from "../types/emitter.types.js";
@@ -26,10 +25,10 @@ interface ArrayType {
  * TypeSpec Union Type interface
  * Standalone interface with explicit kind definition
  */
-interface UnionType {
-  kind: "Union";
-  variants: readonly UnionVariant[];
-}
+// interface UnionType {
+//   kind: "Union";
+//   variants: readonly UnionVariant[];
+// }
 
 /**
  * TypeSpec Named Type interface

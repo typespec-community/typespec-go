@@ -6,6 +6,13 @@
 import type { Program, Type, Model, Enum, Union, Namespace, Operation, ModelProperty, EnumMember, UnionVariant } from "@typespec/compiler";
 
 /**
+ * Mock namespace for testing
+ */
+interface MockNamespace {
+  name: string;
+}
+
+/**
  * Create a mock TypeSpec program for testing
  */
 export function createMockProgram(): Program {
@@ -67,7 +74,7 @@ export function createMockEnum(name: string, members: string[]): Enum {
     kind: "Enum",
     name,
     members: memberMap,
-    namespace: { name: "TestNamespace" } as any,
+    namespace: { name: "TestNamespace" } as MockNamespace,
   } as unknown as Enum;
 
   members.forEach(memberName => {
@@ -100,14 +107,14 @@ export function createMockUnion(name: string, variants: string[]): Union {
     kind: "Union",
     name,
     variants: variantMap,
-    namespace: { name: "TestNamespace" } as any,
+    namespace: { name: "TestNamespace" } as MockNamespace,
   } as unknown as Union;
 
   variants.forEach(variantName => {
     const variantModel = {
       kind: "Model",
       name: variantName,
-      properties: new Map() as any,
+      properties: new Map() as Map<string, ModelProperty>,
       derivedModels: [],
       sourceModels: [],
       entityKind: "Type",

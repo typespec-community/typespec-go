@@ -1,6 +1,6 @@
 import { test, expect } from "vitest";
 import { $onEmit } from "../emitter/main.js";
-import type { EmitContext, Model, Scalar } from "@typespec/compiler";
+import type { EmitContext, Model, Scalar, Node } from "@typespec/compiler";
 
 /**
  * Test our AssetEmitter with a mock TypeSpec program
@@ -17,7 +17,7 @@ test("TypeSpec AssetEmitter Integration - Mock Program", async () => {
       id: "mock-string-scalar",
       kind: "Scalar",
       sym: "string",
-    } as any,
+    } as Node,
     projections: [],
   };
 
@@ -50,7 +50,8 @@ test("TypeSpec AssetEmitter Integration - Mock Program", async () => {
   const mockProgram = {
     getGlobalNamespaceType: () => mockNamespace,
     checker: {
-      getTypeName: (type: Type) => "string",
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      getTypeName: (_type: Type) => "string",
       isString: (type: Type) => type === stringScalar,
     },
     sourceFiles: new Map(),
@@ -79,7 +80,8 @@ test("TypeSpec AssetEmitter Integration - Mock Program", async () => {
     await $onEmit(mockContext);
 
     // Verify emitter executed successfully
-    const hasSuccess = consoleOutput.some(line => 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _hasSuccess = consoleOutput.some(line => 
       line.includes("completed") || line.includes("Generated") || line.includes("Generating")
     );
     

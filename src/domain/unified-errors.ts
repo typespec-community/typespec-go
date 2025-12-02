@@ -11,45 +11,41 @@
 import type {
   TypeSpecCompilerError,
   GoCodeGenerationError,
-  SystemError,
   ValidationError,
-  Success,
   GoEmitterResult,
+} from "./error-types.js";
+
+// Re-export types without importing (direct re-export)
+export type {
+  Success,
   TypeSpecCompilerExternalError,
   TypeScriptExternalError,
   GoCompilationExternalError,
   ErrorRecoveryStrategy,
 } from "./error-types.js";
 
-import type { TypeSpecId, ModelName, PropertyName, ErrorId, FileName } from "./error-entities.js";
-
-import { Entities, EntityValidation, EntityTransformation } from "./error-entities.js";
-
-import { ErrorFactory } from "./error-factory.js";
-
-import { ErrorAnalysis } from "./error-types.js";
-
-// Then re-export
+// Re-export entity types without importing
 export type { TypeSpecId, ModelName, PropertyName, ErrorId, FileName } from "./error-entities.js";
 
+// Re-export entities without importing
+export { Entities, EntityValidation, EntityTransformation } from "./error-entities.js";
+
+// Re-export ErrorAnalysis without importing
+export { ErrorAnalysis } from "./error-types.js";
+
+// Import ErrorFactory (used in this file)
+import { ErrorFactory } from "./error-factory.js";
+
+// Export types that are used in this file
 export type {
   TypeSpecCompilerError,
   GoCodeGenerationError,
-  SystemError,
   ValidationError,
-  Success,
   GoEmitterResult,
-  TypeSpecCompilerExternalError,
-  TypeScriptExternalError,
-  GoCompilationExternalError,
-  ErrorRecoveryStrategy,
 } from "./error-types.js";
 
-export { Entities, EntityValidation, EntityTransformation } from "./error-entities.js";
-
+// Export ErrorFactory (used in this file)
 export { ErrorFactory } from "./error-factory.js";
-
-export { ErrorAnalysis } from "./error-types.js";
 
 // Export TypeSpec entities for compatibility
 // export { InvalidModelReason, TypeSpecEntities } from "../types/errors.js";
@@ -107,11 +103,13 @@ export const defaultErrorHandler = (
   if (error instanceof Error) {
     return ErrorFactory.createSystemError(`Unexpected error: ${error.message}`, error, {
       resolution: "Check system logs and restart if necessary",
+      ...context,
     });
   }
 
   return ErrorFactory.createSystemError(`Unknown error: ${String(error)}`, undefined, {
     resolution: "Check input data and system state",
+    ...context,
   });
 };
 

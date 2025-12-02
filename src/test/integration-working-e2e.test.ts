@@ -109,7 +109,8 @@ describe("E2E Integration - Working Workflow Tests", () => {
 /**
  * Generate simulated Go code from TypeSpec content
  */
-function generateSimulatedGoCode(tspContent: string): string {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function generateSimulatedGoCode(_tspContent: string): string {
   let goCode = `
 // Generated Go Service from TypeSpec
 // This demonstrates the complete workflow
@@ -211,7 +212,8 @@ func (s *TestAPIService) RegisterRoutes(mux *http.ServeMux) {
 /**
  * Generate simulated complex Go code from TypeSpec with HTTP decorators
  */
-function generateSimulatedComplexGoCode(tspContent: string): string {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function generateSimulatedComplexGoCode(_tspContent: string): string {
   return `
 // Generated Complex Go Service from TypeSpec
 package complexapi

@@ -5,7 +5,7 @@
  * UNIFIED ERROR SYSTEM: Single source of truth for error handling
  * ELIMINATED DUPLICATES: Single source of truth for domain types
  * DELEGATES TO CLEAN TYPE MAPPER: No duplicate mapping logic
- * CUSTOMER VALUE: Working Go generation with professional quality
+ * MODULAR DESIGN: Focused generators for each responsibility
  */
 
 import {
@@ -20,6 +20,12 @@ import type {
   GoEmitterOptions,
 } from "./types/typespec-domain.js";
 
+// Import specialized generators
+import { generateModel } from "./generators/model-generator.js";
+import { generateUnionType } from "./generators/union-generator.js";
+import { validateModel, validateUnion } from "./validators/type-validators.js";
+import { capitalizeFirst, capitalizeWords } from "./utils/string-utils.js";
+
 /**
  * Go type mapping configuration
  */
@@ -32,10 +38,11 @@ interface GoTypeMapping {
 
 /**
  * Type-safe Standalone Generator with delegation architecture
- * ELIMINATES DUPLICATION: Delegates to CleanTypeMapper for all type operations
+ * MODULAR DESIGN: Delegates to specialized generators
  */
 export class StandaloneGoGenerator {
-  constructor(options?: GoEmitterOptions) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  constructor(_options?: GoEmitterOptions) {
     // Options for future extensibility
     // Currently no options needed, but constructor for consistency
   }
@@ -47,204 +54,34 @@ export class StandaloneGoGenerator {
    */
   static mapTypeSpecType(type: TypeSpecPropertyNode["type"], fieldName?: string): GoTypeMapping {
     // DELEGATE TO CLEAN UNIFIED SYSTEM: Single source of truth
+    return CleanTypeMapper.mapTypeSpecType(type, fieldName);
+  }
+
+  /**
+   * Type-safe type mapping with legacy support
+   * BACKWARD COMPATIBILITY: Supports existing code patterns
+   */
+  static mapTypeSpecTypeLegacy(type: TypeSpecPropertyNode["type"], fieldName?: string): GoTypeMapping {
+    // DELEGATE TO CLEAN UNIFIED SYSTEM: Single source of truth
     return CleanTypeMapper.mapTypeSpecTypeLegacy(type, fieldName);
   }
 
   /**
-   * Type-safe model generation
-   * UNIFIED ERROR SYSTEM: Returns GoEmitterResult instead of throwing
+   * Generate Go model using specialized model generator
+   * DELEGATION PATTERN: Modular architecture
    */
   generateModel(model: {
     name: string;
     properties: ReadonlyMap<string, TypeSpecPropertyNode>;
-    template?: string; // Template definition like "<T>" or "PaginatedResponse<User>"
-    extends?: string; // Support Go struct embedding
-    propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>; // Support spread operator
-  }): GoEmitterResult {
-    // Input validation
-    if (!model.name || typeof model.name !== "string") {
-      return ErrorFactory.createValidationError("Invalid model: name must be a non-empty string", {
-        modelName: model.name || "unknown",
-      });
-    }
-
-    if (!model.properties || model.properties.size === 0) {
-      return ErrorFactory.createValidationError("Invalid model: must have at least one property", {
-        modelName: model.name,
-      });
-    }
-
-    try {
-      // Generate Go struct code using CleanTypeMapper
-      const structCode = this.generateStructCode(model);
-
-      return ErrorFactory.createSuccess(new Map([[`${model.name}.go`, structCode]]), {
-        generatedFiles: [`${model.name}.go`],
-        modelName: model.name,
-      });
-    } catch (error) {
-      return defaultErrorHandler(error, {
-        operation: "generateModel",
-        modelName: model.name,
-        properties: Array.from(model.properties.keys()),
-      });
-    }
-  }
-
-  /**
-   * Generate Go struct code from model definition
-   * DELEGATES TO CLEAN TYPE MAPPER: No duplicate mapping logic
-   */
-  private generateStructCode(model: {
-    name: string;
-    properties: ReadonlyMap<string, TypeSpecPropertyNode>;
-    template?: string;
     extends?: string;
-    propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>;
-  }): string {
-    const lines: string[] = [];
-
-    // Package declaration
-    lines.push("package api");
-    lines.push("");
-
-    // Imports (could be enhanced to track actual usage)
-    lines.push('import "encoding/json"');
-    lines.push('import "time"');
-    lines.push("");
-
-    // Model documentation
-    lines.push(`// ${model.name} - TypeSpec generated model`);
-    if (model.template) {
-      lines.push(`// Template: ${model.template}`);
-    }
-    lines.push("");
-
-    // Handle template instantiation
-    const allProperties = new Map<string, TypeSpecPropertyNode>();
-    
-    // If this is a template instantiation, add base template properties
-    if (model.template && model.template.includes('<')) {
-      const templateProperties = this.parseTemplateProperties(model.template);
-      for (const [propName, propNode] of templateProperties) {
-        allProperties.set(propName, propNode);
-      }
-    }
-    
-    // Add properties from extends (spread operator support)
-    if (model.propertiesFromExtends) {
-      for (const [propName, propNode] of model.propertiesFromExtends) {
-        allProperties.set(propName, propNode);
-      }
-    }
-    
-    // Add main properties
-    for (const [propName, propNode] of model.properties) {
-      allProperties.set(propName, propNode);
-    }
-
-    // Struct declaration
-    lines.push(`type ${model.name} struct {`);
-
-    // Handle struct embedding if extends is provided
-    if (model.extends) {
-      lines.push(`\t${model.extends}  // Embedded struct`);
-    }
-
-    // Add all properties
-    for (const [propName, propNode] of allProperties) {
-      const fieldCode = this.generateStructField(propName, propNode);
-      if (fieldCode) {
-        lines.push(`\t${fieldCode}`);
-      }
-    }
-
-    lines.push("}");
-    lines.push("");
-
-    return lines.join("\n");
+  }): GoEmitterResult {
+    // DELEGATE TO SPECIALIZED GENERATOR
+    return generateModel(model);
   }
 
   /**
-   * Generate Go struct field using CleanTypeMapper
-   * DELEGATION: No duplicate type mapping logic
-   */
-  private generateStructField(propName: string, propNode: TypeSpecPropertyNode): string | null {
-    if (!propNode || !propNode.type) {
-      return null;
-    }
-
-    // Delegate to CleanTypeMapper for type mapping with pointer support
-    const mappedType = CleanTypeMapper.mapTypeSpecType(propNode.type, propName);
-    
-    if (!mappedType || !mappedType.goType) {
-      return null;
-    }
-
-    // Generate Go field name (capitalize first letter for export)
-    let goFieldName = propName.charAt(0).toUpperCase() + propName.slice(1);
-    
-    // Special case: 'id' -> 'ID' for Go naming conventions
-    if (propName.toLowerCase() === 'id') {
-      goFieldName = 'ID';
-    }
-
-    // Generate JSON tag
-    const jsonTag = `json:"${propName}"`;
-
-    // Add omitempty for optional fields
-    const optionalTag = propNode.optional ? ",omitempty" : "";
-
-    // Apply pointer for optional fields if configured
-    let finalGoType = mappedType.goType;
-    if (propNode.optional && mappedType.usePointerForOptional) {
-      finalGoType = `*${finalGoType}`;
-    }
-
-    // Add comment for template types
-    let templateComment = "";
-    if (propNode.type && typeof propNode.type === "object" && "kind" in propNode.type && propNode.type.kind === "template") {
-      templateComment = `  // Template type ${(propNode.type as { name: string }).name}`;
-    }
-
-    return `${goFieldName} ${finalGoType}${templateComment} \`${jsonTag}${optionalTag}\``;
-  }
-
-  /**
-   * Parse template instantiation to extract base template properties
-   */
-  private parseTemplateProperties(template: string): ReadonlyMap<string, TypeSpecPropertyNode> {
-    const properties = new Map<string, TypeSpecPropertyNode>();
-    
-    // Parse template like "PaginatedResponse<User>"
-    const match = template.match(/^(\w+)<(.+)>$/);
-    if (match) {
-      const [, baseTemplateName, templateArg] = match;
-      
-      // For now, we handle common template patterns
-      if (baseTemplateName === "PaginatedResponse") {
-        // PaginatedResponse has "data" property of type T
-        properties.set("data", {
-          name: "data",
-          type: { kind: "model", name: templateArg },
-          optional: false,
-        });
-        
-        // Also has pagination property
-        properties.set("pagination", {
-          name: "pagination",
-          type: { kind: "model", name: "PaginationInfo" },
-          optional: false,
-        });
-      }
-    }
-    
-    return properties;
-  }
-
-  /**
-   * Generate Go union type (sealed interface pattern)
-   * UNIFIED ERROR SYSTEM: Returns GoEmitterResult instead of throwing
+   * Generate Go union type using specialized union generator
+   * DELEGATION PATTERN: Modular architecture
    */
   generateUnionType(unionModel: {
     name: string;
@@ -252,310 +89,153 @@ export class StandaloneGoGenerator {
     variants: Array<{ name: string; type: TypeSpecTypeNode }>;
     properties?: ReadonlyMap<string, TypeSpecPropertyNode>;
   }): GoEmitterResult {
-    // Input validation
-    if (!unionModel.name || typeof unionModel.name !== "string") {
-      return ErrorFactory.createValidationError("Invalid union: name must be a non-empty string", {
-        modelName: unionModel.name || "unknown",
-      });
-    }
-
-    if (!unionModel.variants || unionModel.variants.length === 0) {
-      return ErrorFactory.createValidationError("Invalid union: must have at least one variant", {
-        modelName: unionModel.name,
-      });
-    }
-
-    try {
-      // Generate Go union code using sealed interface pattern
-      const unionCode = this.generateUnionCode(unionModel);
-
-      return ErrorFactory.createSuccess(new Map([[`${unionModel.name}.go`, unionCode]]), {
-        generatedFiles: [`${unionModel.name}.go`],
-        modelName: unionModel.name,
-      });
-    } catch (error) {
-      return defaultErrorHandler(error, {
-        operation: "generateUnionType",
-        modelName: unionModel.name,
-        variants: unionModel.variants.map(v => v.name),
-      });
-    }
+    // DELEGATE TO SPECIALIZED GENERATOR
+    return generateUnionType(unionModel);
   }
 
   /**
-   * Validate union before generation
-   * CONSISTENT VALIDATION: Unified error system
+   * Validate model using specialized validator
+   * DELEGATION PATTERN: Modular validation
+   */
+  validateModel(model: {
+    name: string;
+    properties: ReadonlyMap<string, TypeSpecPropertyNode>;
+  }): GoEmitterResult {
+    // DELEGATE TO SPECIALIZED VALIDATOR
+    return validateModel(model);
+  }
+
+  /**
+   * Validate union using specialized validator
+   * DELEGATION PATTERN: Modular validation
    */
   validateUnion(unionModel: {
     name: string;
     kind: "union";
     variants: Array<{ name: string; type: TypeSpecTypeNode }>;
   }): GoEmitterResult {
-    if (!unionModel.name) {
-      return ErrorFactory.createValidationError("Union name is required", {
-        modelName: unionModel.name || "undefined",
-      });
-    }
-
-    if (!unionModel.variants || unionModel.variants.length === 0) {
-      return ErrorFactory.createValidationError("Union must have at least one variant", {
-        modelName: unionModel.name,
-      });
-    }
-
-    return ErrorFactory.createSuccess(new Map(), { validUnion: true, modelName: unionModel.name });
+    // DELEGATE TO SPECIALIZED VALIDATOR
+    return validateUnion(unionModel);
   }
 
   /**
-   * Generate Go union code using sealed interface pattern
+   * Format TypeSpec model documentation
+   * DOCUMENTATION GENERATION: Consistent Go documentation
    */
-  private generateUnionCode(unionModel: {
+  formatModelDocumentation(model: {
     name: string;
-    kind: "union";
-    variants: Array<{ name: string; type: TypeSpecTypeNode; discriminator?: string }>;
-    discriminator?: string;
+    properties: ReadonlyMap<string, TypeSpecPropertyNode>;
+    extends?: string;
   }): string {
     const lines: string[] = [];
 
-    // Package declaration
-    lines.push("package api");
-    lines.push("");
-
-    // Model documentation
-    lines.push(`// ${unionModel.name} - TypeSpec generated union`);
-    lines.push("");
-
-    // Handle discriminated unions
-    if (unionModel.discriminator) {
-      return this.generateDiscriminatedUnionCode({
-        ...unionModel,
-        discriminator: unionModel.discriminator,
-      });
+    // Header comment
+    if (model.extends) {
+      lines.push(`// ${model.name} - TypeSpec generated model (extends ${model.extends})`);
+    } else {
+      lines.push(`// ${model.name} - TypeSpec generated model`);
     }
 
-    // Sealed interface definition
-    lines.push(`type ${unionModel.name} interface {`);
-    lines.push(`\tis${unionModel.name}()`);
-    lines.push("}");
-    lines.push("");
+    // Property documentation
+    for (const [propName, propNode] of model.properties) {
+      const typeInfo = StandaloneGoGenerator.mapTypeSpecType(propNode.type, propName);
+      const optionalText = propNode.optional ? " (optional)" : "";
+      lines.push(`// ${propName}: ${typeInfo.goType}${optionalText}`);
+    }
 
-    // Generate variant structs
+    return lines.join("\n");
+  }
+
+  /**
+   * Format TypeSpec union documentation
+   * DOCUMENTATION GENERATION: Consistent Go documentation
+   */
+  formatUnionDocumentation(unionModel: {
+    name: string;
+    variants: Array<{ name: string; type: TypeSpecTypeNode }>;
+  }): string {
+    const lines: string[] = [];
+
+    // Header comment
+    lines.push(`// ${unionModel.name} - TypeSpec generated union`);
+
+    // Variant documentation
     for (const variant of unionModel.variants) {
-      // Use variant type name if available, otherwise fall back to variant name
-      const typeName = this.getTypeName(variant.type);
-      let variantName = typeName || variant.name;
-      
-      // Ensure the variant name is properly capitalized
-      variantName = this.capitalizeFirst(variantName);
-      
-      lines.push(`// ${variantName} - ${unionModel.name} variant`);
-      lines.push(`type ${variantName} struct {`);
-      
-      // For discriminated unions, always add discriminator field
-      if (unionModel.discriminator) {
-        lines.push(`\tType string \`json:"type"\``);
-        
-        // Add optional success and error fields based on variant name
-        if (variant.name === 'success') {
-          lines.push(`\tSuccess *SuccessResponse \`json:"success,omitempty"\``);
-        } else if (variant.name === 'error') {
-          lines.push(`\tError *ErrorResponse \`json:"error,omitempty"\``);
+      const typeName = variant.type && typeof variant.type === "object" && "name" in variant.type 
+        ? (variant.type as { name: string }).name 
+        : "unknown";
+      lines.push(`// ${variant.name}: ${typeName}`);
+    }
+
+    return lines.join("\n");
+  }
+
+  /**
+   * Generate Go package with multiple models
+   * BATCH GENERATION: Efficient processing of multiple models
+   */
+  generatePackage(packageInfo: {
+    name: string;
+    models: Array<{
+      name: string;
+      properties: ReadonlyMap<string, TypeSpecPropertyNode>;
+      extends?: string;
+    }>;
+    unions?: Array<{
+      name: string;
+      kind: "union";
+      variants: Array<{ name: string; type: TypeSpecTypeNode }>;
+    }>;
+  }): GoEmitterResult {
+    try {
+      const allFiles = new Map<string, string>();
+      const generatedFiles: string[] = [];
+      const generatedModels: string[] = [];
+      const generatedUnions: string[] = [];
+
+      // Generate all models
+      for (const model of packageInfo.models) {
+        const result = this.generateModel(model);
+        if (result._tag === "success") {
+          result.data.forEach((code, filename) => {
+            allFiles.set(filename, code);
+            generatedFiles.push(filename);
+          });
+          generatedModels.push(model.name);
+        } else {
+          return result; // Return first error
         }
-      } else {
-        // For non-discriminated unions, add potential properties based on variant type
-        if (this.isRecursiveVariant(variant, unionModel)) {
-          // Generate typical binary expression fields for recursive patterns
-          if (variant.name.toLowerCase().includes('add') || variant.name.toLowerCase().includes('multiply')) {
-            lines.push(`\tLeft *${unionModel.name} \`json:"left,omitempty"\``);
-            lines.push(`\tRight *${unionModel.name} \`json:"right,omitempty"\``);
+      }
+
+      // Generate all unions
+      if (packageInfo.unions) {
+        for (const union of packageInfo.unions) {
+          const result = this.generateUnionType(union);
+          if (result._tag === "success") {
+            result.data.forEach((code, filename) => {
+              allFiles.set(filename, code);
+              generatedFiles.push(filename);
+            });
+            generatedUnions.push(union.name);
           } else {
-            lines.push(`\t*${unionModel.name} \`json:"${variant.name},omitempty"\``);
+            return result; // Return first error
           }
         }
       }
-      
-      lines.push("}");
-      lines.push("");
 
-      // Method to implement the interface
-      lines.push(`func (e ${variantName}) is${unionModel.name}() {}`);
-      lines.push("");
-    }
-
-    return lines.join("\n");
-  }
-
-  /**
-   * Generate discriminated union code with discriminator field
-   */
-  private generateDiscriminatedUnionCode(unionModel: {
-    name: string;
-    kind: "union";
-    variants: Array<{ name: string; type: TypeSpecTypeNode; discriminator?: string }>;
-    discriminator: string;
-  }): string {
-    const lines: string[] = [];
-
-    // Sealed interface definition
-    lines.push(`type ${unionModel.name} interface {`);
-    lines.push(`\tgetType() string`);
-    lines.push("}");
-    lines.push("");
-
-    // Generate variant structs with discriminator field
-    for (const variant of unionModel.variants) {
-      // Use variant type name if available, otherwise fall back to variant name
-      const typeName = this.getTypeName(variant.type);
-      let variantName = typeName || variant.name;
-      variantName = this.capitalizeFirst(variantName);
-      
-      lines.push(`// ${variantName} - ${unionModel.name} variant`);
-      lines.push(`type ${variantName} struct {`);
-      lines.push(`\tType string \`json:"type"\``);
-      
-      // Add optional success and error fields based on variant name
-      if (variant.name === 'success') {
-        lines.push(`\tSuccess *SuccessResponse \`json:"success,omitempty"\``);
-      } else if (variant.name === 'error') {
-        lines.push(`\tError *ErrorResponse \`json:"error,omitempty"\``);
-      }
-      
-      lines.push("}");
-      lines.push("");
-
-      // Method to implement the interface
-      lines.push(`func (e ${variantName}) getType() string {`);
-      lines.push(`\treturn "${variant.discriminator || variant.name}"`);
-      lines.push("}");
-      lines.push("");
-    }
-
-    // Generate type constants
-    let constantPrefix = this.capitalizeFirst(unionModel.name);
-    
-    // Special case: if union name ends with "Method", add "Type" to constant prefix
-    if (constantPrefix.endsWith('Method')) {
-      constantPrefix = constantPrefix.slice(0, -6) + 'Type'; // Replace 'Method' with 'Type'
-    }
-    
-    for (const variant of unionModel.variants) {
-      // Use special case mapping for known capitalization issues
-      const specialCases: Record<string, string> = {
-        'paypal': 'PayPal',
-        'bankTransfer': 'BankTransfer'
-      };
-      const variantName = specialCases[variant.name] || this.capitalizeFirst(variant.name);
-      const constantName = `${constantPrefix}${variantName}`;
-      const constantValue = variant.discriminator || variant.name;
-      lines.push(`const ${constantName} = "${constantValue}"`);
-    }
-    lines.push("");
-
-    return lines.join("\n");
-  }
-
-  /**
-   * Check if a variant is recursive (references the union type)
-   */
-  private isRecursiveVariant(
-    variant: { name: string; type?: TypeSpecTypeNode }, 
-    unionModel: { name: string }
-  ): boolean {
-    // If variant type name matches union name, it's recursive
-    const typeName = variant.type ? this.getTypeName(variant.type) : undefined;
-    if (typeName === unionModel.name) {
-      return true;
-    }
-    
-    // If variant name suggests a recursive pattern (Add, Multiply, etc.)
-    const recursivePatterns = ['add', 'multiply', 'left', 'right', 'expression'];
-    const variantName = variant.name?.toLowerCase() || '';
-    const unionName = unionModel.name?.toLowerCase() || '';
-    
-    return recursivePatterns.some(pattern => 
-      variantName.includes(pattern) && unionName.includes('expression')
-    );
-  }
-
-  /**
-   * Capitalize first letter of a string
-   */
-  private capitalizeFirst(str: string): string {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-
-  /**
-   * Capitalize words in a string (e.g., "paypal" -> "PayPal")
-   */
-  private capitalizeWords(str: string): string {
-    return str.split(' ').map(word => this.capitalizeFirst(word)).join(' ');
-  }
-
-  /**
-   * Get type name from TypeSpecTypeNode safely
-   * Only scalar, model, enum, and template types have name property
-   */
-  private getTypeName(type?: TypeSpecTypeNode): string | undefined {
-    if (!type) return undefined;
-    
-    if ('name' in type) {
-      return (type as { name: string }).name;
-    }
-    
-    return undefined;
-  }
-
-  /**
-   * Validate model before generation
-   * CONSISTENT VALIDATION: Unified error system
-   */
-  validateModel(model: {
-    name: string;
-    properties: ReadonlyMap<string, TypeSpecPropertyNode>;
-  }): GoEmitterResult {
-    if (!model.name) {
-      return ErrorFactory.createValidationError("Model name is required", {
-        modelName: model.name || "undefined",
+      return ErrorFactory.createSuccess(allFiles, {
+        generatedFiles,
+        packageName: packageInfo.name,
+        modelCount: generatedModels.length,
+        unionCount: generatedUnions.length,
+      });
+    } catch (error) {
+      return defaultErrorHandler(error, {
+        operation: "generatePackage",
+        packageName: packageInfo.name,
+        modelCount: packageInfo.models.length,
+        unionCount: packageInfo.unions?.length || 0,
       });
     }
-
-    if (!model.properties || model.properties.size === 0) {
-      return ErrorFactory.createValidationError("Model must have at least one property", {
-        modelName: model.name,
-      });
-    }
-
-    // Validate each property
-    for (const [propName, propNode] of model.properties) {
-      if (!propNode || !propNode.type) {
-        return ErrorFactory.createValidationError(`Invalid property: ${propName}`, {
-          modelName: model.name,
-          propertyName: propName,
-        });
-      }
-
-      // Validate type using CleanTypeMapper
-      try {
-        const mappedType = CleanTypeMapper.mapTypeSpecTypeLegacy(propNode.type, propName);
-        if (!mappedType || !mappedType.goType) {
-          return ErrorFactory.createValidationError(`Unsupported type for property: ${propName}`, {
-            modelName: model.name,
-            propertyName: propName,
-            invalidValue:
-              typeof propNode.type === "object" && propNode.type && "kind" in propNode.type
-                ? propNode.type.kind
-                : propNode.type,
-          });
-        }
-      } catch (error) {
-        return defaultErrorHandler(error, {
-          operation: "validateProperty",
-          modelName: model.name,
-          propertyName: propName,
-        });
-      }
-    }
-
-    return ErrorFactory.createSuccess(new Map(), { validModel: true, modelName: model.name });
   }
 }

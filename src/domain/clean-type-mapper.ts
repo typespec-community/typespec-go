@@ -7,7 +7,6 @@
  * MAINTAINABILITY: Clear separation of concerns
  */
 
-import { ErrorFactory, GoEmitterResult } from "./unified-errors.js";
 import type { TypeSpecPropertyNode } from "../types/typespec-domain.js";
 
 /**
@@ -269,8 +268,10 @@ export class CleanTypeMapper {
    * Map TypeSpec union type
    */
   private static mapUnionType(
-    type: TypeSpecPropertyNode["type"],
-    fieldName?: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _type: TypeSpecPropertyNode["type"],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _fieldName?: string,
   ): GoTypeMapping {
     // For union types, use interface{} as safest fallback
     // In future, could generate sealed interfaces
@@ -285,7 +286,8 @@ export class CleanTypeMapper {
    */
   private static mapEnumType(
     type: TypeSpecPropertyNode["type"],
-    fieldName?: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _fieldName?: string,
   ): GoTypeMapping {
     if (typeof type === "object" && type !== null && "name" in type) {
       const enumName = (type as { name: string }).name;
@@ -305,7 +307,8 @@ export class CleanTypeMapper {
    */
   private static mapTemplateType(
     type: TypeSpecPropertyNode["type"],
-    fieldName?: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _fieldName?: string,
   ): GoTypeMapping {
     if (typeof type === "object" && type !== null && "name" in type) {
       const templateName = (type as { name: string }).name;

@@ -20,9 +20,9 @@ export function formatGoCode(code: string): string {
       maxBuffer: 1024 * 1024, // 1MB buffer
     });
     return formatted;
-  } catch (_error) {
+  } catch (error) {
     // If gofmt fails (syntax error, not available), return original code
-    console.warn("⚠️ gofmt formatting failed, returning original code");
+    console.warn(`⚠️ gofmt formatting failed: ${error instanceof Error ? error.message : String(error)}`);
     return code;
   }
 }

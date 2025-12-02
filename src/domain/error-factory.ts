@@ -283,7 +283,6 @@ export class ErrorFactory {
  */
 export const defaultErrorHandler = (
   error: unknown,
-  context?: Record<string, unknown>,
 ): GoEmitterResult => {
   if (error instanceof Error) {
     return ErrorFactory.createSystemError(`Unexpected error: ${error.message}`, error, {
