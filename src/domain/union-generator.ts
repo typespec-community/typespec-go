@@ -90,8 +90,7 @@ export class UnionGenerator {
     const lines: string[] = [];
 
     // Package declaration
-    lines.push("package api");
-    lines.push("");
+    GeneratorUtils.addPackageDeclaration(lines);
 
     // Model documentation
     lines.push(`// ${unionModel.name} - TypeSpec generated union`);

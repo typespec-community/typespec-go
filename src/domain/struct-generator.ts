@@ -7,6 +7,7 @@ import { CleanTypeMapper } from "./clean-type-mapper.js";
 import type {
   TypeSpecPropertyNode,
 } from "../types/typespec-domain.js";
+import { GeneratorUtils } from "./generator-utils.js";
 
 /**
  * Type-safe Struct Generator
@@ -68,8 +69,7 @@ export class StructGenerator {
     const lines: string[] = [];
 
     // Package declaration
-    lines.push("package api");
-    lines.push("");
+    GeneratorUtils.addPackageDeclaration(lines);
 
     // Imports (could be enhanced to track actual usage)
     lines.push('import "encoding/json"');

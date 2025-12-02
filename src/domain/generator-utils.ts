@@ -31,4 +31,12 @@ export class GeneratorUtils {
     
     return undefined;
   }
+
+  /**
+   * Add standard Go package declaration to lines array
+   */
+  static addPackageDeclaration(lines: string[], packageName: string = "api"): void {
+    lines.push(`package ${packageName}`);
+    lines.push("");
+  }
 }
