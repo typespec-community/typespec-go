@@ -288,8 +288,8 @@ function generateHandlerCode(serviceName: string, handlers: GoHandlerMethod[], p
       .join(", ");
     lines.push(`\t${params}) {`);
     
-    // Handler implementation
-    lines.push(`\t// TODO: Implement ${handler.name} handler`);
+    // Handler implementation - developer action required
+    lines.push(`\t// TODO: Implement ${handler.name} handler with business logic`);
     lines.push(`\t// Route: ${handler.httpMethod} ${handler.route}`);
     lines.push("");
     
@@ -318,7 +318,7 @@ function generateHandlerCode(serviceName: string, handlers: GoHandlerMethod[], p
       lines.push(`\t// w.WriteHeader(http.StatusCreated)`);
       lines.push(`\t// json.NewEncoder(w).Encode(result)`);
     } else {
-      lines.push(`\t// TODO: Add implementation for ${handler.httpMethod} request`);
+      lines.push(`\t// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation`);
       lines.push(`\tw.WriteHeader(http.StatusNotImplemented)`);
       lines.push(`\tjson.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})`);
     }
