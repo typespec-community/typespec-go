@@ -4,7 +4,7 @@
  * Supports service interfaces with HTTP method mappings
  */
 
-import type { Operation, Model, Type, Program } from "@typespec/compiler";
+import type { Operation, Model, Type, Program, Namespace } from "@typespec/compiler";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 
@@ -64,7 +64,7 @@ function operationToMethod(operation: Operation, program?: Program): GoMethodSig
   const methodName = capitalize(operation.name);
   const parameters = extractParameters(operation);
   const returns = extractReturns(operation);
-  const doc = program ? getDocumentation(program, operation as any) : undefined;
+  const doc = program ? getDocumentation(program, operation) : undefined;
   
   return {
     name: methodName,
@@ -211,7 +211,7 @@ function generateInterfaceCode(name: string, methods: GoMethodSignature[]): stri
 /**
  * Parse operations from a TypeSpec namespace
  */
-export function collectOperations(namespace: any): Operation[] {
+export function collectOperations(namespace: Namespace): Operation[] {
   const operations: Operation[] = [];
   
   if (namespace.operations) {

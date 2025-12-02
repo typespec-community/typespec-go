@@ -3,14 +3,14 @@
  * Helper functions for working with TypeSpec types and decorators
  */
 
-import type { Model, ModelProperty, Enum, Union, Program } from "@typespec/compiler";
+import type { Model, ModelProperty, Enum, Union, Program, Operation } from "@typespec/compiler";
 import { getDoc, getSummary } from "@typespec/compiler";
 
 /**
  * Get documentation string from a TypeSpec type
  * Uses @doc decorator if present, otherwise falls back to @summary
  */
-export function getDocumentation(program: Program, type: Model | Enum | Union | ModelProperty): string | undefined {
+export function getDocumentation(program: Program, type: Model | Enum | Union | ModelProperty | Operation): string | undefined {
   // Try @doc first
   const doc = getDoc(program, type);
   if (doc) return doc;
@@ -38,6 +38,6 @@ export function formatGoDoc(doc: string | undefined, prefix: string = ""): strin
 /**
  * Check if a type has documentation
  */
-export function hasDocumentation(program: Program, type: Model | Enum | Union | ModelProperty): boolean {
+export function hasDocumentation(program: Program, type: Model | Enum | Union | ModelProperty | Operation): boolean {
   return getDocumentation(program, type) !== undefined;
 }

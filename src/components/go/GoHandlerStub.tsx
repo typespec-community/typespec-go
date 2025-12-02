@@ -4,7 +4,7 @@
  * Provides scaffolding for HTTP handler implementations
  */
 
-import type { Operation, Type, Program } from "@typespec/compiler";
+import type { Operation, Type, Program, ModelProperty } from "@typespec/compiler";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-docs.js";
 
@@ -68,7 +68,7 @@ function operationToHandler(operation: Operation, program?: Program): GoHandlerM
   const handlerName = `${capitalize(operationName)}Handler`;
   const parameters = extractHandlerParameters(operation);
   const returnType = mapHandlerReturnType(operation);
-  const doc = program && getDocumentation ? getDocumentation(program, operation as any) : undefined;
+  const doc = program && getDocumentation ? getDocumentation(program, operation) : undefined;
   
   return {
     name: handlerName,
@@ -162,7 +162,7 @@ function extractHandlerParameters(operation: Operation): HandlerParameter[] {
 /**
  * Infer parameter source (path, query, body)
  */
-function inferParameterSource(name: string, prop: any): string {
+function inferParameterSource(name: string, prop: ModelProperty): string {
   const lowerName = name.toLowerCase();
   
   if (lowerName === "id" || lowerName.includes("id")) {
