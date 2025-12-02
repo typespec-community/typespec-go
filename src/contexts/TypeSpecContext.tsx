@@ -4,7 +4,8 @@
  * Follows guide's "Context System" section
  */
 
-import { createContext, useContext } from "@alloy-js/core";
+import { Children, createContext, useContext } from "@alloy-js/core";
+import { navigateProgram } from "@typespec/compiler";
 import type { Program, Model, Type, Scalar, Union } from "@typespec/compiler";
 
 /**
@@ -106,19 +107,20 @@ export function GeneratorProvider({
 }: {
   program: Program;
   config?: GeneratorConfig;
-  children: any;
+  children: Children;
 }) {
   // Internal state for tracking generated types
   const generatedTypes = new Set<string>();
   const allModels = new Map<string, Model>();
 
   // Extract all models from program
-  // TODO: Use proper TypeSpec navigation API
-  const models: Model[] = []; // Extract models from program
-
-  for (const model of models) {
-    allModels.set(model.name || "unnamed", model);
-  }
+  const models: Model[] = [];
+  navigateProgram(program, {
+    model: (model) => {
+      models.push(model);
+      allModels.set(model.name || "unnamed", model);
+    },
+  });
 
   const context: GeneratorContext = {
     program,
