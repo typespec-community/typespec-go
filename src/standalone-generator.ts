@@ -5,7 +5,7 @@
  * UNIFIED ERROR SYSTEM: Single source of truth for error handling
  * ELIMINATED DUPLICATES: Single source of truth for domain types
  * DELEGATES TO CLEAN TYPE MAPPER: No duplicate mapping logic
- * MODULAR DESIGN: Focused generators for each responsibility
+ * CUSTOMER VALUE: Working Go generation with professional quality
  */
 
 import {
@@ -19,32 +19,22 @@ import type {
   TypeSpecTypeNode,
   GoEmitterOptions,
 } from "./types/typespec-domain.js";
-
-// Import specialized generators
-import { generateModel } from "./generators/model-generator.js";
-import { generateUnionType } from "./generators/union-generator.js";
-import { validateModel, validateUnion } from "./validators/type-validators.js";
-import { capitalizeFirst, capitalizeWords } from "./utils/string-utils.js";
-
-/**
- * Go type mapping configuration
- */
-interface GoTypeMapping {
-  /** Go type string */
-  readonly goType: string;
-  /** Whether to use pointer for optional fields */
-  readonly usePointerForOptional: boolean;
-}
+import type { GoTypeMapping } from "./types/emitter.types.js";
+import { StructGenerator } from "./domain/struct-generator.js";
+import { UnionGenerator } from "./domain/union-generator.js";
 
 /**
  * Type-safe Standalone Generator with delegation architecture
- * MODULAR DESIGN: Delegates to specialized generators
+ * ELIMINATES DUPLICATION: Delegates to CleanTypeMapper for all type operations
  */
 export class StandaloneGoGenerator {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(_options?: GoEmitterOptions) {
+  private structGenerator: StructGenerator;
+  private unionGenerator: UnionGenerator;
+
+  constructor(options?: GoEmitterOptions) {
     // Options for future extensibility
-    // Currently no options needed, but constructor for consistency
+    this.structGenerator = new StructGenerator();
+    this.unionGenerator = new UnionGenerator();
   }
 
   /**
@@ -54,7 +44,7 @@ export class StandaloneGoGenerator {
    */
   static mapTypeSpecType(type: TypeSpecPropertyNode["type"], fieldName?: string): GoTypeMapping {
     // DELEGATE TO CLEAN UNIFIED SYSTEM: Single source of truth
-    return CleanTypeMapper.mapTypeSpecType(type, fieldName);
+    return CleanTypeMapper.mapTypeSpecTypeLegacy(type, fieldName);
   }
 
   /**
@@ -67,21 +57,22 @@ export class StandaloneGoGenerator {
   }
 
   /**
-   * Generate Go model using specialized model generator
-   * DELEGATION PATTERN: Modular architecture
+   * Type-safe model generation
+   * UNIFIED ERROR SYSTEM: Returns GoEmitterResult instead of throwing
    */
   generateModel(model: {
     name: string;
     properties: ReadonlyMap<string, TypeSpecPropertyNode>;
-    extends?: string;
+    template?: string; // Template definition like "<T>" or "PaginatedResponse<User>"
+    extends?: string; // Support Go struct embedding
+    propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>; // Support spread operator
   }): GoEmitterResult {
-    // DELEGATE TO SPECIALIZED GENERATOR
-    return generateModel(model);
+    return this.structGenerator.generateModel(model);
   }
 
   /**
-   * Generate Go union type using specialized union generator
-   * DELEGATION PATTERN: Modular architecture
+   * Generate Go union type (sealed interface pattern)
+   * UNIFIED ERROR SYSTEM: Returns GoEmitterResult instead of throwing
    */
   generateUnionType(unionModel: {
     name: string;
@@ -89,85 +80,30 @@ export class StandaloneGoGenerator {
     variants: Array<{ name: string; type: TypeSpecTypeNode }>;
     properties?: ReadonlyMap<string, TypeSpecPropertyNode>;
   }): GoEmitterResult {
-    // DELEGATE TO SPECIALIZED GENERATOR
-    return generateUnionType(unionModel);
+    return this.unionGenerator.generateUnionType(unionModel);
   }
 
   /**
-   * Validate model using specialized validator
-   * DELEGATION PATTERN: Modular validation
-   */
-  validateModel(model: {
-    name: string;
-    properties: ReadonlyMap<string, TypeSpecPropertyNode>;
-  }): GoEmitterResult {
-    // DELEGATE TO SPECIALIZED VALIDATOR
-    return validateModel(model);
-  }
-
-  /**
-   * Validate union using specialized validator
-   * DELEGATION PATTERN: Modular validation
+   * Validate union before generation
+   * CONSISTENT VALIDATION: Unified error system
    */
   validateUnion(unionModel: {
     name: string;
     kind: "union";
     variants: Array<{ name: string; type: TypeSpecTypeNode }>;
   }): GoEmitterResult {
-    // DELEGATE TO SPECIALIZED VALIDATOR
-    return validateUnion(unionModel);
+    return this.unionGenerator.validateUnion(unionModel);
   }
 
   /**
-   * Format TypeSpec model documentation
-   * DOCUMENTATION GENERATION: Consistent Go documentation
+   * Validate model before generation
+   * CONSISTENT VALIDATION: Unified error system
    */
-  formatModelDocumentation(model: {
+  validateModel(model: {
     name: string;
     properties: ReadonlyMap<string, TypeSpecPropertyNode>;
-    extends?: string;
-  }): string {
-    const lines: string[] = [];
-
-    // Header comment
-    if (model.extends) {
-      lines.push(`// ${model.name} - TypeSpec generated model (extends ${model.extends})`);
-    } else {
-      lines.push(`// ${model.name} - TypeSpec generated model`);
-    }
-
-    // Property documentation
-    for (const [propName, propNode] of model.properties) {
-      const typeInfo = StandaloneGoGenerator.mapTypeSpecType(propNode.type, propName);
-      const optionalText = propNode.optional ? " (optional)" : "";
-      lines.push(`// ${propName}: ${typeInfo.goType}${optionalText}`);
-    }
-
-    return lines.join("\n");
-  }
-
-  /**
-   * Format TypeSpec union documentation
-   * DOCUMENTATION GENERATION: Consistent Go documentation
-   */
-  formatUnionDocumentation(unionModel: {
-    name: string;
-    variants: Array<{ name: string; type: TypeSpecTypeNode }>;
-  }): string {
-    const lines: string[] = [];
-
-    // Header comment
-    lines.push(`// ${unionModel.name} - TypeSpec generated union`);
-
-    // Variant documentation
-    for (const variant of unionModel.variants) {
-      const typeName = variant.type && typeof variant.type === "object" && "name" in variant.type 
-        ? (variant.type as { name: string }).name 
-        : "unknown";
-      lines.push(`// ${variant.name}: ${typeName}`);
-    }
-
-    return lines.join("\n");
+  }): GoEmitterResult {
+    return this.structGenerator.validateModel(model);
   }
 
   /**

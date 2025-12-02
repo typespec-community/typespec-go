@@ -8,18 +8,7 @@
  */
 
 import type { TypeSpecPropertyNode } from "../types/typespec-domain.js";
-
-/**
- * Go type mapping configuration
- */
-interface GoTypeMapping {
-  /** Go type string */
-  readonly goType: string;
-  /** Whether to use pointer for optional fields */
-  readonly usePointerForOptional: boolean;
-  /** Whether this type requires imports */
-  readonly requiresImport?: string;
-}
+import type { GoTypeMapping } from "../types/emitter.types.js";
 
 /**
  * Type mapping cache for performance

@@ -16,7 +16,7 @@ import { generateGoFieldName } from "../utils/string-utils.js";
 export function generateUnionType(unionModel: {
   name: string;
   kind: "union";
-  variants: Array<{ name: string; type: TypeSpecTypeNode }>;
+  variants: Array<{ name: string; type: TypeSpecTypeNode; discriminator?: string }>;
   properties?: ReadonlyMap<string, TypeSpecPropertyNode>;
 }): GoEmitterResult {
   // Input validation
