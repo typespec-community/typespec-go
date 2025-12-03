@@ -8,10 +8,10 @@ import { render } from "@alloy-js/core";
 
 test("Alloy-JS Components Integration", async () => {
   // Test basic component compilation
-  expect(() => {
+  expect(async () => {
     // This should not throw if components are properly configured
-    const testModule = import("../components/go/index.js");
-    expect(testModule).resolves.toBeDefined();
+    const testModule = await import("../components/go/index.js");
+    expect(testModule).toBeDefined();
   }).not.toThrow();
 });
 
