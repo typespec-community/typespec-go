@@ -126,7 +126,15 @@ function generateUnionCode(
  */
 function getVariantName(variant: UnionVariant, unionName: string): string {
   // Use variant type name if available, otherwise use variant name
-  const baseName = String(variant.name || "Variant");
+  // This matches the behavior from union-generator.ts line 109-110
+  const type = variant.type;
+  let baseName = String(variant.name || "Variant");
+  
+  // If type is a Model and has a name, use the type name
+  if (type && type.kind === "Model" && (type as { name?: string }).name) {
+    baseName = (type as { name?: string }).name!;
+  }
+  
   return capitalize(baseName);
 }
 

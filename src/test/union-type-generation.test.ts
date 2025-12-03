@@ -6,7 +6,7 @@ import { StandaloneGoGenerator } from "../standalone-generator.js";
  * Tests union type to Go sealed interface generation
  */
 
-test("Union Types - Should generate sealed interface", () => {
+test("Union Types - Should generate sealed interface", async () => {
   const generator = new StandaloneGoGenerator();
 
   // Arrange
@@ -22,7 +22,7 @@ test("Union Types - Should generate sealed interface", () => {
   };
 
   // Act
-  const result = generator.generateUnionType(unionModel);
+  const result = await generator.generateUnionType(unionModel);
 
   // Assert
   if (result._tag === "success") {
@@ -46,7 +46,7 @@ test("Union Types - Should generate sealed interface", () => {
   }
 });
 
-test("Union Types - Should handle discriminated unions", () => {
+test("Union Types - Should handle discriminated unions", async () => {
   const generator = new StandaloneGoGenerator();
 
   // Arrange
@@ -71,7 +71,7 @@ test("Union Types - Should handle discriminated unions", () => {
   };
 
   // Act
-  const result = generator.generateUnionType(discriminatedUnion);
+  const result = await generator.generateUnionType(discriminatedUnion);
 
   // Assert
   if (result._tag === "success") {
@@ -89,7 +89,7 @@ test("Union Types - Should handle discriminated unions", () => {
   }
 });
 
-test("Union Types - Should handle recursive union types", () => {
+test("Union Types - Should handle recursive union types", async () => {
   const generator = new StandaloneGoGenerator();
 
   // Arrange
@@ -105,7 +105,7 @@ test("Union Types - Should handle recursive union types", () => {
   };
 
   // Act
-  const result = generator.generateUnionType(recursiveUnion);
+  const result = await generator.generateUnionType(recursiveUnion);
 
   // Assert
   if (result._tag === "success") {
@@ -120,7 +120,7 @@ test("Union Types - Should handle recursive union types", () => {
   }
 });
 
-test("Union Types - Should handle empty union gracefully", () => {
+test("Union Types - Should handle empty union gracefully", async () => {
   const generator = new StandaloneGoGenerator();
 
   // Arrange
@@ -132,7 +132,7 @@ test("Union Types - Should handle empty union gracefully", () => {
   };
 
   // Act
-  const result = generator.generateUnionType(emptyUnion);
+  const result = await generator.generateUnionType(emptyUnion);
 
   // Assert
   // Should either succeed with minimal interface or fail gracefully
@@ -146,7 +146,7 @@ test("Union Types - Should handle empty union gracefully", () => {
   }
 });
 
-test("Union Types - Should generate proper JSON tags", () => {
+test("Union Types - Should generate proper JSON tags", async () => {
   const generator = new StandaloneGoGenerator();
 
   // Arrange
@@ -166,7 +166,7 @@ test("Union Types - Should generate proper JSON tags", () => {
   };
 
   // Act
-  const result = generator.generateUnionType(unionWithJson);
+  const result = await generator.generateUnionType(unionWithJson);
 
   // Assert
   if (result._tag === "success") {
@@ -181,7 +181,7 @@ test("Union Types - Should generate proper JSON tags", () => {
   }
 });
 
-test("Union Types - Should handle union performance efficiently", () => {
+test("Union Types - Should handle union performance efficiently", async () => {
   const generator = new StandaloneGoGenerator();
 
   // Arrange
@@ -197,7 +197,7 @@ test("Union Types - Should handle union performance efficiently", () => {
 
   // Act
   const startTime = performance.now();
-  const result = generator.generateUnionType(largeUnion);
+  const result = await generator.generateUnionType(largeUnion);
   const endTime = performance.now();
   const duration = endTime - startTime;
 

@@ -50,7 +50,7 @@ export class StandaloneGoGenerator {
 		kind: "union";
 		variants: Array<{ name: string; type: TypeSpecTypeNode }>;
 		properties?: ReadonlyMap<string, TypeSpecPropertyNode>;
-	}): GoEmitterResult {
+	}): Promise<GoEmitterResult> {
 		return this.unionGenerator.generateUnionType(unionModel)
 	}
 
@@ -70,7 +70,7 @@ export class StandaloneGoGenerator {
 			kind: "union";
 			variants: Array<{ name: string; type: TypeSpecTypeNode }>;
 		}>;
-	}): GoEmitterResult {
+	}): Promise<GoEmitterResult> {
 		try {
 			const allFiles = new Map<string, string>()
 			const generatedFiles: string[] = []

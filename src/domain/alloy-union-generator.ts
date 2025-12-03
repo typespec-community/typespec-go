@@ -8,7 +8,7 @@ import { ErrorFactory, GoEmitterResult, defaultErrorHandler } from "./unified-er
 import type { TypeSpecTypeNode, TypeSpecPropertyNode } from "../types/typespec-domain.js";
 import { render, refkey } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
-import type { Union, UnionVariant, Program } from "@typespec/compiler";
+import type { Union, UnionVariant } from "@typespec/compiler";
 
 /**
  * Type-safe Alloy-based Union Generator
@@ -25,7 +25,7 @@ export class AlloyUnionGenerator {
     variants: Array<{ name: string; type: TypeSpecTypeNode; discriminator?: string }>;
     properties?: ReadonlyMap<string, TypeSpecPropertyNode>;
     discriminator?: string;
-  }): GoEmitterResult {
+  }): Promise<GoEmitterResult> {
     // Input validation
     if (!unionModel.name) {
       return ErrorFactory.createValidationError("Invalid union: name must be a non-empty string", {
@@ -70,7 +70,7 @@ export class AlloyUnionGenerator {
     kind: "union";
     variants: Array<{ name: string; type: TypeSpecTypeNode; discriminator?: string }>;
     discriminator?: string;
-  }): string {
+  }): Promise<string> {
     try {
       // Import GoUnionDeclaration component using dynamic import
       const { GoUnionDeclaration } = await import("../components/go/GoUnionDeclaration.js");
@@ -122,15 +122,13 @@ export class AlloyUnionGenerator {
       name: unionModel.name,
       kind: "Union",
       variants,
-      node: undefined as any, // Not needed for generation
-      projector: undefined as any, // Not needed for generation
     };
   }
 
   /**
    * Convert TypeSpecTypeNode to TypeSpec type format
    */
-  private convertTypeSpecTypeNode(typeNode: TypeSpecTypeNode): any {
+  private convertTypeSpecTypeNode(typeNode: TypeSpecTypeNode) {
     // Convert internal type representation to TypeSpec format
     switch (typeNode.kind) {
       case "String":
@@ -141,8 +139,6 @@ export class AlloyUnionGenerator {
         return { kind: "Number" };
       case "scalar":
         return { kind: "Scalar", name: typeNode.name };
-      case "Model":
-        return { kind: "Model", name: typeNode.name };
       default:
         return { kind: "String" }; // Default fallback
     }
