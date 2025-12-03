@@ -11,7 +11,7 @@
 import {defaultErrorHandler, ErrorFactory, GoEmitterResult} from "./domain/unified-errors.js"
 import type {GoEmitterOptions, TypeSpecPropertyNode, TypeSpecTypeNode} from "./types/typespec-domain.js"
 import {StructGenerator} from "./domain/struct-generator.js"
-import {UnionGenerator} from "./domain/union-generator.js"
+import {AlloyUnionGenerator} from "./domain/alloy-union-generator.js"
 
 /**
  * Type-safe Standalone Generator with delegation architecture
@@ -19,12 +19,12 @@ import {UnionGenerator} from "./domain/union-generator.js"
  */
 export class StandaloneGoGenerator {
 	private structGenerator: StructGenerator
-	private unionGenerator: UnionGenerator
+	private unionGenerator: AlloyUnionGenerator
 
 	constructor(options?: GoEmitterOptions) {
 		// Options for future extensibility
 		this.structGenerator = new StructGenerator()
-		this.unionGenerator = new UnionGenerator()
+		this.unionGenerator = new AlloyUnionGenerator()
 	}
 
 	/**
@@ -45,7 +45,7 @@ export class StandaloneGoGenerator {
 	 * Generate Go union type (sealed interface pattern)
 	 * UNIFIED ERROR SYSTEM: Returns GoEmitterResult instead of throwing
 	 */
-	generateUnionType(unionModel: {
+	async generateUnionType(unionModel: {
 		name: string;
 		kind: "union";
 		variants: Array<{ name: string; type: TypeSpecTypeNode }>;
@@ -58,7 +58,7 @@ export class StandaloneGoGenerator {
 	 * Generate Go package with multiple models
 	 * BATCH GENERATION: Efficient processing of multiple models
 	 */
-	generatePackage(packageInfo: {
+	async generatePackage(packageInfo: {
 		name: string;
 		models: Array<{
 			name: string;
@@ -94,7 +94,7 @@ export class StandaloneGoGenerator {
 			// Generate all unions
 			if (packageInfo.unions) {
 				for (const union of packageInfo.unions) {
-					const result = this.generateUnionType(union)
+					const result = await this.generateUnionType(union)
 					if (result._tag === "success") {
 						result.data.forEach((code, filename) => {
 							allFiles.set(filename, code)

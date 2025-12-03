@@ -12,16 +12,6 @@ export class GeneratorUtils {
   }
 
   /**
-   * Capitalize words in a string (e.g., "paypal" -> "PayPal")
-   */
-  static capitalizeWords(str: string): string {
-    return str
-      .split(" ")
-      .map((word) => this.capitalizeFirst(word))
-      .join(" ");
-  }
-
-  /**
    * Get type name from TypeSpecTypeNode safely
    * Only scalar, model, enum, and template types have name property
    */

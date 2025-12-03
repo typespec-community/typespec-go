@@ -105,7 +105,7 @@ export class ErrorFactory {
    * Generate unique error ID
    */
   private static generateErrorId(): string {
-    return `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `err_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
 
   /**
