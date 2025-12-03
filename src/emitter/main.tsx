@@ -5,6 +5,7 @@
 
 import type { EmitContext, Program, Model, ModelProperty, Type, Scalar } from "@typespec/compiler";
 import { writeOutput } from "@typespec/emitter-framework";
+import {capitalize} from "@typespec/compiler/casing"
 // Minimal JSX implementation - avoid complex Alloy for now
 interface GoFile {
   path: string;
@@ -157,13 +158,6 @@ function mapTypeSpecToGo(type: Type): string {
       console.warn(`Unsupported TypeSpec type: ${type.kind}`);
       return "interface{}";
   }
-}
-
-/**
- * Capitalize first letter for Go field names
- */
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 /**

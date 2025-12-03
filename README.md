@@ -126,18 +126,18 @@ export const $onEmit = createAssetEmitter(async (context: EmitContext) => {
 ## 📋 TYPE SPEC FEATURE COMPLETION
 
 ### **Basic Types** ✅ COMPLETE
-| TypeSpec | Go Type | Status |
-|----------|---------|---------|
-| `string` | `string` | ✅ Working |
-| `boolean` | `bool` | ✅ Working |
-| `int8`, `int16`, `int32`, `int64` | `int8`, `int16`, `int32`, `int64` | ✅ Working |
+| TypeSpec                              | Go Type                               | Status    |
+|---------------------------------------|---------------------------------------|-----------|
+| `string`                              | `string`                              | ✅ Working |
+| `boolean`                             | `bool`                                | ✅ Working |
+| `int8`, `int16`, `int32`, `int64`     | `int8`, `int16`, `int32`, `int64`     | ✅ Working |
 | `uint8`, `uint16`, `uint32`, `uint64` | `uint8`, `uint16`, `uint32`, `uint64` | ✅ Working |
-| `float32`, `float64` | `float32`, `float64` | ✅ Working |
-| `bytes` | `[]byte` | ✅ Working |
-| `plainDate` | `string` | ✅ Working |
-| `utcDateTime` | `time.Time` | ✅ Working |
-| `duration` | `time.Duration` | ✅ Working |
-| `url` | `string` | ✅ Working |
+| `float32`, `float64`                  | `float32`, `float64`                  | ✅ Working |
+| `bytes`                               | `[]byte`                              | ✅ Working |
+| `plainDate`                           | `string`                              | ✅ Working |
+| `utcDateTime`                         | `time.Time`                           | ✅ Working |
+| `duration`                            | `time.Duration`                       | ✅ Working |
+| `url`                                 | `string`                              | ✅ Working |
 
 ### **Model System** 🔧 IN PROGRESS
 - ✅ **Basic Models:** Generated with proper struct syntax

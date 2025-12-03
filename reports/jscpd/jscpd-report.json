@@ -1,0 +1,997 @@
+{
+  "statistics": {
+    "detectionDate": "2025-12-03T23:51:19.614Z",
+    "formats": {
+      "typescript": {
+        "sources": {
+          "src/services/type-mapping.service.ts": {
+            "lines": 267,
+            "tokens": 1813,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 10,
+            "duplicatedTokens": 126,
+            "percentage": 3.75,
+            "percentageTokens": 6.95,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/domain/struct-generator.ts": {
+            "lines": 260,
+            "tokens": 2004,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/domain/structured-logging.ts": {
+            "lines": 271,
+            "tokens": 2106,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 42,
+            "duplicatedTokens": 506,
+            "percentage": 15.5,
+            "percentageTokens": 24.03,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/domain/clean-type-mapper.ts": {
+            "lines": 592,
+            "tokens": 4783,
+            "sources": 1,
+            "clones": 16,
+            "duplicatedLines": 84,
+            "duplicatedTokens": 1008,
+            "percentage": 14.19,
+            "percentageTokens": 21.07,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/domain/unified-errors.ts": {
+            "lines": 82,
+            "tokens": 418,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/domain/error-types.ts": {
+            "lines": 323,
+            "tokens": 2155,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 25,
+            "duplicatedTokens": 162,
+            "percentage": 7.74,
+            "percentageTokens": 7.52,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/domain/generator-utils.ts": {
+            "lines": 35,
+            "tokens": 216,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/domain/go-code-validation.ts": {
+            "lines": 294,
+            "tokens": 1916,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/domain/alloy-union-generator.ts": {
+            "lines": 147,
+            "tokens": 1113,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 32,
+            "duplicatedTokens": 239,
+            "percentage": 21.77,
+            "percentageTokens": 21.47,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/domain/error-entities.ts": {
+            "lines": 380,
+            "tokens": 2844,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 12,
+            "duplicatedTokens": 102,
+            "percentage": 3.16,
+            "percentageTokens": 3.59,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/domain/error-factory.ts": {
+            "lines": 292,
+            "tokens": 1786,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 25,
+            "duplicatedTokens": 162,
+            "percentage": 8.56,
+            "percentageTokens": 9.07,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/domain/union-generator.ts": {
+            "lines": 247,
+            "tokens": 2027,
+            "sources": 1,
+            "clones": 5,
+            "duplicatedLines": 42,
+            "duplicatedTokens": 347,
+            "percentage": 17,
+            "percentageTokens": 17.12,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/testing/index.ts": {
+            "lines": 15,
+            "tokens": 69,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/utils/bdd-framework.ts": {
+            "lines": 272,
+            "tokens": 1950,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/utils/typespec-utils.ts": {
+            "lines": 28,
+            "tokens": 182,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/utils/go-formatter.ts": {
+            "lines": 94,
+            "tokens": 555,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/utils/strings.ts": {
+            "lines": 60,
+            "tokens": 372,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/types/emitter.types.ts": {
+            "lines": 103,
+            "tokens": 507,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/types/typespec-domain.ts": {
+            "lines": 140,
+            "tokens": 580,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/index.ts": {
+            "lines": 70,
+            "tokens": 316,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib.ts": {
+            "lines": 71,
+            "tokens": 464,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/standalone-generator.ts": {
+            "lines": 125,
+            "tokens": 876,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/main.ts": {
+            "lines": 6,
+            "tokens": 15,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 4174,
+          "tokens": 29067,
+          "sources": 23,
+          "clones": 19,
+          "duplicatedLines": 136,
+          "duplicatedTokens": 1326,
+          "percentage": 3.26,
+          "percentageTokens": 4.56,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      }
+    },
+    "total": {
+      "lines": 4174,
+      "tokens": 29067,
+      "sources": 23,
+      "clones": 19,
+      "duplicatedLines": 136,
+      "duplicatedTokens": 1326,
+      "percentage": 3.26,
+      "percentageTokens": 4.56,
+      "newDuplicatedLines": 0,
+      "newClones": 0
+    }
+  },
+  "duplicates": [
+    {
+      "format": "typescript",
+      "lines": 6,
+      "fragment": ");\n\n    if (elementMapping._tag === \"success\") {\n      return { _tag: \"success\", result: `[]${elementMapping.result}` };\n    } else {\n      return { _tag: \"invalid-array\", elementType ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/services/type-mapping.service.ts",
+        "start": 104,
+        "end": 109,
+        "startLoc": {
+          "line": 104,
+          "column": 12,
+          "position": 644
+        },
+        "endLoc": {
+          "line": 109,
+          "column": 2,
+          "position": 707
+        }
+      },
+      "secondFile": {
+        "name": "src/services/type-mapping.service.ts",
+        "start": 92,
+        "end": 97,
+        "startLoc": {
+          "line": 92,
+          "column": 6,
+          "position": 511
+        },
+        "endLoc": {
+          "line": 97,
+          "column": 2,
+          "position": 574
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 8,
+      "fragment": "\n  static error(\n    context: LogContext,\n    message: string,\n    details?: Record<string, unknown>,\n    errorId?: string,\n  ): void {\n    if",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/structured-logging.ts",
+        "start": 245,
+        "end": 252,
+        "startLoc": {
+          "line": 245,
+          "column": 1,
+          "position": 1792
+        },
+        "endLoc": {
+          "line": 252,
+          "column": 3,
+          "position": 1844
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/structured-logging.ts",
+        "start": 95,
+        "end": 102,
+        "startLoc": {
+          "line": 95,
+          "column": 6,
+          "position": 591
+        },
+        "endLoc": {
+          "line": 102,
+          "column": 6,
+          "position": 643
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 15,
+      "fragment": "\n  static withContext(context: LogContext) {\n    return {\n      debug: (message: string, details?: Record<string, unknown>) =>\n        this.debug(context, message, details),\n      info: (message: string, details?: Record<string, unknown>) =>\n        this.info(context, message, details),\n      warn: (message: string, details?: Record<string, unknown>) =>\n        this.warn(context, message, details),\n      error: (message: string, details?: Record<string, unknown>, errorId?: string) =>\n        this.error(context, message, details, errorId),\n    };\n  }\n}\n",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/structured-logging.ts",
+        "start": 258,
+        "end": 272,
+        "startLoc": {
+          "line": 258,
+          "column": 1,
+          "position": 1905
+        },
+        "endLoc": {
+          "line": 272,
+          "column": 1,
+          "position": 2106
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/structured-logging.ts",
+        "start": 148,
+        "end": 162,
+        "startLoc": {
+          "line": 148,
+          "column": 6,
+          "position": 885
+        },
+        "endLoc": {
+          "line": 162,
+          "column": 1,
+          "position": 1086
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 6,
+      "fragment": "(\n    type: TypeSpecPropertyNode[\"type\"],\n    fieldName?: string,\n  ): GoTypeMapping {\n    if (typeof type === \"object\" && type !== null && \"name\" in type) {\n      const modelName",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 170,
+        "end": 175,
+        "startLoc": {
+          "line": 170,
+          "column": 13,
+          "position": 1537
+        },
+        "endLoc": {
+          "line": 175,
+          "column": 10,
+          "position": 1599
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 135,
+        "end": 140,
+        "startLoc": {
+          "line": 135,
+          "column": 14,
+          "position": 1194
+        },
+        "endLoc": {
+          "line": 140,
+          "column": 11,
+          "position": 1256
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 6,
+      "fragment": "\n    if (\n      typeof type === \"object\" &&\n      type !== null &&\n      \"kind\" in type &&\n      (type as { kind: string }).kind === \"array\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 299,
+        "end": 304,
+        "startLoc": {
+          "line": 299,
+          "column": 2,
+          "position": 2605
+        },
+        "endLoc": {
+          "line": 304,
+          "column": 8,
+          "position": 2660
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 182,
+        "end": 187,
+        "startLoc": {
+          "line": 182,
+          "column": 58,
+          "position": 1650
+        },
+        "endLoc": {
+          "line": 187,
+          "column": 8,
+          "position": 1705
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 7,
+      "fragment": "(\n    type: TypeSpecPropertyNode[\"type\"],\n    // eslint-disable-next-line @typescript-eslint/no-unused-vars\n    _fieldName?: string,\n  ): GoTypeMapping {\n    if (typeof type === \"object\" && type !== null && \"name\" in type) {\n      const templateName",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 399,
+        "end": 405,
+        "startLoc": {
+          "line": 399,
+          "column": 16,
+          "position": 3439
+        },
+        "endLoc": {
+          "line": 405,
+          "column": 13,
+          "position": 3504
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 275,
+        "end": 281,
+        "startLoc": {
+          "line": 275,
+          "column": 12,
+          "position": 2415
+        },
+        "endLoc": {
+          "line": 281,
+          "column": 9,
+          "position": 2480
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 6,
+      "fragment": " (\n      typeof type === \"object\" &&\n      type !== null &&\n      \"kind\" in type &&\n      (type as { kind: string }).kind === \"model\"\n    );",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 435,
+        "end": 440,
+        "startLoc": {
+          "line": 435,
+          "column": 7,
+          "position": 3730
+        },
+        "endLoc": {
+          "line": 440,
+          "column": 2,
+          "position": 3786
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 183,
+        "end": 188,
+        "startLoc": {
+          "line": 183,
+          "column": 3,
+          "position": 1653
+        },
+        "endLoc": {
+          "line": 188,
+          "column": 2,
+          "position": 1709
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 6,
+      "fragment": "(type: unknown): boolean {\n    return (\n      typeof type === \"object\" &&\n      type !== null &&\n      \"kind\" in type &&\n      (type as { kind: string }).kind === \"Union\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 472,
+        "end": 477,
+        "startLoc": {
+          "line": 472,
+          "column": 16,
+          "position": 3942
+        },
+        "endLoc": {
+          "line": 477,
+          "column": 8,
+          "position": 4008
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 434,
+        "end": 187,
+        "startLoc": {
+          "line": 434,
+          "column": 16,
+          "position": 3716
+        },
+        "endLoc": {
+          "line": 187,
+          "column": 8,
+          "position": 1705
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 6,
+      "fragment": "(type: unknown): boolean {\n    return (\n      typeof type === \"object\" &&\n      type !== null &&\n      \"kind\" in type &&\n      (type as { kind: string }).kind === \"Enum\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 484,
+        "end": 489,
+        "startLoc": {
+          "line": 484,
+          "column": 15,
+          "position": 4027
+        },
+        "endLoc": {
+          "line": 489,
+          "column": 7,
+          "position": 4093
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 434,
+        "end": 187,
+        "startLoc": {
+          "line": 434,
+          "column": 16,
+          "position": 3716
+        },
+        "endLoc": {
+          "line": 187,
+          "column": 8,
+          "position": 1705
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 6,
+      "fragment": "(type: unknown): boolean {\n    return (\n      typeof type === \"object\" &&\n      type !== null &&\n      \"kind\" in type &&\n      (type as { kind: string }).kind === \"template\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 496,
+        "end": 501,
+        "startLoc": {
+          "line": 496,
+          "column": 19,
+          "position": 4112
+        },
+        "endLoc": {
+          "line": 501,
+          "column": 11,
+          "position": 4178
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 434,
+        "end": 187,
+        "startLoc": {
+          "line": 434,
+          "column": 16,
+          "position": 3716
+        },
+        "endLoc": {
+          "line": 187,
+          "column": 8,
+          "position": 1705
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 7,
+      "fragment": "(type: unknown): boolean {\n    return (\n      typeof type === \"object\" &&\n      type !== null &&\n      \"kind\" in type &&\n      (type as { kind: string }).kind === \"array\"\n      ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 508,
+        "end": 514,
+        "startLoc": {
+          "line": 508,
+          "column": 16,
+          "position": 4197
+        },
+        "endLoc": {
+          "line": 514,
+          "column": 7,
+          "position": 4265
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/clean-type-mapper.ts",
+        "start": 434,
+        "end": 305,
+        "startLoc": {
+          "line": 434,
+          "column": 16,
+          "position": 3716
+        },
+        "endLoc": {
+          "line": 305,
+          "column": 5,
+          "position": 2662
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 7,
+      "fragment": ": unknown): {\n    isValid: boolean;\n    errors: string[];\n  } {\n    const errors: string[] = [];\n\n    if (!field",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/error-entities.ts",
+        "start": 268,
+        "end": 274,
+        "startLoc": {
+          "line": 268,
+          "column": 6,
+          "position": 1754
+        },
+        "endLoc": {
+          "line": 274,
+          "column": 6,
+          "position": 1805
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/error-entities.ts",
+        "start": 236,
+        "end": 242,
+        "startLoc": {
+          "line": 236,
+          "column": 6,
+          "position": 1500
+        },
+        "endLoc": {
+          "line": 242,
+          "column": 6,
+          "position": 1551
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 14,
+      "fragment": "\n\n/**\n * Success result type\n */\nexport interface Success<T> {\n  readonly _tag: \"success\";\n  readonly data: T;\n  readonly metadata?: Record<string, unknown>;\n}\n\n/**\n * TypeSpec Compiler Error\n */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/error-factory.ts",
+        "start": 19,
+        "end": 32,
+        "startLoc": {
+          "line": 19,
+          "column": 2,
+          "position": 59
+        },
+        "endLoc": {
+          "line": 32,
+          "column": 4,
+          "position": 111
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/error-types.ts",
+        "start": 31,
+        "end": 44,
+        "startLoc": {
+          "line": 31,
+          "column": 2,
+          "position": 106
+        },
+        "endLoc": {
+          "line": 44,
+          "column": 4,
+          "position": 158
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 7,
+      "fragment": "\nexport interface TypeSpecCompilerError extends BaseError {\n  readonly kind: \"typespec_compiler\";\n  readonly modelName?: string;\n  readonly propertyName?: string;\n  readonly typeSpecSource?: string;\n  readonly resolution",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/error-factory.ts",
+        "start": 32,
+        "end": 38,
+        "startLoc": {
+          "line": 32,
+          "column": 4,
+          "position": 112
+        },
+        "endLoc": {
+          "line": 38,
+          "column": 11,
+          "position": 167
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/error-types.ts",
+        "start": 58,
+        "end": 64,
+        "startLoc": {
+          "line": 58,
+          "column": 4,
+          "position": 226
+        },
+        "endLoc": {
+          "line": 64,
+          "column": 5,
+          "position": 281
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 7,
+      "fragment": "\nexport interface ValidationError extends BaseError {\n  readonly kind: \"validation\";\n  readonly modelName?: string;\n  readonly propertyName?: string;\n  readonly invalidValue?: unknown;\n  readonly resolution",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/error-factory.ts",
+        "start": 54,
+        "end": 60,
+        "startLoc": {
+          "line": 54,
+          "column": 4,
+          "position": 244
+        },
+        "endLoc": {
+          "line": 60,
+          "column": 11,
+          "position": 299
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/error-types.ts",
+        "start": 85,
+        "end": 91,
+        "startLoc": {
+          "line": 85,
+          "column": 4,
+          "position": 388
+        },
+        "endLoc": {
+          "line": 91,
+          "column": 13,
+          "position": 443
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 16,
+      "fragment": " {\n    // Input validation\n    if (!unionModel.name) {\n      return ErrorFactory.createValidationError(\"Invalid union: name must be a non-empty string\", {\n        modelName: unionModel.name || \"unknown\",\n      });\n    }\n\n    if (!unionModel.variants || unionModel.variants.length === 0) {\n      return ErrorFactory.createValidationError(\"Invalid union: must have at least one variant\", {\n        modelName: unionModel.name,\n      });\n    }\n\n    try {\n      // Generate Go union code using sealed interface pattern",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/union-generator.ts",
+        "start": 19,
+        "end": 34,
+        "startLoc": {
+          "line": 19,
+          "column": 16,
+          "position": 129
+        },
+        "endLoc": {
+          "line": 34,
+          "column": 57,
+          "position": 241
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/alloy-union-generator.ts",
+        "start": 28,
+        "end": 43,
+        "startLoc": {
+          "line": 28,
+          "column": 2,
+          "position": 186
+        },
+        "endLoc": {
+          "line": 43,
+          "column": 84,
+          "position": 298
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 13,
+      "fragment": "\n      return defaultErrorHandler(error, {\n        operation: \"generateUnionType\",\n        modelName: unionModel.name,\n        variants: unionModel.variants.map((v) => v.name),\n      });\n    }\n  }\n\n  /**\n   * Validate union before generation\n   * CONSISTENT VALIDATION: Unified error system\n   */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/union-generator.ts",
+        "start": 41,
+        "end": 53,
+        "startLoc": {
+          "line": 41,
+          "column": 2,
+          "position": 328
+        },
+        "endLoc": {
+          "line": 53,
+          "column": 6,
+          "position": 390
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/alloy-union-generator.ts",
+        "start": 55,
+        "end": 67,
+        "startLoc": {
+          "line": 55,
+          "column": 2,
+          "position": 439
+        },
+        "endLoc": {
+          "line": 67,
+          "column": 6,
+          "position": 501
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 6,
+      "fragment": " generateUnionCode(unionModel: {\n    name: string;\n    kind: \"union\";\n    variants: Array<{ name: string; type: TypeSpecTypeNode; discriminator?: string }>;\n    discriminator?: string;\n  }): string",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/union-generator.ts",
+        "start": 77,
+        "end": 82,
+        "startLoc": {
+          "line": 77,
+          "column": 8,
+          "position": 588
+        },
+        "endLoc": {
+          "line": 82,
+          "column": 7,
+          "position": 653
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/alloy-union-generator.ts",
+        "start": 68,
+        "end": 73,
+        "startLoc": {
+          "line": 68,
+          "column": 6,
+          "position": 507
+        },
+        "endLoc": {
+          "line": 73,
+          "column": 8,
+          "position": 572
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 6,
+      "fragment": "\n    for (const variant of unionModel.variants) {\n      // Use variant type name if available, otherwise fall back to variant name\n      const typeName = GeneratorUtils.getTypeName(variant.type);\n      let variantName = typeName || variant.name;\n      ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/domain/union-generator.ts",
+        "start": 172,
+        "end": 177,
+        "startLoc": {
+          "line": 172,
+          "column": 53,
+          "position": 1347
+        },
+        "endLoc": {
+          "line": 177,
+          "column": 7,
+          "position": 1401
+        }
+      },
+      "secondFile": {
+        "name": "src/domain/union-generator.ts",
+        "start": 106,
+        "end": 112,
+        "startLoc": {
+          "line": 106,
+          "column": 28,
+          "position": 815
+        },
+        "endLoc": {
+          "line": 112,
+          "column": 1,
+          "position": 869
+        }
+      }
+    }
+  ]
+}

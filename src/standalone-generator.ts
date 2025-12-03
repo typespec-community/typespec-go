@@ -11,7 +11,7 @@
 import {defaultErrorHandler, ErrorFactory, GoEmitterResult} from "./domain/unified-errors.js"
 import type {GoEmitterOptions, TypeSpecPropertyNode, TypeSpecTypeNode} from "./types/typespec-domain.js"
 import {StructGenerator} from "./domain/struct-generator.js"
-import {AlloyUnionGenerator} from "./domain/alloy-union-generator.js"
+import {UnionGenerator} from "./domain/union-generator.js"
 
 /**
  * Type-safe Standalone Generator with delegation architecture
@@ -19,12 +19,12 @@ import {AlloyUnionGenerator} from "./domain/alloy-union-generator.js"
  */
 export class StandaloneGoGenerator {
 	private structGenerator: StructGenerator
-	private unionGenerator: AlloyUnionGenerator
+	private unionGenerator: UnionGenerator
 
 	constructor(options?: GoEmitterOptions) {
 		// Options for future extensibility
 		this.structGenerator = new StructGenerator()
-		this.unionGenerator = new AlloyUnionGenerator()
+		this.unionGenerator = new UnionGenerator()
 	}
 
 	/**
@@ -45,12 +45,12 @@ export class StandaloneGoGenerator {
 	 * Generate Go union type (sealed interface pattern)
 	 * UNIFIED ERROR SYSTEM: Returns GoEmitterResult instead of throwing
 	 */
-	async generateUnionType(unionModel: {
+	generateUnionType(unionModel: {
 		name: string;
 		kind: "union";
 		variants: Array<{ name: string; type: TypeSpecTypeNode }>;
 		properties?: ReadonlyMap<string, TypeSpecPropertyNode>;
-	}): Promise<GoEmitterResult> {
+	}): GoEmitterResult {
 		return this.unionGenerator.generateUnionType(unionModel)
 	}
 
@@ -58,7 +58,7 @@ export class StandaloneGoGenerator {
 	 * Generate Go package with multiple models
 	 * BATCH GENERATION: Efficient processing of multiple models
 	 */
-	async generatePackage(packageInfo: {
+	generatePackage(packageInfo: {
 		name: string;
 		models: Array<{
 			name: string;
@@ -70,7 +70,7 @@ export class StandaloneGoGenerator {
 			kind: "union";
 			variants: Array<{ name: string; type: TypeSpecTypeNode }>;
 		}>;
-	}): Promise<GoEmitterResult> {
+	}): GoEmitterResult {
 		try {
 			const allFiles = new Map<string, string>()
 			const generatedFiles: string[] = []
@@ -94,7 +94,7 @@ export class StandaloneGoGenerator {
 			// Generate all unions
 			if (packageInfo.unions) {
 				for (const union of packageInfo.unions) {
-					const result = await this.generateUnionType(union)
+					const result = this.generateUnionType(union)
 					if (result._tag === "success") {
 						result.data.forEach((code, filename) => {
 							allFiles.set(filename, code)
