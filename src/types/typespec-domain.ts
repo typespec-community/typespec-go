@@ -121,7 +121,21 @@ export interface TypeSpecModel {
 /**
  * Go emitter options
  */
-export interface GoEmitterOptions {
-  packageName?: string;
-  usePointersForOptional?: boolean;
-}
+export type GoEmitterOptions = {
+	readonly packageName?: string;
+
+	/** Optional custom output directory */
+	readonly outputDir?: string;
+
+	/** Optional file naming pattern */
+	readonly namingPattern?: "snake_case" | "PascalCase";
+
+	/** Optional json tag style */
+	readonly jsonTagStyle?: "snake_case" | "camelCase";
+
+	/** Optional pointer usage policy */
+	readonly pointerPolicy?: "all" | "optional_only" | "primitives_only";
+
+	/** Optional uint usage policy */
+	readonly uintPolicy?: "auto" | "int_only" | "prefer_uint";
+};
