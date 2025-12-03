@@ -142,43 +142,28 @@ export class Entities {
    * Validate Model Name
    */
   static validateModelName(name: ModelName): boolean {
-    return (
-      typeof name.value === "string" &&
-      name.value.length > 0 &&
-      /^[A-Za-z][A-Za-z0-9_]*$/.test(name.value)
-    );
+    return name.value.length > 0 && /^[A-Za-z][A-Za-z0-9_]*$/.test(name.value);
   }
 
   /**
    * Validate Property Name
    */
   static validatePropertyName(name: PropertyName): boolean {
-    return (
-      typeof name.value === "string" &&
-      name.value.length > 0 &&
-      /^[a-z][A-Za-z0-9_]*$/.test(name.value)
-    );
+    return name.value.length > 0 && /^[a-z][A-Za-z0-9_]*$/.test(name.value);
   }
 
   /**
    * Validate Error ID
    */
   static validateErrorId(id: ErrorId): boolean {
-    return (
-      typeof id.value === "string" &&
-      id.value.length > 0 &&
-      id.timestamp instanceof Date &&
-      typeof id.sequence === "number"
-    );
+    return id.value.length > 0;
   }
 
   /**
    * Validate File Name
    */
   static validateFileName(name: FileName): boolean {
-    return (
-      typeof name.value === "string" && name.value.length > 0 && typeof name.extension === "string"
-    );
+    return name.value.length > 0;
   }
 }
 

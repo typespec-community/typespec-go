@@ -6,8 +6,8 @@
 
 import type { ModelProperty, Program, Type } from "@typespec/compiler";
 import { TypeSpecModel } from "../../types/typespec-domain.js";
-import { Reference, StructDeclaration, StructMember, TypeDeclaration } from "@alloy-js/go";
-import { For, refkey } from "@alloy-js/core";
+import { StructDeclaration, StructMember, TypeDeclaration } from "@alloy-js/go";
+import { For, refkey, Reference } from "@alloy-js/core";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 
@@ -50,26 +50,27 @@ export function GoStructDeclaration({
           {(prop: ModelProperty) => {
             const fieldName = capitalize(prop.name);
             const typeRef = refkey(prop.type);
-
-            // Use Alloy.js Reference system for automatic import management
+            
+            // 100% ALLOY.JS - Use Reference system for automatic imports
             let goTypeElement: JSX.Element | string;
 
             if (prop.type.kind === "Model") {
-              // Reference to other model - Alloy.js will handle import
+              // Model type - Reference for automatic import
+              goTypeElement = <Reference refkey={typeRef} type />;
+            } else if (prop.type.kind === "Enum") {
+              // Enum type - Reference for automatic import
+              goTypeElement = <Reference refkey={typeRef} type />;
+            } else if (prop.type.kind === "Union") {
+              // Union type - Reference for automatic import
               goTypeElement = <Reference refkey={typeRef} type />;
             } else {
-              // Use Alloy.js type mapping for built-in types
-              goTypeElement = mapTypeSpecToAlloyGoType(prop.type);
+              // Built-in types - Use native Go types (no import needed)
+              goTypeElement = mapTypeSpecToGoType(prop.type);
             }
 
-            // Add pointer for optional model/struct fields
-            const shouldUsePointer =
-              prop.optional && usePointersForOptional && isNestedModelType(prop.type);
-            const finalType = shouldUsePointer ? (
-              <Reference refkey={typeRef} type pointer />
-            ) : (
-              goTypeElement
-            );
+            // Add pointer for optional model/struct fields with Reference
+            const shouldUsePointer = prop.optional && usePointersForOptional && isNestedModelType(prop.type);
+            const finalType = shouldUsePointer ? <Reference refkey={typeRef} type pointer /> : goTypeElement;
 
             // Ensure proper JSON tag format: `json:"name"` or `json:"name,omitempty"`
             const jsonTagValue = prop.optional ? `${prop.name},omitempty` : prop.name;
@@ -118,7 +119,7 @@ function getTypeFromTemplateArg(arg: unknown): Type | undefined {
  * Uses Alloy.js Reference system for automatic import management
  * Maps TypeSpec scalar types to native Go types
  */
-function mapTypeSpecToAlloyGoType(type: Type): JSX.Element | string {
+function mapTypeSpecToGoType(type: Type): JSX.Element | string {
   switch (type.kind) {
     case "String":
       return "string";

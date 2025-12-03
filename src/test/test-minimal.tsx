@@ -4,8 +4,8 @@
  */
 
 import { render, Output } from "@alloy-js/core";
-import { GoStructDeclaration } from "./src/components/go/GoStructDeclaration.js";
-import { GoPackageDirectory } from "./src/components/go/GoPackageDirectory.js";
+import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
+import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
 
 // Mock TypeSpec data
 const mockModel = {

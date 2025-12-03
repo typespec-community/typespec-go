@@ -20,7 +20,7 @@ export class StructGenerator {
     propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>; // Support spread operator
   }): GoEmitterResult {
     // Input validation
-    if (!model.name || typeof model.name !== "string") {
+    if (!model.name) {
       return ErrorFactory.createValidationError("Invalid model: name must be a non-empty string", {
         modelName: model.name || "unknown",
       });
@@ -235,7 +235,7 @@ export class StructGenerator {
 
       // Validate type using CleanTypeMapper
       try {
-        const mappedType = CleanTypeMapper.mapTypeSpecTypeLegacy(propNode.type, propName);
+        const mappedType = CleanTypeMapper.mapTypeSpecType(propNode.type, propName);
         if (!mappedType || !mappedType.goType) {
           return ErrorFactory.createValidationError(`Unsupported type for property: ${propName}`, {
             modelName: model.name,

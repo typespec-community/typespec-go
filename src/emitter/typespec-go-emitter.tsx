@@ -151,7 +151,10 @@ export async function $onEmit(context: EmitContext): Promise<void> {
       return;
     }
 
-    Logger.info(LogContext.TYPESPEC_INTEGRATION, `Processing ${namespaceGroups.size} namespace groups`);
+    Logger.info(
+      LogContext.TYPESPEC_INTEGRATION,
+      `Processing ${namespaceGroups.size} namespace groups`,
+    );
 
     // Track statistics
     let totalModels = 0;
@@ -165,7 +168,10 @@ export async function $onEmit(context: EmitContext): Promise<void> {
       const typeCount = models.length + enums.length + unions.length + operations.length;
 
       if (typeCount === 0) {
-        Logger.warn(LogContext.TYPESPEC_INTEGRATION, `Skipping namespace '${namespaceName}' - no types`);
+        Logger.warn(
+          LogContext.TYPESPEC_INTEGRATION,
+          `Skipping namespace '${namespaceName}' - no types`,
+        );
         continue;
       }
 
@@ -173,14 +179,18 @@ export async function $onEmit(context: EmitContext): Promise<void> {
       const outputDirectory = getOutputDirectory(namespace, context);
       const packageDocumentation = `Go types from TypeSpec namespace: ${namespaceName}`;
 
-      Logger.info(LogContext.TYPESPEC_INTEGRATION, `Generating package '${packageName}' from namespace '${namespaceName}'`, {
-        outputDirectory,
-        typeCount,
-        modelCount: models.length,
-        enumCount: enums.length,
-        unionCount: unions.length,
-        operationCount: operations.length,
-      });
+      Logger.info(
+        LogContext.TYPESPEC_INTEGRATION,
+        `Generating package '${packageName}' from namespace '${namespaceName}'`,
+        {
+          outputDirectory,
+          typeCount,
+          modelCount: models.length,
+          enumCount: enums.length,
+          unionCount: unions.length,
+          operationCount: operations.length,
+        },
+      );
 
       if (models.length > 0) {
         Logger.debug(LogContext.GO_GENERATION, "Models to generate", {
@@ -240,7 +250,7 @@ export async function $onEmit(context: EmitContext): Promise<void> {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
       },
-      "emitter-failed"
+      "emitter-failed",
     );
     throw error;
   }

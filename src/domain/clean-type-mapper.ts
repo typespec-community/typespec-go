@@ -7,11 +7,7 @@
  * MAINTAINABILITY: Clear separation of concerns
  */
 
-import type {
-  TypeSpecPropertyNode,
-  TypeSpecArrayType,
-  TypeSpecMapType,
-} from "../types/typespec-domain.js";
+import type { TypeSpecPropertyNode } from "../types/typespec-domain.js";
 import type { GoTypeMapping } from "../types/emitter.types.js";
 
 /**
@@ -131,17 +127,6 @@ export class CleanTypeMapper {
     TypeMappingCache.set(cacheKey, result);
 
     return result;
-  }
-
-  /**
-   * Legacy mapping function for backward compatibility
-   * DEPRECATED: Use mapTypeSpecType instead
-   */
-  static mapTypeSpecTypeLegacy(
-    type: TypeSpecPropertyNode["type"],
-    fieldName?: string,
-  ): GoTypeMapping {
-    return this.mapTypeSpecType(type, fieldName);
   }
 
   /**
@@ -275,6 +260,7 @@ export class CleanTypeMapper {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _fieldName?: string,
   ): GoTypeMapping {
+    //TODO?:
     // For union types, use interface{} as safest fallback
     // In future, could generate sealed interfaces
     return {
@@ -435,7 +421,6 @@ export class CleanTypeMapper {
       typeof type === "object" &&
       type !== null &&
       "name" in type &&
-      typeof (type as { name: string }).name === "string" &&
       // Exclude model types (they have both name and kind)
       (!("kind" in type) ||
         ((type as { kind: string }).kind !== "model" &&
@@ -463,7 +448,6 @@ export class CleanTypeMapper {
       typeof type === "object" &&
       type !== null &&
       "kind" in type &&
-      typeof (type as { kind: string }).kind === "string" &&
       [
         "String",
         "Boolean",
@@ -596,14 +580,8 @@ export class CleanTypeMapper {
   } {
     const errors: string[] = [];
 
-    if (!mapping.goType || typeof mapping.goType !== "string") {
+    if (!mapping.goType) {
       errors.push(`Invalid goType for field ${fieldName}: ${mapping.goType}`);
-    }
-
-    if (typeof mapping.usePointerForOptional !== "boolean") {
-      errors.push(
-        `Invalid usePointerForOptional for field ${fieldName}: ${mapping.usePointerForOptional}`,
-      );
     }
 
     return {

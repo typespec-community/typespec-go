@@ -1,5 +1,6 @@
 import { findTestPackageRoot, createTestLibrary } from "@typespec/compiler/testing";
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * TypeSpec Go Emitter Test Library Factory
  *
@@ -12,6 +13,3 @@ export async function TypespecGoTestLibrary() {
     packageRoot: await findTestPackageRoot(import.meta.url),
   });
 }
-
-// Export additional helper functions for testing
-export { findTestPackageRoot, createTestLibrary };

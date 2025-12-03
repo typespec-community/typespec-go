@@ -39,7 +39,7 @@ export function validateModel(model: {
 
     // Validate type using CleanTypeMapper
     try {
-      const mappedType = CleanTypeMapper.mapTypeSpecTypeLegacy(propNode.type, propName);
+      const mappedType = CleanTypeMapper.mapTypeSpecType(propNode.type, propName);
       if (!mappedType || !mappedType.goType) {
         return ErrorFactory.createValidationError(`Unsupported type for property: ${propName}`, {
           modelName: model.name,

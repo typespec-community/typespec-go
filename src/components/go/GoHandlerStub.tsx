@@ -255,6 +255,8 @@ function generateHandlerCode(
   handlers: GoHandlerMethod[],
   packageName: string,
 ): string {
+//TODO: THIS IS SHIT! Use alloy/go!
+
   const lines: string[] = [];
 
   // Package and imports

@@ -40,7 +40,7 @@ export class StandaloneGoGenerator {
    */
   static mapTypeSpecType(type: TypeSpecPropertyNode["type"], fieldName?: string): GoTypeMapping {
     // DELEGATE TO CLEAN UNIFIED SYSTEM: Single source of truth
-    return CleanTypeMapper.mapTypeSpecTypeLegacy(type, fieldName);
+    return CleanTypeMapper.mapTypeSpecType(type, fieldName);
   }
 
   /**
@@ -52,7 +52,7 @@ export class StandaloneGoGenerator {
     fieldName?: string,
   ): GoTypeMapping {
     // DELEGATE TO CLEAN UNIFIED SYSTEM: Single source of truth
-    return CleanTypeMapper.mapTypeSpecTypeLegacy(type, fieldName);
+    return CleanTypeMapper.mapTypeSpecType(type, fieldName);
   }
 
   /**

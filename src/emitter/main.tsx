@@ -5,7 +5,6 @@
 
 import type { EmitContext, Program, Model, ModelProperty, Type, Scalar } from "@typespec/compiler";
 import { writeOutput } from "@typespec/emitter-framework";
-
 // Minimal JSX implementation - avoid complex Alloy for now
 interface GoFile {
   path: string;

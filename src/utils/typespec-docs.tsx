@@ -15,7 +15,9 @@ interface Documentable {
  * Get documentation from TypeSpec decorator
  * Currently provides fallback for testing without full TypeSpec program
  */
-export function getDocumentation(program: Program, node: Documentable): string | undefined {
+export function getDocumentation(program: Program, node: Documentable) {
+	return <>
+	</>
   // For now, provide fallback documentation based on type
   if (node?.name) {
     const kind = node.kind?.toLowerCase() || "";
