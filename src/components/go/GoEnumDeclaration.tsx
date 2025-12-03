@@ -1,12 +1,14 @@
 /**
  * Go Enum Declaration Component
- * Generates Go const blocks from TypeSpec enums
- * Supports both string and iota patterns
+ * Generates Go const blocks from TypeSpec enums using 100% Alloy.js
+ * Supports both string and iota patterns with proper Go components
  */
 
 import type { Enum, EnumMember, Program } from "@typespec/compiler";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
+import { TypeDeclaration, VariableDeclarationGroup, VariableDeclaration, FunctionDeclaration, FunctionReceiver } from "@alloy-js/go";
+import type { ReactNode } from "react";
 
 interface GoEnumDeclarationProps {
   /** TypeSpec enum to convert to Go constants */
@@ -21,14 +23,14 @@ interface GoEnumDeclarationProps {
 
 /**
  * Go Enum Declaration Component
- * Generates proper Go const blocks with type safety
+ * Generates proper Go const blocks with type safety using Alloy.js components
  */
 export function GoEnumDeclaration({
   enum: enumType,
   packageName = "api",
   useIota = false,
   program,
-}: GoEnumDeclarationProps) {
+}: GoEnumDeclarationProps): ReactNode {
   const typeName = enumType.name || "UnnamedEnum";
   const members = Array.from(enumType.members?.values() || []);
 
@@ -38,73 +40,83 @@ export function GoEnumDeclaration({
   // Determine if this is a string enum or numeric enum
   const isStringEnum = members.some((m) => typeof m.value === "string");
 
-  return generateEnumCode(typeName, members, isStringEnum, useIota, doc);
-}
+  return (
+    <>
+      {/* Type declaration */}
+      {doc && <LineComment>{`${typeName} ${doc}`}</LineComment>}
+      <TypeDeclaration name={typeName}>
+        {isStringEnum ? "string" : "int"}
+      </TypeDeclaration>
 
-/**
- * Generate Go enum code as string (for use with Alloy-JS)
- */
-function generateEnumCode(
-  typeName: string,
-  members: EnumMember[],
-  isStringEnum: boolean,
-  useIota: boolean,
-  doc?: string,
-): string {
-  const lines: string[] = [];
+      {/* Const block */}
+      <VariableDeclarationGroup const>
+        {members.map((member, index) => {
+          const memberName = `${typeName}${capitalize(member.name)}`;
+          
+          if (isStringEnum) {
+            return (
+              <VariableDeclaration
+                key={memberName}
+                name={memberName}
+                type={typeName}
+                children={`"${member.value || member.name}"`}
+              />
+            );
+          } else if (useIota && index === 0) {
+            return (
+              <VariableDeclaration
+                key={memberName}
+                name={memberName}
+                type={typeName}
+                children="iota"
+              />
+            );
+          } else if (useIota) {
+            return (
+              <VariableDeclaration
+                key={memberName}
+                name={memberName}
+              />
+            );
+          } else {
+            return (
+              <VariableDeclaration
+                key={memberName}
+                name={memberName}
+                type={typeName}
+                children={member.value ?? index}
+              />
+            );
+          }
+        })}
+      </VariableDeclarationGroup>
 
-  // Add documentation comment if present
-  if (doc) {
-    lines.push(`// ${typeName} ${doc}`);
-  }
+      {/* Stringer interface for string enums */}
+      {isStringEnum && (
+        <FunctionDeclaration 
+          name="String" 
+          returns="string"
+          receiver={<FunctionReceiver name="e" type={typeName} />}
+        >
+          return string(e)
+        </FunctionDeclaration>
+      )}
 
-  // Type declaration
-  if (isStringEnum) {
-    lines.push(`type ${typeName} string`);
-  } else {
-    lines.push(`type ${typeName} int`);
-  }
-  lines.push("");
-
-  // Const block
-  lines.push(`const (`);
-
-  members.forEach((member, index) => {
-    const memberName = `${typeName}${capitalize(member.name)}`;
-
-    if (isStringEnum) {
-      lines.push(`\t${memberName} ${typeName} = "${member.value || member.name}"`);
-    } else if (useIota && index === 0) {
-      lines.push(`\t${memberName} ${typeName} = iota`);
-    } else if (useIota) {
-      lines.push(`\t${memberName}`);
-    } else {
-      lines.push(`\t${memberName} ${typeName} = ${member.value ?? index}`);
-    }
-  });
-
-  lines.push(`)`);
-  lines.push("");
-
-  // Add Stringer interface for string enums
-  if (isStringEnum) {
-    lines.push(`func (e ${typeName}) String() string {`);
-    lines.push(`\treturn string(e)`);
-    lines.push(`}`);
-    lines.push("");
-  }
-
-  // Add validation method
-  lines.push(`func (e ${typeName}) IsValid() bool {`);
-  lines.push(`\tswitch e {`);
-  lines.push(`\tcase ${members.map((m) => `${typeName}${capitalize(m.name)}`).join(", ")}:`);
-  lines.push(`\t\treturn true`);
-  lines.push(`\tdefault:`);
-  lines.push(`\t\treturn false`);
-  lines.push(`\t}`);
-  lines.push(`}`);
-
-  return lines.join("\n");
+      {/* Validation method */}
+      <FunctionDeclaration 
+        name="IsValid" 
+        returns="bool"
+        receiver={<FunctionReceiver name="e" type={typeName} />}
+      >
+        switch e {"{"}
+        {members.map((m) => `${typeName}${capitalize(m.name)}`).join(", ")}:
+          return true
+        default:
+          return false
+        {"}"}
+      </FunctionDeclaration>
+    </>
+  );
 }
 
 /**

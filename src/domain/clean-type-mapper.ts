@@ -429,26 +429,36 @@ export class CleanTypeMapper {
   }
 
   /**
-   * Type guard: Check if type is TypeSpec model
+   * Generic type guard helper for TypeSpec types with 'kind' property
+   * ELIMINATES DUPLICATION: Single function for all kind-based type guards
    */
-  private static isTypeSpecModel(type: unknown): boolean {
+  private static isTypeSpecKind(type: unknown, expectedKind: string): boolean {
     return (
       typeof type === "object" &&
       type !== null &&
       "kind" in type &&
-      (type as { kind: string }).kind === "model"
+      (type as { kind: string }).kind === expectedKind
     );
+  }
+
+  /**
+   * Type guard: Check if type is TypeSpec model
+   */
+  private static isTypeSpecModel(type: unknown): boolean {
+    return this.isTypeSpecKind(type, "model");
   }
 
   /**
    * Type guard: Check if type is TypeSpec built-in
    */
   private static isTypeSpecBuiltin(type: unknown): boolean {
-    return (
+    if (
       typeof type === "object" &&
       type !== null &&
-      "kind" in type &&
-      [
+      "kind" in type
+    ) {
+      const kind = (type as { kind: string }).kind;
+      return [
         "String",
         "Boolean",
         "Number",
@@ -462,70 +472,52 @@ export class CleanTypeMapper {
         "Uint64",
         "Float32",
         "Float64",
-      ].includes((type as { kind: string }).kind)
-    );
+      ].includes(kind);
+    }
+    return false;
   }
 
   /**
    * Type guard: Check if type is TypeSpec union
    */
   private static isTypeSpecUnion(type: unknown): boolean {
-    return (
-      typeof type === "object" &&
-      type !== null &&
-      "kind" in type &&
-      (type as { kind: string }).kind === "Union"
-    );
+    return this.isTypeSpecKind(type, "Union");
   }
 
   /**
    * Type guard: Check if type is TypeSpec enum
    */
   private static isTypeSpecEnum(type: unknown): boolean {
-    return (
-      typeof type === "object" &&
-      type !== null &&
-      "kind" in type &&
-      (type as { kind: string }).kind === "Enum"
-    );
+    return this.isTypeSpecKind(type, "Enum");
   }
 
   /**
    * Type guard: Check if type is TypeSpec template
    */
   private static isTypeSpecTemplate(type: unknown): boolean {
-    return (
-      typeof type === "object" &&
-      type !== null &&
-      "kind" in type &&
-      (type as { kind: string }).kind === "template"
-    );
+    return this.isTypeSpecKind(type, "template");
   }
 
   /**
    * Type guard: Check if type is TypeSpec array
    */
   private static isTypeSpecArray(type: unknown): boolean {
-    return (
-      typeof type === "object" &&
-      type !== null &&
-      "kind" in type &&
-      (type as { kind: string }).kind === "array"
-      // Note: elementType check moved to mapArrayType for better error handling
-    );
+    return this.isTypeSpecKind(type, "array");
   }
 
   /**
    * Type guard: Check if type is TypeSpec map/record
    */
   private static isTypeSpecMap(type: unknown): boolean {
-    return (
+    if (
       typeof type === "object" &&
       type !== null &&
-      "kind" in type &&
-      ((type as { kind: string }).kind === "map" || (type as { kind: string }).kind === "record")
-      // Note: keyType/valueType check moved to mapMapType for better error handling
-    );
+      "kind" in type
+    ) {
+      const kind = (type as { kind: string }).kind;
+      return kind === "map" || kind === "record";
+    }
+    return false;
   }
 
   /**
