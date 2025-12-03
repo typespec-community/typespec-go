@@ -194,7 +194,7 @@ function mapTypeSpecToGoType(type: Type): JSX.Element | string {
       if (type.name === "Array" && type.templateMapper) {
         const elementType = getTypeFromTemplateArg(type.templateMapper.args?.[0]);
         if (elementType) {
-          const elementTypeRef = mapTypeSpecToAlloyGoType(elementType);
+          const elementTypeRef = mapTypeSpecToGoType(elementType);
           return (
             <>[]{elementTypeRef}</> // JSX syntax for slice types
           );
@@ -206,8 +206,8 @@ function mapTypeSpecToGoType(type: Type): JSX.Element | string {
       if (type.name === "Record" && type.templateMapper) {
         const keyType = getTypeFromTemplateArg(type.templateMapper.args?.[0]);
         const valueType = getTypeFromTemplateArg(type.templateMapper.args?.[1]);
-        const goKey = keyType ? mapTypeSpecToAlloyGoType(keyType) : "string";
-        const goValue = valueType ? mapTypeSpecToAlloyGoType(valueType) : "interface{}";
+        const goKey = keyType ? mapTypeSpecToGoType(keyType) : "string";
+        const goValue = valueType ? mapTypeSpecToGoType(valueType) : "interface{}";
         return (
           <>
             map[{goKey}]{goValue}
