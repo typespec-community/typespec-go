@@ -46,14 +46,14 @@ interface GoReturnType {
  * Go Interface Declaration Component
  * Generates Go interface from TypeSpec operations
  */
-export function GoInterfaceDeclaration({ 
-  name, 
+export function GoInterfaceDeclaration({
+  name,
   operations,
   packageName = "api",
-  program
+  program,
 }: GoInterfaceDeclarationProps): string {
-  const methods = operations.map(op => operationToMethod(op, program));
-  
+  const methods = operations.map((op) => operationToMethod(op, program));
+
   return generateInterfaceCode(name, methods);
 }
 
@@ -65,12 +65,12 @@ function operationToMethod(operation: Operation, program?: Program): GoMethodSig
   const parameters = extractParameters(operation);
   const returns = extractReturns(operation);
   const doc = program ? getDocumentation(program, operation) : undefined;
-  
+
   return {
     name: methodName,
     parameters,
     returns,
-    doc
+    doc,
   };
 }
 
@@ -79,20 +79,20 @@ function operationToMethod(operation: Operation, program?: Program): GoMethodSig
  */
 function extractParameters(operation: Operation): GoParameter[] {
   const params: GoParameter[] = [];
-  
+
   // Always include context as first parameter
   params.push({ name: "ctx", type: "context.Context" });
-  
+
   // Add operation parameters
   if (operation.parameters) {
     for (const [name, prop] of operation.parameters.properties) {
       params.push({
         name: toCamelCase(name),
-        type: mapTypeToGo(prop.type)
+        type: mapTypeToGo(prop.type),
       });
     }
   }
-  
+
   return params;
 }
 
@@ -101,15 +101,15 @@ function extractParameters(operation: Operation): GoParameter[] {
  */
 function extractReturns(operation: Operation): GoReturnType[] {
   const returns: GoReturnType[] = [];
-  
+
   // Map return type
   if (operation.returnType) {
     returns.push({ type: mapTypeToGo(operation.returnType) });
   }
-  
+
   // Always return error
   returns.push({ type: "error" });
-  
+
   return returns;
 }
 
@@ -162,7 +162,7 @@ function mapScalarToGo(name: string): string {
     plainTime: "time.Time",
     duration: "time.Duration",
   };
-  
+
   return scalarMap[name.toLowerCase()] || "interface{}";
 }
 
@@ -178,33 +178,31 @@ function toCamelCase(s: string): string {
  */
 function generateInterfaceCode(name: string, methods: GoMethodSignature[]): string {
   const lines: string[] = [];
-  
+
   // Interface documentation
   lines.push(`// ${name} defines the service interface`);
   lines.push(`type ${name} interface {`);
-  
+
   // Methods
   for (const method of methods) {
     if (method.doc) {
       lines.push(`\t// ${method.name} ${method.doc}`);
     }
-    
-    const params = method.parameters
-      .map(p => `${p.name} ${p.type}`)
-      .join(", ");
-    
+
+    const params = method.parameters.map((p) => `${p.name} ${p.type}`).join(", ");
+
     const returns = method.returns
-      .map(r => r.type)
-      .filter(t => t !== "")
+      .map((r) => r.type)
+      .filter((t) => t !== "")
       .join(", ");
-    
+
     const returnPart = method.returns.length > 1 ? `(${returns})` : returns;
-    
+
     lines.push(`\t${method.name}(${params}) ${returnPart}`);
   }
-  
+
   lines.push(`}`);
-  
+
   return lines.join("\n");
 }
 
@@ -213,12 +211,12 @@ function generateInterfaceCode(name: string, methods: GoMethodSignature[]): stri
  */
 export function collectOperations(namespace: Namespace): Operation[] {
   const operations: Operation[] = [];
-  
+
   if (namespace.operations) {
     for (const op of namespace.operations.values()) {
       operations.push(op);
     }
   }
-  
+
   return operations;
 }

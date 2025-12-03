@@ -6,10 +6,7 @@
  */
 
 import type { Program, Type, Scalar, Model, UnionVariant } from "@typespec/compiler";
-import type {
-  TypeMappingResult,
-  GoStructField,
-} from "../types/emitter.types.js";
+import type { TypeMappingResult, GoStructField } from "../types/emitter.types.js";
 import { GoPrimitiveType } from "../types/emitter.types.js";
 
 /**
@@ -147,7 +144,9 @@ function mapModelType(program: Program, type: Model): TypeMappingResult {
 function mapUnionType(program: Program, type: Type): TypeMappingResult {
   if ("variants" in type && type.kind === "Union") {
     // TypeSpec Union has RekeyableMap, convert to array
-    const variants = Array.from((type as { variants: Map<unknown, UnionVariant> }).variants.values());
+    const variants = Array.from(
+      (type as { variants: Map<unknown, UnionVariant> }).variants.values(),
+    );
 
     // If all variants are strings, map to string
     if (variants.every((v) => v.type?.kind === "String")) {
@@ -223,7 +222,7 @@ export function createGoStructField(
   // Map TypeSpec compiler type to Go type string
   let goType = "interface{}";
   let usePointerForOptional = true;
-  
+
   switch (type.kind) {
     case "String":
       goType = "string";

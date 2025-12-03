@@ -8,11 +8,7 @@
  * CUSTOMER VALUE: Working Go generation with professional quality
  */
 
-import {
-  ErrorFactory,
-  GoEmitterResult,
-  defaultErrorHandler,
-} from "./domain/unified-errors.js";
+import { ErrorFactory, GoEmitterResult, defaultErrorHandler } from "./domain/unified-errors.js";
 import { CleanTypeMapper } from "./domain/clean-type-mapper.js";
 import type {
   TypeSpecPropertyNode,
@@ -51,7 +47,10 @@ export class StandaloneGoGenerator {
    * Type-safe type mapping with legacy support
    * BACKWARD COMPATIBILITY: Supports existing code patterns
    */
-  static mapTypeSpecTypeLegacy(type: TypeSpecPropertyNode["type"], fieldName?: string): GoTypeMapping {
+  static mapTypeSpecTypeLegacy(
+    type: TypeSpecPropertyNode["type"],
+    fieldName?: string,
+  ): GoTypeMapping {
     // DELEGATE TO CLEAN UNIFIED SYSTEM: Single source of truth
     return CleanTypeMapper.mapTypeSpecTypeLegacy(type, fieldName);
   }

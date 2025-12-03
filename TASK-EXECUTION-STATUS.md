@@ -6,17 +6,17 @@
 
 ## 🔥 **PHASE 1: CRITICAL FOUNDATION (1% → 51% Impact)**
 
-| # | Task | Time | Files | Impact | Dependencies | Status |
-|---|------|------|-------|--------|--------------|--------|
-| 1.1 | Create missing error-factory.js | ✅ DONE | `src/domain/error-factory.js` | Critical | None | 🟢 COMPLETE |
-| 1.2 | Create missing error-types.js | ✅ DONE | `src/domain/error-types.js` | Critical | 1.1 | 🟢 COMPLETE |
-| 1.3 | Create missing error-entities.js | ✅ DONE | `src/domain/error-entities.js` | Critical | 1.1 | 🟢 COMPLETE |
-| 1.4 | Fix unified-errors.ts imports | ✅ DONE | `src/domain/unified-errors.ts` | Critical | 1.1,1.2,1.3 | 🟢 COMPLETE |
-| 1.5 | Fix CleanTypeMapper import | ✅ DONE | `src/domain/clean-type-mapper.js` | Critical | None | 🟢 COMPLETE |
-| 1.6 | Fix standalone-generator.ts imports | ✅ DONE | `src/standalone-generator.ts` | Critical | 1.5 | 🟢 COMPLETE |
-| 1.7 | Clean root debug files | 20min | Move 50+ files to `dev/` | High | None | 🔴 TODO |
-| 1.8 | Create basic error handling | ✅ DONE | `src/domain/error-handling.ts` | High | 1.4 | 🟢 COMPLETE |
-| 1.9 | Create basic test suite | ✅ DONE | `src/test/emitter-basic.test.ts` | High | 1.6 | 🟢 COMPLETE |
+| #   | Task                                | Time   | Files                             | Impact   | Dependencies | Status      |
+|-----|-------------------------------------|--------|-----------------------------------|----------|--------------|-------------|
+| 1.1 | Create missing error-factory.js     | ✅ DONE | `src/domain/error-factory.js`     | Critical | None         | 🟢 COMPLETE |
+| 1.2 | Create missing error-types.js       | ✅ DONE | `src/domain/error-types.js`       | Critical | 1.1          | 🟢 COMPLETE |
+| 1.3 | Create missing error-entities.js    | ✅ DONE | `src/domain/error-entities.js`    | Critical | 1.1          | 🟢 COMPLETE |
+| 1.4 | Fix unified-errors.ts imports       | ✅ DONE | `src/domain/unified-errors.ts`    | Critical | 1.1,1.2,1.3  | 🟢 COMPLETE |
+| 1.5 | Fix CleanTypeMapper import          | ✅ DONE | `src/domain/clean-type-mapper.js` | Critical | None         | 🟢 COMPLETE |
+| 1.6 | Fix standalone-generator.ts imports | ✅ DONE | `src/standalone-generator.ts`     | Critical | 1.5          | 🟢 COMPLETE |
+| 1.7 | Clean root debug files              | 20min  | Move 50+ files to `dev/`          | High     | None         | 🔴 TODO     |
+| 1.8 | Create basic error handling         | ✅ DONE | `src/domain/error-handling.ts`    | High     | 1.4          | 🟢 COMPLETE |
+| 1.9 | Create basic test suite             | ✅ DONE | `src/test/emitter-basic.test.ts`  | High     | 1.6          | 🟢 COMPLETE |
 
 ---
 

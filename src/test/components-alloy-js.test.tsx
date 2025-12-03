@@ -24,14 +24,14 @@ test("GoPackageDirectory renders without errors", async () => {
   // Must wrap in Output to provide Alloy-JS binder context
   const result = render(
     <Output>
-      <GoPackageDirectory 
+      <GoPackageDirectory
         models={[mockModel]}
         packageName="test"
         packageDocumentation="Test package"
       />
-    </Output>
+    </Output>,
   );
-  
+
   // Should render successfully without throwing
   expect(result).toBeDefined();
 });
@@ -44,17 +44,13 @@ test("GoStructDeclaration renders without errors", async () => {
       <ModuleDirectory name="github.com/test/api">
         <SourceDirectory path="api">
           <SourceFile path="models.go">
-            <GoStructDeclaration 
-              model={mockModel}
-              packageName="test"
-              documentation="Test struct"
-            />
+            <GoStructDeclaration model={mockModel} packageName="test" documentation="Test struct" />
           </SourceFile>
         </SourceDirectory>
       </ModuleDirectory>
-    </Output>
+    </Output>,
   );
-  
+
   // Should render successfully without throwing
   expect(result).toBeDefined();
 });

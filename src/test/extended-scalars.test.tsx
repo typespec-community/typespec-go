@@ -15,13 +15,25 @@ describe("Extended Scalar Mappings", () => {
       name: "IntegerTypes",
       properties: new Map([
         ["int8Val", { name: "int8Val", type: { kind: "Scalar", name: "int8" }, optional: false }],
-        ["int16Val", { name: "int16Val", type: { kind: "Scalar", name: "int16" }, optional: false }],
-        ["int32Val", { name: "int32Val", type: { kind: "Scalar", name: "int32" }, optional: false }],
-        ["int64Val", { name: "int64Val", type: { kind: "Scalar", name: "int64" }, optional: false }],
-        ["safeint", { name: "safeint", type: { kind: "Scalar", name: "safeint" }, optional: false }],
-      ])
+        [
+          "int16Val",
+          { name: "int16Val", type: { kind: "Scalar", name: "int16" }, optional: false },
+        ],
+        [
+          "int32Val",
+          { name: "int32Val", type: { kind: "Scalar", name: "int32" }, optional: false },
+        ],
+        [
+          "int64Val",
+          { name: "int64Val", type: { kind: "Scalar", name: "int64" }, optional: false },
+        ],
+        [
+          "safeint",
+          { name: "safeint", type: { kind: "Scalar", name: "safeint" }, optional: false },
+        ],
+      ]),
     };
-    
+
     const result = render(
       <Output>
         <ModuleDirectory name="github.com/test/api">
@@ -31,9 +43,9 @@ describe("Extended Scalar Mappings", () => {
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
-      </Output>
+      </Output>,
     );
-    
+
     expect(result).toBeDefined();
   });
 
@@ -42,12 +54,21 @@ describe("Extended Scalar Mappings", () => {
       kind: "Model" as const,
       name: "FloatTypes",
       properties: new Map([
-        ["float32Val", { name: "float32Val", type: { kind: "Scalar", name: "float32" }, optional: false }],
-        ["float64Val", { name: "float64Val", type: { kind: "Scalar", name: "float64" }, optional: false }],
-        ["decimal", { name: "decimal", type: { kind: "Scalar", name: "decimal" }, optional: false }],
-      ])
+        [
+          "float32Val",
+          { name: "float32Val", type: { kind: "Scalar", name: "float32" }, optional: false },
+        ],
+        [
+          "float64Val",
+          { name: "float64Val", type: { kind: "Scalar", name: "float64" }, optional: false },
+        ],
+        [
+          "decimal",
+          { name: "decimal", type: { kind: "Scalar", name: "decimal" }, optional: false },
+        ],
+      ]),
     };
-    
+
     const result = render(
       <Output>
         <ModuleDirectory name="github.com/test/api">
@@ -57,9 +78,9 @@ describe("Extended Scalar Mappings", () => {
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
-      </Output>
+      </Output>,
     );
-    
+
     expect(result).toBeDefined();
   });
 
@@ -72,9 +93,9 @@ describe("Extended Scalar Mappings", () => {
         ["uri", { name: "uri", type: { kind: "Scalar", name: "uri" }, optional: false }],
         ["email", { name: "email", type: { kind: "Scalar", name: "email" }, optional: false }],
         ["uuid", { name: "uuid", type: { kind: "Scalar", name: "uuid" }, optional: false }],
-      ])
+      ]),
     };
-    
+
     const result = render(
       <Output>
         <ModuleDirectory name="github.com/test/api">
@@ -84,9 +105,9 @@ describe("Extended Scalar Mappings", () => {
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
-      </Output>
+      </Output>,
     );
-    
+
     expect(result).toBeDefined();
   });
 
@@ -95,12 +116,21 @@ describe("Extended Scalar Mappings", () => {
       kind: "Model" as const,
       name: "DateTimeTypes",
       properties: new Map([
-        ["plainDate", { name: "plainDate", type: { kind: "Scalar", name: "plainDate" }, optional: false }],
-        ["utcDateTime", { name: "utcDateTime", type: { kind: "Scalar", name: "utcDateTime" }, optional: false }],
-        ["duration", { name: "duration", type: { kind: "Scalar", name: "duration" }, optional: false }],
-      ])
+        [
+          "plainDate",
+          { name: "plainDate", type: { kind: "Scalar", name: "plainDate" }, optional: false },
+        ],
+        [
+          "utcDateTime",
+          { name: "utcDateTime", type: { kind: "Scalar", name: "utcDateTime" }, optional: false },
+        ],
+        [
+          "duration",
+          { name: "duration", type: { kind: "Scalar", name: "duration" }, optional: false },
+        ],
+      ]),
     };
-    
+
     const result = render(
       <Output>
         <ModuleDirectory name="github.com/test/api">
@@ -110,9 +140,9 @@ describe("Extended Scalar Mappings", () => {
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
-      </Output>
+      </Output>,
     );
-    
+
     expect(result).toBeDefined();
   });
 
@@ -121,12 +151,15 @@ describe("Extended Scalar Mappings", () => {
       kind: "Model" as const,
       name: "NetworkTypes",
       properties: new Map([
-        ["ipAddress", { name: "ipAddress", type: { kind: "Scalar", name: "ipAddress" }, optional: false }],
+        [
+          "ipAddress",
+          { name: "ipAddress", type: { kind: "Scalar", name: "ipAddress" }, optional: false },
+        ],
         ["ipv4", { name: "ipv4", type: { kind: "Scalar", name: "ipv4Address" }, optional: false }],
         ["ipv6", { name: "ipv6", type: { kind: "Scalar", name: "ipv6Address" }, optional: false }],
-      ])
+      ]),
     };
-    
+
     const result = render(
       <Output>
         <ModuleDirectory name="github.com/test/api">
@@ -136,9 +169,9 @@ describe("Extended Scalar Mappings", () => {
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
-      </Output>
+      </Output>,
     );
-    
+
     expect(result).toBeDefined();
   });
 });

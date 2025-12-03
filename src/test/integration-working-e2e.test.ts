@@ -8,55 +8,55 @@ import { join } from "path";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
 
 describe("E2E Integration - Working Workflow Tests", () => {
-  
   it("should demonstrate complete TypeSpec to Go workflow", async () => {
     const tspPath = join(process.cwd(), "src/test/integration-basic.tsp");
-    
+
     try {
       // Step 1: Validate TypeSpec file exists and has content
       expect(existsSync(tspPath)).toBe(true);
       const tspContent = readFileSync(tspPath, "utf8");
-      
+
       console.log("🚀 Starting E2E workflow demonstration...");
       console.log("📄 TypeSpec file length:", tspContent.length, "characters");
-      
+
       // Step 2: Validate TypeSpec has required elements for Go generation
-      const hasModels = tspContent.includes("model User") && 
-                      tspContent.includes("model CreateUserRequest") &&
-                      tspContent.includes("model UserList");
+      const hasModels =
+        tspContent.includes("model User") &&
+        tspContent.includes("model CreateUserRequest") &&
+        tspContent.includes("model UserList");
       expect(hasModels).toBe(true);
       console.log("✅ TypeSpec models validated");
-      
-      const hasOperations = tspContent.includes("op getUser") &&
-                          tspContent.includes("op createUser") &&
-                          tspContent.includes("op listUsers");
+
+      const hasOperations =
+        tspContent.includes("op getUser") &&
+        tspContent.includes("op createUser") &&
+        tspContent.includes("op listUsers");
       expect(hasOperations).toBe(true);
       console.log("✅ TypeSpec operations validated");
-      
-      const hasNamespaces = tspContent.includes("namespace TestAPI") &&
-                            tspContent.includes("namespace Utils");
+
+      const hasNamespaces =
+        tspContent.includes("namespace TestAPI") && tspContent.includes("namespace Utils");
       expect(hasNamespaces).toBe(true);
       console.log("✅ TypeSpec namespaces validated");
-      
+
       // Step 3: Simulate what our emitter would generate
       const simulatedGoCode = generateSimulatedGoCode(tspContent);
       console.log("📝 Generated Go code length:", simulatedGoCode.length, "characters");
-      
+
       // Step 4: Validate generated Go code structure
       validateGeneratedGo(simulatedGoCode);
-      
+
       // Step 5: Write to temp file for manual verification
       const tempDir = join(process.cwd(), "temp-e2e-test");
       if (!existsSync(tempDir)) {
         mkdirSync(tempDir, { recursive: true });
       }
-      
+
       const goFilePath = join(tempDir, "generated-service.go");
       writeFileSync(goFilePath, simulatedGoCode, "utf8");
       console.log("💾 Generated Go file written to:", goFilePath);
-      
+
       console.log("🎉 Complete E2E workflow demonstration successful!");
-      
     } catch (error) {
       console.error("❌ E2E workflow error:", error);
       throw error;
@@ -65,40 +65,39 @@ describe("E2E Integration - Working Workflow Tests", () => {
 
   it("should validate complex TypeSpec with HTTP decorators workflow", async () => {
     const tspPath = join(process.cwd(), "src/test/integration-complex.tsp");
-    
+
     try {
       expect(existsSync(tspPath)).toBe(true);
       const tspContent = readFileSync(tspPath, "utf8");
-      
+
       console.log("🚀 Starting complex E2E workflow...");
-      
+
       // Validate HTTP decorator presence
-      const hasHttpDecorators = tspContent.includes("@typespec/http") &&
-                               tspContent.includes("@route") &&
-                               tspContent.includes("@get") &&
-                               tspContent.includes("@post");
+      const hasHttpDecorators =
+        tspContent.includes("@typespec/http") &&
+        tspContent.includes("@route") &&
+        tspContent.includes("@get") &&
+        tspContent.includes("@post");
       expect(hasHttpDecorators).toBe(true);
       console.log("✅ HTTP decorators validated");
-      
+
       // Validate visibility decorators
       const hasVisibilityDecorators = tspContent.includes("@visibility(Lifecycle.");
       expect(hasVisibilityDecorators).toBe(true);
       console.log("✅ Visibility decorators validated");
-      
+
       // Validate error models
-      const hasErrorModels = tspContent.includes("@error") &&
-                             tspContent.includes("model ApiError");
+      const hasErrorModels = tspContent.includes("@error") && tspContent.includes("model ApiError");
       expect(hasErrorModels).toBe(true);
       console.log("✅ Error models validated");
-      
+
       // Generate complex Go service
       const complexGoCode = generateSimulatedComplexGoCode(tspContent);
       console.log("📝 Complex Go code length:", complexGoCode.length, "characters");
-      
+
       validateComplexGeneratedGo(complexGoCode);
-      
+
       console.log("🎉 Complex E2E workflow successful!");
-      
     } catch (error) {
       console.error("❌ Complex E2E workflow error:", error);
       throw error;
@@ -287,30 +286,30 @@ func (s *ComplexAPIService) RegisterRoutes(mux *http.ServeMux) {
  */
 function validateGeneratedGo(goCode: string): void {
   console.log("🔍 Validating basic generated Go code...");
-  
+
   // Basic Go structure
   expect(goCode).toContain("package testapi");
   expect(goCode).toContain("import (");
   expect(goCode).toContain("type User struct");
   expect(goCode).toContain("type CreateUserRequest struct");
   expect(goCode).toContain("type UserList struct");
-  
+
   // Service elements
   expect(goCode).toContain("type TestAPIService struct");
   expect(goCode).toContain("type TestAPIServiceInterface interface");
   expect(goCode).toContain("func (s *TestAPIService)");
-  
+
   // Handler methods
   expect(goCode).toContain("GetUserHandler");
   expect(goCode).toContain("CreateUserHandler");
   expect(goCode).toContain("RegisterRoutes");
-  
+
   // Go syntax
   expect(goCode).toContain("func (");
   expect(goCode).toContain("context.Context");
   expect(goCode).toContain("http.ResponseWriter");
   expect(goCode).toContain("json.NewEncoder");
-  
+
   console.log("✅ Basic Go code validation passed");
 }
 
@@ -319,17 +318,17 @@ function validateGeneratedGo(goCode: string): void {
  */
 function validateComplexGeneratedGo(goCode: string): void {
   console.log("🔍 Validating complex generated Go code...");
-  
+
   // Complex elements
   expect(goCode).toContain("package complexapi");
   expect(goCode).toContain("type ApiError struct");
   expect(goCode).toContain("Code string");
   expect(goCode).toContain("Message string");
-  
+
   // HTTP-specific patterns
   expect(goCode).toContain("ComplexAPIService");
-  expect(goCode).toContain("StatusCode()");  // HTTP error handling
-  expect(goCode).toContain("/api/v1/users");  // Custom routes
-  
+  expect(goCode).toContain("StatusCode()"); // HTTP error handling
+  expect(goCode).toContain("/api/v1/users"); // Custom routes
+
   console.log("✅ Complex Go code validation passed");
 }

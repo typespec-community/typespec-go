@@ -30,10 +30,10 @@ describe("Model Composition Implementation", () => {
       };
 
       const result = generator.generateModel(extendedModel);
-      
+
       // Should generate successfully
       expect(result._tag).toBe("success");
-      
+
       // Should contain embedded struct
       const goCode = Array.from(result.data.values())[0];
       expect(goCode).toContain("type User struct {");
@@ -52,10 +52,10 @@ describe("Model Composition Implementation", () => {
       };
 
       const result = generator.generateModel(animalModel);
-      
+
       // Should generate successfully
       expect(result._tag).toBe("success");
-      
+
       // Should contain embedded Mammal
       const goCode = Array.from(result.data.values())[0];
       expect(goCode).toContain("type Dog struct {");
@@ -82,10 +82,10 @@ describe("Model Composition Implementation", () => {
       };
 
       const result = generator.generateModel(extendedModel);
-      
+
       // Should generate successfully
       expect(result._tag).toBe("success");
-      
+
       // Should contain both original and spread properties
       const goCode = Array.from(result.data.values())[0];
       expect(goCode).toContain("ID string");
@@ -107,9 +107,9 @@ describe("Model Composition Implementation", () => {
       };
 
       const result = generator.generateModel(complexModel);
-      
+
       expect(result._tag).toBe("success");
-      
+
       const goCode = Array.from(result.data.values())[0];
       expect(goCode).toContain("BaseEntity  // Embedded struct");
       expect(goCode).toContain("Username string");
@@ -124,14 +124,21 @@ describe("Model Composition Implementation", () => {
         template: "<T>",
         properties: new Map([
           ["data", { name: "data", type: { kind: "template", name: "T" }, optional: false }],
-          ["pagination", { name: "pagination", type: { kind: "model", name: "PaginationInfo" }, optional: false }],
+          [
+            "pagination",
+            {
+              name: "pagination",
+              type: { kind: "model", name: "PaginationInfo" },
+              optional: false,
+            },
+          ],
         ]),
       };
 
       const result = generator.generateModel(templateModel);
-      
+
       expect(result._tag).toBe("success");
-      
+
       const goCode = Array.from(result.data.values())[0];
       expect(goCode).toContain("type PaginatedResponse struct {");
       expect(goCode).toContain("Data T  // Template type T");
@@ -148,9 +155,9 @@ describe("Model Composition Implementation", () => {
       };
 
       const result = generator.generateModel(instantiatedModel);
-      
+
       expect(result._tag).toBe("success");
-      
+
       const goCode = Array.from(result.data.values())[0];
       expect(goCode).toContain("type UserList struct {");
       expect(goCode).toContain("Data User");
@@ -168,7 +175,7 @@ describe("Model Composition Implementation", () => {
       };
 
       const modelB = {
-        name: "ModelB", 
+        name: "ModelB",
         properties: new Map([
           ["a", { name: "a", type: { kind: "model", name: "ModelA" }, optional: true }],
         ]),
@@ -177,22 +184,22 @@ describe("Model Composition Implementation", () => {
       // Generate both models (order might matter for cycle detection)
       const resultA = generator.generateModel(modelA);
       const resultB = generator.generateModel(modelB);
-      
+
       // Both should succeed (no exceptions thrown)
       expect(resultA._tag).toBe("success");
       expect(resultB._tag).toBe("success");
-      
+
       // Should handle cycles gracefully (would use pointers in real implementation)
       const goCodeA = Array.from(resultA.data.values())[0];
       const goCodeB = Array.from(resultB.data.values())[0];
-      
+
       expect(goCodeA).toContain("type ModelA struct {");
       expect(goCodeB).toContain("type ModelB struct {");
       expect(goCodeA).toContain("B *ModelB");
       expect(goCodeB).toContain("A *ModelA");
-      
-      expect(goCodeA).toContain("\tB *ModelB `json:\"b\",omitempty`");
-      expect(goCodeB).toContain("\tA *ModelA `json:\"a\",omitempty`");
+
+      expect(goCodeA).toContain('\tB *ModelB `json:"b",omitempty`');
+      expect(goCodeB).toContain('\tA *ModelA `json:"a",omitempty`');
     });
   });
 
@@ -207,7 +214,7 @@ describe("Model Composition Implementation", () => {
       };
 
       const result = generator.generateModel(invalidModel);
-      
+
       // Should still generate successfully (graceful handling)
       expect(result._tag).toBe("success");
     });
@@ -222,7 +229,7 @@ describe("Model Composition Implementation", () => {
       };
 
       const result = generator.generateModel(malformedTemplateModel);
-      
+
       // Should still generate successfully (graceful handling)
       expect(result._tag).toBe("success");
     });
@@ -231,7 +238,7 @@ describe("Model Composition Implementation", () => {
   describe("Performance Tests", () => {
     it("should handle complex composition efficiently", () => {
       const startTime = performance.now();
-      
+
       const complexModel = {
         name: "ComplexComposedModel",
         extends: "BaseEntity",
@@ -246,14 +253,14 @@ describe("Model Composition Implementation", () => {
 
       const result = generator.generateModel(complexModel);
       const endTime = performance.now();
-      
+
       expect(result._tag).toBe("success");
       expect(endTime - startTime).toBeLessThan(1); // Should be sub-millisecond
     });
 
     it("should handle many composition levels without performance degradation", () => {
       const startTime = performance.now();
-      
+
       // Create deep inheritance chain
       let currentModel = {
         name: "Level5Model",
@@ -265,7 +272,7 @@ describe("Model Composition Implementation", () => {
 
       const result = generator.generateModel(currentModel);
       const endTime = performance.now();
-      
+
       expect(result._tag).toBe("success");
       expect(endTime - startTime).toBeLessThan(1);
     });

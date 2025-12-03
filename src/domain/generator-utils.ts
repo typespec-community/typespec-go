@@ -15,7 +15,10 @@ export class GeneratorUtils {
    * Capitalize words in a string (e.g., "paypal" -> "PayPal")
    */
   static capitalizeWords(str: string): string {
-    return str.split(' ').map(word => this.capitalizeFirst(word)).join(' ');
+    return str
+      .split(" ")
+      .map((word) => this.capitalizeFirst(word))
+      .join(" ");
   }
 
   /**
@@ -24,11 +27,11 @@ export class GeneratorUtils {
    */
   static getTypeName(type?: TypeSpecTypeNode): string | undefined {
     if (!type) return undefined;
-    
-    if ('name' in type) {
+
+    if ("name" in type) {
       return (type as { name: string }).name;
     }
-    
+
     return undefined;
   }
 

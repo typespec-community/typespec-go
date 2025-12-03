@@ -23,18 +23,18 @@ interface GoUnionDeclarationProps {
  * Go Union Declaration Component
  * Generates sealed interface pattern for type safety
  */
-export function GoUnionDeclaration({ 
-  union, 
+export function GoUnionDeclaration({
+  union,
   packageName = "api",
   discriminator,
-  program
+  program,
 }: GoUnionDeclarationProps) {
   const typeName = union.name || "UnnamedUnion";
   const variants = Array.from(union.variants?.values() || []);
-  
+
   // Get documentation from @doc decorator
   const doc = program ? getDocumentation(program, union) : undefined;
-  
+
   return generateUnionCode(typeName, variants, discriminator, doc);
 }
 
@@ -45,10 +45,10 @@ function generateUnionCode(
   typeName: string,
   variants: UnionVariant[],
   discriminator?: string,
-  doc?: string
+  doc?: string,
 ): string {
   const lines: string[] = [];
-  
+
   // Sealed interface with documentation
   const docComment = doc ? `${doc} ` : "";
   lines.push(`// ${typeName} is a sealed interface ${docComment}representing a union type`);
@@ -59,37 +59,37 @@ function generateUnionCode(
   }
   lines.push(`}`);
   lines.push("");
-  
+
   // Generate variant structs
   for (const variant of variants) {
     const variantName = getVariantName(variant, typeName);
-    
+
     lines.push(`// ${variantName} implements ${typeName}`);
     lines.push(`type ${variantName} struct {`);
-    
+
     if (discriminator) {
       lines.push(`\tType string \`json:"${discriminator}"\``);
     }
-    
+
     // Add value field for simple unions
     const goType = getVariantGoType(variant);
     if (goType !== "struct{}") {
       lines.push(`\tValue ${goType} \`json:"value,omitempty"\``);
     }
-    
+
     lines.push(`}`);
     lines.push("");
-    
+
     // Implement sealed interface
     lines.push(`func (${variantName}) is${typeName}() {}`);
-    
+
     if (discriminator) {
       const variantNameStr = String(variant.name);
       lines.push(`func (v ${variantName}) GetType() string { return "${variantNameStr}" }`);
     }
     lines.push("");
   }
-  
+
   // Add unmarshalling helper for discriminated unions
   if (discriminator) {
     lines.push(`// Unmarshal${typeName} unmarshals JSON into the appropriate variant`);
@@ -100,7 +100,7 @@ function generateUnionCode(
     lines.push(`\t}`);
     lines.push(`\t`);
     lines.push(`\tswitch base.Type {`);
-    
+
     for (const variant of variants) {
       const variantName = getVariantName(variant, typeName);
       const variantNameStr = String(variant.name);
@@ -111,13 +111,13 @@ function generateUnionCode(
       lines.push(`\t\t}`);
       lines.push(`\t\treturn v, nil`);
     }
-    
+
     lines.push(`\tdefault:`);
     lines.push(`\t\treturn nil, fmt.Errorf("unknown ${typeName} type: %s", base.Type)`);
     lines.push(`\t}`);
     lines.push(`}`);
   }
-  
+
   return lines.join("\n");
 }
 
@@ -136,7 +136,7 @@ function getVariantName(variant: UnionVariant, unionName: string): string {
 function getVariantGoType(variant: UnionVariant): string {
   const type = variant.type;
   if (!type) return "interface{}";
-  
+
   switch (type.kind) {
     case "String":
       return "string";

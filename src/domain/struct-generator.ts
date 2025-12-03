@@ -1,12 +1,6 @@
-import {
-  ErrorFactory,
-  GoEmitterResult,
-  defaultErrorHandler,
-} from "./unified-errors.js";
+import { ErrorFactory, GoEmitterResult, defaultErrorHandler } from "./unified-errors.js";
 import { CleanTypeMapper } from "./clean-type-mapper.js";
-import type {
-  TypeSpecPropertyNode,
-} from "../types/typespec-domain.js";
+import type { TypeSpecPropertyNode } from "../types/typespec-domain.js";
 import { GeneratorUtils } from "./generator-utils.js";
 
 /**
@@ -85,22 +79,22 @@ export class StructGenerator {
 
     // Handle template instantiation
     const allProperties = new Map<string, TypeSpecPropertyNode>();
-    
+
     // If this is a template instantiation, add base template properties
-    if (model.template && model.template.includes('<')) {
+    if (model.template && model.template.includes("<")) {
       const templateProperties = this.parseTemplateProperties(model.template);
       for (const [propName, propNode] of templateProperties) {
         allProperties.set(propName, propNode);
       }
     }
-    
+
     // Add properties from extends (spread operator support)
     if (model.propertiesFromExtends) {
       for (const [propName, propNode] of model.propertiesFromExtends) {
         allProperties.set(propName, propNode);
       }
     }
-    
+
     // Add main properties
     for (const [propName, propNode] of model.properties) {
       allProperties.set(propName, propNode);
@@ -139,17 +133,17 @@ export class StructGenerator {
 
     // Delegate to CleanTypeMapper for type mapping with pointer support
     const mappedType = CleanTypeMapper.mapTypeSpecType(propNode.type, propName);
-    
+
     if (!mappedType || !mappedType.goType) {
       return null;
     }
 
     // Generate Go field name (capitalize first letter for export)
     let goFieldName = propName.charAt(0).toUpperCase() + propName.slice(1);
-    
+
     // Special case: 'id' -> 'ID' for Go naming conventions
-    if (propName.toLowerCase() === 'id') {
-      goFieldName = 'ID';
+    if (propName.toLowerCase() === "id") {
+      goFieldName = "ID";
     }
 
     // Generate JSON tag
@@ -166,7 +160,12 @@ export class StructGenerator {
 
     // Add comment for template types
     let templateComment = "";
-    if (propNode.type && typeof propNode.type === "object" && "kind" in propNode.type && propNode.type.kind === "template") {
+    if (
+      propNode.type &&
+      typeof propNode.type === "object" &&
+      "kind" in propNode.type &&
+      propNode.type.kind === "template"
+    ) {
       templateComment = `  // Template type ${(propNode.type as { name: string }).name}`;
     }
 
@@ -178,12 +177,12 @@ export class StructGenerator {
    */
   private parseTemplateProperties(template: string): ReadonlyMap<string, TypeSpecPropertyNode> {
     const properties = new Map<string, TypeSpecPropertyNode>();
-    
+
     // Parse template like "PaginatedResponse<User>"
     const match = template.match(/^(\w+)<(.+)>$/);
     if (match) {
       const [, baseTemplateName, templateArg] = match;
-      
+
       // For now, we handle common template patterns
       if (baseTemplateName === "PaginatedResponse") {
         // PaginatedResponse has "data" property of type T
@@ -192,7 +191,7 @@ export class StructGenerator {
           type: { kind: "model", name: templateArg },
           optional: false,
         });
-        
+
         // Also has pagination property
         properties.set("pagination", {
           name: "pagination",
@@ -201,7 +200,7 @@ export class StructGenerator {
         });
       }
     }
-    
+
     return properties;
   }
 

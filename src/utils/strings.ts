@@ -17,9 +17,7 @@ export function capitalize(str: string): string {
 export function toCamelCase(str: string): string {
   return str
     .split(/[-_\s]+/)
-    .map((word, index) => 
-      index === 0 ? word.toLowerCase() : capitalize(word.toLowerCase())
-    )
+    .map((word, index) => (index === 0 ? word.toLowerCase() : capitalize(word.toLowerCase())))
     .join("");
 }
 
@@ -29,7 +27,7 @@ export function toCamelCase(str: string): string {
 export function toPascalCase(str: string): string {
   return str
     .split(/[-_\s]+/)
-    .map(word => capitalize(word.toLowerCase()))
+    .map((word) => capitalize(word.toLowerCase()))
     .join("");
 }
 

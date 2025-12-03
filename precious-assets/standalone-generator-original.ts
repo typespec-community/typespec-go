@@ -8,11 +8,7 @@
  * CUSTOMER VALUE: Working Go generation with professional quality
  */
 
-import {
-  ErrorFactory,
-  GoEmitterResult,
-  defaultErrorHandler,
-} from "./domain/unified-errors.js";
+import { ErrorFactory, GoEmitterResult, defaultErrorHandler } from "./domain/unified-errors.js";
 import { CleanTypeMapper } from "./domain/clean-type-mapper.js";
 import type {
   TypeSpecPropertyNode,
@@ -123,22 +119,22 @@ export class StandaloneGoGenerator {
 
     // Handle template instantiation
     const allProperties = new Map<string, TypeSpecPropertyNode>();
-    
+
     // If this is a template instantiation, add base template properties
-    if (model.template && model.template.includes('<')) {
+    if (model.template && model.template.includes("<")) {
       const templateProperties = this.parseTemplateProperties(model.template);
       for (const [propName, propNode] of templateProperties) {
         allProperties.set(propName, propNode);
       }
     }
-    
+
     // Add properties from extends (spread operator support)
     if (model.propertiesFromExtends) {
       for (const [propName, propNode] of model.propertiesFromExtends) {
         allProperties.set(propName, propNode);
       }
     }
-    
+
     // Add main properties
     for (const [propName, propNode] of model.properties) {
       allProperties.set(propName, propNode);
@@ -177,17 +173,17 @@ export class StandaloneGoGenerator {
 
     // Delegate to CleanTypeMapper for type mapping with pointer support
     const mappedType = CleanTypeMapper.mapTypeSpecType(propNode.type, propName);
-    
+
     if (!mappedType || !mappedType.goType) {
       return null;
     }
 
     // Generate Go field name (capitalize first letter for export)
     let goFieldName = propName.charAt(0).toUpperCase() + propName.slice(1);
-    
+
     // Special case: 'id' -> 'ID' for Go naming conventions
-    if (propName.toLowerCase() === 'id') {
-      goFieldName = 'ID';
+    if (propName.toLowerCase() === "id") {
+      goFieldName = "ID";
     }
 
     // Generate JSON tag
@@ -204,7 +200,12 @@ export class StandaloneGoGenerator {
 
     // Add comment for template types
     let templateComment = "";
-    if (propNode.type && typeof propNode.type === "object" && "kind" in propNode.type && propNode.type.kind === "template") {
+    if (
+      propNode.type &&
+      typeof propNode.type === "object" &&
+      "kind" in propNode.type &&
+      propNode.type.kind === "template"
+    ) {
       templateComment = `  // Template type ${(propNode.type as { name: string }).name}`;
     }
 
@@ -216,12 +217,12 @@ export class StandaloneGoGenerator {
    */
   private parseTemplateProperties(template: string): ReadonlyMap<string, TypeSpecPropertyNode> {
     const properties = new Map<string, TypeSpecPropertyNode>();
-    
+
     // Parse template like "PaginatedResponse<User>"
     const match = template.match(/^(\w+)<(.+)>$/);
     if (match) {
       const [, baseTemplateName, templateArg] = match;
-      
+
       // For now, we handle common template patterns
       if (baseTemplateName === "PaginatedResponse") {
         // PaginatedResponse has "data" property of type T
@@ -230,7 +231,7 @@ export class StandaloneGoGenerator {
           type: { kind: "model", name: templateArg },
           optional: false,
         });
-        
+
         // Also has pagination property
         properties.set("pagination", {
           name: "pagination",
@@ -239,7 +240,7 @@ export class StandaloneGoGenerator {
         });
       }
     }
-    
+
     return properties;
   }
 
@@ -278,7 +279,7 @@ export class StandaloneGoGenerator {
       return defaultErrorHandler(error, {
         operation: "generateUnionType",
         modelName: unionModel.name,
-        variants: unionModel.variants.map(v => v.name),
+        variants: unionModel.variants.map((v) => v.name),
       });
     }
   }
@@ -345,28 +346,31 @@ export class StandaloneGoGenerator {
       // Use variant type name if available, otherwise fall back to variant name
       const typeName = this.getTypeName(variant.type);
       let variantName = typeName || variant.name;
-      
+
       // Ensure the variant name is properly capitalized
       variantName = this.capitalizeFirst(variantName);
-      
+
       lines.push(`// ${variantName} - ${unionModel.name} variant`);
       lines.push(`type ${variantName} struct {`);
-      
+
       // For discriminated unions, always add discriminator field
       if (unionModel.discriminator) {
         lines.push(`\tType string \`json:"type"\``);
-        
+
         // Add optional success and error fields based on variant name
-        if (variant.name === 'success') {
+        if (variant.name === "success") {
           lines.push(`\tSuccess *SuccessResponse \`json:"success,omitempty"\``);
-        } else if (variant.name === 'error') {
+        } else if (variant.name === "error") {
           lines.push(`\tError *ErrorResponse \`json:"error,omitempty"\``);
         }
       } else {
         // For non-discriminated unions, add potential properties based on variant type
         if (this.isRecursiveVariant(variant, unionModel)) {
           // Generate typical binary expression fields for recursive patterns
-          if (variant.name.toLowerCase().includes('add') || variant.name.toLowerCase().includes('multiply')) {
+          if (
+            variant.name.toLowerCase().includes("add") ||
+            variant.name.toLowerCase().includes("multiply")
+          ) {
             lines.push(`\tLeft *${unionModel.name} \`json:"left,omitempty"\``);
             lines.push(`\tRight *${unionModel.name} \`json:"right,omitempty"\``);
           } else {
@@ -374,7 +378,7 @@ export class StandaloneGoGenerator {
           }
         }
       }
-      
+
       lines.push("}");
       lines.push("");
 
@@ -409,18 +413,18 @@ export class StandaloneGoGenerator {
       const typeName = this.getTypeName(variant.type);
       let variantName = typeName || variant.name;
       variantName = this.capitalizeFirst(variantName);
-      
+
       lines.push(`// ${variantName} - ${unionModel.name} variant`);
       lines.push(`type ${variantName} struct {`);
       lines.push(`\tType string \`json:"type"\``);
-      
+
       // Add optional success and error fields based on variant name
-      if (variant.name === 'success') {
+      if (variant.name === "success") {
         lines.push(`\tSuccess *SuccessResponse \`json:"success,omitempty"\``);
-      } else if (variant.name === 'error') {
+      } else if (variant.name === "error") {
         lines.push(`\tError *ErrorResponse \`json:"error,omitempty"\``);
       }
-      
+
       lines.push("}");
       lines.push("");
 
@@ -433,17 +437,17 @@ export class StandaloneGoGenerator {
 
     // Generate type constants
     let constantPrefix = this.capitalizeFirst(unionModel.name);
-    
+
     // Special case: if union name ends with "Method", add "Type" to constant prefix
-    if (constantPrefix.endsWith('Method')) {
-      constantPrefix = constantPrefix.slice(0, -6) + 'Type'; // Replace 'Method' with 'Type'
+    if (constantPrefix.endsWith("Method")) {
+      constantPrefix = constantPrefix.slice(0, -6) + "Type"; // Replace 'Method' with 'Type'
     }
-    
+
     for (const variant of unionModel.variants) {
       // Use special case mapping for known capitalization issues
       const specialCases: Record<string, string> = {
-        'paypal': 'PayPal',
-        'bankTransfer': 'BankTransfer'
+        paypal: "PayPal",
+        bankTransfer: "BankTransfer",
       };
       const variantName = specialCases[variant.name] || this.capitalizeFirst(variant.name);
       const constantName = `${constantPrefix}${variantName}`;
@@ -459,22 +463,22 @@ export class StandaloneGoGenerator {
    * Check if a variant is recursive (references the union type)
    */
   private isRecursiveVariant(
-    variant: { name: string; type?: TypeSpecTypeNode }, 
-    unionModel: { name: string }
+    variant: { name: string; type?: TypeSpecTypeNode },
+    unionModel: { name: string },
   ): boolean {
     // If variant type name matches union name, it's recursive
     const typeName = variant.type ? this.getTypeName(variant.type) : undefined;
     if (typeName === unionModel.name) {
       return true;
     }
-    
+
     // If variant name suggests a recursive pattern (Add, Multiply, etc.)
-    const recursivePatterns = ['add', 'multiply', 'left', 'right', 'expression'];
-    const variantName = variant.name?.toLowerCase() || '';
-    const unionName = unionModel.name?.toLowerCase() || '';
-    
-    return recursivePatterns.some(pattern => 
-      variantName.includes(pattern) && unionName.includes('expression')
+    const recursivePatterns = ["add", "multiply", "left", "right", "expression"];
+    const variantName = variant.name?.toLowerCase() || "";
+    const unionName = unionModel.name?.toLowerCase() || "";
+
+    return recursivePatterns.some(
+      (pattern) => variantName.includes(pattern) && unionName.includes("expression"),
     );
   }
 
@@ -489,7 +493,10 @@ export class StandaloneGoGenerator {
    * Capitalize words in a string (e.g., "paypal" -> "PayPal")
    */
   private capitalizeWords(str: string): string {
-    return str.split(' ').map(word => this.capitalizeFirst(word)).join(' ');
+    return str
+      .split(" ")
+      .map((word) => this.capitalizeFirst(word))
+      .join(" ");
   }
 
   /**
@@ -498,11 +505,11 @@ export class StandaloneGoGenerator {
    */
   private getTypeName(type?: TypeSpecTypeNode): string | undefined {
     if (!type) return undefined;
-    
-    if ('name' in type) {
+
+    if ("name" in type) {
       return (type as { name: string }).name;
     }
-    
+
     return undefined;
   }
 

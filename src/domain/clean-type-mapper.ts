@@ -7,7 +7,11 @@
  * MAINTAINABILITY: Clear separation of concerns
  */
 
-import type { TypeSpecPropertyNode, TypeSpecArrayType, TypeSpecMapType } from "../types/typespec-domain.js";
+import type {
+  TypeSpecPropertyNode,
+  TypeSpecArrayType,
+  TypeSpecMapType,
+} from "../types/typespec-domain.js";
 import type { GoTypeMapping } from "../types/emitter.types.js";
 
 /**
@@ -191,7 +195,12 @@ export class CleanTypeMapper {
     }
 
     // Handle case where model type is just { kind: "model" }
-    if (typeof type === "object" && type !== null && "kind" in type && (type as { kind: string }).kind === "model") {
+    if (
+      typeof type === "object" &&
+      type !== null &&
+      "kind" in type &&
+      (type as { kind: string }).kind === "model"
+    ) {
       return {
         goType: "interface{}",
         usePointerForOptional: true,
@@ -302,21 +311,28 @@ export class CleanTypeMapper {
     type: TypeSpecPropertyNode["type"],
     fieldName?: string,
   ): GoTypeMapping {
-    if (typeof type === "object" && type !== null && "kind" in type && (type as { kind: string }).kind === "array") {
+    if (
+      typeof type === "object" &&
+      type !== null &&
+      "kind" in type &&
+      (type as { kind: string }).kind === "array"
+    ) {
       const arrayType = type as { elementType?: TypeSpecPropertyNode["type"] };
-      
+
       // Check if elementType exists
       if (!arrayType.elementType) {
-        console.warn(`Array type missing elementType for field ${fieldName}: ${JSON.stringify(type)}`);
+        console.warn(
+          `Array type missing elementType for field ${fieldName}: ${JSON.stringify(type)}`,
+        );
         return { goType: "[]interface{}", usePointerForOptional: true };
       }
-      
+
       // Recursively map the element type
       const elementMapping = this.mapTypeSpecType(arrayType.elementType, `${fieldName}Element`);
-      
+
       // Generate Go slice type: []ElementType
       const goSliceType = `[]${elementMapping.goType}`;
-      
+
       return {
         goType: goSliceType,
         usePointerForOptional: true, // Arrays/slices are reference types in Go
@@ -332,37 +348,41 @@ export class CleanTypeMapper {
   /**
    * Map TypeSpec map/record type
    */
-  private static mapMapType(
-    type: TypeSpecPropertyNode["type"],
-    fieldName?: string,
-  ): GoTypeMapping {
+  private static mapMapType(type: TypeSpecPropertyNode["type"], fieldName?: string): GoTypeMapping {
     if (typeof type === "object" && type !== null && "kind" in type) {
       const kind = (type as { kind: string }).kind;
       if (kind === "map" || kind === "record") {
-        const mapType = type as { keyType?: TypeSpecPropertyNode["type"]; valueType?: TypeSpecPropertyNode["type"] };
-        
+        const mapType = type as {
+          keyType?: TypeSpecPropertyNode["type"];
+          valueType?: TypeSpecPropertyNode["type"];
+        };
+
         // Check if keyType and valueType exist
         if (!mapType.keyType || !mapType.valueType) {
-          console.warn(`Map/record type missing keyType or valueType for field ${fieldName}: ${JSON.stringify(type)}`);
+          console.warn(
+            `Map/record type missing keyType or valueType for field ${fieldName}: ${JSON.stringify(type)}`,
+          );
           return { goType: "map[string]interface{}", usePointerForOptional: true };
         }
-        
+
         // Map the key and value types
         const keyMapping = this.mapTypeSpecType(mapType.keyType, `${fieldName}Key`);
         const valueMapping = this.mapTypeSpecType(mapType.valueType, `${fieldName}Value`);
-        
+
         // For Go maps, keys must be comparable types
         let goKeyType = keyMapping.goType;
-        
+
         // Ensure key type is comparable in Go
         if (!this.isGoComparableType(goKeyType)) {
-          console.warn(`Non-comparable map key type for field ${fieldName}: ${goKeyType}, defaulting to string`);
+          console.warn(
+            `Non-comparable map key type for field ${fieldName}: ${goKeyType}, defaulting to string`,
+          );
           goKeyType = "string";
         }
-        
+
         // Generate Go map type: map[keyType]valueType
         const goMapType = `map[${goKeyType}]${valueMapping.goType}`;
-        
+
         return {
           goType: goMapType,
           usePointerForOptional: true, // Maps are reference types in Go
@@ -383,8 +403,8 @@ export class CleanTypeMapper {
     // Go comparable types: string, int, float, bool, pointers, arrays, structs, interfaces
     // Non-comparable: slice, map, function, complex numbers
     const nonComparable = ["[]", "map[", "func", "complex64", "complex128"];
-    
-    return !nonComparable.some(pattern => goType.includes(pattern));
+
+    return !nonComparable.some((pattern) => goType.includes(pattern));
   }
 
   /**
@@ -417,10 +437,9 @@ export class CleanTypeMapper {
       "name" in type &&
       typeof (type as { name: string }).name === "string" &&
       // Exclude model types (they have both name and kind)
-      (!("kind" in type) || (
-        (type as { kind: string }).kind !== "model" && 
-        (type as { kind: string }).kind !== "template"
-      ))
+      (!("kind" in type) ||
+        ((type as { kind: string }).kind !== "model" &&
+          (type as { kind: string }).kind !== "template"))
     );
   }
 

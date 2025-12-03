@@ -1,12 +1,5 @@
-import {
-  ErrorFactory,
-  GoEmitterResult,
-  defaultErrorHandler,
-} from "./unified-errors.js";
-import type {
-  TypeSpecTypeNode,
-  TypeSpecPropertyNode,
-} from "../types/typespec-domain.js";
+import { ErrorFactory, GoEmitterResult, defaultErrorHandler } from "./unified-errors.js";
+import type { TypeSpecTypeNode, TypeSpecPropertyNode } from "../types/typespec-domain.js";
 import { GeneratorUtils } from "./generator-utils.js";
 
 /**
@@ -49,7 +42,7 @@ export class UnionGenerator {
       return defaultErrorHandler(error, {
         operation: "generateUnionType",
         modelName: unionModel.name,
-        variants: unionModel.variants.map(v => v.name),
+        variants: unionModel.variants.map((v) => v.name),
       });
     }
   }
@@ -115,28 +108,31 @@ export class UnionGenerator {
       // Use variant type name if available, otherwise fall back to variant name
       const typeName = GeneratorUtils.getTypeName(variant.type);
       let variantName = typeName || variant.name;
-      
+
       // Ensure the variant name is properly capitalized
       variantName = GeneratorUtils.capitalizeFirst(variantName);
-      
+
       lines.push(`// ${variantName} - ${unionModel.name} variant`);
       lines.push(`type ${variantName} struct {`);
-      
+
       // For discriminated unions, always add discriminator field
       if (unionModel.discriminator) {
         lines.push(`\tType string \`json:"type"\``);
-        
+
         // Add optional success and error fields based on variant name
-        if (variant.name === 'success') {
+        if (variant.name === "success") {
           lines.push(`\tSuccess *SuccessResponse \`json:"success,omitempty"\``);
-        } else if (variant.name === 'error') {
+        } else if (variant.name === "error") {
           lines.push(`\tError *ErrorResponse \`json:"error,omitempty"\``);
         }
       } else {
         // For non-discriminated unions, add potential properties based on variant type
         if (this.isRecursiveVariant(variant, unionModel)) {
           // Generate typical binary expression fields for recursive patterns
-          if (variant.name.toLowerCase().includes('add') || variant.name.toLowerCase().includes('multiply')) {
+          if (
+            variant.name.toLowerCase().includes("add") ||
+            variant.name.toLowerCase().includes("multiply")
+          ) {
             lines.push(`\tLeft *${unionModel.name} \`json:"left,omitempty"\``);
             lines.push(`\tRight *${unionModel.name} \`json:"right,omitempty"\``);
           } else {
@@ -144,7 +140,7 @@ export class UnionGenerator {
           }
         }
       }
-      
+
       lines.push("}");
       lines.push("");
 
@@ -179,18 +175,18 @@ export class UnionGenerator {
       const typeName = GeneratorUtils.getTypeName(variant.type);
       let variantName = typeName || variant.name;
       variantName = GeneratorUtils.capitalizeFirst(variantName);
-      
+
       lines.push(`// ${variantName} - ${unionModel.name} variant`);
       lines.push(`type ${variantName} struct {`);
       lines.push(`\tType string \`json:"type"\``);
-      
+
       // Add optional success and error fields based on variant name
-      if (variant.name === 'success') {
+      if (variant.name === "success") {
         lines.push(`\tSuccess *SuccessResponse \`json:"success,omitempty"\``);
-      } else if (variant.name === 'error') {
+      } else if (variant.name === "error") {
         lines.push(`\tError *ErrorResponse \`json:"error,omitempty"\``);
       }
-      
+
       lines.push("}");
       lines.push("");
 
@@ -203,19 +199,20 @@ export class UnionGenerator {
 
     // Generate type constants
     let constantPrefix = GeneratorUtils.capitalizeFirst(unionModel.name);
-    
+
     // Special case: if union name ends with "Method", add "Type" to constant prefix
-    if (constantPrefix.endsWith('Method')) {
-      constantPrefix = constantPrefix.slice(0, -6) + 'Type'; // Replace 'Method' with 'Type'
+    if (constantPrefix.endsWith("Method")) {
+      constantPrefix = constantPrefix.slice(0, -6) + "Type"; // Replace 'Method' with 'Type'
     }
-    
+
     for (const variant of unionModel.variants) {
       // Use special case mapping for known capitalization issues
       const specialCases: Record<string, string> = {
-        'paypal': 'PayPal',
-        'bankTransfer': 'BankTransfer'
+        paypal: "PayPal",
+        bankTransfer: "BankTransfer",
       };
-      const variantName = specialCases[variant.name] || GeneratorUtils.capitalizeFirst(variant.name);
+      const variantName =
+        specialCases[variant.name] || GeneratorUtils.capitalizeFirst(variant.name);
       const constantName = `${constantPrefix}${variantName}`;
       const constantValue = variant.discriminator || variant.name;
       lines.push(`const ${constantName} = "${constantValue}"`);
@@ -229,22 +226,22 @@ export class UnionGenerator {
    * Check if a variant is recursive (references the union type)
    */
   private isRecursiveVariant(
-    variant: { name: string; type?: TypeSpecTypeNode }, 
-    unionModel: { name: string }
+    variant: { name: string; type?: TypeSpecTypeNode },
+    unionModel: { name: string },
   ): boolean {
     // If variant type name matches union name, it's recursive
     const typeName = GeneratorUtils.getTypeName(variant.type);
     if (typeName === unionModel.name) {
       return true;
     }
-    
+
     // If variant name suggests a recursive pattern (Add, Multiply, etc.)
-    const recursivePatterns = ['add', 'multiply', 'left', 'right', 'expression'];
-    const variantName = variant.name?.toLowerCase() || '';
-    const unionName = unionModel.name?.toLowerCase() || '';
-    
-    return recursivePatterns.some(pattern => 
-      variantName.includes(pattern) && unionName.includes('expression')
+    const recursivePatterns = ["add", "multiply", "left", "right", "expression"];
+    const variantName = variant.name?.toLowerCase() || "";
+    const unionName = unionModel.name?.toLowerCase() || "";
+
+    return recursivePatterns.some(
+      (pattern) => variantName.includes(pattern) && unionName.includes("expression"),
     );
   }
 }

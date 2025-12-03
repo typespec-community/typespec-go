@@ -23,21 +23,21 @@ interface GoEnumDeclarationProps {
  * Go Enum Declaration Component
  * Generates proper Go const blocks with type safety
  */
-export function GoEnumDeclaration({ 
-  enum: enumType, 
+export function GoEnumDeclaration({
+  enum: enumType,
   packageName = "api",
   useIota = false,
-  program
+  program,
 }: GoEnumDeclarationProps) {
   const typeName = enumType.name || "UnnamedEnum";
   const members = Array.from(enumType.members?.values() || []);
-  
+
   // Get documentation from @doc decorator
   const doc = program ? getDocumentation(program, enumType) : undefined;
-  
+
   // Determine if this is a string enum or numeric enum
-  const isStringEnum = members.some(m => typeof m.value === "string");
-  
+  const isStringEnum = members.some((m) => typeof m.value === "string");
+
   return generateEnumCode(typeName, members, isStringEnum, useIota, doc);
 }
 
@@ -49,15 +49,15 @@ function generateEnumCode(
   members: EnumMember[],
   isStringEnum: boolean,
   useIota: boolean,
-  doc?: string
+  doc?: string,
 ): string {
   const lines: string[] = [];
-  
+
   // Add documentation comment if present
   if (doc) {
     lines.push(`// ${typeName} ${doc}`);
   }
-  
+
   // Type declaration
   if (isStringEnum) {
     lines.push(`type ${typeName} string`);
@@ -65,13 +65,13 @@ function generateEnumCode(
     lines.push(`type ${typeName} int`);
   }
   lines.push("");
-  
+
   // Const block
   lines.push(`const (`);
-  
+
   members.forEach((member, index) => {
     const memberName = `${typeName}${capitalize(member.name)}`;
-    
+
     if (isStringEnum) {
       lines.push(`\t${memberName} ${typeName} = "${member.value || member.name}"`);
     } else if (useIota && index === 0) {
@@ -82,10 +82,10 @@ function generateEnumCode(
       lines.push(`\t${memberName} ${typeName} = ${member.value ?? index}`);
     }
   });
-  
+
   lines.push(`)`);
   lines.push("");
-  
+
   // Add Stringer interface for string enums
   if (isStringEnum) {
     lines.push(`func (e ${typeName}) String() string {`);
@@ -93,17 +93,17 @@ function generateEnumCode(
     lines.push(`}`);
     lines.push("");
   }
-  
+
   // Add validation method
   lines.push(`func (e ${typeName}) IsValid() bool {`);
   lines.push(`\tswitch e {`);
-  lines.push(`\tcase ${members.map(m => `${typeName}${capitalize(m.name)}`).join(", ")}:`);
+  lines.push(`\tcase ${members.map((m) => `${typeName}${capitalize(m.name)}`).join(", ")}:`);
   lines.push(`\t\treturn true`);
   lines.push(`\tdefault:`);
   lines.push(`\t\treturn false`);
   lines.push(`\t}`);
   lines.push(`}`);
-  
+
   return lines.join("\n");
 }
 
@@ -114,6 +114,6 @@ export function getEnumValues(enumType: Enum): Array<{ name: string; value: stri
   const members = Array.from(enumType.members?.values() || []);
   return members.map((member, index) => ({
     name: member.name,
-    value: member.value ?? (typeof members[0]?.value === "string" ? member.name : index)
+    value: member.value ?? (typeof members[0]?.value === "string" ? member.name : index),
   }));
 }

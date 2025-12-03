@@ -4,7 +4,14 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { capitalize, toCamelCase, toPascalCase, toSnakeCase, toGoPublicName, toGoPrivateName } from "../utils/strings.js";
+import {
+  capitalize,
+  toCamelCase,
+  toPascalCase,
+  toSnakeCase,
+  toGoPublicName,
+  toGoPrivateName,
+} from "../utils/strings.js";
 
 describe("String Utilities", () => {
   describe("capitalize", () => {

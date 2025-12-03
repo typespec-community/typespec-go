@@ -8,7 +8,7 @@ import { StandaloneGoGenerator } from "../standalone-generator.js";
 
 test("Union Types - Should generate sealed interface", () => {
   const generator = new StandaloneGoGenerator();
-  
+
   // Arrange
   const unionModel = {
     name: "EventType",
@@ -16,9 +16,9 @@ test("Union Types - Should generate sealed interface", () => {
     variants: [
       { name: "userLogin", type: { kind: "Model", name: "UserLoginEvent" } },
       { name: "userLogout", type: { kind: "Model", name: "UserLogoutEvent" } },
-      { name: "systemError", type: { kind: "Model", name: "SystemErrorEvent" } }
+      { name: "systemError", type: { kind: "Model", name: "SystemErrorEvent" } },
     ],
-    properties: new Map()
+    properties: new Map(),
   };
 
   // Act
@@ -27,16 +27,16 @@ test("Union Types - Should generate sealed interface", () => {
   // Assert
   if (result._tag === "success") {
     const goCode = result.data.get("EventType.go");
-    
+
     // Should generate sealed interface
     expect(goCode).toContain("type EventType interface {");
     expect(goCode).toContain("isEventType()");
-    
+
     // Should generate variant structs
     expect(goCode).toContain("type UserLoginEvent struct {");
     expect(goCode).toContain("type UserLogoutEvent struct {");
     expect(goCode).toContain("type SystemErrorEvent struct {");
-    
+
     // Each variant should implement the interface
     expect(goCode).toContain("func (e UserLoginEvent) isEventType() {}");
     expect(goCode).toContain("func (e UserLogoutEvent) isEventType() {}");
@@ -48,18 +48,26 @@ test("Union Types - Should generate sealed interface", () => {
 
 test("Union Types - Should handle discriminated unions", () => {
   const generator = new StandaloneGoGenerator();
-  
+
   // Arrange
   const discriminatedUnion = {
     name: "PaymentMethod",
     kind: "union",
     discriminator: "type",
     variants: [
-      { name: "creditCard", type: { kind: "Model", name: "CreditCard" }, discriminator: "credit_card" },
+      {
+        name: "creditCard",
+        type: { kind: "Model", name: "CreditCard" },
+        discriminator: "credit_card",
+      },
       { name: "paypal", type: { kind: "Model", name: "PayPal" }, discriminator: "paypal" },
-      { name: "bankTransfer", type: { kind: "Model", name: "BankTransfer" }, discriminator: "bank_transfer" }
+      {
+        name: "bankTransfer",
+        type: { kind: "Model", name: "BankTransfer" },
+        discriminator: "bank_transfer",
+      },
     ],
-    properties: new Map()
+    properties: new Map(),
   };
 
   // Act
@@ -68,14 +76,14 @@ test("Union Types - Should handle discriminated unions", () => {
   // Assert
   if (result._tag === "success") {
     const goCode = result.data.get("PaymentMethod.go");
-    
+
     // Should generate discriminator field
-    expect(goCode).toContain("Type string `json:\"type\"`");
-    
+    expect(goCode).toContain('Type string `json:"type"`');
+
     // Should generate type constants
-    expect(goCode).toContain("const PaymentTypeCreditCard = \"credit_card\"");
-    expect(goCode).toContain("const PaymentTypePayPal = \"paypal\"");
-    expect(goCode).toContain("const PaymentTypeBankTransfer = \"bank_transfer\"");
+    expect(goCode).toContain('const PaymentTypeCreditCard = "credit_card"');
+    expect(goCode).toContain('const PaymentTypePayPal = "paypal"');
+    expect(goCode).toContain('const PaymentTypeBankTransfer = "bank_transfer"');
   } else {
     throw new Error(`Failed to generate discriminated union: ${result._tag}`);
   }
@@ -83,7 +91,7 @@ test("Union Types - Should handle discriminated unions", () => {
 
 test("Union Types - Should handle recursive union types", () => {
   const generator = new StandaloneGoGenerator();
-  
+
   // Arrange
   const recursiveUnion = {
     name: "Expression",
@@ -91,9 +99,9 @@ test("Union Types - Should handle recursive union types", () => {
     variants: [
       { name: "literal", type: { kind: "scalar", name: "string" } },
       { name: "add", type: { kind: "Model", name: "AddExpression" } },
-      { name: "multiply", type: { kind: "Model", name: "MultiplyExpression" } }
+      { name: "multiply", type: { kind: "Model", name: "MultiplyExpression" } },
     ],
-    properties: new Map()
+    properties: new Map(),
   };
 
   // Act
@@ -102,7 +110,7 @@ test("Union Types - Should handle recursive union types", () => {
   // Assert
   if (result._tag === "success") {
     const goCode = result.data.get("Expression.go");
-    
+
     // Should handle recursive references with pointers
     expect(goCode).toContain("*Expression");
     expect(goCode).toContain("Left *Expression");
@@ -114,13 +122,13 @@ test("Union Types - Should handle recursive union types", () => {
 
 test("Union Types - Should handle empty union gracefully", () => {
   const generator = new StandaloneGoGenerator();
-  
+
   // Arrange
   const emptyUnion = {
     name: "EmptyUnion",
     kind: "union",
     variants: [],
-    properties: new Map()
+    properties: new Map(),
   };
 
   // Act
@@ -140,17 +148,21 @@ test("Union Types - Should handle empty union gracefully", () => {
 
 test("Union Types - Should generate proper JSON tags", () => {
   const generator = new StandaloneGoGenerator();
-  
+
   // Arrange
   const unionWithJson = {
     name: "ApiResponse",
     kind: "union",
     discriminator: "type",
     variants: [
-      { name: "success", type: { kind: "Model", name: "SuccessResponse" }, discriminator: "success" },
-      { name: "error", type: { kind: "Model", name: "ErrorResponse" }, discriminator: "error" }
+      {
+        name: "success",
+        type: { kind: "Model", name: "SuccessResponse" },
+        discriminator: "success",
+      },
+      { name: "error", type: { kind: "Model", name: "ErrorResponse" }, discriminator: "error" },
     ],
-    properties: new Map()
+    properties: new Map(),
   };
 
   // Act
@@ -159,11 +171,11 @@ test("Union Types - Should generate proper JSON tags", () => {
   // Assert
   if (result._tag === "success") {
     const goCode = result.data.get("ApiResponse.go");
-    
+
     // Should include JSON tags for proper serialization
-    expect(goCode).toContain("`json:\"type\"`");
-    expect(goCode).toContain("`json:\"success,omitempty\"`");
-    expect(goCode).toContain("`json:\"error,omitempty\"`");
+    expect(goCode).toContain('`json:"type"`');
+    expect(goCode).toContain('`json:"success,omitempty"`');
+    expect(goCode).toContain('`json:"error,omitempty"`');
   } else {
     throw new Error(`Failed to generate union with JSON tags: ${result._tag}`);
   }
@@ -171,16 +183,16 @@ test("Union Types - Should generate proper JSON tags", () => {
 
 test("Union Types - Should handle union performance efficiently", () => {
   const generator = new StandaloneGoGenerator();
-  
+
   // Arrange
   const largeUnion = {
     name: "LargeUnion",
     kind: "union",
     variants: Array.from({ length: 20 }, (_, i) => ({
       name: `variant${i}`,
-      type: { kind: "Model", name: `Variant${i}` }
+      type: { kind: "Model", name: `Variant${i}` },
     })),
-    properties: new Map()
+    properties: new Map(),
   };
 
   // Act
@@ -191,10 +203,10 @@ test("Union Types - Should handle union performance efficiently", () => {
 
   // Assert
   expect(duration).toBeLessThan(5); // Should handle large unions quickly
-  
+
   if (result._tag === "success") {
     const goCode = result.data.get("LargeUnion.go");
-    
+
     // Should generate all variants
     expect(goCode).toMatch(/type Variant\d+ struct {/g);
   } else {

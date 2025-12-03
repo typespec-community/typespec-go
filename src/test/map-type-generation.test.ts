@@ -1,6 +1,6 @@
 /**
  * Map/Record Type Generation Tests
- * 
+ *
  * Testing critical map/record type support for TypeSpec Go Emitter
  * Pattern: Record<string, string>, Map<string, any>, etc.
  */
@@ -15,17 +15,17 @@ describe("Map/Record Type Generation", () => {
       const mapType: TypeSpecTypeNode = {
         kind: "map",
         keyType: { kind: "scalar", name: "string" },
-        valueType: { kind: "scalar", name: "string" }
+        valueType: { kind: "scalar", name: "string" },
       };
 
       const property: TypeSpecPropertyNode = {
         name: "metadata",
         type: mapType,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       expect(result.goType).toBe("map[string]string");
       expect(result.usePointerForOptional).toBe(true);
       expect(result.requiresImport).toBeUndefined();
@@ -35,17 +35,17 @@ describe("Map/Record Type Generation", () => {
       const recordType: TypeSpecTypeNode = {
         kind: "record",
         keyType: { kind: "scalar", name: "string" },
-        valueType: { kind: "scalar", name: "string" }
+        valueType: { kind: "scalar", name: "string" },
       };
 
       const property: TypeSpecPropertyNode = {
         name: "config",
         type: recordType,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       expect(result.goType).toBe("map[string]string");
       expect(result.usePointerForOptional).toBe(true);
       expect(result.requiresImport).toBeUndefined();
@@ -55,17 +55,17 @@ describe("Map/Record Type Generation", () => {
       const mapType: TypeSpecTypeNode = {
         kind: "map",
         keyType: { kind: "scalar", name: "string" },
-        valueType: { kind: "scalar", name: "int32" }
+        valueType: { kind: "scalar", name: "int32" },
       };
 
       const property: TypeSpecPropertyNode = {
         name: "scores",
         type: mapType,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       expect(result.goType).toBe("map[string]int32");
       expect(result.usePointerForOptional).toBe(true);
       expect(result.requiresImport).toBeUndefined();
@@ -77,17 +77,17 @@ describe("Map/Record Type Generation", () => {
       const mapType: TypeSpecTypeNode = {
         kind: "map",
         keyType: { kind: "scalar", name: "string" },
-        valueType: { kind: "model", name: "User" }
+        valueType: { kind: "model", name: "User" },
       };
 
       const property: TypeSpecPropertyNode = {
         name: "users",
         type: mapType,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       expect(result.goType).toBe("map[string]User");
       expect(result.usePointerForOptional).toBe(true);
       expect(result.requiresImport).toBeUndefined();
@@ -97,17 +97,17 @@ describe("Map/Record Type Generation", () => {
       const mapType: TypeSpecTypeNode = {
         kind: "map",
         keyType: { kind: "scalar", name: "string" },
-        valueType: { kind: "scalar", name: "utcDateTime" }
+        valueType: { kind: "scalar", name: "utcDateTime" },
       };
 
       const property: TypeSpecPropertyNode = {
         name: "timestamps",
         type: mapType,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       expect(result.goType).toBe("map[string]time.Time");
       expect(result.usePointerForOptional).toBe(true);
       expect(result.requiresImport).toBe("time");
@@ -116,23 +116,23 @@ describe("Map/Record Type Generation", () => {
     it("should handle maps with array values", () => {
       const arrayType: TypeSpecTypeNode = {
         kind: "array",
-        elementType: { kind: "scalar", name: "string" }
+        elementType: { kind: "scalar", name: "string" },
       };
 
       const mapType: TypeSpecTypeNode = {
         kind: "map",
         keyType: { kind: "scalar", name: "string" },
-        valueType: arrayType
+        valueType: arrayType,
       };
 
       const property: TypeSpecPropertyNode = {
         name: "tags",
         type: mapType,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       expect(result.goType).toBe("map[string][]string");
       expect(result.usePointerForOptional).toBe(true);
       expect(result.requiresImport).toBeUndefined();
@@ -144,17 +144,17 @@ describe("Map/Record Type Generation", () => {
       const mapType: TypeSpecTypeNode = {
         kind: "map",
         keyType: { kind: "scalar", name: "int32" },
-        valueType: { kind: "scalar", name: "string" }
+        valueType: { kind: "scalar", name: "string" },
       };
 
       const property: TypeSpecPropertyNode = {
         name: "indexMap",
         type: mapType,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       expect(result.goType).toBe("map[int32]string");
       expect(result.usePointerForOptional).toBe(true);
     });
@@ -162,23 +162,23 @@ describe("Map/Record Type Generation", () => {
     it("should handle non-comparable key types gracefully", () => {
       const arrayKeyType: TypeSpecTypeNode = {
         kind: "array",
-        elementType: { kind: "scalar", name: "string" }
+        elementType: { kind: "scalar", name: "string" },
       };
 
       const mapType: TypeSpecTypeNode = {
         kind: "map",
         keyType: arrayKeyType,
-        valueType: { kind: "scalar", name: "string" }
+        valueType: { kind: "scalar", name: "string" },
       };
 
       const property: TypeSpecPropertyNode = {
         name: "invalidKeyMap",
         type: mapType,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       // Should default to string key type, keep string value type
       expect(result.goType).toBe("map[string]string");
       expect(result.usePointerForOptional).toBe(true);
@@ -189,23 +189,23 @@ describe("Map/Record Type Generation", () => {
       const innerMapType: TypeSpecTypeNode = {
         kind: "map",
         keyType: { kind: "scalar", name: "string" },
-        valueType: { kind: "scalar", name: "string" }
+        valueType: { kind: "scalar", name: "string" },
       };
 
       const mapType: TypeSpecTypeNode = {
         kind: "map",
         keyType: innerMapType,
-        valueType: { kind: "scalar", name: "string" }
+        valueType: { kind: "scalar", name: "string" },
       };
 
       const property: TypeSpecPropertyNode = {
         name: "mapKeyMap",
         type: mapType,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       // Should default to string key type
       expect(result.goType).toBe("map[string]string");
       expect(result.usePointerForOptional).toBe(true);
@@ -217,17 +217,17 @@ describe("Map/Record Type Generation", () => {
       const mapType: TypeSpecTypeNode = {
         kind: "map",
         keyType: { kind: "scalar", name: "string" },
-        valueType: { kind: "scalar", name: "string" }
+        valueType: { kind: "scalar", name: "string" },
       };
 
       const property: TypeSpecPropertyNode = {
         name: "optionalConfig",
         type: mapType,
-        optional: true
+        optional: true,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       expect(result.goType).toBe("map[string]string");
       expect(result.usePointerForOptional).toBe(true);
     });
@@ -235,18 +235,18 @@ describe("Map/Record Type Generation", () => {
     it("should handle maps with missing key type", () => {
       const invalidMapType: TypeSpecTypeNode = {
         kind: "map",
-        valueType: { kind: "scalar", name: "string" }
+        valueType: { kind: "scalar", name: "string" },
         // Missing keyType
       };
 
       const property: TypeSpecPropertyNode = {
         name: "invalidMap",
         type: invalidMapType,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       // Should fallback to map[string]interface{}
       expect(result.goType).toBe("map[string]interface{}");
       expect(result.usePointerForOptional).toBe(true);
@@ -255,18 +255,18 @@ describe("Map/Record Type Generation", () => {
     it("should handle maps with missing value type", () => {
       const invalidMapType: TypeSpecTypeNode = {
         kind: "map",
-        keyType: { kind: "scalar", name: "string" }
+        keyType: { kind: "scalar", name: "string" },
         // Missing valueType
       };
 
       const property: TypeSpecPropertyNode = {
         name: "invalidMap",
         type: invalidMapType,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       // Should fallback to map[string]interface{}
       expect(result.goType).toBe("map[string]interface{}");
       expect(result.usePointerForOptional).toBe(true);
@@ -274,18 +274,18 @@ describe("Map/Record Type Generation", () => {
 
     it("should handle invalid map types gracefully", () => {
       const invalidMapType = {
-        kind: "map"
+        kind: "map",
         // Missing both keyType and valueType
       };
 
       const property: TypeSpecPropertyNode = {
         name: "invalidMap",
         type: invalidMapType,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       // Should fallback to map[string]interface{}
       expect(result.goType).toBe("map[string]interface{}");
       expect(result.usePointerForOptional).toBe(true);
@@ -298,17 +298,17 @@ describe("Map/Record Type Generation", () => {
       const metadataMap: TypeSpecTypeNode = {
         kind: "record",
         keyType: { kind: "scalar", name: "string" },
-        valueType: { kind: "scalar", name: "string" }
+        valueType: { kind: "scalar", name: "string" },
       };
 
       const property: TypeSpecPropertyNode = {
         name: "metadata",
         type: metadataMap,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       expect(result.goType).toBe("map[string]string");
       expect(result.usePointerForOptional).toBe(true);
       expect(result.requiresImport).toBeUndefined();
@@ -319,17 +319,17 @@ describe("Map/Record Type Generation", () => {
       const settingsMap: TypeSpecTypeNode = {
         kind: "map",
         keyType: { kind: "scalar", name: "string" },
-        valueType: { kind: "built-in" } // Would be "any" in real TypeSpec
+        valueType: { kind: "built-in" }, // Would be "any" in real TypeSpec
       };
 
       const property: TypeSpecPropertyNode = {
         name: "settings",
         type: settingsMap,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       // Should handle unknown value types gracefully
       expect(result.goType).toContain("map[string]");
       expect(result.usePointerForOptional).toBe(true);
@@ -340,23 +340,23 @@ describe("Map/Record Type Generation", () => {
       const innerMapType: TypeSpecTypeNode = {
         kind: "map",
         keyType: { kind: "scalar", name: "string" },
-        valueType: { kind: "scalar", name: "int32" }
+        valueType: { kind: "scalar", name: "int32" },
       };
 
       const outerMapType: TypeSpecTypeNode = {
         kind: "map",
         keyType: { kind: "scalar", name: "string" },
-        valueType: innerMapType
+        valueType: innerMapType,
       };
 
       const property: TypeSpecPropertyNode = {
         name: "nestedMap",
         type: outerMapType,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
-      
+
       expect(result.goType).toBe("map[string]map[string]int32");
       expect(result.usePointerForOptional).toBe(true);
     });
@@ -369,9 +369,9 @@ describe("Map/Record Type Generation", () => {
         type: {
           kind: "map" as const,
           keyType: { kind: "scalar" as const, name: "string" },
-          valueType: { kind: "scalar" as const, name: "utcDateTime" }
+          valueType: { kind: "scalar" as const, name: "utcDateTime" },
         },
-        optional: false
+        optional: false,
       } as TypeSpecPropertyNode;
 
       const durationMap = {
@@ -379,9 +379,9 @@ describe("Map/Record Type Generation", () => {
         type: {
           kind: "map" as const,
           keyType: { kind: "scalar" as const, name: "string" },
-          valueType: { kind: "scalar" as const, name: "duration" }
+          valueType: { kind: "scalar" as const, name: "duration" },
         },
-        optional: false
+        optional: false,
       } as TypeSpecPropertyNode;
 
       const timeResult = CleanTypeMapper.mapTypeSpecType(timeMap.type, timeMap.name);
@@ -403,30 +403,28 @@ describe("Map/Record Type Generation", () => {
           type: {
             kind: "map" as const,
             keyType: { kind: "scalar" as const, name: "string" },
-            valueType: { kind: "scalar" as const, name: "utcDateTime" }
-          }
+            valueType: { kind: "scalar" as const, name: "utcDateTime" },
+          },
         },
         {
           name: "users",
           type: {
             kind: "map" as const,
             keyType: { kind: "scalar" as const, name: "string" },
-            valueType: { kind: "model" as const, name: "User" }
-          }
+            valueType: { kind: "model" as const, name: "User" },
+          },
         },
         {
           name: "scores",
           type: {
             kind: "map" as const,
             keyType: { kind: "scalar" as const, name: "string" },
-            valueType: { kind: "scalar" as const, name: "int32" }
-          }
-        }
+            valueType: { kind: "scalar" as const, name: "int32" },
+          },
+        },
       ] as TypeSpecPropertyNode[];
 
-      const results = maps.map(map => 
-        CleanTypeMapper.mapTypeSpecType(map.type, map.name)
-      );
+      const results = maps.map((map) => CleanTypeMapper.mapTypeSpecType(map.type, map.name));
 
       const requiredImports = CleanTypeMapper.getRequiredImports(results);
       expect(requiredImports).toEqual(["time"]); // Only time import needed

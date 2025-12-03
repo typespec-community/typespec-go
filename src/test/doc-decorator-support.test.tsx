@@ -16,17 +16,23 @@ describe("@doc Decorator Support", () => {
         kind: "Model" as const,
         name: "User",
         properties: new Map([
-          ["id", { 
-            name: "id", 
-            type: { kind: "Scalar", name: "string" }, 
-            optional: false 
-          }],
-          ["name", { 
-            name: "name", 
-            type: { kind: "Scalar", name: "string" }, 
-            optional: false 
-          }]
-        ])
+          [
+            "id",
+            {
+              name: "id",
+              type: { kind: "Scalar", name: "string" },
+              optional: false,
+            },
+          ],
+          [
+            "name",
+            {
+              name: "name",
+              type: { kind: "Scalar", name: "string" },
+              optional: false,
+            },
+          ],
+        ]),
       };
 
       const result = render(
@@ -34,14 +40,11 @@ describe("@doc Decorator Support", () => {
           <ModuleDirectory name="github.com/test/api">
             <SourceDirectory path="api">
               <SourceFile path="models.go">
-                <GoStructDeclaration 
-                  model={mockModel}
-                  documentation="A user in the system"
-                />
+                <GoStructDeclaration model={mockModel} documentation="A user in the system" />
               </SourceFile>
             </SourceDirectory>
           </ModuleDirectory>
-        </Output>
+        </Output>,
       );
 
       expect(result).toBeDefined();
@@ -56,12 +59,15 @@ describe("@doc Decorator Support", () => {
         kind: "Model" as const,
         name: "Task",
         properties: new Map([
-          ["id", { 
-            name: "id", 
-            type: { kind: "Scalar", name: "string" }, 
-            optional: false 
-          }]
-        ])
+          [
+            "id",
+            {
+              name: "id",
+              type: { kind: "Scalar", name: "string" },
+              optional: false,
+            },
+          ],
+        ]),
       };
 
       const result = render(
@@ -73,7 +79,7 @@ describe("@doc Decorator Support", () => {
               </SourceFile>
             </SourceDirectory>
           </ModuleDirectory>
-        </Output>
+        </Output>,
       );
 
       expect(result).toBeDefined();
@@ -88,10 +94,10 @@ describe("@doc Decorator Support", () => {
           name: "Status",
           members: new Map([
             ["pending", { kind: "EnumMember", name: "pending", value: "pending" }],
-            ["completed", { kind: "EnumMember", name: "completed", value: "completed" }]
-          ])
+            ["completed", { kind: "EnumMember", name: "completed", value: "completed" }],
+          ]),
         },
-        packageName: "api"
+        packageName: "api",
       });
 
       expect(result).toContain("type Status string");
@@ -108,10 +114,10 @@ describe("@doc Decorator Support", () => {
           name: "Result",
           variants: new Map([
             ["success", { kind: "UnionVariant", name: "success", type: { kind: "String" } }],
-            ["error", { kind: "UnionVariant", name: "error", type: { kind: "String" } }]
-          ])
+            ["error", { kind: "UnionVariant", name: "error", type: { kind: "String" } }],
+          ]),
         },
-        packageName: "api"
+        packageName: "api",
       });
 
       expect(result).toContain("// Result is a sealed interface");

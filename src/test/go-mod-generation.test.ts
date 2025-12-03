@@ -10,18 +10,18 @@ describe("GoModFile Generation", () => {
   it("generates basic go.mod with module and go version", () => {
     const result = GoModFile({
       modulePath: "github.com/mycompany/api",
-      goVersion: "1.21"
+      goVersion: "1.21",
     });
-    
+
     expect(result).toContain("module github.com/mycompany/api");
     expect(result).toContain("go 1.21");
   });
 
   it("generates go.mod with default go version", () => {
     const result = GoModFile({
-      modulePath: "github.com/test/pkg"
+      modulePath: "github.com/test/pkg",
     });
-    
+
     expect(result).toContain("module github.com/test/pkg");
     expect(result).toContain("go 1.21"); // Default version
   });
@@ -32,10 +32,10 @@ describe("GoModFile Generation", () => {
       goVersion: "1.22",
       requires: [
         { path: "github.com/google/uuid", version: "v1.6.0" },
-        { path: "github.com/shopspring/decimal", version: "v1.3.1" }
-      ]
+        { path: "github.com/shopspring/decimal", version: "v1.3.1" },
+      ],
     });
-    
+
     expect(result).toContain("module github.com/mycompany/api");
     expect(result).toContain("go 1.22");
     expect(result).toContain("require (");
@@ -46,9 +46,9 @@ describe("GoModFile Generation", () => {
 
   it("generates go.mod without require block when no dependencies", () => {
     const result = GoModFile({
-      modulePath: "github.com/test/empty"
+      modulePath: "github.com/test/empty",
     });
-    
+
     expect(result).not.toContain("require");
   });
 });

@@ -8,9 +8,4 @@
 export * from "./go/index.js";
 
 // Re-export Alloy-JS core components
-export {
-  Output,
-  SourceDirectory,
-  SourceFile,
-  refkey,
-} from "@alloy-js/core";
+export { Output, SourceDirectory, SourceFile, refkey } from "@alloy-js/core";

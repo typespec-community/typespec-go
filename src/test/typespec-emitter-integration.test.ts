@@ -25,16 +25,22 @@ test("TypeSpec AssetEmitter Integration - Mock Program", async () => {
     name: "TestUser",
     kind: "Model",
     properties: new Map([
-      ["id", { 
-        name: "id", 
-        type: stringScalar,
-        optional: false 
-      }],
-      ["name", { 
-        name: "name", 
-        type: stringScalar, 
-        optional: false 
-      }],
+      [
+        "id",
+        {
+          name: "id",
+          type: stringScalar,
+          optional: false,
+        },
+      ],
+      [
+        "name",
+        {
+          name: "name",
+          type: stringScalar,
+          optional: false,
+        },
+      ],
     ]),
   };
 
@@ -81,10 +87,11 @@ test("TypeSpec AssetEmitter Integration - Mock Program", async () => {
 
     // Verify emitter executed successfully
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _hasSuccess = consoleOutput.some(line => 
-      line.includes("completed") || line.includes("Generated") || line.includes("Generating")
+    const _hasSuccess = consoleOutput.some(
+      (line) =>
+        line.includes("completed") || line.includes("Generated") || line.includes("Generating"),
     );
-    
+
     // The emitter should not throw and should produce output
     expect(true).toBe(true); // If we got here without throwing, the emitter works
     console.log("✅ AssetEmitter integration test passed");

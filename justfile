@@ -1,27 +1,6 @@
 # Justfile for TypeSpec Go Emitter
 # Professional build automation with comprehensive commands
 
-# Default command - show help
-default:
-	@echo "TypeSpec Go Emitter - Professional Build System"
-	@echo ""
-	@echo "Core Commands:"
-	@echo "  just build          - Build TypeScript"
-	@echo "  just test           - Run all tests"
-	@echo "  just lint           - Run ESLint"
-	@echo "  just clean          - Clean build artifacts"
-	@echo ""
-	@echo "Development Commands:"
-	@echo "  just dev            - Build + test + lint"
-	@echo "  just watch          - Watch mode for development"
-	@echo "  just check          - TypeScript check only"
-	@echo ""
-	@echo "Quality Commands:"
-	@echo "  just find-duplicates - Find duplicate code"
-	@echo "  just size-check     - Check file sizes"
-	@echo "  just type-check     - Strict type check"
-	@echo "  just test-cov       - Test coverage"
-
 # Build TypeScript compilation
 build:
 	@echo "🔨 Building TypeScript..."

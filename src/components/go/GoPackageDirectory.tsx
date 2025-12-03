@@ -21,7 +21,9 @@ import { capitalize } from "../../utils/strings.js";
 function isTimeType(type: Type): boolean {
   if (type.kind !== "Scalar") return false;
   const scalarName = type.name?.toLowerCase() || "";
-  return ["plaindate", "plaintime", "utcdatetime", "offsetdatetime", "duration"].includes(scalarName);
+  return ["plaindate", "plaintime", "utcdatetime", "offsetdatetime", "duration"].includes(
+    scalarName,
+  );
 }
 
 interface GoPackageDirectoryProps {
@@ -54,7 +56,7 @@ function getModulePath(packageName: string, modulePath?: string): string {
   if (modulePath) {
     return modulePath;
   }
-  
+
   return `github.com/yourcompany/${packageName}`;
 }
 
@@ -63,7 +65,7 @@ function getModulePath(packageName: string, modulePath?: string): string {
  */
 function needsFmtPackage(unions?: Union[]): boolean {
   // Unions with discriminators need fmt.Errorf
-  return unions?.some(u => u.variants && u.variants.size > 0) ?? false;
+  return unions?.some((u) => u.variants && u.variants.size > 0) ?? false;
 }
 
 /**
@@ -71,8 +73,8 @@ function needsFmtPackage(unions?: Union[]): boolean {
  * Creates a complete Go package directory using proper Alloy-JS components
  * Supports models, enums, and unions with proper Go file organization
  */
-export function GoPackageDirectory({ 
-  models, 
+export function GoPackageDirectory({
+  models,
   enums = [],
   unions = [],
   operations = [],
@@ -81,16 +83,16 @@ export function GoPackageDirectory({
   modulePath,
   generateGoMod = false,
   goVersion = "1.21",
-  program
+  program,
 }: GoPackageDirectoryProps) {
   const moduleDirectory = getModulePath(packageName, modulePath);
   const hasEnums = enums.length > 0;
   const hasUnions = unions.length > 0;
   const hasOperations = operations.length > 0;
   const needsFmt = needsFmtPackage(unions);
-  
+
   // Check if any model has time.Time fields
-  const needsTimeImport = models.some(model => {
+  const needsTimeImport = models.some((model) => {
     if (!model.properties) return false;
     for (const prop of model.properties.values()) {
       if (isTimeType(prop.type)) {
@@ -99,7 +101,7 @@ export function GoPackageDirectory({
     }
     return false;
   });
-  
+
   return (
     <ModuleDirectory name={moduleDirectory}>
       {/* go.mod file at module root */}
@@ -111,14 +113,14 @@ export function GoPackageDirectory({
       <SourceDirectory path={packageName}>
         {/* Main models file with proper import block */}
         <SourceFile path="models.go">
-          {needsTimeImport 
+          {needsTimeImport
             ? `import "time"
 
 `
             : ""}
           <For each={models}>
             {(model: Model) => (
-              <GoStructDeclaration 
+              <GoStructDeclaration
                 model={model}
                 packageName={packageName}
                 documentation={packageDocumentation}
@@ -133,11 +135,7 @@ export function GoPackageDirectory({
           <SourceFile path="enums.go">
             <For each={enums}>
               {(enumType: Enum) => (
-                <GoEnumDeclaration 
-                  enum={enumType}
-                  packageName={packageName}
-                  program={program}
-                />
+                <GoEnumDeclaration enum={enumType} packageName={packageName} program={program} />
               )}
             </For>
           </SourceFile>
@@ -146,12 +144,14 @@ export function GoPackageDirectory({
         {/* Handlers file - only if we have operations */}
         {hasOperations && (
           <SourceFile path="handlers.go">
-            {<GoHandlerStub 
-              operations={operations}
-              serviceName={`${capitalize(packageName)}Service`}
-              packageName={packageName}
-              program={program}
-            />}
+            {
+              <GoHandlerStub
+                operations={operations}
+                serviceName={`${capitalize(packageName)}Service`}
+                packageName={packageName}
+                program={program}
+              />
+            }
           </SourceFile>
         )}
 
@@ -161,7 +161,7 @@ export function GoPackageDirectory({
             {`// Service interfaces generated from TypeSpec operations
 
 `}
-            <GoInterfaceDeclaration 
+            <GoInterfaceDeclaration
               name={`${capitalize(packageName)}Service`}
               operations={operations}
               packageName={packageName}
@@ -173,7 +173,7 @@ export function GoPackageDirectory({
         {/* Unions file - only if we have unions */}
         {hasUnions && (
           <SourceFile path="unions.go">
-            {needsFmt 
+            {needsFmt
               ? `import (
 	"encoding/json"
 	"fmt"
@@ -185,7 +185,7 @@ export function GoPackageDirectory({
 `}
             <For each={unions}>
               {(union: Union) => (
-                <GoUnionDeclaration 
+                <GoUnionDeclaration
                   union={union}
                   packageName={packageName}
                   discriminator="type"

@@ -20,7 +20,7 @@ export function getDocumentation(program: Program, node: Documentable): string |
   if (node?.name) {
     const kind = node.kind?.toLowerCase() || "";
     const name = node.name;
-    
+
     if (kind === "operation") {
       return `Generated from TypeSpec operation ${name}`;
     } else if (kind === "model") {
@@ -29,6 +29,6 @@ export function getDocumentation(program: Program, node: Documentable): string |
       return `Generated from TypeSpec enum ${name}`;
     }
   }
-  
+
   return undefined;
 }

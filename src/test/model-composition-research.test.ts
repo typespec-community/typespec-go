@@ -3,7 +3,7 @@
  *
  * Testing TypeSpec model composition features:
  * - extends keyword support
- * - spread operator (...) handling  
+ * - spread operator (...) handling
  * - template parameters
  * - Go struct embedding
  * - cyclic dependency handling
@@ -58,9 +58,7 @@ describe("Model Composition Research", () => {
       const mammalModel = {
         name: "Mammal",
         extends: "Animal",
-        properties: new Map([
-          ["fur", { name: "fur", type: { kind: "Boolean" }, optional: false }],
-        ]),
+        properties: new Map([["fur", { name: "fur", type: { kind: "Boolean" }, optional: false }]]),
       };
 
       const dogModel = {
@@ -130,7 +128,14 @@ type User struct {
         template: "<T>",
         properties: new Map([
           ["data", { name: "data", type: { kind: "template", name: "T" }, optional: false }],
-          ["pagination", { name: "pagination", type: { kind: "model", name: "PaginationInfo" }, optional: false }],
+          [
+            "pagination",
+            {
+              name: "pagination",
+              type: { kind: "model", name: "PaginationInfo" },
+              optional: false,
+            },
+          ],
         ]),
       };
 

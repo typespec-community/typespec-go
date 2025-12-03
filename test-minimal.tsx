@@ -24,47 +24,45 @@ try {
   // Test 1: Basic component render
   console.log("📋 Test 1: GoStructDeclaration render");
   const structResult = render(
-    <GoStructDeclaration 
-      model={mockModel as any}
-      packageName="test"
-      documentation="Test struct"
-    />
+    <GoStructDeclaration model={mockModel as any} packageName="test" documentation="Test struct" />,
   );
   console.log("✅ Struct render successful");
   console.log("📄 Output:", structResult);
   console.log("");
 
-  // Test 2: Package directory render  
+  // Test 2: Package directory render
   console.log("📁 Test 2: GoPackageDirectory render");
   const packageResult = render(
-    <GoPackageDirectory 
+    <GoPackageDirectory
       models={[mockModel as any]}
       packageName="api"
       packageDocumentation="Test API package"
-    />
+    />,
   );
   console.log("✅ Package render successful");
-  console.log("📄 Output type:", Array.isArray(packageResult) ? `Generated ${packageResult.length} files` : packageResult);
+  console.log(
+    "📄 Output type:",
+    Array.isArray(packageResult) ? `Generated ${packageResult.length} files` : packageResult,
+  );
   console.log("");
 
   // Test 3: Full emitter pattern
   console.log("🚀 Test 3: Full emitter pattern");
   const fullResult = render(
     <Output>
-      <GoPackageDirectory 
+      <GoPackageDirectory
         models={[mockModel as any]}
         packageName="api"
         packageDocumentation="Test API package"
       />
-    </Output>
+    </Output>,
   );
   console.log("✅ Full emitter pattern successful");
   console.log("📄 Generated files:", fullResult.length || 1);
-  
+
   console.log("\n🎉 ALL TESTS PASSED!");
   console.log("✅ Alloy-JS component migration successful");
   console.log("📈 Components working correctly");
-  
 } catch (error) {
   console.error("\n💥 TESTS FAILED");
   console.error("❌ Component error:", error);

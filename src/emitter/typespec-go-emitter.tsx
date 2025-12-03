@@ -4,7 +4,15 @@
  * Zero string-based logic - 100% component-based generation
  */
 
-import type { EmitContext, Program, Model, Namespace, Enum, Union, Operation } from "@typespec/compiler";
+import type {
+  EmitContext,
+  Program,
+  Model,
+  Namespace,
+  Enum,
+  Union,
+  Operation,
+} from "@typespec/compiler";
 import { writeOutput } from "@typespec/emitter-framework";
 import { Output } from "@alloy-js/core";
 import { GoPackageDirectory } from "../components/go/index.js";
@@ -27,10 +35,10 @@ function getOutputDirectory(namespace: Namespace | undefined, context: EmitConte
     // Global models - output to 'api' directory
     return join(context.emitterOutputDir, "api");
   }
-  
+
   // Convert namespace path to directory structure
   // Vendor.Service.API → vendor/service/api
-  const namespacePath = namespace.name.replace(/\./g, '/');
+  const namespacePath = namespace.name.replace(/\./g, "/");
   return join(context.emitterOutputDir, namespacePath.toLowerCase());
 }
 
@@ -39,7 +47,7 @@ function getOutputDirectory(namespace: Namespace | undefined, context: EmitConte
  */
 function collectTypesByNamespace(globalNamespace: Namespace): Map<string, NamespaceGroup> {
   const namespaceGroups = new Map<string, NamespaceGroup>();
-  
+
   // Helper to ensure a group exists
   const ensureGroup = (name: string, namespace?: Namespace): NamespaceGroup => {
     if (!namespaceGroups.has(name)) {
@@ -47,40 +55,40 @@ function collectTypesByNamespace(globalNamespace: Namespace): Map<string, Namesp
     }
     return namespaceGroups.get(name)!;
   };
-  
+
   // Collect models from global namespace
   for (const [name, model] of globalNamespace.models) {
     const groupName = model.namespace?.name || "global";
     const group = ensureGroup(groupName, model.namespace);
     group.models.push(model);
   }
-  
+
   // Collect enums from global namespace
   for (const [name, enumType] of globalNamespace.enums) {
     const groupName = enumType.namespace?.name || "global";
     const group = ensureGroup(groupName, enumType.namespace);
     group.enums.push(enumType);
   }
-  
+
   // Collect unions from global namespace
   for (const [name, union] of globalNamespace.unions) {
     const groupName = union.namespace?.name || "global";
     const group = ensureGroup(groupName, union.namespace);
     group.unions.push(union);
   }
-  
+
   // Collect operations from global namespace
   for (const [name, operation] of globalNamespace.operations) {
     const groupName = operation.namespace?.name || "global";
     const group = ensureGroup(groupName, operation.namespace);
     group.operations.push(operation);
   }
-  
+
   // Process nested namespaces
   for (const namespace of globalNamespace.namespaces.values()) {
     processNestedNamespace(namespace, namespaceGroups, ensureGroup);
   }
-  
+
   return namespaceGroups;
 }
 
@@ -88,16 +96,16 @@ function collectTypesByNamespace(globalNamespace: Namespace): Map<string, Namesp
  * Recursively process nested namespaces
  */
 function processNestedNamespace(
-  namespace: Namespace, 
+  namespace: Namespace,
   namespaceGroups: Map<string, NamespaceGroup>,
-  ensureGroup: (name: string, namespace?: Namespace) => NamespaceGroup
+  ensureGroup: (name: string, namespace?: Namespace) => NamespaceGroup,
 ): void {
   // Collect models from this namespace
   const nsModels = [...namespace.models.values()];
   const nsEnums = [...namespace.enums.values()];
   const nsUnions = [...namespace.unions.values()];
   const nsOperations = [...namespace.operations.values()];
-  
+
   if (nsModels.length > 0 || nsEnums.length > 0 || nsUnions.length > 0 || nsOperations.length > 0) {
     const group = ensureGroup(namespace.name, namespace);
     group.models.push(...nsModels);
@@ -105,7 +113,7 @@ function processNestedNamespace(
     group.unions.push(...nsUnions);
     group.operations.push(...nsOperations);
   }
-  
+
   // Recurse into nested namespaces
   if (namespace.namespaces && namespace.namespaces.size > 0) {
     for (const nestedNs of namespace.namespaces.values()) {
@@ -119,7 +127,7 @@ function processNestedNamespace(
  */
 function namespaceToPackageName(namespaceName: string): string {
   // Convert dots to slashes and lowercase
-  return namespaceName.replace(/\./g, '/').toLowerCase();
+  return namespaceName.replace(/\./g, "/").toLowerCase();
 }
 
 /**
@@ -129,13 +137,13 @@ export async function $onEmit(context: EmitContext): Promise<void> {
   try {
     const program = context.program;
     const globalNamespace = program.getGlobalNamespaceType();
-    
+
     console.log("🚀 TypeSpec Go Emitter starting...");
     console.log("📋 Global namespace:", globalNamespace.name);
 
     // Collect all types grouped by namespace
     const namespaceGroups = collectTypesByNamespace(globalNamespace);
-    
+
     if (namespaceGroups.size === 0) {
       console.log("⚠️  No types found in TypeSpec program");
       return;
@@ -153,41 +161,41 @@ export async function $onEmit(context: EmitContext): Promise<void> {
     for (const [namespaceName, group] of namespaceGroups) {
       const { namespace, models, enums, unions, operations } = group;
       const typeCount = models.length + enums.length + unions.length + operations.length;
-      
+
       if (typeCount === 0) {
         console.log(`⚠️  Skipping namespace '${namespaceName}' - no types`);
         continue;
       }
-      
+
       const packageName = namespaceToPackageName(namespaceName);
       const outputDirectory = getOutputDirectory(namespace, context);
       const packageDocumentation = `Go types from TypeSpec namespace: ${namespaceName}`;
-      
+
       console.log(`📦 Generating package '${packageName}' from namespace '${namespaceName}'`);
       console.log(`   📁 Output directory: ${outputDirectory}`);
-      
+
       if (models.length > 0) {
-        console.log(`   🏗️  Models: ${models.map(m => m.name).join(', ')}`);
+        console.log(`   🏗️  Models: ${models.map((m) => m.name).join(", ")}`);
         totalModels += models.length;
       }
       if (enums.length > 0) {
-        console.log(`   📋 Enums: ${enums.map(e => e.name).join(', ')}`);
+        console.log(`   📋 Enums: ${enums.map((e) => e.name).join(", ")}`);
         totalEnums += enums.length;
       }
       if (unions.length > 0) {
-        console.log(`   🔀 Unions: ${unions.map(u => u.name || 'Anonymous').join(', ')}`);
+        console.log(`   🔀 Unions: ${unions.map((u) => u.name || "Anonymous").join(", ")}`);
         totalUnions += unions.length;
       }
       if (operations.length > 0) {
-        console.log(`   ⚡ Operations: ${operations.map(o => o.name).join(', ')}`);
+        console.log(`   ⚡ Operations: ${operations.map((o) => o.name).join(", ")}`);
         totalOperations += operations.length;
       }
-      
+
       // Generate JSX Output using professional component architecture
       await writeOutput(
         program,
         <Output>
-          <GoPackageDirectory 
+          <GoPackageDirectory
             models={models}
             enums={enums}
             unions={unions}
@@ -202,14 +210,13 @@ export async function $onEmit(context: EmitContext): Promise<void> {
     }
 
     console.log("✅ TypeSpec Go emission completed successfully");
-    
+
     // Summary
     console.log(`📊 Generated across ${namespaceGroups.size} packages:`);
     console.log(`   - ${totalModels} models`);
     console.log(`   - ${totalEnums} enums`);
     console.log(`   - ${totalUnions} unions`);
     console.log(`   - ${totalOperations} operations`);
-    
   } catch (error) {
     console.error("❌ TypeSpec Go emission failed:", error);
     throw error;

@@ -1,6 +1,6 @@
 /**
  * Integration Test for Array Types in Real TypeSpec Files
- * 
+ *
  * This test validates that array types work correctly with real TypeSpec integration patterns
  * Critical for the UserList pattern: users: User[] from integration-basic.tsp
  */
@@ -17,24 +17,24 @@ describe("Array Type Integration Tests", () => {
       //   users: User[];
       //   total: int32;
       // }
-      
+
       const userType: TypeSpecTypeNode = {
         kind: "model",
-        name: "User"
+        name: "User",
       };
 
       const usersArrayProperty: TypeSpecPropertyNode = {
         name: "users",
         type: {
           kind: "array",
-          elementType: userType
+          elementType: userType,
         },
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(
-        usersArrayProperty.type, 
-        usersArrayProperty.name
+        usersArrayProperty.type,
+        usersArrayProperty.name,
       );
 
       // Validate the Go slice generation
@@ -50,29 +50,29 @@ describe("Array Type Integration Tests", () => {
           name: "users",
           type: {
             kind: "array" as const,
-            elementType: { kind: "model" as const, name: "User" }
+            elementType: { kind: "model" as const, name: "User" },
           },
-          optional: false
+          optional: false,
         },
         {
           name: "total",
           type: {
             kind: "scalar" as const,
-            name: "int32"
+            name: "int32",
           },
-          optional: false
-        }
+          optional: false,
+        },
       ] as TypeSpecPropertyNode[];
 
-      const results = userProperties.map(prop => 
-        CleanTypeMapper.mapTypeSpecType(prop.type, prop.name)
+      const results = userProperties.map((prop) =>
+        CleanTypeMapper.mapTypeSpecType(prop.type, prop.name),
       );
 
       // Validate users field: []User
       expect(results[0].goType).toBe("[]User");
       expect(results[0].usePointerForOptional).toBe(true);
 
-      // Validate total field: int32  
+      // Validate total field: int32
       expect(results[1].goType).toBe("int32");
       expect(results[1].usePointerForOptional).toBe(true);
     });
@@ -80,36 +80,36 @@ describe("Array Type Integration Tests", () => {
     it("should handle complex project management patterns", () => {
       // Simulate a Project model with multiple array fields
       // like: tasks: Task[], members: User[], tags: string[]
-      
+
       const projectProperties = [
         {
           name: "tasks",
           type: {
             kind: "array" as const,
-            elementType: { kind: "model" as const, name: "Task" }
+            elementType: { kind: "model" as const, name: "Task" },
           },
-          optional: false
+          optional: false,
         },
         {
-          name: "members", 
+          name: "members",
           type: {
             kind: "array" as const,
-            elementType: { kind: "model" as const, name: "User" }
+            elementType: { kind: "model" as const, name: "User" },
           },
-          optional: false
+          optional: false,
         },
         {
           name: "tags",
           type: {
             kind: "array" as const,
-            elementType: { kind: "scalar" as const, name: "string" }
+            elementType: { kind: "scalar" as const, name: "string" },
           },
-          optional: false
-        }
+          optional: false,
+        },
       ] as TypeSpecPropertyNode[];
 
-      const results = projectProperties.map(prop => 
-        CleanTypeMapper.mapTypeSpecType(prop.type, prop.name)
+      const results = projectProperties.map((prop) =>
+        CleanTypeMapper.mapTypeSpecType(prop.type, prop.name),
       );
 
       // Validate Task array: []Task
@@ -131,9 +131,9 @@ describe("Array Type Integration Tests", () => {
         name: "timestamps",
         type: {
           kind: "array",
-          elementType: { kind: "scalar", name: "utcDateTime" }
+          elementType: { kind: "scalar", name: "utcDateTime" },
         },
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(timestampArray.type, timestampArray.name);
@@ -150,22 +150,25 @@ describe("Array Type Integration Tests", () => {
         name: "timestamps",
         type: {
           kind: "array" as const,
-          elementType: { kind: "scalar" as const, name: "utcDateTime" }
+          elementType: { kind: "scalar" as const, name: "utcDateTime" },
         },
-        optional: false
+        optional: false,
       } as TypeSpecPropertyNode;
 
       const durationArray = {
-        name: "durations", 
+        name: "durations",
         type: {
           kind: "array" as const,
-          elementType: { kind: "scalar" as const, name: "duration" }
+          elementType: { kind: "scalar" as const, name: "duration" },
         },
-        optional: false
+        optional: false,
       } as TypeSpecPropertyNode;
 
       const timeResult = CleanTypeMapper.mapTypeSpecType(timeArray.type, timeArray.name);
-      const durationResult = CleanTypeMapper.mapTypeSpecType(durationArray.type, durationArray.name);
+      const durationResult = CleanTypeMapper.mapTypeSpecType(
+        durationArray.type,
+        durationArray.name,
+      );
 
       // Both should require time import
       expect(timeResult.requiresImport).toBe("time");
@@ -180,20 +183,20 @@ describe("Array Type Integration Tests", () => {
       const arrays = [
         {
           name: "timestamps",
-          type: { kind: "array", elementType: { kind: "scalar", name: "utcDateTime" } }
+          type: { kind: "array", elementType: { kind: "scalar", name: "utcDateTime" } },
         },
         {
           name: "users",
-          type: { kind: "array", elementType: { kind: "model", name: "User" } }
+          type: { kind: "array", elementType: { kind: "model", name: "User" } },
         },
         {
           name: "tags",
-          type: { kind: "array", elementType: { kind: "scalar", name: "string" } }
-        }
+          type: { kind: "array", elementType: { kind: "scalar", name: "string" } },
+        },
       ] as TypeSpecPropertyNode[];
 
-      const results = arrays.map(array => 
-        CleanTypeMapper.mapTypeSpecType(array.type, array.name)
+      const results = arrays.map((array) =>
+        CleanTypeMapper.mapTypeSpecType(array.type, array.name),
       );
 
       const requiredImports = CleanTypeMapper.getRequiredImports(results);
@@ -207,9 +210,9 @@ describe("Array Type Integration Tests", () => {
         name: "optionalTags",
         type: {
           kind: "array",
-          elementType: { kind: "scalar", name: "string" }
+          elementType: { kind: "scalar", name: "string" },
         },
-        optional: true
+        optional: true,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(optionalArray.type, optionalArray.name);
@@ -222,18 +225,18 @@ describe("Array Type Integration Tests", () => {
       // Pattern like: matrix: string[][] (2D array)
       const stringArray: TypeSpecTypeNode = {
         kind: "array",
-        elementType: { kind: "scalar", name: "string" }
+        elementType: { kind: "scalar", name: "string" },
       };
 
       const nestedArray: TypeSpecTypeNode = {
         kind: "array",
-        elementType: stringArray
+        elementType: stringArray,
       };
 
       const property: TypeSpecPropertyNode = {
         name: "matrix",
         type: nestedArray,
-        optional: false
+        optional: false,
       };
 
       const result = CleanTypeMapper.mapTypeSpecType(property.type, property.name);
@@ -248,28 +251,31 @@ describe("Array Type Integration Tests", () => {
       // This test ensures we correctly identify TypeSpec array types
       const validArrayType = {
         kind: "array",
-        elementType: { kind: "scalar", name: "string" }
+        elementType: { kind: "scalar", name: "string" },
       };
 
       const invalidArrayType = {
-        kind: "array"
+        kind: "array",
         // Missing elementType
       };
 
       const validProperty = {
         name: "validArray",
         type: validArrayType,
-        optional: false
+        optional: false,
       } as TypeSpecPropertyNode;
 
       const invalidProperty = {
-        name: "invalidArray", 
+        name: "invalidArray",
         type: invalidArrayType,
-        optional: false
+        optional: false,
       } as TypeSpecPropertyNode;
 
       const validResult = CleanTypeMapper.mapTypeSpecType(validProperty.type, validProperty.name);
-      const invalidResult = CleanTypeMapper.mapTypeSpecType(invalidProperty.type, invalidProperty.name);
+      const invalidResult = CleanTypeMapper.mapTypeSpecType(
+        invalidProperty.type,
+        invalidProperty.name,
+      );
 
       // Valid array should generate proper slice type
       expect(validResult.goType).toBe("[]string");

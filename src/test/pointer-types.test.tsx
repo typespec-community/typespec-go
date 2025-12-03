@@ -15,37 +15,46 @@ describe("Pointer Type Generation", () => {
       kind: "Model" as const,
       name: "User",
       properties: new Map([
-        ["id", { 
-          name: "id", 
-          type: { kind: "Scalar", name: "string" }, 
-          optional: false 
-        }]
-      ])
+        [
+          "id",
+          {
+            name: "id",
+            type: { kind: "Scalar", name: "string" },
+            optional: false,
+          },
+        ],
+      ]),
     };
-    
+
     const mockTaskModel = {
       kind: "Model" as const,
       name: "Task",
       properties: new Map([
-        ["id", { 
-          name: "id", 
-          type: { kind: "Scalar", name: "string" }, 
-          optional: false 
-        }],
-        ["assignee", { 
-          name: "assignee", 
-          type: { kind: "Model", name: "User" },  // Nested model
-          optional: true  // Optional field
-        }]
-      ])
+        [
+          "id",
+          {
+            name: "id",
+            type: { kind: "Scalar", name: "string" },
+            optional: false,
+          },
+        ],
+        [
+          "assignee",
+          {
+            name: "assignee",
+            type: { kind: "Model", name: "User" }, // Nested model
+            optional: true, // Optional field
+          },
+        ],
+      ]),
     };
-    
+
     const result = render(
       <Output>
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="models.go">
-              <GoStructDeclaration 
+              <GoStructDeclaration
                 model={mockTaskModel}
                 packageName="api"
                 usePointersForOptional={true}
@@ -53,9 +62,9 @@ describe("Pointer Type Generation", () => {
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
-      </Output>
+      </Output>,
     );
-    
+
     // Expect the result to contain a pointer type for the optional model field
     expect(result).toBeDefined();
     // The output should contain *User for the optional User field
@@ -70,20 +79,23 @@ describe("Pointer Type Generation", () => {
       kind: "Model" as const,
       name: "Task",
       properties: new Map([
-        ["owner", { 
-          name: "owner", 
-          type: { kind: "Model", name: "User" },
-          optional: false  // Required field
-        }]
-      ])
+        [
+          "owner",
+          {
+            name: "owner",
+            type: { kind: "Model", name: "User" },
+            optional: false, // Required field
+          },
+        ],
+      ]),
     };
-    
+
     const result = render(
       <Output>
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="models.go">
-              <GoStructDeclaration 
+              <GoStructDeclaration
                 model={mockTaskModel}
                 packageName="api"
                 usePointersForOptional={true}
@@ -91,9 +103,9 @@ describe("Pointer Type Generation", () => {
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
-      </Output>
+      </Output>,
     );
-    
+
     expect(result).toBeDefined();
   });
 
@@ -102,20 +114,27 @@ describe("Pointer Type Generation", () => {
       kind: "Model" as const,
       name: "Project",
       properties: new Map([
-        ["tasks", { 
-          name: "tasks", 
-          type: { kind: "Model", name: "Array", templateMapper: { args: [{ kind: "Model", name: "Task" }] } },
-          optional: true  // Optional but it's an array
-        }]
-      ])
+        [
+          "tasks",
+          {
+            name: "tasks",
+            type: {
+              kind: "Model",
+              name: "Array",
+              templateMapper: { args: [{ kind: "Model", name: "Task" }] },
+            },
+            optional: true, // Optional but it's an array
+          },
+        ],
+      ]),
     };
-    
+
     const result = render(
       <Output>
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="models.go">
-              <GoStructDeclaration 
+              <GoStructDeclaration
                 model={mockProjectModel}
                 packageName="api"
                 usePointersForOptional={true}
@@ -123,9 +142,9 @@ describe("Pointer Type Generation", () => {
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
-      </Output>
+      </Output>,
     );
-    
+
     expect(result).toBeDefined();
   });
 });

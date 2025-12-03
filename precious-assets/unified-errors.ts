@@ -21,7 +21,13 @@ import type {
   ErrorRecoveryStrategy,
 } from "../src/domain/error-types.js";
 
-import type { TypeSpecId, ModelName, PropertyName, ErrorId, FileName } from "../src/domain/error-entities.js";
+import type {
+  TypeSpecId,
+  ModelName,
+  PropertyName,
+  ErrorId,
+  FileName,
+} from "../src/domain/error-entities.js";
 
 import { Entities, EntityValidation, EntityTransformation } from "../src/domain/error-entities.js";
 
@@ -30,7 +36,13 @@ import { ErrorFactory } from "../src/domain/error-factory.js";
 import { ErrorAnalysis } from "../src/domain/error-types.js";
 
 // Then re-export
-export type { TypeSpecId, ModelName, PropertyName, ErrorId, FileName } from "../src/domain/error-entities.js";
+export type {
+  TypeSpecId,
+  ModelName,
+  PropertyName,
+  ErrorId,
+  FileName,
+} from "../src/domain/error-entities.js";
 
 export type {
   TypeSpecCompilerError,

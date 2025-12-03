@@ -22,7 +22,9 @@ export function formatGoCode(code: string): string {
     return formatted;
   } catch (error) {
     // If gofmt fails (syntax error, not available), return original code
-    console.warn(`⚠️ gofmt formatting failed: ${error instanceof Error ? error.message : String(error)}`);
+    console.warn(
+      `⚠️ gofmt formatting failed: ${error instanceof Error ? error.message : String(error)}`,
+    );
     return code;
   }
 }
@@ -33,10 +35,10 @@ export function formatGoCode(code: string): string {
  */
 export function isGofmtAvailable(): boolean {
   try {
-    execSync("gofmt -h", { 
-      encoding: "utf-8", 
+    execSync("gofmt -h", {
+      encoding: "utf-8",
       stdio: "pipe",
-      timeout: 1000 
+      timeout: 1000,
     });
     return true;
   } catch {
@@ -46,13 +48,13 @@ export function isGofmtAvailable(): boolean {
 
 /**
  * Format Go code with error details
- * @param code - Go source code to format  
+ * @param code - Go source code to format
  * @returns Object with formatted code and any errors
  */
-export function formatGoCodeWithDetails(code: string): { 
-  formatted: string; 
-  success: boolean; 
-  error?: string 
+export function formatGoCodeWithDetails(code: string): {
+  formatted: string;
+  success: boolean;
+  error?: string;
 } {
   try {
     const formatted = execSync("gofmt -s", {
@@ -64,10 +66,10 @@ export function formatGoCodeWithDetails(code: string): {
     return { formatted, success: true };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    return { 
-      formatted: code, 
-      success: false, 
-      error: errorMessage 
+    return {
+      formatted: code,
+      success: false,
+      error: errorMessage,
     };
   }
 }
@@ -79,7 +81,7 @@ export function formatGoCodeWithDetails(code: string): {
  */
 export function formatGoFiles(files: Map<string, string>): Map<string, string> {
   const result = new Map<string, string>();
-  
+
   for (const [filename, code] of files) {
     // Only format .go files
     if (filename.endsWith(".go")) {
@@ -88,6 +90,6 @@ export function formatGoFiles(files: Map<string, string>): Map<string, string> {
       result.set(filename, code);
     }
   }
-  
+
   return result;
 }

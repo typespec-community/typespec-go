@@ -19,7 +19,7 @@ test("GoEnumDeclaration generates valid Go string enum", () => {
   };
 
   const result = GoEnumDeclaration({ enum: mockEnum as Enum });
-  
+
   // Verify Go code structure
   expect(result).toContain("type Status string");
   expect(result).toContain("StatusPending Status");
@@ -42,7 +42,7 @@ test("GoEnumDeclaration generates valid Go iota enum", () => {
   };
 
   const result = GoEnumDeclaration({ enum: mockEnum as Enum, useIota: true });
-  
+
   // Verify iota pattern
   expect(result).toContain("type Priority int");
   expect(result).toContain("PriorityLow Priority = iota");
@@ -59,7 +59,7 @@ test("getEnumValues extracts enum member information", () => {
   };
 
   const values = getEnumValues(mockEnum as Enum);
-  
+
   expect(values).toHaveLength(2);
   expect(values[0]).toEqual({ name: "red", value: "RED" });
   expect(values[1]).toEqual({ name: "green", value: "GREEN" });
@@ -80,7 +80,7 @@ test("GoUnionDeclaration generates sealed interface pattern", () => {
   };
 
   const result = GoUnionDeclaration({ union: mockUnion as Union });
-  
+
   // Verify sealed interface pattern
   expect(result).toContain("type PaymentMethod interface");
   expect(result).toContain("isPaymentMethod()");
@@ -100,11 +100,11 @@ test("GoUnionDeclaration generates discriminated union with unmarshaler", () => 
     ]),
   };
 
-  const result = GoUnionDeclaration({ 
-    union: mockUnion as Union, 
-    discriminator: "type" 
+  const result = GoUnionDeclaration({
+    union: mockUnion as Union,
+    discriminator: "type",
   });
-  
+
   // Verify discriminated union features
   expect(result).toContain("GetType() string");
   expect(result).toContain('`json:"type"`');
@@ -120,7 +120,7 @@ test("GoUnionDeclaration handles empty union gracefully", () => {
   };
 
   const result = GoUnionDeclaration({ union: emptyUnion as Union });
-  
+
   // Should still generate valid interface
   expect(result).toContain("type EmptyUnion interface");
   expect(result).toContain("isEmptyUnion()");

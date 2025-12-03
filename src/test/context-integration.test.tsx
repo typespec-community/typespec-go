@@ -19,21 +19,21 @@ test("Component Integration - Proper Context", async () => {
 
   try {
     // Test components work inside proper Output context
-    const result = await import("@alloy-js/core").then(({ render }) => 
+    const result = await import("@alloy-js/core").then(({ render }) =>
       render(
         <Output>
-          <GoPackageDirectory 
+          <GoPackageDirectory
             models={[mockModel]}
             packageName="test"
             packageDocumentation="Test package"
           />
-        </Output>
-      )
+        </Output>,
+      ),
     );
 
     console.log("✅ Component rendering successful in proper context");
     console.log("📄 Result type:", typeof result);
-    
+
     // The key test: components should work in proper context
     expect(result).toBeDefined();
   } catch (error) {

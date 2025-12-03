@@ -24,7 +24,7 @@ Name string \`json:"name"\`
 }`;
 
       const formatted = formatGoCode(input);
-      
+
       // gofmt adds proper indentation
       expect(formatted).toContain("type User struct");
       expect(formatted).toContain("Id");
@@ -39,7 +39,7 @@ Status string
 }`;
 
       const formatted = formatGoCode(input);
-      
+
       // Should have proper indentation
       expect(formatted).toContain("\tId");
       expect(formatted).toContain("\tStatus");
@@ -51,7 +51,7 @@ type Invalid struct {
   missing closing brace`;
 
       const result = formatGoCode(invalidCode);
-      
+
       // Should return original on error
       expect(result).toBe(invalidCode);
     });
@@ -67,7 +67,7 @@ type User struct {
 }`;
 
       const result = formatGoCodeWithDetails(input);
-      
+
       expect(result.success).toBe(true);
       expect(result.error).toBeUndefined();
       expect(result.formatted).toContain("type User struct");
@@ -78,7 +78,7 @@ type User struct {
 type Invalid struct {`;
 
       const result = formatGoCodeWithDetails(invalidCode);
-      
+
       expect(result.success).toBe(false);
       expect(result.error).toBeDefined();
     });

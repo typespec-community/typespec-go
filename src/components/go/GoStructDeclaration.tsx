@@ -29,47 +29,38 @@ interface GoStructDeclarationProps {
  * Generates complete Go struct with proper field declarations
  * Uses only Alloy-JS Go components, no string generation
  */
-export function GoStructDeclaration({ 
-  model, 
-  documentation, 
+export function GoStructDeclaration({
+  model,
+  documentation,
   packageName = "api",
   usePointersForOptional = true,
-  program
+  program,
 }: GoStructDeclarationProps) {
   // Get documentation from @doc decorator if program is provided
-  const modelDoc = documentation || 
+  const modelDoc =
+    documentation ||
     (program ? getDocumentation(program, model) : undefined) ||
     `Generated from TypeSpec model ${model.name}`;
 
   // Generate struct fields using Alloy-JS components with <For> iteration
   return (
-    <TypeDeclaration 
-      name={model.name}
-      refkey={refkey(model)}
-      doc={modelDoc}
-    >
+    <TypeDeclaration name={model.name} refkey={refkey(model)} doc={modelDoc}>
       <StructDeclaration>
         <For each={Array.from(model.properties?.values() || [])}>
           {(prop: ModelProperty) => {
             const fieldName = capitalize(prop.name);
             let goType = mapTypeSpecToGoType(prop.type);
-            
+
             // Add pointer for optional model/struct fields
             if (prop.optional && usePointersForOptional && isNestedModelType(prop.type)) {
               goType = `*${goType}`;
             }
-            
-            const jsonTag = prop.optional 
-              ? {json: `${prop.name},omitempty`}
-              : {json: prop.name};
 
-            return (
-              <StructMember
-                name={fieldName}
-                type={goType}
-                tag={jsonTag}
-              />
-            );
+            const jsonTag = prop.optional
+              ? { json: `${prop.name},omitempty` }
+              : { json: prop.name };
+
+            return <StructMember name={fieldName} type={goType} tag={jsonTag} />;
           }}
         </For>
       </StructDeclaration>
@@ -96,7 +87,11 @@ function getTypeFromTemplateArg(arg: unknown): Type | undefined {
   if (arg && typeof arg === "object" && "kind" in arg) {
     const argObj = arg as { kind: string };
     // Check if it's a valid Type kind
-    if (["Model", "Scalar", "Enum", "Union", "String", "Boolean", "Number", "Tuple"].includes(argObj.kind)) {
+    if (
+      ["Model", "Scalar", "Enum", "Union", "String", "Boolean", "Number", "Tuple"].includes(
+        argObj.kind,
+      )
+    ) {
       return arg as Type;
     }
   }
@@ -116,13 +111,13 @@ function mapTypeSpecToGoType(type: Type): string {
       return "bool";
     case "Number":
       return "float64"; // Default number type in Go
-    
+
     case "Scalar":
       const scalarName = type.name?.toLowerCase() || "";
       const scalarMap: Record<string, string> = {
         // Integer types
         int8: "int8",
-        int16: "int16", 
+        int16: "int16",
         int32: "int32",
         int64: "int64",
         uint8: "uint8",
@@ -131,7 +126,7 @@ function mapTypeSpecToGoType(type: Type): string {
         uint64: "uint64",
         integer: "int",
         safeint: "int64",
-        
+
         // Float types
         float32: "float32",
         float64: "float64",
@@ -140,20 +135,20 @@ function mapTypeSpecToGoType(type: Type): string {
         decimal: "float64",
         decimal64: "float64",
         decimal128: "float64",
-        
+
         // Binary types
         bytes: "[]byte",
-        
+
         // String types
         string: "string",
         url: "string",
         uri: "string",
         email: "string",
         uuid: "string",
-        
+
         // Boolean
         boolean: "bool",
-        
+
         // Date/Time types
         plaindate: "time.Time",
         plaintime: "time.Time",
@@ -161,14 +156,14 @@ function mapTypeSpecToGoType(type: Type): string {
         offsetdatetime: "time.Time",
         duration: "time.Duration",
         zoneddatetime: "time.Time",
-        
+
         // Network types
         ipaddress: "string",
         ipv4address: "string",
         ipv6address: "string",
       };
       return scalarMap[scalarName] || type.name || "interface{}";
-    
+
     case "Model":
       // Handle TypeSpec's built-in Array model
       if (type.name === "Array" && type.templateMapper) {
@@ -187,19 +182,19 @@ function mapTypeSpecToGoType(type: Type): string {
         return `map[${goKey}]${goValue}`;
       }
       return type.name || "interface{}";
-    
+
     case "Enum":
       // Use the enum name directly - it will be defined in enums.go
       return type.name || "interface{}";
-    
+
     case "Union":
       // Use the union interface name if named, otherwise interface{}
       return type.name || "interface{}";
-    
+
     case "Tuple":
       // Go doesn't have tuples, use slice
       return "[]interface{}";
-    
+
     default:
       return "interface{}";
   }

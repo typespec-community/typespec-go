@@ -19,17 +19,17 @@ interface GoModFileProps {
  * Go Module File Component
  * Generates a proper go.mod file for the generated package
  */
-export function GoModFile({ 
-  modulePath, 
+export function GoModFile({
+  modulePath,
   goVersion = "1.21",
-  requires = []
+  requires = [],
 }: GoModFileProps): string {
   const lines: string[] = [];
-  
+
   lines.push(`module ${modulePath}`);
   lines.push("");
   lines.push(`go ${goVersion}`);
-  
+
   if (requires.length > 0) {
     lines.push("");
     lines.push("require (");
@@ -38,8 +38,8 @@ export function GoModFile({
     }
     lines.push(")");
   }
-  
+
   lines.push(""); // Trailing newline
-  
+
   return lines.join("\n");
 }

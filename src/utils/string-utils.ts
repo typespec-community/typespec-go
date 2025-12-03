@@ -16,14 +16,17 @@ export function capitalizeFirst(str: string): string {
  * Capitalize words in a string (e.g., "paypal" -> "PayPal")
  */
 export function capitalizeWords(str: string): string {
-  return str.split(' ').map(word => capitalizeFirst(word)).join(' ');
+  return str
+    .split(" ")
+    .map((word) => capitalizeFirst(word))
+    .join(" ");
 }
 
 /**
  * Convert to snake_case
  */
 export function toSnakeCase(str: string): string {
-  return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 }
 
 /**

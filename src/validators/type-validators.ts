@@ -59,10 +59,10 @@ export function validateModel(model: {
     }
   }
 
-  return ErrorFactory.createSuccess(new Map(), { 
-    validModel: true, 
+  return ErrorFactory.createSuccess(new Map(), {
+    validModel: true,
     modelName: model.name,
-    propertyCount: model.properties.size 
+    propertyCount: model.properties.size,
   });
 }
 
@@ -86,9 +86,9 @@ export function validateUnion(unionModel: {
     });
   }
 
-  return ErrorFactory.createSuccess(new Map(), { 
-    validUnion: true, 
+  return ErrorFactory.createSuccess(new Map(), {
+    validUnion: true,
     modelName: unionModel.name,
-    variantCount: unionModel.variants.length 
+    variantCount: unionModel.variants.length,
   });
 }

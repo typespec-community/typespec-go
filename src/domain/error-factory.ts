@@ -84,7 +84,7 @@ export interface TypeMappingError extends BaseError {
 /**
  * All error types union
  */
-export type AnyError = 
+export type AnyError =
   | TypeSpecCompilerError
   | GoCodeGenerationError
   | ValidationError
@@ -94,9 +94,7 @@ export type AnyError =
 /**
  * Go Emitter Result union type
  */
-export type GoEmitterResult<T = Map<string, string>> =
-  | Success<T>
-  | AnyError;
+export type GoEmitterResult<T = Map<string, string>> = Success<T> | AnyError;
 
 /**
  * Error Factory - Single source of truth for error creation
@@ -281,9 +279,7 @@ export class ErrorFactory {
 /**
  * Default error handler for legacy compatibility
  */
-export const defaultErrorHandler = (
-  error: unknown,
-): GoEmitterResult => {
+export const defaultErrorHandler = (error: unknown): GoEmitterResult => {
   if (error instanceof Error) {
     return ErrorFactory.createSystemError(`Unexpected error: ${error.message}`, error, {
       resolution: "Check system logs and restart if necessary",

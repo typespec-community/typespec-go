@@ -50,7 +50,20 @@ export interface TypeSpecModelType {
  * TypeSpec built-in type
  */
 export interface TypeSpecBuiltinType {
-  kind: "String" | "Boolean" | "Number" | "Int8" | "Int16" | "Int32" | "Int64" | "Uint8" | "Uint16" | "Uint32" | "Uint64" | "Float32" | "Float64";
+  kind:
+    | "String"
+    | "Boolean"
+    | "Number"
+    | "Int8"
+    | "Int16"
+    | "Int32"
+    | "Int64"
+    | "Uint8"
+    | "Uint16"
+    | "Uint32"
+    | "Uint64"
+    | "Float32"
+    | "Float64";
 }
 
 /**

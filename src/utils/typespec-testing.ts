@@ -3,7 +3,18 @@
  * Mock TypeSpec types and programs for testing
  */
 
-import type { Program, Type, Model, Enum, Union, Namespace, Operation, ModelProperty, EnumMember, UnionVariant } from "@typespec/compiler";
+import type {
+  Program,
+  Type,
+  Model,
+  Enum,
+  Union,
+  Namespace,
+  Operation,
+  ModelProperty,
+  EnumMember,
+  UnionVariant,
+} from "@typespec/compiler";
 
 /**
  * Mock namespace for testing
@@ -34,7 +45,11 @@ export function createMockScalar(name: string): Type {
 /**
  * Create a mock TypeSpec property
  */
-export function createMockProperty(name: string, type: Type, optional: boolean = false): ModelProperty {
+export function createMockProperty(
+  name: string,
+  type: Type,
+  optional: boolean = false,
+): ModelProperty {
   return {
     name,
     type,
@@ -51,7 +66,7 @@ export function createMockProperty(name: string, type: Type, optional: boolean =
  */
 export function createMockModel(name: string, properties: [string, Type, boolean?][]): Model {
   const propMap = new Map<string, ModelProperty>();
-  
+
   properties.forEach(([propName, propType, optional = false]) => {
     propMap.set(propName, createMockProperty(propName, propType, optional));
   });
@@ -69,7 +84,7 @@ export function createMockModel(name: string, properties: [string, Type, boolean
  */
 export function createMockEnum(name: string, members: string[]): Enum {
   const memberMap = new Map<string, EnumMember>();
-  
+
   const mockEnum: Enum = {
     kind: "Enum",
     name,
@@ -77,7 +92,7 @@ export function createMockEnum(name: string, members: string[]): Enum {
     namespace: { name: "TestNamespace" } as MockNamespace,
   } as unknown as Enum;
 
-  members.forEach(memberName => {
+  members.forEach((memberName) => {
     memberMap.set(memberName, {
       name: memberName,
       value: memberName,
@@ -102,7 +117,7 @@ export function createMockEnum(name: string, members: string[]): Enum {
  */
 export function createMockUnion(name: string, variants: string[]): Union {
   const variantMap = new Map<string, UnionVariant>();
-  
+
   const mockUnion: Union = {
     kind: "Union",
     name,
@@ -110,7 +125,7 @@ export function createMockUnion(name: string, variants: string[]): Union {
     namespace: { name: "TestNamespace" } as MockNamespace,
   } as unknown as Union;
 
-  variants.forEach(variantName => {
+  variants.forEach((variantName) => {
     const variantModel = {
       kind: "Model",
       name: variantName,
@@ -145,12 +160,12 @@ export function createMockUnion(name: string, variants: string[]): Union {
  * Create a mock TypeSpec operation
  */
 export function createMockOperation(
-  name: string, 
+  name: string,
   parameters: [string, Type, boolean?][] = [],
-  returnType?: Type
+  returnType?: Type,
 ): Operation {
   const paramMap = new Map<string, ModelProperty>();
-  
+
   parameters.forEach(([paramName, paramType, optional = false]) => {
     paramMap.set(paramName, createMockProperty(paramName, paramType, optional));
   });
@@ -174,17 +189,17 @@ export function createMockNamespace(
   models: Model[] = [],
   enums: Enum[] = [],
   unions: Union[] = [],
-  operations: Operation[] = []
+  operations: Operation[] = [],
 ): Namespace {
   const modelMap = new Map<string, Model>();
   const enumMap = new Map<string, Enum>();
   const unionMap = new Map<string, Union>();
   const operationMap = new Map<string, Operation>();
 
-  models.forEach(model => modelMap.set(model.name, model));
-  enums.forEach(enumType => enumMap.set(enumType.name, enumType));
-  unions.forEach(union => unionMap.set(union.name || "Anonymous", union));
-  operations.forEach(op => operationMap.set(op.name, op));
+  models.forEach((model) => modelMap.set(model.name, model));
+  enums.forEach((enumType) => enumMap.set(enumType.name, enumType));
+  unions.forEach((union) => unionMap.set(union.name || "Anonymous", union));
+  operations.forEach((op) => operationMap.set(op.name, op));
 
   return {
     name,

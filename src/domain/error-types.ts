@@ -210,7 +210,7 @@ export class ErrorAnalysis {
     if (error._tag === "success") {
       return "log_and_continue";
     }
-    
+
     switch (error.kind) {
       case "validation": {
         const validationError = error as ValidationError;

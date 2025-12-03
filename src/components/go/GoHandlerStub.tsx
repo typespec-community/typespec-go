@@ -47,14 +47,14 @@ interface HandlerParameter {
  * Go Handler Stub Component
  * Generates HTTP handler functions from TypeSpec operations
  */
-export function GoHandlerStub({ 
+export function GoHandlerStub({
   operations,
   serviceName = "Service",
   packageName = "api",
-  program
+  program,
 }: GoHandlerStubProps): string {
-  const handlers = operations.map(op => operationToHandler(op, program));
-  
+  const handlers = operations.map((op) => operationToHandler(op, program));
+
   return generateHandlerCode(serviceName, handlers, packageName);
 }
 
@@ -69,14 +69,14 @@ function operationToHandler(operation: Operation, program?: Program): GoHandlerM
   const parameters = extractHandlerParameters(operation);
   const returnType = mapHandlerReturnType(operation);
   const doc = program && getDocumentation ? getDocumentation(program, operation) : undefined;
-  
+
   return {
     name: handlerName,
     httpMethod,
     route,
     parameters,
     returnType,
-    doc
+    doc,
   };
 }
 
@@ -85,7 +85,7 @@ function operationToHandler(operation: Operation, program?: Program): GoHandlerM
  */
 function inferHttpMethod(operationName: string): string {
   const name = operationName.toLowerCase();
-  
+
   if (name.startsWith("get") || name.includes("list") || name.includes("find")) {
     return "GET";
   } else if (name.startsWith("create") || name.startsWith("post") || name.includes("add")) {
@@ -106,12 +106,12 @@ function inferHttpMethod(operationName: string): string {
  */
 function inferRoute(operationName: string): string {
   const name = operationName.toLowerCase();
-  
+
   // Extract resource name from operation
   // getUser -> /users/{id}
   // listUsers -> /users
   // createUser -> /users
-  
+
   if (name.includes("list")) {
     const resource = name.replace("list", "").replace("s", "") + "s";
     return `/${resource}`;
@@ -138,12 +138,12 @@ function inferRoute(operationName: string): string {
  */
 function extractHandlerParameters(operation: Operation): HandlerParameter[] {
   const params: HandlerParameter[] = [];
-  
+
   // Always include context and writer
   params.push({ name: "ctx", type: "context.Context", source: "context" });
   params.push({ name: "w", type: "http.ResponseWriter", source: "response" });
   params.push({ name: "r", type: "*http.Request", source: "request" });
-  
+
   // Add operation parameters
   if (operation.parameters) {
     for (const [name, prop] of operation.parameters.properties) {
@@ -151,11 +151,11 @@ function extractHandlerParameters(operation: Operation): HandlerParameter[] {
       params.push({
         name: toCamelCase(name),
         type: mapTypeToGo(prop.type),
-        source
+        source,
       });
     }
   }
-  
+
   return params;
 }
 
@@ -164,7 +164,7 @@ function extractHandlerParameters(operation: Operation): HandlerParameter[] {
  */
 function inferParameterSource(name: string, prop: ModelProperty): string {
   const lowerName = name.toLowerCase();
-  
+
   if (lowerName === "id" || lowerName.includes("id")) {
     return "path";
   } else if (prop.type?.kind === "String" && prop.optional) {
@@ -236,7 +236,7 @@ function mapScalarToGo(name: string): string {
     plainTime: "time.Time",
     duration: "time.Duration",
   };
-  
+
   return scalarMap[name.toLowerCase()] || "interface{}";
 }
 
@@ -250,28 +250,32 @@ function toCamelCase(s: string): string {
 /**
  * Generate Go handler code
  */
-function generateHandlerCode(serviceName: string, handlers: GoHandlerMethod[], packageName: string): string {
+function generateHandlerCode(
+  serviceName: string,
+  handlers: GoHandlerMethod[],
+  packageName: string,
+): string {
   const lines: string[] = [];
-  
+
   // Package and imports
   lines.push(`package ${packageName}`);
   lines.push("");
   lines.push("import (");
   lines.push(`\t"${packageName}" // Generated models`);
-  lines.push("\t\"context\"");
-  lines.push("\t\"encoding/json\"");
-  lines.push("\t\"net/http\"");
-  lines.push("\t\"time\"");
+  lines.push('\t"context"');
+  lines.push('\t"encoding/json"');
+  lines.push('\t"net/http"');
+  lines.push('\t"time"');
   lines.push(")");
   lines.push("");
-  
+
   // Service struct
   lines.push(`// ${serviceName} provides HTTP handlers for API operations`);
   lines.push(`type ${serviceName} struct {`);
   lines.push(`\t// Add service dependencies here (database, repositories, etc.)`);
   lines.push("}");
   lines.push("");
-  
+
   // Generate handler methods
   for (const handler of handlers) {
     if (handler.doc) {
@@ -279,20 +283,18 @@ function generateHandlerCode(serviceName: string, handlers: GoHandlerMethod[], p
     } else {
       lines.push(`// ${handler.name} handles ${handler.httpMethod} ${handler.route}`);
     }
-    
+
     lines.push(`func (s *${serviceName}) ${handler.name}(`);
-    
+
     // Parameters
-    const params = handler.parameters
-      .map(p => `${p.name} ${p.type}`)
-      .join(", ");
+    const params = handler.parameters.map((p) => `${p.name} ${p.type}`).join(", ");
     lines.push(`\t${params}) {`);
-    
+
     // Handler implementation - developer action required
     lines.push(`\t// TODO: Implement ${handler.name} handler with business logic`);
     lines.push(`\t// Route: ${handler.httpMethod} ${handler.route}`);
     lines.push("");
-    
+
     if (handler.httpMethod === "GET") {
       lines.push(`\t// Example implementation:`);
       lines.push(`\t// result, err := s.service.${handler.name.slice(0, -7)}(ctx)`);
@@ -318,24 +320,26 @@ function generateHandlerCode(serviceName: string, handlers: GoHandlerMethod[], p
       lines.push(`\t// w.WriteHeader(http.StatusCreated)`);
       lines.push(`\t// json.NewEncoder(w).Encode(result)`);
     } else {
-      lines.push(`\t// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation`);
+      lines.push(
+        `\t// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation`,
+      );
       lines.push(`\tw.WriteHeader(http.StatusNotImplemented)`);
       lines.push(`\tjson.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})`);
     }
-    
+
     lines.push("}");
     lines.push("");
   }
-  
+
   // Route registration helper
   lines.push("// RegisterRoutes registers all handlers with the given router");
   lines.push(`func (s *${serviceName}) RegisterRoutes(mux *http.ServeMux) {`);
-  
+
   for (const handler of handlers) {
     lines.push(`\tmux.HandleFunc("${handler.route}", s.${handler.name})`);
   }
-  
+
   lines.push("}");
-  
+
   return lines.join("\n");
 }
