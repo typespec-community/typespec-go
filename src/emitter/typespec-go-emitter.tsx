@@ -17,6 +17,7 @@ import { writeOutput } from "@typespec/emitter-framework";
 import { Output } from "@alloy-js/core";
 import { GoPackageDirectory } from "../components/go/index.js";
 import { join } from "path";
+import { Logger, LogContext, LogLevel } from "../domain/structured-logging.js";
 
 /** Namespace group containing models, enums, unions, and operations */
 interface NamespaceGroup {
@@ -138,18 +139,19 @@ export async function $onEmit(context: EmitContext): Promise<void> {
     const program = context.program;
     const globalNamespace = program.getGlobalNamespaceType();
 
-    console.log("🚀 TypeSpec Go Emitter starting...");
-    console.log("📋 Global namespace:", globalNamespace.name);
+    Logger.info(LogContext.TYPESPEC_INTEGRATION, "TypeSpec Go Emitter starting...", {
+      globalNamespace: globalNamespace.name,
+    });
 
     // Collect all types grouped by namespace
     const namespaceGroups = collectTypesByNamespace(globalNamespace);
 
     if (namespaceGroups.size === 0) {
-      console.log("⚠️  No types found in TypeSpec program");
+      Logger.warn(LogContext.TYPESPEC_INTEGRATION, "No types found in TypeSpec program");
       return;
     }
 
-    console.log(`📦 Processing ${namespaceGroups.size} namespace groups`);
+    Logger.info(LogContext.TYPESPEC_INTEGRATION, `Processing ${namespaceGroups.size} namespace groups`);
 
     // Track statistics
     let totalModels = 0;
@@ -163,7 +165,7 @@ export async function $onEmit(context: EmitContext): Promise<void> {
       const typeCount = models.length + enums.length + unions.length + operations.length;
 
       if (typeCount === 0) {
-        console.log(`⚠️  Skipping namespace '${namespaceName}' - no types`);
+        Logger.warn(LogContext.TYPESPEC_INTEGRATION, `Skipping namespace '${namespaceName}' - no types`);
         continue;
       }
 
@@ -171,23 +173,37 @@ export async function $onEmit(context: EmitContext): Promise<void> {
       const outputDirectory = getOutputDirectory(namespace, context);
       const packageDocumentation = `Go types from TypeSpec namespace: ${namespaceName}`;
 
-      console.log(`📦 Generating package '${packageName}' from namespace '${namespaceName}'`);
-      console.log(`   📁 Output directory: ${outputDirectory}`);
+      Logger.info(LogContext.TYPESPEC_INTEGRATION, `Generating package '${packageName}' from namespace '${namespaceName}'`, {
+        outputDirectory,
+        typeCount,
+        modelCount: models.length,
+        enumCount: enums.length,
+        unionCount: unions.length,
+        operationCount: operations.length,
+      });
 
       if (models.length > 0) {
-        console.log(`   🏗️  Models: ${models.map((m) => m.name).join(", ")}`);
+        Logger.debug(LogContext.GO_GENERATION, "Models to generate", {
+          models: models.map((m) => m.name),
+        });
         totalModels += models.length;
       }
       if (enums.length > 0) {
-        console.log(`   📋 Enums: ${enums.map((e) => e.name).join(", ")}`);
+        Logger.debug(LogContext.GO_GENERATION, "Enums to generate", {
+          enums: enums.map((e) => e.name),
+        });
         totalEnums += enums.length;
       }
       if (unions.length > 0) {
-        console.log(`   🔀 Unions: ${unions.map((u) => u.name || "Anonymous").join(", ")}`);
+        Logger.debug(LogContext.GO_GENERATION, "Unions to generate", {
+          unions: unions.map((u) => u.name || "Anonymous"),
+        });
         totalUnions += unions.length;
       }
       if (operations.length > 0) {
-        console.log(`   ⚡ Operations: ${operations.map((o) => o.name).join(", ")}`);
+        Logger.debug(LogContext.GO_GENERATION, "Operations to generate", {
+          operations: operations.map((o) => o.name),
+        });
         totalOperations += operations.length;
       }
 
@@ -209,16 +225,23 @@ export async function $onEmit(context: EmitContext): Promise<void> {
       );
     }
 
-    console.log("✅ TypeSpec Go emission completed successfully");
-
-    // Summary
-    console.log(`📊 Generated across ${namespaceGroups.size} packages:`);
-    console.log(`   - ${totalModels} models`);
-    console.log(`   - ${totalEnums} enums`);
-    console.log(`   - ${totalUnions} unions`);
-    console.log(`   - ${totalOperations} operations`);
+    Logger.info(LogContext.TYPESPEC_INTEGRATION, "TypeSpec Go emission completed successfully", {
+      namespaceCount: namespaceGroups.size,
+      totalModels,
+      totalEnums,
+      totalUnions,
+      totalOperations,
+    });
   } catch (error) {
-    console.error("❌ TypeSpec Go emission failed:", error);
+    Logger.error(
+      LogContext.ERROR_HANDLING,
+      "TypeSpec Go emission failed",
+      {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      },
+      "emitter-failed"
+    );
     throw error;
   }
 }

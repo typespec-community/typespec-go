@@ -11,6 +11,7 @@
     "**/reports/**",
     "**/*.d.ts",
     "**/*.test.ts",
-    "src/test/**"
+    "src/test/**",
+    "docs/**"
   ]
 }
