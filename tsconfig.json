@@ -10,7 +10,7 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": false,
-    "jsx": "react-jsx",
+    "jsx": "react-jsxdev",
     "jsxImportSource": "@alloy-js/core",
     "strict": true,
     "skipLibCheck": true,
