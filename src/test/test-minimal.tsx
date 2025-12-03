@@ -58,7 +58,7 @@ try {
     </Output>,
   );
   console.log("✅ Full emitter pattern successful");
-  console.log("📄 Generated files:", fullResult.length || 1);
+  console.log("📄 Generated files:", fullResult.contents.length || 1);
 
   console.log("\n🎉 ALL TESTS PASSED!");
   console.log("✅ Alloy-JS component migration successful");

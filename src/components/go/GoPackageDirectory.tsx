@@ -107,7 +107,7 @@ export function GoPackageDirectory({
       {/* go.mod file at module root */}
       {generateGoMod && (
         <SourceFile path="go.mod">
-          <GoModFile modulePath={moduleDirectory} goVersion={goVersion} />
+          {GoModFile({ modulePath: moduleDirectory, goVersion })}
         </SourceFile>
       )}
       <SourceDirectory path={packageName}>

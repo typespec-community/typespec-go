@@ -135,7 +135,7 @@ async function testFullEmitterIntegration() {
     );
 
     console.log("✅ Full emitter integration successful");
-    console.log("📄 Generated files:", result.length || 1);
+    console.log("📄 Generated files:", result.contents.length || 1);
     return result;
   } catch (error) {
     console.error("❌ Full integration failed:", error);

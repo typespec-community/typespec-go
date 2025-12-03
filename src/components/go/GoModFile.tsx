@@ -1,10 +1,8 @@
 /**
  * Go Module File Component
  * Generates go.mod file for proper Go module initialization
- * Using 100% Alloy.js approach
+ * Clean implementation without string array concatenation
  */
-
-import type { ReactNode } from "react";
 
 interface GoModFileProps {
   /** Go module path (e.g., github.com/yourcompany/api) */
@@ -21,31 +19,27 @@ interface GoModFileProps {
 /**
  * Go Module File Component
  * Generates a proper go.mod file for generated package
- * Returns JSX content for Alloy.js rendering
+ * Clean string-based implementation (go.mod is not standard Go code)
  */
 export function GoModFile({
   modulePath,
   goVersion = "1.21",
   requires = [],
-}: GoModFileProps): ReactNode {
-  return (
-    <>
-      module {modulePath}
-      
-      go {goVersion}
-      
-      {requires.length > 0 && (
-        <>
-          require (
-            {requires.map((req, index) => (
-              <div key={index}>
-                {"\t"}{req.path} {req.version}
-              </div>
-            ))}
-            )
-        </>
-      )}
-      
-    </>
-  );
+}: GoModFileProps): string {
+  let content = `module ${modulePath}
+
+go ${goVersion}`;
+
+  if (requires.length > 0) {
+    const requireBlock = requires
+      .map(req => `\t${req.path} ${req.version}`)
+      .join('\n');
+    content += `
+
+require (
+${requireBlock}
+)`;
+  }
+
+  return content + '\n';
 }
