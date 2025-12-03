@@ -18,7 +18,7 @@ export class UnionGenerator {
     properties?: ReadonlyMap<string, TypeSpecPropertyNode>;
   }): GoEmitterResult {
     // Input validation
-    if (!unionModel.name || typeof unionModel.name !== "string") {
+    if (!unionModel.name) {
       return ErrorFactory.createValidationError("Invalid union: name must be a non-empty string", {
         modelName: unionModel.name || "unknown",
       });

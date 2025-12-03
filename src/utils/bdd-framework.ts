@@ -7,7 +7,7 @@
  * UNIFIED ERROR SYSTEM: Single source of truth for error handling
  */
 
-import { GoEmitterResult } from "../domain/unified-errors.js";
+import { GoEmitterResult } from "../domain/error-types";
 
 // Real BDD testing with proper assertions
 import { expect } from "vitest";

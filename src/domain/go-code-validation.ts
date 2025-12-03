@@ -5,7 +5,7 @@
  */
 
 import { z } from "zod";
-import { Logger } from "../domain/structured-logging.js";
+import { Logger } from "./structured-logging";
 
 /**
  * Go struct field validation schema

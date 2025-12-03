@@ -6,7 +6,6 @@
 
 import type {
   EmitContext,
-  Program,
   Model,
   Namespace,
   Enum,
@@ -17,7 +16,7 @@ import { writeOutput } from "@typespec/emitter-framework";
 import { Output } from "@alloy-js/core";
 import { GoPackageDirectory } from "../components/go/index.js";
 import { join } from "path";
-import { Logger, LogContext, LogLevel } from "../domain/structured-logging.js";
+import { Logger, LogContext } from "../domain/structured-logging.js";
 
 /** Namespace group containing models, enums, unions, and operations */
 interface NamespaceGroup {
