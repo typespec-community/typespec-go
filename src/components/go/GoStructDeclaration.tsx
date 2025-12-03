@@ -4,9 +4,9 @@
  * Following Alloy-JS patterns with zero string-based logic
  */
 
-import type { Model, ModelProperty, Type, Program } from "@typespec/compiler";
+import type { ModelProperty, Program, Type } from "@typespec/compiler";
 import { TypeSpecModel } from "../../types/typespec-domain.js";
-import { TypeDeclaration, StructDeclaration, StructMember } from "@alloy-js/go";
+import { Reference, StructDeclaration, StructMember, TypeDeclaration } from "@alloy-js/go";
 import { For, refkey } from "@alloy-js/core";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
@@ -49,18 +49,33 @@ export function GoStructDeclaration({
         <For each={Array.from(model.properties?.values() || [])}>
           {(prop: ModelProperty) => {
             const fieldName = capitalize(prop.name);
-            let goType = mapTypeSpecToGoType(prop.type);
+            const typeRef = refkey(prop.type);
+
+            // Use Alloy.js Reference system for automatic import management
+            let goTypeElement: JSX.Element | string;
+
+            if (prop.type.kind === "Model") {
+              // Reference to other model - Alloy.js will handle import
+              goTypeElement = <Reference refkey={typeRef} type />;
+            } else {
+              // Use Alloy.js type mapping for built-in types
+              goTypeElement = mapTypeSpecToAlloyGoType(prop.type);
+            }
 
             // Add pointer for optional model/struct fields
-            if (prop.optional && usePointersForOptional && isNestedModelType(prop.type)) {
-              goType = `*${goType}`;
-            }
+            const shouldUsePointer =
+              prop.optional && usePointersForOptional && isNestedModelType(prop.type);
+            const finalType = shouldUsePointer ? (
+              <Reference refkey={typeRef} type pointer />
+            ) : (
+              goTypeElement
+            );
 
             // Ensure proper JSON tag format: `json:"name"` or `json:"name,omitempty"`
             const jsonTagValue = prop.optional ? `${prop.name},omitempty` : prop.name;
             const jsonTag = { json: jsonTagValue };
 
-            return <StructMember name={fieldName} type={goType} tag={jsonTag} />;
+            return <StructMember name={fieldName} type={finalType} tag={jsonTag} />;
           }}
         </For>
       </StructDeclaration>
@@ -99,11 +114,11 @@ function getTypeFromTemplateArg(arg: unknown): Type | undefined {
 }
 
 /**
- * TypeSpec to Go type mapping with proper type safety
- * Maps TypeSpec scalar types to Go equivalent types
- * Handles arrays, enums, models, and unions
+ * TypeSpec to Alloy.js Go type mapping with proper refkey support
+ * Uses Alloy.js Reference system for automatic import management
+ * Maps TypeSpec scalar types to native Go types
  */
-function mapTypeSpecToGoType(type: Type): string {
+function mapTypeSpecToAlloyGoType(type: Type): JSX.Element | string {
   switch (type.kind) {
     case "String":
       return "string";
@@ -114,82 +129,103 @@ function mapTypeSpecToGoType(type: Type): string {
 
     case "Scalar":
       const scalarName = type.name?.toLowerCase() || "";
-      const scalarMap: Record<string, string> = {
+
+      // Use Alloy.js Go type references for known Go types
+      switch (scalarName) {
         // Integer types
-        int8: "int8",
-        int16: "int16",
-        int32: "int32",
-        int64: "int64",
-        uint8: "uint8",
-        uint16: "uint16",
-        uint32: "uint32",
-        uint64: "uint64",
-        integer: "int",
-        safeint: "int64",
+        case "int8":
+        case "int16":
+        case "int32":
+        case "int64":
+        case "uint8":
+        case "uint16":
+        case "uint32":
+        case "uint64":
+        case "integer":
+        case "safeint":
+          return scalarName; // Direct Go type names
 
         // Float types
-        float32: "float32",
-        float64: "float64",
-        float: "float64",
-        numeric: "float64",
-        decimal: "float64",
-        decimal64: "float64",
-        decimal128: "float64",
+        case "float32":
+        case "float64":
+        case "float":
+        case "numeric":
+        case "decimal":
+        case "decimal64":
+        case "decimal128":
+          return scalarName === "float" ? "float64" : scalarName;
 
         // Binary types
-        bytes: "[]byte",
+        case "bytes":
+          return "[]byte";
 
-        // String types
-        string: "string",
-        url: "string",
-        uri: "string",
-        email: "string",
-        uuid: "string",
+        // String types (all map to Go string)
+        case "string":
+        case "url":
+        case "uri":
+        case "email":
+        case "uuid":
+        case "ipaddress":
+        case "ipv4address":
+        case "ipv6address":
+          return "string";
 
         // Boolean
-        boolean: "bool",
+        case "boolean":
+          return "bool";
 
-        // Date/Time types
-        plaindate: "time.Time",
-        plaintime: "time.Time",
-        utcdatetime: "time.Time",
-        offsetdatetime: "time.Time",
-        duration: "time.Duration",
-        zoneddatetime: "time.Time",
+        // Date/Time types - will trigger automatic time import
+        case "plaindate":
+        case "plaintime":
+        case "utcdatetime":
+        case "offsetdatetime":
+        case "duration":
+        case "zoneddatetime":
+          return scalarName === "duration" ? "time.Duration" : "time.Time";
 
-        // Network types
-        ipaddress: "string",
-        ipv4address: "string",
-        ipv6address: "string",
-      };
-      return scalarMap[scalarName] || type.name || "interface{}";
+        default:
+          return type.name || "interface{}";
+      }
 
     case "Model":
-      // Handle TypeSpec's built-in Array model
+      // Handle TypeSpec's built-in Array model with Alloy.js
       if (type.name === "Array" && type.templateMapper) {
         const elementType = getTypeFromTemplateArg(type.templateMapper.args?.[0]);
         if (elementType) {
-          return `[]${mapTypeSpecToGoType(elementType)}`;
+          const elementTypeRef = mapTypeSpecToAlloyGoType(elementType);
+          return (
+            <>[]{elementTypeRef}</> // JSX syntax for slice types
+          );
         }
         return "[]interface{}";
       }
-      // Handle TypeSpec's built-in Record model
+
+      // Handle TypeSpec's built-in Record model with Alloy.js
       if (type.name === "Record" && type.templateMapper) {
         const keyType = getTypeFromTemplateArg(type.templateMapper.args?.[0]);
         const valueType = getTypeFromTemplateArg(type.templateMapper.args?.[1]);
-        const goKey = keyType ? mapTypeSpecToGoType(keyType) : "string";
-        const goValue = valueType ? mapTypeSpecToGoType(valueType) : "interface{}";
-        return `map[${goKey}]${goValue}`;
+        const goKey = keyType ? mapTypeSpecToAlloyGoType(keyType) : "string";
+        const goValue = valueType ? mapTypeSpecToAlloyGoType(valueType) : "interface{}";
+        return (
+          <>
+            map[{goKey}]{goValue}
+          </> // JSX syntax for map types
+        );
       }
-      return type.name || "interface{}";
+
+      // Reference to other model - Alloy.js handles import
+      const modelRef = refkey(type);
+      return <Reference refkey={modelRef} type />;
 
     case "Enum":
-      // Use the enum name directly - it will be defined in enums.go
-      return type.name || "interface{}";
+      // Reference to enum - Alloy.js handles import
+      const enumRef = refkey(type);
+      return <Reference refkey={enumRef} type />;
 
     case "Union":
-      // Use the union interface name if named, otherwise interface{}
-      return type.name || "interface{}";
+      // Reference to union interface - Alloy.js handles import
+      const unionRef = refkey(type);
+      return <Reference refkey={unionRef} type />;
 
     case "Tuple":
       // Go doesn't have tuples, use slice
