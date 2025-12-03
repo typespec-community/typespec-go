@@ -47,7 +47,7 @@ describe("E2E Integration - Working Workflow Tests", () => {
       validateGeneratedGo(simulatedGoCode);
 
       // Step 5: Write to temp file for manual verification
-      const tempDir = join(process.cwd(), "temp-e2e-test");
+      const tempDir = join(process.cwd(), "src/test/temp-e2e-test");
       if (!existsSync(tempDir)) {
         mkdirSync(tempDir, { recursive: true });
       }

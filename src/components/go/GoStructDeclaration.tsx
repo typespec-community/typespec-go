@@ -56,9 +56,9 @@ export function GoStructDeclaration({
               goType = `*${goType}`;
             }
 
-            const jsonTag = prop.optional
-              ? { json: `${prop.name},omitempty` }
-              : { json: prop.name };
+            // Ensure proper JSON tag format: `json:"name"` or `json:"name,omitempty"`
+            const jsonTagValue = prop.optional ? `${prop.name},omitempty` : prop.name;
+            const jsonTag = { json: jsonTagValue };
 
             return <StructMember name={fieldName} type={goType} tag={jsonTag} />;
           }}
