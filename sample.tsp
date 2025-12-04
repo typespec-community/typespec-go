@@ -3,6 +3,8 @@
  * Comprehensive example for TypeSpec Go emitter testing
  */
 
+using TypeSpec.Http
+
 namespace SampleAPI {
   @doc("User model with comprehensive fields")
   model User {
@@ -13,7 +15,7 @@ namespace SampleAPI {
     isActive: boolean = true;
     roles: Role[];
     address?: Address;
-    metadata?: Record<string, any>;
+    metadata?: Record<unknown>;
   }
 
   @doc("Role model for user permissions")
@@ -29,7 +31,7 @@ namespace SampleAPI {
     id: string;
     resource: string;
     action: string;
-    conditions?: Record<string, string>;
+    conditions?: Record<string>;
   }
 
   @doc("Address model")
@@ -229,7 +231,7 @@ namespace SampleAPI {
     deviceToken: string;
     title: string;
     message: string;
-    payload?: Record<string, any>;
+    payload?: Record<unknown>;
   }
 
   @doc("SMS notification model")
