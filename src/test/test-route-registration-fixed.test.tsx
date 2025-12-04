@@ -2,9 +2,10 @@
  * Test GoRouteRegistrationComponent with proper Go context
  */
 
-import { test, expect } from "vitest";
+import { test, expect, describe, it } from "vitest";
 import { render, Output } from "@alloy-js/core";
-import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
+import * as go from "@alloy-js/go";
+const { ModuleDirectory, SourceDirectory, SourceFile } = go;
 import { GoRouteRegistrationComponent } from "../src/components/go/GoRouteRegistrationComponent.js";
 
 // Mock GoHandlerMethod for testing

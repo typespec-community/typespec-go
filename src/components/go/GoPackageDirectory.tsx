@@ -6,7 +6,8 @@
 
 import type { Model, Enum, Union, Operation, Type, Program } from "@typespec/compiler";
 import { For } from "@alloy-js/core";
-import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
+import * as go from "@alloy-js/go";
+const { ModuleDirectory, SourceDirectory, SourceFile } = go;
 import { GoStructDeclaration } from "./GoStructDeclaration.js";
 import { GoEnumDeclaration } from "./GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "./GoUnionDeclaration.js";

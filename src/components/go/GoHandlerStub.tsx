@@ -112,11 +112,11 @@ function mapTypeToGo(type: Type): string | JSX.Element {
 			return mapScalarToGo(type.name || "")
 		case "Model":
 			if (type.name === "void") return ""
-			return <Reference refkey={typeRef}/>
+			return type.name
 		case "Enum":
-			return <Reference refkey={typeRef}/>
+			return type.name
 		case "Union":
-			return <Reference refkey={typeRef}/>
+			return type.name
 		default:
 			return "interface{}"
 	}
@@ -177,10 +177,10 @@ function GoHandlerContent({
 
 			{/* Imports */}
 			<ImportStatements records={[
-				"context",
-				"encoding/json",
-				"net/http",
-				"time",
+				{ package: "context", wildcard: false },
+				{ package: "encoding/json", wildcard: false },
+				{ package: "net/http", wildcard: false },
+				{ package: "time", wildcard: false },
 			]}/>
 
 			{/* Service struct */}

@@ -4,7 +4,8 @@
  * Follows guide's Single Responsibility Principle
  */
 
-import { StructTypeDeclaration, StructMember } from "@alloy-js/go";
+import * as go from "@alloy-js/go";
+const { StructTypeDeclaration, StructMember } = go;
 import type { Model, ModelProperty } from "@typespec/compiler";
 import { refkey } from "@alloy-js/core";
 import { TypeExpression } from "../TypeExpression";

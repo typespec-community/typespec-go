@@ -10,15 +10,31 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": false,
-    "jsx": "react-jsxdev",
+    "jsx": "preserve",
     "jsxImportSource": "@alloy-js/core",
     "strict": true,
     "skipLibCheck": true,
-    "lib": ["ES2022", "DOM"],
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
     "downlevelIteration": true,
     "declaration": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "skipDefaultLibCheck": true,
+    // Enhanced strictness for better type safety
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
 }
