@@ -3,9 +3,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { render, Output, refkey } from "@alloy-js/core";
-import { Reference } from "@alloy-js/go";
-import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
+import { renderGoContent } from "../testing/test-utils.js";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
 import { GoEnumDeclaration } from "../components/go/GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "../components/go/GoUnionDeclaration.js";
@@ -36,23 +34,13 @@ describe("@doc Decorator Support", () => {
         ]),
       };
 
-      const result = render(
-        <Output>
-          <ModuleDirectory name="github.com/test/api">
-            <SourceDirectory path="api">
-              <SourceFile path="models.go">
-                <GoStructDeclaration model={mockModel as any} documentation="A user in the system" />
-              </SourceFile>
-            </SourceDirectory>
-          </ModuleDirectory>
-        </Output>,
+      const result = renderGoContent(
+        <GoStructDeclaration model={mockModel as any} documentation="A user in the system" />,
+        "models.go",
       );
 
       expect(result).toBeDefined();
-      // The documentation should be in the rendered output
-      if (typeof result.contents === "string") {
-        expect(result.contents).toContain("A user in the system");
-      }
+      expect(result).toContain("A user in the system");
     });
 
     it("should fall back to default documentation without program", () => {
@@ -71,17 +59,7 @@ describe("@doc Decorator Support", () => {
         ]),
       };
 
-      const result = render(
-        <Output>
-          <ModuleDirectory name="github.com/test/api">
-            <SourceDirectory path="api">
-              <SourceFile path="models.go">
-                <GoStructDeclaration model={mockModel as any} />
-              </SourceFile>
-            </SourceDirectory>
-          </ModuleDirectory>
-        </Output>,
-      );
+      const result = renderGoContent(<GoStructDeclaration model={mockModel as any} />, "models.go");
 
       expect(result).toBeDefined();
     });
@@ -89,17 +67,21 @@ describe("@doc Decorator Support", () => {
 
   describe("GoEnumDeclaration with documentation", () => {
     it("should generate enum correctly", () => {
-      const result = GoEnumDeclaration({
-        enum: {
-          kind: "Enum",
-          name: "Status",
-          members: new Map([
-            ["pending", { kind: "EnumMember", name: "pending", value: "pending" }],
-            ["completed", { kind: "EnumMember", name: "completed", value: "completed" }],
-          ]),
-        } as any,
-        packageName: "api",
-      });
+      const result = renderGoContent(
+        <GoEnumDeclaration
+          enum={
+            {
+              kind: "Enum",
+              name: "Status",
+              members: new Map([
+                ["pending", { kind: "EnumMember", name: "pending", value: "pending" }],
+                ["completed", { kind: "EnumMember", name: "completed", value: "completed" }],
+              ]),
+            } as any
+          }
+          packageName="api"
+        />,
+      );
 
       expect(result).toContain("type Status string");
       expect(result).toContain("StatusPending");
@@ -109,17 +91,21 @@ describe("@doc Decorator Support", () => {
 
   describe("GoUnionDeclaration with documentation", () => {
     it("should generate union interface comment", () => {
-      const result = GoUnionDeclaration({
-        union: {
-          kind: "Union",
-          name: "Result",
-          variants: new Map([
-            ["success", { kind: "UnionVariant", name: "success", type: { kind: "String" } }],
-            ["error", { kind: "UnionVariant", name: "error", type: { kind: "String" } }],
-          ]),
-        } as any,
-        packageName: "api",
-      });
+      const result = renderGoContent(
+        <GoUnionDeclaration
+          union={
+            {
+              kind: "Union",
+              name: "Result",
+              variants: new Map([
+                ["success", { kind: "UnionVariant", name: "success", type: { kind: "String" } }],
+                ["error", { kind: "UnionVariant", name: "error", type: { kind: "String" } }],
+              ]),
+            } as any
+          }
+          packageName="api"
+        />,
+      );
 
       expect(result).toContain("// Result is a sealed interface");
       expect(result).toContain("type Result interface");

@@ -18,7 +18,7 @@ describe("String Utilities", () => {
     it("capitalizes first letter", () => {
       expect(capitalize("hello")).toBe("Hello");
       expect(capitalize("world")).toBe("World");
-      expect(capitalize("id")).toBe("Id");
+      expect(capitalize("id")).toBe("ID");
     });
 
     it("handles already capitalized", () => {
@@ -71,14 +71,14 @@ describe("String Utilities", () => {
   describe("toGoPublicName", () => {
     it("creates Go public name", () => {
       expect(toGoPublicName("hello_world")).toBe("HelloWorld");
-      expect(toGoPublicName("user-id")).toBe("UserId");
+      expect(toGoPublicName("user-id")).toBe("UserID");
     });
   });
 
   describe("toGoPrivateName", () => {
     it("creates Go private name", () => {
       expect(toGoPrivateName("hello_world")).toBe("helloWorld");
-      expect(toGoPrivateName("user-id")).toBe("userId");
+      expect(toGoPrivateName("user-id")).toBe("userID");
     });
   });
 });

@@ -5,9 +5,22 @@
 
 /**
  * Capitalize first letter for Go exported names
+ * Handles common Go acronyms (ID, URL, API, etc.)
  */
 export function capitalize(str: string): string {
   if (str.length === 0) return str;
+
+  // Handle common acronyms
+  const lower = str.toLowerCase();
+  if (lower === "id") return "ID";
+  if (lower === "url") return "URL";
+  if (lower === "uri") return "URI";
+  if (lower === "api") return "API";
+  if (lower === "http") return "HTTP";
+  if (lower === "json") return "JSON";
+  if (lower === "xml") return "XML";
+  if (lower === "uuid") return "UUID";
+
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 

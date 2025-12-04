@@ -44,7 +44,11 @@ test("GoStructDeclaration renders without errors", async () => {
       <ModuleDirectory name="github.com/test/api">
         <SourceDirectory path="api">
           <SourceFile path="models.go">
-            <GoStructDeclaration model={mockModel as any} packageName="test" documentation="Test struct" />
+            <GoStructDeclaration
+              model={mockModel as any}
+              packageName="test"
+              documentation="Test struct"
+            />
           </SourceFile>
         </SourceDirectory>
       </ModuleDirectory>

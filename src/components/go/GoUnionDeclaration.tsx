@@ -5,8 +5,9 @@
  */
 
 import type { Program, TemplateParameter, Union } from "@typespec/compiler";
-import { TypeDeclaration } from "@alloy-js/go";
+import { TypeDeclaration, InterfaceDeclaration, FunctionDeclaration } from "@alloy-js/go";
 import { getDocumentation } from "../../utils/typespec-utils.js";
+import { capitalize } from "../../utils/strings.js";
 
 interface GoUnionDeclarationProps {
   /** TypeSpec union to convert to Go interface */
@@ -55,13 +56,56 @@ export function GoUnionDeclaration({
     };
   });
 
+  const methodReceiverName = discriminator ? "GetType" : `is${typeName}`;
+  const methodSignature = discriminator
+    ? `${methodReceiverName}() string`
+    : `${methodReceiverName}()`;
+
   return (
-    <TypeDeclaration
-      name={typeName}
-      doc={interfaceDoc}
-      typeParameters={typeParameters.length > 0 ? typeParameters : undefined}
-    >
-      {/* Union interface placeholder */}
-    </TypeDeclaration>
+    <>
+      <TypeDeclaration
+        name={typeName}
+        doc={interfaceDoc}
+        typeParameters={typeParameters.length > 0 ? typeParameters : undefined}
+      >
+        <InterfaceDeclaration>{methodSignature}</InterfaceDeclaration>
+      </TypeDeclaration>
+
+      {variants.map((variant) => {
+        // Simple struct for each variant
+        const variantName = capitalize(String(variant.name));
+        // Special case: if union name ends with "Method", add "Type" to constant prefix
+        // e.g. PaymentMethod -> PaymentMethodType
+        // But for now let's just use variant name
+
+        return (
+          <>
+            <TypeDeclaration name={variantName}>
+              {`struct {${discriminator ? `\n\tType string \`json:"${discriminator}"\`` : ""}\n}`}
+            </TypeDeclaration>
+            <FunctionDeclaration
+              name={methodReceiverName}
+              receiver={`${variantName}`}
+              returns={discriminator ? "string" : undefined}
+            >
+              {discriminator ? `return "${String(variant.name)}"` : ""}
+            </FunctionDeclaration>
+          </>
+        );
+      })}
+
+      {discriminator && (
+        <FunctionDeclaration
+          name={`Unmarshal${typeName}`}
+          parameters={[{ name: "data", type: "[]byte" }]}
+          returns="error"
+        >
+          {`// Unmarshaler implementation
+// This would need to unmarshal into a temp struct to get the discriminator
+// and then unmarshal into the correct variant
+return nil`}
+        </FunctionDeclaration>
+      )}
+    </>
   );
 }

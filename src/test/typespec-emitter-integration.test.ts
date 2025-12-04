@@ -1,77 +1,28 @@
 import { test, expect } from "vitest";
-import { $onEmit } from "../emitter/main.js";
-import type { EmitContext, Model, Scalar, Node } from "@typespec/compiler";
+import { $onEmit } from "../main.js";
+import { MockFactory } from "../testing/mock-factory.js";
 
 /**
  * Test our AssetEmitter with a mock TypeSpec program
  * This validates the emitter pipeline without requiring the full TypeSpec compiler
  */
 test("TypeSpec AssetEmitter Integration - Mock Program", async () => {
-  // Create a minimal mock model matching TypeSpec Model interface
-  const stringScalar: Scalar = {
-    kind: "Scalar",
-    name: "string",
-    baseScalar: { kind: "String" },
-    isFinished: true,
-    node: {
-      id: "mock-string-scalar",
-      kind: "Scalar",
-      sym: "string",
-    } as Node,
-    projections: [],
-  };
+  // Create scalars
+  const stringScalar = MockFactory.createScalar("string");
 
-  const mockModel: Partial<Model> = {
-    name: "TestUser",
-    kind: "Model",
-    properties: new Map([
-      [
-        "id",
-        {
-          name: "id",
-          type: stringScalar,
-          optional: false,
-        },
-      ],
-      [
-        "name",
-        {
-          name: "name",
-          type: stringScalar,
-          optional: false,
-        },
-      ],
-    ]),
-  };
+  // Create a minimal mock model
+  const mockModel = MockFactory.createModel("TestUser", {
+    id: stringScalar,
+    name: stringScalar,
+  });
 
-  // Create a mock namespace
-  const mockNamespace = {
-    models: new Map([["TestUser", mockModel]]),
-    namespaces: new Map(),
-    enums: new Map(),
-    unions: new Map(),
-  };
-
-  // Create mock program with minimal interface
-  const mockProgram = {
-    getGlobalNamespaceType: () => mockNamespace,
-    checker: {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      getTypeName: (_type: Type) => "string",
-      isString: (type: Type) => type === stringScalar,
-    },
-    sourceFiles: new Map(),
-    hasError: () => false,
-    diagnostics: [],
-  };
+  // Create mock program with the model
+  const mockProgram = MockFactory.createProgram({
+    TestUser: mockModel,
+  });
 
   // Create mock emit context
-  const mockContext: EmitContext = {
-    program: mockProgram,
-    emitterOutputDir: "./test-output",
-    options: {},
-    getAssetEmitter: () => ({ writeOutput: async () => {} }),
-  };
+  const mockContext = MockFactory.createEmitContext(mockProgram);
 
   // Store console output to verify execution
   const consoleOutput: string[] = [];

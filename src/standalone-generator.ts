@@ -10,7 +10,11 @@
 
 import { defaultErrorHandler, ErrorFactory } from "./domain/unified-errors.js";
 import type { GoEmitterResult } from "./domain/unified-errors.js";
-import type { TypeSpecPropertyNode, TypeSpecTypeNode } from "./types/typespec-domain.js";
+import type {
+  TypeSpecPropertyNode,
+  TypeSpecTypeNode,
+  GeneratorModel,
+} from "./types/typespec-domain.js";
 import { StructGenerator } from "./domain/struct-generator.js";
 import { UnionGenerator } from "./domain/union-generator.js";
 
@@ -31,13 +35,7 @@ export class StandaloneGoGenerator {
    * Type-safe model generation
    * UNIFIED ERROR SYSTEM: Returns GoEmitterResult instead of throwing
    */
-  generateModel(model: {
-    name: string;
-    properties: ReadonlyMap<string, TypeSpecPropertyNode>;
-    template?: string; // Template definition like "<T>" or "PaginatedResponse<User>"
-    extends?: string; // Support Go struct embedding
-    propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>; // Support spread operator
-  }): GoEmitterResult {
+  generateModel(model: GeneratorModel): GoEmitterResult {
     return this.structGenerator.generateModel(model);
   }
 

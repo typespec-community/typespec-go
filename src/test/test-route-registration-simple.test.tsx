@@ -2,39 +2,37 @@
  * Test GoRouteRegistrationComponent with proper Go context
  */
 
-import {expect, test} from "vitest"
-import {GoRouteRegistrationComponent} from "../components/go/GoRouteRegistrationComponent"
+import { expect, test } from "vitest";
+import { GoRouteRegistrationComponent } from "../components/go/GoRouteRegistrationComponent";
+import { renderGoContent } from "../testing/test-utils.js";
 
 // Mock GoHandlerMethod for testing
 const mockHandlers = [
-	{
-		name: "GetUserHandler",
-		route: "/users/{id}",
-		httpMethod: "GET",
-		parameters: [],
-		returnType: "User",
-		doc: "Get user by ID",
-	},
-	{
-		name: "CreateUserHandler",
-		route: "/users",
-		httpMethod: "POST",
-		parameters: [{name: "user", type: "User", goType: "User"}],
-		returnType: "User",
-		doc: "Create new user",
-	},
-]
+  {
+    name: "GetUserHandler",
+    route: "/users/{id}",
+    httpMethod: "GET",
+    parameters: [],
+    returnType: "User",
+    doc: "Get user by ID",
+  },
+  {
+    name: "CreateUserHandler",
+    route: "/users",
+    httpMethod: "POST",
+    parameters: [{ name: "user", type: "User", goType: "User" }],
+    returnType: "User",
+    doc: "Create new user",
+  },
+];
 
 test("GoRouteRegistrationComponent renders correctly", () => {
-	const result = GoRouteRegistrationComponent({
-		handlers: mockHandlers as any,
-		serviceName: "UserService",
-	})
+  const result = renderGoContent(
+    <GoRouteRegistrationComponent handlers={mockHandlers as any} serviceName="UserService" />,
+    "registration.go",
+  );
 
-	console.log("✅ GoRouteRegistrationComponent render successful")
-	console.log("Generated JSX:", result)
-
-	// Just check that it renders without throwing and has expected structure
-	expect(result).toBeDefined()
-	expect(String(result)).toContain("RegisterRoutes")
-})
+  // Just check that it renders without throwing and has expected structure
+  expect(result).toBeDefined();
+  expect(result).toContain("RegisterRoutes");
+});

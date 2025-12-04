@@ -74,10 +74,7 @@ export function extractHttpMetadata(
 /**
  * Extract HTTP parameters from TypeSpec HTTP operation
  */
-function extractHttpParameters(
-  httpOp: HttpOperation,
-  operation: Operation,
-): HttpParameter[] {
+function extractHttpParameters(httpOp: HttpOperation, operation: Operation): HttpParameter[] {
   const parameters: HttpParameter[] = [];
 
   // Add standard HTTP handler parameters (always present)

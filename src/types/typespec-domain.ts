@@ -119,6 +119,17 @@ export interface TypeSpecModel {
 }
 
 /**
+ * TypeSpec model definition used by generators
+ */
+export interface GeneratorModel {
+  name: string;
+  properties: ReadonlyMap<string, TypeSpecPropertyNode>;
+  template?: string; // Template definition like "<T>" or "PaginatedResponse<User>"
+  extends?: string; // Support Go struct embedding
+  propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>; // Support spread operator
+}
+
+/**
  * Go emitter options
  */
 export type GoEmitterOptions = {

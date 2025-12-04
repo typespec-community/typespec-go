@@ -13,9 +13,9 @@ import { GoEnumDeclaration } from "./GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "./GoUnionDeclaration.js";
 import { GoModFile } from "./GoModFile.js";
 import { GoInterfaceDeclaration } from "./GoInterfaceDeclaration.js";
-// import { GoHandlerStub } from "./GoHandlerStub.js"; // Temporarily disabled - fixing JSX issues
+import { GoHandlerStub } from "./GoHandlerStub.js";
 import { capitalize } from "../../utils/strings.js";
-import {SingleImportStatement} from "@alloy-js/go"
+import { SingleImportStatement } from "@alloy-js/go";
 
 /**
  * Type guard to check if a TypeSpec Type is a time-related scalar
@@ -115,9 +115,7 @@ export function GoPackageDirectory({
       <SourceDirectory path={packageName}>
         {/* Main models file with proper import block */}
         <SourceFile path="models.go">
-          {needsTimeImport
-            ? <SingleImportStatement path="" local={true} />
-            : <></>}
+          {needsTimeImport ? <SingleImportStatement path="" local={true} /> : <></>}
           <For each={models}>
             {(model: Model) => (
               <GoStructDeclaration
@@ -142,7 +140,6 @@ export function GoPackageDirectory({
         )}
 
         {/* Handlers file - only if we have operations */}
-        {/* Temporarily disabled - fixing JSX issues
         {hasOperations && (
           <GoHandlerStub
             operations={operations}
@@ -151,7 +148,6 @@ export function GoPackageDirectory({
             program={program}
           />
         )}
-        */}
 
         {/* Interfaces file - only if we have operations */}
         {hasOperations && (

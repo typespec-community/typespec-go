@@ -242,20 +242,32 @@ export class EntityValidation {
   }
 
   /**
+   * Generic input validation helper - eliminates duplication
+   * SINGLE SOURCE OF TRUTH: Centralized input validation
+   */
+  private static validateObjectInput(
+    input: unknown,
+    label: string,
+  ): { isValid: boolean; errors: string[]; typedInput: any } {
+    const errors: string[] = [];
+    if (!input || typeof input !== "object") {
+      errors.push(`${label} must be an object`);
+      return { isValid: false, errors, typedInput: null };
+    }
+    return { isValid: true, errors: [], typedInput: input };
+  }
+
+  /**
    * Validate TypeSpec model structure
    */
   static validateTypeSpecModel(model: unknown): {
     isValid: boolean;
     errors: string[];
   } {
-    const errors: string[] = [];
+    const { isValid, errors, typedInput } = this.validateObjectInput(model, "Model");
+    if (!isValid) return { isValid, errors };
 
-    if (!model || typeof model !== "object") {
-      errors.push("Model must be an object");
-      return { isValid: false, errors };
-    }
-
-    const typedModel = model as { name: unknown; properties: unknown };
+    const typedModel = typedInput as { name: unknown; properties: unknown };
 
     if (!typedModel.name || typeof typedModel.name !== "string") {
       errors.push("Model must have a valid name");
@@ -277,14 +289,10 @@ export class EntityValidation {
     isValid: boolean;
     errors: string[];
   } {
-    const errors: string[] = [];
+    const { isValid, errors, typedInput } = this.validateObjectInput(field, "Field");
+    if (!isValid) return { isValid, errors };
 
-    if (!field || typeof field !== "object") {
-      errors.push("Field must be an object");
-      return { isValid: false, errors };
-    }
-
-    const typedField = field as { name: unknown; type: unknown; jsonTag: unknown };
+    const typedField = typedInput as { name: unknown; type: unknown; jsonTag: unknown };
 
     if (!typedField.name || typeof typedField.name !== "string") {
       errors.push("Field must have a valid name");

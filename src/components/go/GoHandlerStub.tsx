@@ -4,18 +4,18 @@
  * Replaces string-based generation with component-based architecture
  */
 
-import type {Operation, Program, Type} from "@typespec/compiler"
-import {capitalize} from "../../utils/strings.js"
+import type { Operation, Program } from "@typespec/compiler";
+import { SourceFile } from "@alloy-js/go";
 
 interface GoHandlerStubProps {
-	/** TypeSpec operations to convert to HTTP handlers */
-	operations: Operation[];
-	/** Service name for handler struct */
-	serviceName?: string;
-	/** Package name for imports */
-	packageName?: string;
-	/** TypeSpec program for accessing @doc decorators */
-	program?: Program;
+  /** TypeSpec operations to convert to HTTP handlers */
+  operations: Operation[];
+  /** Service name for handler struct */
+  serviceName?: string;
+  /** Package name for imports */
+  packageName?: string;
+  /** TypeSpec program for accessing @doc decorators */
+  program?: Program;
 }
 
 /**
@@ -24,15 +24,17 @@ interface GoHandlerStubProps {
  * Uses component-based generation instead of string manipulation
  */
 export function GoHandlerStub({
-	                              operations,
-	                              serviceName = "Service",
-	                              packageName = "api",
-	                              program,
-                              }: GoHandlerStubProps) {
-	const operationCount = operations.length;
-	const handlerCount = operations.filter(op => program && extractHttpMetadata(op, program)).length;
-	
-	return `package ${packageName}
+  operations,
+  serviceName = "Service",
+  packageName = "api",
+  program,
+}: GoHandlerStubProps) {
+  const operationCount = operations.length;
+  const handlerCount = operations.filter(
+    (op) => program && extractHttpMetadata(op, program),
+  ).length;
+
+  const content = `package ${packageName}
 
 import (
 	"context"
@@ -49,17 +51,19 @@ type ${serviceName} struct {
 // TODO: Implement handler generation for ${operationCount} operations
 // TODO: ${handlerCount} operations have HTTP metadata and need handlers
 `;
+
+  return <SourceFile path="handlers.go">{content}</SourceFile>;
 }
 
 /**
  * Extract HTTP metadata from TypeSpec operation (temporarily inline)
  */
 function extractHttpMetadata(operation: Operation, program: Program) {
-	// Placeholder for HTTP metadata extraction
-	// This would normally extract @get, @post, @put, @delete decorators
-	return {
-		method: "GET",
-		fullRoute: "/api/" + operation.name,
-		parameters: []
-	};
+  // Placeholder for HTTP metadata extraction
+  // This would normally extract @get, @post, @put, @delete decorators
+  return {
+    method: "GET",
+    fullRoute: "/api/" + operation.name,
+    parameters: [],
+  };
 }

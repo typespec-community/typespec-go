@@ -1,8 +1,8 @@
 import { defaultErrorHandler } from "./unified-errors.js";
 import { CleanTypeMapper } from "./clean-type-mapper.js";
-import type { TypeSpecPropertyNode } from "../types/typespec-domain.js";
+import type { TypeSpecPropertyNode, GeneratorModel } from "../types/typespec-domain.js";
 import { GeneratorUtils } from "./generator-utils.js";
-import type {GoEmitterResult} from "./error-types"
+import type { GoEmitterResult } from "./error-types";
 import { ErrorFactory } from "./error-factory";
 
 /**
@@ -14,13 +14,7 @@ export class StructGenerator {
    * Type-safe model generation
    * UNIFIED ERROR SYSTEM: Returns GoEmitterResult instead of throwing
    */
-  generateModel(model: {
-    name: string;
-    properties: ReadonlyMap<string, TypeSpecPropertyNode>;
-    template?: string; // Template definition like "<T>" or "PaginatedResponse<User>"
-    extends?: string; // Support Go struct embedding
-    propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>; // Support spread operator
-  }): GoEmitterResult {
+  generateModel(model: GeneratorModel): GoEmitterResult {
     // Input validation
     if (!model.name) {
       return ErrorFactory.createValidationError("Invalid model: name must be a non-empty string", {
@@ -55,13 +49,7 @@ export class StructGenerator {
    * Generate Go struct code from model definition
    * DELEGATES TO CLEAN TYPE MAPPER: No duplicate mapping logic
    */
-  private generateStructCode(model: {
-    name: string;
-    properties: ReadonlyMap<string, TypeSpecPropertyNode>;
-    template?: string;
-    extends?: string;
-    propertiesFromExtends?: ReadonlyMap<string, TypeSpecPropertyNode>;
-  }): string {
+  private generateStructCode(model: GeneratorModel): string {
     const lines: string[] = [];
 
     // Package declaration

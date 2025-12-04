@@ -53,10 +53,7 @@ export function GoEnumDeclaration({
       {!useIota && (
         <VariableDeclarationGroup>
           {members.map((member) => (
-            <VariableDeclaration
-              name={`${typeName}${capitalize(member.name)}`}
-              type={typeName}
-            >
+            <VariableDeclaration name={`${typeName}${capitalize(member.name)}`} type={typeName}>
               {isStringEnum ? `"${member.value}"` : member.value}
             </VariableDeclaration>
           ))}
@@ -66,10 +63,7 @@ export function GoEnumDeclaration({
       {useIota && (
         <>
           {members.map((member, index) => (
-            <VariableDeclaration
-              name={`${typeName}${capitalize(member.name)}`}
-              type={typeName}
-            >
+            <VariableDeclaration name={`${typeName}${capitalize(member.name)}`} type={typeName}>
               {index === 0 ? "iota" : null}
             </VariableDeclaration>
           ))}
@@ -77,14 +71,17 @@ export function GoEnumDeclaration({
       )}
 
       {isStringEnum && (
-        <FunctionDeclaration name={`${typeName}String`}>
-          <FunctionReceiver name={`e`} type={typeName} />
-          string
+        <FunctionDeclaration name="String" receiver={`e ${typeName}`} returns="string">
+          {`return string(e)`}
         </FunctionDeclaration>
       )}
 
-      <FunctionDeclaration name={`${typeName}IsValid`}>
-        <FunctionReceiver name={`e ${typeName}`} type={"bool"} />
+      <FunctionDeclaration name="IsValid" receiver={`e ${typeName}`} returns="bool">
+        {`switch e {
+${members.map((m) => `case ${typeName}${capitalize(m.name)}:\n\treturn true`).join("\n")}
+default:
+\treturn false
+}`}
       </FunctionDeclaration>
     </>
   );
