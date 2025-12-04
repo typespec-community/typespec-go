@@ -4,17 +4,17 @@
  * Supports discriminated unions with type field
  */
 
-import type { Union, UnionVariant, Program } from "@typespec/compiler";
+import type { Union, UnionVariant, Program, TemplateParameter } from "@typespec/compiler";
 import { For } from "@alloy-js/core";
 import { capitalize } from "../../utils/strings.js";
 import { 
   TypeDeclaration, 
+  TypeParameter,
   StructDeclaration, 
   StructMember,
   FunctionDeclaration,
   FunctionReceiver,
-  SourceFile,
-  GenericParameter
+  SourceFile
 } from "@alloy-js/go";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import { TypeConstraint, extractTemplateParameters, extractTemplateConstraints } from "../TypeConstraint.js";
@@ -29,9 +29,9 @@ interface GoUnionDeclarationProps {
   /** TypeSpec program for accessing @doc decorators */
   program?: Program;
   /** Template parameters for generic union types */
-  templateParameters?: any[];
+  templateParameters?: TemplateParameter[];
   /** Type constraints for template parameters */
-  templateConstraints?: Array<{ param: any; constraints: any[] }>;
+  templateConstraints?: Array<{ param: TemplateParameter; constraints: any[] }>;
 }
 
 /**
@@ -62,16 +62,14 @@ export function GoUnionDeclaration({
     <TypeDeclaration name={typeName} doc={interfaceDoc}>
       {extractedParams.length > 0 ? (
         // Generic union with type parameters
-        <TypeParameter params={extractedParams} constraints={extractedConstraints}>
-          interface {{
-            // Generic union implementation
-          }}
-        </TypeParameter>
+        `interface {
+          // Generic union implementation
+        }`
       ) : (
         // Simple union
-        interface {{
+        `interface {
           // Test union implementation
-        }}
+        }`
       )}
     </TypeDeclaration>
   );
