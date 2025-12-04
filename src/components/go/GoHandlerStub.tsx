@@ -1,12 +1,23 @@
 /**
  * Go Handler Stub Component
- * Generates HTTP handler functions from TypeSpec operations
- * Provides scaffolding for HTTP handler implementations
+ * Generates HTTP handler functions from TypeSpec operations using Alloy-JS Go components
+ * Replaces string-based generation with component-based architecture
  */
 
 import type { Operation, Type, Program, ModelProperty } from "@typespec/compiler";
+import { For, refkey, Reference } from "@alloy-js/core";
+import { 
+  SourceFile, 
+  FunctionDeclaration, 
+  Parameter, 
+  VarDeclaration, 
+  IfStatement, 
+  ReturnStatement,
+  CallExpression,
+  ExpressionStatement
+} from "@alloy-js/go";
 import { capitalize } from "../../utils/strings.js";
-import { getDocumentation } from "../../utils/typespec-docs.js";
+import { getDocumentation } from "../../utils/typespec-utils.js";
 
 interface GoHandlerStubProps {
   /** TypeSpec operations to convert to HTTP handlers */
@@ -29,37 +40,52 @@ interface GoHandlerMethod {
   /** Method parameters */
   parameters: HandlerParameter[];
   /** Return type */
-  returnType: string;
+  returnType: string | any;
   /** Documentation comment */
   doc?: string;
+  /** TypeSpec operation for refkey tracking */
+  operation?: Operation;
 }
 
 interface HandlerParameter {
   /** Parameter name */
   name: string;
   /** Go type */
-  type: string;
+  type: string | any;
   /** Source (path, query, body) */
   source: string;
+  /** TypeSpec property for refkey tracking */
+  property?: ModelProperty;
 }
 
 /**
- * Go Handler Stub Component
- * Generates HTTP handler functions from TypeSpec operations
+ * Go Handler Stub Component using Alloy-JS
+ * Generates complete HTTP handler file with proper Go code structure
+ * Uses component-based generation instead of string manipulation
  */
 export function GoHandlerStub({
   operations,
   serviceName = "Service",
   packageName = "api",
   program,
-}: GoHandlerStubProps): string {
+}: GoHandlerStubProps) {
   const handlers = operations.map((op) => operationToHandler(op, program));
+  const serviceRef = refkey(serviceName);
 
-  return generateHandlerCode(serviceName, handlers, packageName);
+  return (
+    <SourceFile path="handlers.go" package={packageName}>
+      <GoHandlerContent 
+        handlers={handlers} 
+        serviceName={serviceName}
+        packageName={packageName}
+        serviceRef={serviceRef}
+      />
+    </SourceFile>
+  );
 }
 
 /**
- * Convert TypeSpec Operation to Go HTTP handler
+ * Convert TypeSpec Operation to Go HTTP handler with refkey tracking
  */
 function operationToHandler(operation: Operation, program?: Program): GoHandlerMethod {
   const operationName = operation.name;
@@ -69,6 +95,7 @@ function operationToHandler(operation: Operation, program?: Program): GoHandlerM
   const parameters = extractHandlerParameters(operation);
   const returnType = mapHandlerReturnType(operation);
   const doc = program && getDocumentation ? getDocumentation(program, operation) : undefined;
+  const operationRef = refkey(operation);
 
   return {
     name: handlerName,
@@ -77,6 +104,7 @@ function operationToHandler(operation: Operation, program?: Program): GoHandlerM
     parameters,
     returnType,
     doc,
+    operation: operation,
   };
 }
 
@@ -177,9 +205,9 @@ function inferParameterSource(name: string, prop: ModelProperty): string {
 }
 
 /**
- * Map handler return type
+ * Map handler return type using Alloy-JS components
  */
-function mapHandlerReturnType(operation: Operation): string {
+function mapHandlerReturnType(operation: Operation): string | any {
   if (operation.returnType) {
     const goType = mapTypeToGo(operation.returnType);
     return goType !== "" ? goType : "void";
