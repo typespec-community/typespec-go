@@ -5,19 +5,15 @@
  */
 
 import type {Operation, Program, Type} from "@typespec/compiler"
-// Temporarily disable all JSX-related imports
-// import {For, refkey, Reference} from "@alloy-js/core"
-// import * as go from "@alloy-js/go"
-// const { ImportStatements } = go
+import {For, refkey} from "@alloy-js/core"
+import * as go from "@alloy-js/go"
+const { ImportStatements, Code } = go
 import {capitalize} from "../../utils/strings.js"
 import {getDocumentation} from "../../utils/typespec-utils.js"
 import {extractHttpMetadata} from "../../utils/typespec-http-utils.js"
-import type {JSX} from "@alloy-js/core/jsx-runtime"
 import type {GoHandlerMethod} from "./GoHandlerMethod"
 import {GoHandlerMethodComponent} from "./GoHandlerMethodComponent"
 import {GoRouteRegistrationComponent} from "./GoRouteRegistrationComponent"
-import {For, refkey} from "@alloy-js/core"
-import {ImportStatements} from "@alloy-js/go"
 
 interface GoHandlerStubProps {
 	/** TypeSpec operations to convert to HTTP handlers */
@@ -175,30 +171,30 @@ function GoHandlerContent({
 	return (
 		<>
 			{/* Package declaration */}
-			{`package ${packageName}
+			<Code>{`package ${packageName}
 
-`}
+`}</Code>
 
 			{/* Imports */}
 			<ImportStatements
 				records={new Map([
-					{package: "context", wildcard: false},
-					{package: "encoding/json", wildcard: false},
-					{package: "net/http", wildcard: false},
-					{package: "time", wildcard: false},
+					["context", { wildcard: false }],
+					["encoding/json", { wildcard: false }],
+					["net/http", { wildcard: false }],
+					["time", { wildcard: false }],
 				])}
 			/>
 
 			{/* Service struct */}
-			{`// ${serviceName} provides HTTP handlers for API operations
+			<Code>{`// ${serviceName} provides HTTP handlers for API operations
 type ${serviceName} struct {
 \t// Add service dependencies here (database, repositories, etc.)
 }
 
-`}
+`}</Code>
 
 			{/* Generate handler methods */}
-			<For each={handlers}>
+			<For each={validHandlers}>
 				{(handler: GoHandlerMethod) => (
 					<GoHandlerMethodComponent
 						handler={handler}
@@ -209,7 +205,7 @@ type ${serviceName} struct {
 			</For>
 
 			{/* Route registration helper */}
-			<GoRouteRegistrationComponent handlers={handlers} serviceName={serviceName}/>
+			<GoRouteRegistrationComponent handlers={validHandlers} serviceName={serviceName}/>
 		</>
 	)
 }
