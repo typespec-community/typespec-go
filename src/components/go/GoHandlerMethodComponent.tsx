@@ -1,6 +1,8 @@
 // Removed Match import - replacing with conditional logic
-import {FunctionDeclaration} from "@alloy-js/go"
-import {SingleLineCommentBlock} from "@alloy-js/typescript"
+import * as go from "@alloy-js/go"
+const { FunctionDeclaration } = go
+import * as ts from "@alloy-js/typescript"
+const { SingleLineCommentBlock } = ts
 import {refkey} from "@alloy-js/core"
 import {GoHandlerMethod} from "./GoHandlerMethod"
 

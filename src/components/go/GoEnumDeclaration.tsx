@@ -7,13 +7,14 @@
 import type {Enum, Program} from "@typespec/compiler"
 import {capitalize} from "../../utils/strings.js"
 import {getDocumentation} from "../../utils/typespec-utils.js"
-import {
+import * as go from "@alloy-js/go"
+const {
 	FunctionDeclaration,
 	FunctionReceiver,
 	TypeDeclaration,
 	VariableDeclaration,
 	VariableDeclarationGroup,
-} from "@alloy-js/go"
+} = go
 
 interface GoEnumDeclarationProps {
 	/** TypeSpec enum to convert to Go constants */
@@ -57,7 +58,7 @@ export function GoEnumDeclaration({
 						<VariableDeclaration
 							name={`${typeName}${capitalize(member.name)}`}
 							type={typeName}
-							value={isStringEnum ? `"${member.value}"` : member.value}
+							initializer={isStringEnum ? `"${member.value}"` : member.value}
 						/>
 					))}
 				</VariableDeclarationGroup>
@@ -69,7 +70,7 @@ export function GoEnumDeclaration({
 						<VariableDeclaration
 							name={`${typeName}${capitalize(member.name)}`}
 							type={typeName}
-							value={index === 0 ? "iota" : undefined}
+							initializer={index === 0 ? "iota" : undefined}
 						/>
 					))}
 				</>
