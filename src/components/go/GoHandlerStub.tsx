@@ -73,14 +73,12 @@ export function GoHandlerStub({
   const serviceRef = refkey(serviceName);
 
   return (
-    <SourceFile path="handlers.go" package={packageName}>
-      <GoHandlerContent 
-        handlers={handlers} 
-        serviceName={serviceName}
-        packageName={packageName}
-        serviceRef={serviceRef}
-      />
-    </SourceFile>
+    <GoHandlerContent 
+      handlers={handlers} 
+      serviceName={serviceName}
+      packageName={packageName}
+      serviceRef={serviceRef}
+    />
   );
 }
 
@@ -162,7 +160,7 @@ function inferRoute(operationName: string): string {
 }
 
 /**
- * Extract handler parameters from operation
+ * Extract handler parameters from operation using Alloy-JS refkeys
  */
 function extractHandlerParameters(operation: Operation): HandlerParameter[] {
   const params: HandlerParameter[] = [];
@@ -180,6 +178,7 @@ function extractHandlerParameters(operation: Operation): HandlerParameter[] {
         name: toCamelCase(name),
         type: mapTypeToGo(prop.type),
         source,
+        property: prop,
       });
     }
   }
@@ -216,9 +215,11 @@ function mapHandlerReturnType(operation: Operation): string | any {
 }
 
 /**
- * Map TypeSpec type to Go type
+ * Map TypeSpec type to Go type using Alloy-JS refkey system
  */
-function mapTypeToGo(type: Type): string {
+function mapTypeToGo(type: Type): string | any {
+  const typeRef = refkey(type);
+  
   switch (type.kind) {
     case "String":
       return "string";
@@ -230,11 +231,11 @@ function mapTypeToGo(type: Type): string {
       return mapScalarToGo(type.name || "");
     case "Model":
       if (type.name === "void") return "";
-      return type.name || "interface{}";
+      return <Reference refkey={typeRef} type />;
     case "Enum":
-      return type.name || "string";
+      return <Reference refkey={typeRef} type />;
     case "Union":
-      return type.name || "interface{}";
+      return <Reference refkey={typeRef} type />;
     default:
       return "interface{}";
   }
@@ -273,6 +274,181 @@ function mapScalarToGo(name: string): string {
  */
 function toCamelCase(s: string): string {
   return s.charAt(0).toLowerCase() + s.slice(1);
+}
+
+/**
+ * Alloy-JS Component for Go handler content generation
+ * Replaces string-based generation with declarative components
+ */
+interface GoHandlerContentProps {
+  handlers: GoHandlerMethod[];
+  serviceName: string;
+  packageName: string;
+  serviceRef: any;
+}
+
+function GoHandlerContent({
+  handlers,
+  serviceName,
+  packageName,
+  serviceRef,
+}: GoHandlerContentProps) {
+  return (
+    <>
+      {/* Package declaration */}
+      {`package ${packageName}
+
+`}
+
+      {/* Imports */}
+      {`import (
+\t"${packageName}" // Generated models
+\t"context"
+\t"encoding/json" 
+\t"net/http"
+\t"time"
+)
+
+`}
+
+      {/* Service struct */}
+      {`// ${serviceName} provides HTTP handlers for API operations
+type ${serviceName} struct {
+\t// Add service dependencies here (database, repositories, etc.)
+}
+
+`}
+
+      {/* Generate handler methods */}
+      <For each={handlers}>
+        {(handler: GoHandlerMethod) => (
+          <GoHandlerMethodComponent 
+            handler={handler} 
+            serviceName={serviceName}
+            serviceRef={serviceRef}
+          />
+        )}
+      </For>
+
+      {/* Route registration helper */}
+      <GoRouteRegistrationComponent 
+        handlers={handlers} 
+        serviceName={serviceName}
+      />
+    </>
+  );
+}
+
+/**
+ * Component for individual handler method generation
+ */
+function GoHandlerMethodComponent({ 
+  handler, 
+  serviceName,
+  serviceRef 
+}: { 
+  handler: GoHandlerMethod; 
+  serviceName: string;
+  serviceRef: any;
+}) {
+  return (
+    <>
+      {/* Handler documentation */}
+      {handler.doc ? (
+        `// ${handler.name} ${handler.doc}`
+      ) : (
+        `// ${handler.name} handles ${handler.httpMethod} ${handler.route}`
+      )}
+      
+      {/* Function signature */}
+      <FunctionDeclaration 
+        name={handler.name}
+        receiver={`s *${serviceName}`}
+        parameters={handler.parameters.map(p => ({
+          name: p.name,
+          type: p.type
+        }))}
+        returnType=""
+      >
+        {/* Handler implementation placeholder */}
+        {`\t// TODO: Implement ${handler.name} handler with business logic
+\t// Route: ${handler.httpMethod} ${handler.route}
+
+`}
+
+        <IfStatement condition={handler.httpMethod === "GET"}>
+          {`\t// Example implementation:
+\t// result, err := s.service.${handler.name.slice(0, -7)}(ctx)
+\t// if err != nil {
+\t// \thttp.Error(w, err.Error(), http.StatusInternalServerError)
+\t// \treturn
+\t// }
+\t// w.Header().Set("Content-Type", "application/json")
+\t// json.NewEncoder(w).Encode(result)
+`}
+        </IfStatement>
+
+        <IfStatement condition={handler.httpMethod === "POST"}>
+          {`\t// Example implementation:
+\t// var input ${handler.returnType}
+\t// if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+\t// \thttp.Error(w, "Invalid JSON", http.StatusBadRequest)
+\t// \treturn
+\t// }
+\t// result, err := s.service.Create${handler.returnType}(ctx, input)
+\t// if err != nil {
+\t// \thttp.Error(w, err.Error(), http.StatusInternalServerError)
+\t// \treturn
+\t// }
+\t// w.Header().Set("Content-Type", "application/json")
+\t// w.WriteHeader(http.StatusCreated)
+\t// json.NewEncoder(w).Encode(result)
+`}
+        </IfStatement>
+
+        <IfStatement condition={!["GET", "POST"].includes(handler.httpMethod)}>
+          {`\t// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation
+\tw.WriteHeader(http.StatusNotImplemented)
+\tjson.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})
+`}
+        </IfStatement>
+      </FunctionDeclaration>
+
+      {`
+
+`}
+    </>
+  );
+}
+
+/**
+ * Component for route registration function
+ */
+function GoRouteRegistrationComponent({ 
+  handlers, 
+  serviceName 
+}: { 
+  handlers: GoHandlerMethod[]; 
+  serviceName: string;
+}) {
+  return (
+    <>
+      {`// RegisterRoutes registers all handlers with given router
+func (s *${serviceName}) RegisterRoutes(mux *http.ServeMux) {
+`}
+
+      <For each={handlers}>
+        {(handler: GoHandlerMethod) => (
+          <ExpressionStatement>
+            {`\tmux.HandleFunc("${handler.route}", s.${handler.name})`}
+          </ExpressionStatement>
+        )}
+      </For>
+
+      {`}
+`}
+    </>
+  );
 }
 
 /**
