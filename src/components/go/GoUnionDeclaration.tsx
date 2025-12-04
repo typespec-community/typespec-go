@@ -71,10 +71,7 @@ export function GoUnionDeclaration({
       doc={interfaceDoc}
       typeParameters={typeParameters.length > 0 ? typeParameters : undefined}
     >
-      {`interface {
-        // Sealed interface for union type
-        getTypeName() string
-      }`}
+      {/* Union interface placeholder */}
     </TypeDeclaration>
   );
 }

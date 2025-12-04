@@ -137,7 +137,7 @@ export class UnionGenerator {
 
 		// Generate variant structs
 		for (const variant of unionModel.variants) {
-			const variantName = this.startVariantStruct(variant, unionModel.name, lines)
+			const variantName = UnionGenerator.getVariantName(variant)
 
 			lines.push(`// ${variantName} - ${unionModel.name} variant`)
 			lines.push(`type ${variantName} struct {`)

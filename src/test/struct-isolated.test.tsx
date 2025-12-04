@@ -31,18 +31,15 @@ test("GoStructDeclaration isolation test", () => {
     ]),
   };
 
-  expect(() => {
-    const result = render(
-      <Output>
-        <ModuleDirectory name="github.com/test/api">
-          <SourceDirectory path="models">
-            <SourceFile path="user.go">
-              <GoStructDeclaration model={mockModel} />
-            </SourceFile>
-          </SourceDirectory>
-        </ModuleDirectory>
-      </Output>
-    );
-    console.log("✅ GoStructDeclaration render successful");
-  }).not.toThrow();
+  const result = GoStructDeclaration({ 
+    model: mockModel,
+    program: undefined 
+  });
+  
+  console.log("✅ GoStructDeclaration render successful");
+  console.log("Generated result:", result);
+  
+  expect(result).toContain("type TestUser struct");
+  expect(result).toContain('ID string `json:"id"`');
+  expect(result).toContain('Name string `json:"name"`');
 });

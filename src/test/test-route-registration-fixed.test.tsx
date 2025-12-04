@@ -1,5 +1,11 @@
+/**
+ * Test GoRouteRegistrationComponent with proper Go context
+ */
+
+import { test, expect } from "vitest";
 import { render, Output } from "@alloy-js/core";
-import { GoRouteRegistrationComponent } from "./dist/components/go/GoRouteRegistrationComponent.js";
+import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
+import { GoRouteRegistrationComponent } from "../src/components/go/GoRouteRegistrationComponent.js";
 
 // Mock GoHandlerMethod for testing
 const mockHandlers = [
@@ -22,7 +28,7 @@ const mockHandlers = [
 ];
 
 describe("GoRouteRegistrationComponent", () => {
-  it("should generate proper Go route registration function", async () => {
+  it("should generate proper Go route registration function", () => {
     const result = render(
       <Output>
         <ModuleDirectory name="github.com/test/api">

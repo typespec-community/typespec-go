@@ -10,6 +10,8 @@
     "@typespec/compiler": "^1.6.0",
     "@typespec/emitter-framework": "^0.14.0-dev.0",
     "@typespec/http": "^1.6.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
     "zod": "^4.1.13"
   },
   "devDependencies": {

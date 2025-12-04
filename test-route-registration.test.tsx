@@ -1,5 +1,6 @@
 import { describe, it, expect } from "bun:test";
 import { render } from "@alloy-js/core";
+import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoRouteRegistrationComponent } from "./dist/components/go/GoRouteRegistrationComponent.js";
 
 // Mock GoHandlerMethod for testing
@@ -25,10 +26,18 @@ const mockHandlers = [
 describe("GoRouteRegistrationComponent", () => {
   it("should generate proper Go route registration function", () => {
     const result = render(
-      <GoRouteRegistrationComponent 
-        handlers={mockHandlers} 
-        serviceName="UserService" 
-      />
+      <Output>
+        <ModuleDirectory path="api">
+          <SourceDirectory>
+            <SourceFile path="handlers.go">
+              <GoRouteRegistrationComponent 
+                handlers={mockHandlers} 
+                serviceName="UserService" 
+              />
+            </SourceFile>
+          </SourceDirectory>
+        </ModuleDirectory>
+      </Output>
     );
     
     console.log("Generated Go code:");

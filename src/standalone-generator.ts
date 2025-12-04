@@ -12,7 +12,6 @@ import {defaultErrorHandler, ErrorFactory, GoEmitterResult} from "./domain/unifi
 import type {TypeSpecPropertyNode, TypeSpecTypeNode} from "./types/typespec-domain.js"
 import {StructGenerator} from "./domain/struct-generator.js"
 import {UnionGenerator} from "./domain/union-generator.js"
-import {ComponentUnionGenerator} from "./domain/component-union-generator.js"
 
 /**
  * Type-safe Standalone Generator with delegation architecture
@@ -21,12 +20,10 @@ import {ComponentUnionGenerator} from "./domain/component-union-generator.js"
 export class StandaloneGoGenerator {
 	private structGenerator: StructGenerator
 	private unionGenerator: UnionGenerator
-	private componentUnionGenerator: ComponentUnionGenerator
 
 	constructor() {
 		this.structGenerator = new StructGenerator()
 		this.unionGenerator = new UnionGenerator()
-		this.componentUnionGenerator = new ComponentUnionGenerator()
 	}
 
 	/**
@@ -46,7 +43,6 @@ export class StandaloneGoGenerator {
 	/**
 	 * Generate Go union type (sealed interface pattern)
 	 * UNIFIED ERROR SYSTEM: Returns GoEmitterResult instead of throwing
-	 * Uses ComponentUnionGenerator for Alloy-based generation
 	 */
 	generateUnionType(unionModel: {
 		name: string;
@@ -54,13 +50,6 @@ export class StandaloneGoGenerator {
 		variants: Array<{ name: string; type: TypeSpecTypeNode }>;
 		properties?: ReadonlyMap<string, TypeSpecPropertyNode>;
 	}): GoEmitterResult {
-		// Try component-based generation first
-		const componentResult = this.componentUnionGenerator.generateUnionType(unionModel);
-		if (componentResult._tag === "success") {
-			return componentResult;
-		}
-
-		// Fallback to string-based generation
 		return this.unionGenerator.generateUnionType(unionModel)
 	}
 
