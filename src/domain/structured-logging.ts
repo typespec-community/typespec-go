@@ -92,15 +92,7 @@ export class StructuredLogger {
    * Log error message
    * PRODUCTION: Error information for monitoring
    */
-  static error(
-    context: LogContext,
-    message: string,
-    details?: Record<string, unknown>,
-    errorId?: string,
-  ): void {
-    const entry = this.createLogEntry(LogLevel.ERROR, context, message, details, errorId);
-    this.writeLog(entry);
-  }
+
 
   /**
    * Generic log level writer - eliminates duplication
