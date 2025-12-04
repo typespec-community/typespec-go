@@ -1,6 +1,6 @@
-import {For, StatementList} from "@alloy-js/core"
+import {For, refkey} from "@alloy-js/core"
+import {FunctionDeclaration, FunctionReceiver} from "@alloy-js/go"
 import {GoHandlerMethod} from "./GoHandlerMethod"
-import {SingleLineCommentBlock} from "@alloy-js/typescript"
 
 type GoRouteRegistrationComponentProps = {
 	handlers: GoHandlerMethod[];
@@ -9,22 +9,26 @@ type GoRouteRegistrationComponentProps = {
 
 /**
  * Component for route registration function
+ * 100% Alloy native Go function generation
  */
 export function GoRouteRegistrationComponent({handlers, serviceName}: GoRouteRegistrationComponentProps) {
-	return <>
-		<SingleLineCommentBlock>RegisterRoutes registers all handlers with given router</SingleLineCommentBlock>
-		{`func (s *${serviceName}) RegisterRoutes(mux *http.ServeMux) {
-`}
-
-		<For each={handlers}>
-			{(handler: GoHandlerMethod) => <StatementList>
-				{`\tmux.HandleFunc("${handler.route}", s.${handler.name})`}
-			</StatementList>}
-		</For>
-
-		{`}
-`}
-	</>
+	const serviceRef = refkey(serviceName)
+	
+	return (
+		<FunctionDeclaration
+			name="RegisterRoutes"
+			doc="RegisterRoutes registers all handlers with given router"
+		>
+			<FunctionReceiver name={`s *${serviceName}`} />
+			{`mux *http.ServeMux`}
+			
+			<For each={handlers}>
+				{(handler: GoHandlerMethod) => (
+					{`mux.HandleFunc("${handler.route}", s.${handler.name})`}
+				)}
+			</For>
+		</FunctionDeclaration>
+	)
 }
 
 

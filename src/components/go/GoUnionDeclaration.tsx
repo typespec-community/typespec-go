@@ -13,9 +13,11 @@ import {
   StructMember,
   FunctionDeclaration,
   FunctionReceiver,
-  SourceFile
+  SourceFile,
+  GenericParameter
 } from "@alloy-js/go";
 import { getDocumentation } from "../../utils/typespec-utils.js";
+import { TypeConstraint, extractTemplateParameters, extractTemplateConstraints } from "../TypeConstraint.js";
 
 interface GoUnionDeclarationProps {
   /** TypeSpec union to convert to Go interface */
@@ -26,6 +28,10 @@ interface GoUnionDeclarationProps {
   discriminator?: string;
   /** TypeSpec program for accessing @doc decorators */
   program?: Program;
+  /** Template parameters for generic union types */
+  templateParameters?: any[];
+  /** Type constraints for template parameters */
+  templateConstraints?: Array<{ param: any; constraints: any[] }>;
 }
 
 /**
@@ -37,6 +43,8 @@ export function GoUnionDeclaration({
   packageName = "api",
   discriminator,
   program,
+  templateParameters = [],
+  templateConstraints = [],
 }: GoUnionDeclarationProps) {
   const typeName = union.name || "UnnamedUnion";
   const variants = Array.from(union.variants?.values() || []);
@@ -46,12 +54,25 @@ export function GoUnionDeclaration({
   const docComment = doc ? doc + "" : "";
   const interfaceDoc = "// " + typeName + " is a sealed interface " + docComment + "representing a union type";
 
-  // Simple test version - just type declaration for now
+  // Extract template parameters if this is a template union
+  const extractedParams = templateParameters.length > 0 ? templateParameters : [];
+  const extractedConstraints = templateConstraints.length > 0 ? templateConstraints : [];
+
   return (
     <TypeDeclaration name={typeName} doc={interfaceDoc}>
-      interface {
-        // Test union implementation
-      }
+      {extractedParams.length > 0 ? (
+        // Generic union with type parameters
+        <TypeParameter params={extractedParams} constraints={extractedConstraints}>
+          interface {{
+            // Generic union implementation
+          }}
+        </TypeParameter>
+      ) : (
+        // Simple union
+        interface {{
+          // Test union implementation
+        }}
+      )}
     </TypeDeclaration>
   );
 }

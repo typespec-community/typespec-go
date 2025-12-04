@@ -1,4 +1,4 @@
-import {Match} from "@alloy-js/core/components"
+// Removed Match import - replacing with conditional logic
 import {FunctionDeclaration} from "@alloy-js/go"
 import {SingleLineCommentBlock} from "@alloy-js/typescript"
 import {refkey} from "@alloy-js/core"
@@ -42,7 +42,7 @@ export function GoHandlerMethodComponent({
 `}
 
 				{`// Handler implementation:`}
-				<Match when={handler.httpMethod === "GET"}>
+				{handler.httpMethod === "GET" ? 
 					{`\t// Example implementation:
 \t// result, err := s.service.${handler.name.slice(0, -7)}(ctx)
 \t// if err != nil {
@@ -51,10 +51,8 @@ export function GoHandlerMethodComponent({
 \t// }
 \t// w.Header().Set("Content-Type", "application/json")
 \t// json.NewEncoder(w).Encode(result)
-`}
-				</Match>
-
-				<Match when={handler.httpMethod === "POST"}>
+`} : 
+				handler.httpMethod === "POST" ?
 					{`\t// Example implementation:
 \t// var input ${handler.returnType}
 \t// if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -69,16 +67,13 @@ export function GoHandlerMethodComponent({
 \t// w.Header().Set("Content-Type", "application/json")
 \t// w.WriteHeader(http.StatusCreated)
 \t// json.NewEncoder(w).Encode(result)
-`}
-				</Match>
-
-				<Match else>
+`} :
 					{`\t// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation
 \tw.WriteHeader(http.StatusNotImplemented)
 \tjson.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})
 `}
-				</Match>
-				<SingleLineCommentBlock>End Switch replacement</SingleLineCommentBlock>
+				}
+				
 			</FunctionDeclaration>
 
 			{`\n`}

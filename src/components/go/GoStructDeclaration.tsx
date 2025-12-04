@@ -195,9 +195,7 @@ function mapTypeSpecToGoType(type: Type): any {
 				const elementType = getTypeFromTemplateArg(type.templateMapper.args?.[0])
 				if (elementType) {
 					const elementTypeRef = mapTypeSpecToGoType(elementType)
-					return (
-						<>[]{elementTypeRef}</> // JSX syntax for slice types
-					)
+					return `[]${elementTypeRef}` // Template literal for slice types
 				}
 				return "[]interface{}"
 			}
@@ -208,11 +206,7 @@ function mapTypeSpecToGoType(type: Type): any {
 				const valueType = getTypeFromTemplateArg(type.templateMapper.args?.[1])
 				const goKey = keyType ? mapTypeSpecToGoType(keyType) : "string"
 				const goValue = valueType ? mapTypeSpecToGoType(valueType) : "interface{}"
-				return (
-					<>
-						map[{goKey}]{goValue}
-					</> // JSX syntax for map types
-				)
+				return `map[${goKey}]${goValue}` // Template literal for map types
 			}
 
 			// Reference to other model - Alloy.js handles import
