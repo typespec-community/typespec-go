@@ -212,27 +212,6 @@ export class DevelopmentLogger {
   }
 
   /**
-   * Generic development log level writer - eliminates duplication
-   * SINGLE SOURCE OF TRUTH: Centralized development log handling
-   */
-  private static writeDevelopmentLogLevel(level: LogLevel, output: string): void {
-    switch (level) {
-      case LogLevel.DEBUG:
-        console.log(output);
-        break;
-      case LogLevel.INFO:
-        console.log(output);
-        break;
-      case LogLevel.WARN:
-        console.warn(output);
-        break;
-      case LogLevel.ERROR:
-        console.error(output);
-        break;
-    }
-  }
-
-  /**
    * Pretty log development message
    * DEVELOPMENT: Human-readable debugging output
    */
@@ -263,37 +242,6 @@ export class DevelopmentLogger {
  */
 export class Logger {
   private static isDevelopment = process.env.NODE_ENV !== "production";
-
-  /**
-   * Generic logger method factory - eliminates duplication
-   * SINGLE SOURCE OF TRUTH: Centralized environment-aware logging
-   */
-  private static logWithLevel(
-    level: LogLevel,
-    context: LogContext,
-    message: string,
-    details?: Record<string, unknown>,
-    errorId?: string,
-  ): void {
-    if (this.isDevelopment) {
-      DevelopmentLogger.log(level, context, message, details);
-    } else {
-      switch (level) {
-        case LogLevel.DEBUG:
-          StructuredLogger.debug(context, message, details);
-          break;
-        case LogLevel.INFO:
-          StructuredLogger.info(context, message, details);
-          break;
-        case LogLevel.WARN:
-          StructuredLogger.warn(context, message, details);
-          break;
-        case LogLevel.ERROR:
-          StructuredLogger.error(context, message, details, errorId);
-          break;
-      }
-    }
-  }
 
   /**
    * Generic logger method factory - eliminates duplication
