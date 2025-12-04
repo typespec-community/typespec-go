@@ -19,7 +19,7 @@ export function GoHandlerMethodComponent({
 	return (
 		<>
 			{/* Handler documentation */}
-			<SingleLineCommentBlock>{handler.name} {handler.doc || `handles ${handler.httpMethod} ${handler.route}`}</SingleLineCommentBlock>
+			<SingleLineCommentBlock>{handler.name + " " + (handler.doc || `handles ${handler.httpMethod} ${handler.route}`)}</SingleLineCommentBlock>
 
 			{/* Function signature */}
 			<FunctionDeclaration
