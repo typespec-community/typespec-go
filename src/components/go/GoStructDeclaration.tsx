@@ -56,13 +56,13 @@ export function GoStructDeclaration({
 
             if (prop.type.kind === "Model") {
               // Model type - Reference for automatic import
-              goTypeElement = <Reference refkey={typeRef} typeRef />;
+              goTypeElement = <Reference refkey={typeRef} />;
             } else if (prop.type.kind === "Enum") {
               // Enum type - Reference for automatic import
-              goTypeElement = <Reference refkey={typeRef} typeRef />;
+              goTypeElement = <Reference refkey={typeRef} />;
             } else if (prop.type.kind === "Union") {
               // Union type - Reference for automatic import
-              goTypeElement = <Reference refkey={typeRef} typeRef />;
+              goTypeElement = <Reference refkey={typeRef} />;
             } else {
               // Built-in types - Use native Go types (no import needed)
               goTypeElement = mapTypeSpecToGoType(prop.type);
@@ -70,7 +70,7 @@ export function GoStructDeclaration({
 
             // Add pointer for optional model/struct fields with Reference
             const shouldUsePointer = prop.optional && usePointersForOptional && isNestedModelType(prop.type);
-            const finalType = shouldUsePointer ? <Reference refkey={typeRef} typeRef pointer /> : goTypeElement;
+            const finalType = shouldUsePointer ? <Reference refkey={typeRef} pointer /> : goTypeElement;
 
             // Ensure proper JSON tag format: `json:"name"` or `json:"name,omitempty"`
             const jsonTagValue = prop.optional ? `${prop.name},omitempty` : prop.name;

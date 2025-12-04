@@ -12,7 +12,7 @@ import { GoEnumDeclaration } from "./GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "./GoUnionDeclaration.js";
 import { GoModFile } from "./GoModFile.js";
 import { GoInterfaceDeclaration } from "./GoInterfaceDeclaration.js";
-import { GoHandlerStub } from "./GoHandlerStub.js";
+// import { GoHandlerStub } from "./GoHandlerStub.js"; // Temporarily disabled - fixing JSX issues
 import { capitalize } from "../../utils/strings.js";
 
 /**
@@ -143,16 +143,12 @@ export function GoPackageDirectory({
 
         {/* Handlers file - only if we have operations */}
         {hasOperations && (
-          <SourceFile path="handlers.go">
-            {
-              <GoHandlerStub
-                operations={operations}
-                serviceName={`${capitalize(packageName)}Service`}
-                packageName={packageName}
-                program={program}
-              />
-            }
-          </SourceFile>
+          <GoHandlerStub
+            operations={operations}
+            serviceName={`${capitalize(packageName)}Service`}
+            packageName={packageName}
+            program={program}
+          />
         )}
 
         {/* Interfaces file - only if we have operations */}
