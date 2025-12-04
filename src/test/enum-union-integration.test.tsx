@@ -7,7 +7,7 @@ import type {Enum, Union} from "@typespec/compiler"
 /**
  * Test enum generation integration
  */
-test("GoEnumDeclaration generates valid Go string enum", () => {
+test("GoEnumDeclaration generates valid Go string enum", async () => {
 	// Create mock enum matching TypeSpec Enum interface
 	const mockEnum: Enum = {
 		name: "Status",
@@ -19,7 +19,7 @@ test("GoEnumDeclaration generates valid Go string enum", () => {
 		]),
 	}
 
-	const jsx = <GoEnumDeclaration enumType={mockEnum}/>
+	const jsx = <GoEnumDeclaration enum={mockEnum}/>
 	const result = await renderAsync(jsx)
 
 	// Verify Go code structure
@@ -31,7 +31,7 @@ test("GoEnumDeclaration generates valid Go string enum", () => {
 	expect(result).toContain("func (e Status) IsValid() bool")
 })
 
-test("GoEnumDeclaration generates valid Go iota enum", () => {
+test("GoEnumDeclaration generates valid Go iota enum", async () => {
 	// Create mock numeric enum
 	const mockEnum: Enum = {
 		name: "Priority",
@@ -43,7 +43,7 @@ test("GoEnumDeclaration generates valid Go iota enum", () => {
 		]),
 	}
 
-	const jsx = <GoEnumDeclaration enumType={mockEnum} useIota={true}/>
+	const jsx = <GoEnumDeclaration enum={mockEnum} useIota={true}/>
 	const result = await renderAsync(jsx)
 
 	// Verify iota pattern
@@ -71,7 +71,7 @@ test("getEnumValues extracts enum member information", () => {
 /**
  * Test union generation integration
  */
-test("GoUnionDeclaration generates sealed interface pattern", async () => {
+test("GoUnionDeclaration generates sealed interface pattern", () => {
 	// Create mock union matching TypeSpec Union interface
 	const mockUnion: Union = {
 		name: "PaymentMethod",
@@ -82,7 +82,8 @@ test("GoUnionDeclaration generates sealed interface pattern", async () => {
 		]),
 	}
 
-	const result = GoUnionDeclaration({union: mockUnion as Union})
+	const jsx = <GoUnionDeclaration union={mockUnion as Union}/>
+	const result = await renderAsync(jsx)
 
 	// Verify sealed interface pattern
 	expect(result).toContain("type PaymentMethod interface")
@@ -93,7 +94,7 @@ test("GoUnionDeclaration generates sealed interface pattern", async () => {
 	expect(result).toContain("func (Bank) isPaymentMethod()")
 })
 
-test("GoUnionDeclaration generates discriminated union with unmarshaler", async () => {
+test("GoUnionDeclaration generates discriminated union with unmarshaler", () => {
 	const mockUnion: Partial<Union> = {
 		name: "Event",
 		kind: "Union",
@@ -115,7 +116,7 @@ test("GoUnionDeclaration generates discriminated union with unmarshaler", async 
 	expect(result).toContain("switch base.Type")
 })
 
-test("GoUnionDeclaration handles empty union gracefully", async () => {
+test("GoUnionDeclaration handles empty union gracefully", () => {
 	const emptyUnion: Union = {
 		name: "EmptyUnion",
 		kind: "Union",

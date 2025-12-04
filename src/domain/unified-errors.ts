@@ -11,6 +11,9 @@
 import type {GoEmitterResult, ValidationError} from "./error-types.js"
 import {ErrorFactory} from "./error-factory.js"
 
+// Re-export ErrorFactory for test compatibility
+export {ErrorFactory}
+
 export type ModelValidationError = ValidationError & {
 	_tag: "validation_error";
 };

@@ -9,6 +9,7 @@ import {For, refkey, StatementList, Switch, Match} from "@alloy-js/core"
 import {FunctionDeclaration, Reference} from "@alloy-js/go"
 import {capitalize} from "../../utils/strings.js"
 import {getDocumentation} from "../../utils/typespec-utils.js"
+import {extractHttpMetadata, HttpOperationMetadata, HttpParameter} from "../../utils/typespec-http-utils.js"
 
 interface GoHandlerStubProps {
 	/** TypeSpec operations to convert to HTTP handlers */
@@ -29,7 +30,7 @@ interface GoHandlerMethod {
 	/** Route path */
 	route: string;
 	/** Method parameters */
-	parameters: HandlerParameter[];
+	parameters: HttpParameter[];
 	/** Return type */
 	returnType: string | JSX.Element;
 	/** Documentation comment */
@@ -38,16 +39,7 @@ interface GoHandlerMethod {
 	operation?: Operation;
 }
 
-interface HandlerParameter {
-	/** Parameter name */
-	name: string;
-	/** Go type */
-	type: string | JSX.Element;
-	/** Source (path, query, body) */
-	source: string;
-	/** TypeSpec property for refkey tracking */
-	property?: ModelProperty;
-}
+
 
 /**
  * Go Handler Stub Component using Alloy-JS
@@ -60,7 +52,11 @@ export function GoHandlerStub({
 	                              packageName = "api",
 	                              program,
                               }: GoHandlerStubProps) {
-	const handlers = operations.map((op) => operationToHandler(op, program))
+	// Convert operations to handlers, filtering out those without HTTP metadata
+	const handlers = operations
+		.map((op) => operationToHandler(op, program))
+		.filter((handler): handler is GoHandlerMethod => handler !== null)
+	
 	const serviceRef = refkey(serviceName)
 
 	return (
@@ -74,23 +70,29 @@ export function GoHandlerStub({
 }
 
 /**
- * Convert TypeSpec Operation to Go HTTP handler with refkey tracking
+ * Convert TypeSpec Operation to Go HTTP handler using TypeSpec HTTP decorators
  */
-function operationToHandler(operation: Operation, program?: Program): GoHandlerMethod {
+function operationToHandler(operation: Operation, program?: Program): GoHandlerMethod | null {
+	if (!program) {
+		return null
+	}
+
+	// Extract HTTP metadata from TypeSpec decorators
+	const httpMetadata = extractHttpMetadata(operation, program)
+	if (!httpMetadata) {
+		return null
+	}
+
 	const operationName = operation.name
-	const httpMethod = inferHttpMethod(operationName)
-	const route = inferRoute(operationName)
 	const handlerName = `${capitalize(operationName)}Handler`
-	const parameters = extractHandlerParameters(operation)
 	const returnType = mapHandlerReturnType(operation)
-	const doc = program && getDocumentation ? getDocumentation(program, operation) : undefined
-	const operationRef = refkey(operation)
+	const doc = getDocumentation(program, operation)
 
 	return {
 		name: handlerName,
-		httpMethod,
-		route,
-		parameters,
+		httpMethod: httpMetadata.method,
+		route: httpMetadata.fullRoute,
+		parameters: httpMetadata.parameters,
 		returnType,
 		doc,
 		operation: operation,
