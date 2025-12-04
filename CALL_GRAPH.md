@@ -273,7 +273,7 @@ flowchart TD
     ModelCheck -->|Template| TemplateType[TemplateName]
     
     MapArray --> ArrayElement[Map Element Type]
-    ArrayElement --> ArraySlice[[]ElementType]
+    ArrayElement --> ArraySlice["[]ElementType"]
     
     MapUnion --> UnionCheck{Discriminated?}
     UnionCheck -->|Yes| SealedInterface[SealedInterface]
