@@ -9,7 +9,7 @@
  */
 
 import {defaultErrorHandler, ErrorFactory, GoEmitterResult} from "./domain/unified-errors.js"
-import type {GoEmitterOptions, TypeSpecPropertyNode, TypeSpecTypeNode} from "./types/typespec-domain.js"
+import type {TypeSpecPropertyNode, TypeSpecTypeNode} from "./types/typespec-domain.js"
 import {StructGenerator} from "./domain/struct-generator.js"
 import {UnionGenerator} from "./domain/union-generator.js"
 
