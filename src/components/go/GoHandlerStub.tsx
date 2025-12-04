@@ -1,23 +1,13 @@
 /**
  * Go Handler Stub Component
- * Generates HTTP handler functions from TypeSpec operations using Alloy-JS Go components
- * Replaces string-based generation with component-based architecture
+ * Generates HTTP handler functions from TypeSpec operations using string templates
+ * This component returns generated Go code as a string for compatibility
  */
 
 import type { Operation, Program } from "@typespec/compiler";
-import { 
-  SourceFile,
-  SingleImportStatement,
-  FunctionDeclaration,
-  FunctionReceiver,
-  VariableDeclaration,
-  StructTypeDeclaration,
-  StructMember,
-  Reference
-} from "@alloy-js/go";
-import { For, refkey } from "@alloy-js/core";
 import { extractHttpMetadata } from "../../utils/typespec-http-utils.js";
 import type { GoHandlerMethod } from "./GoHandlerMethod.js";
+import { extractReturnType } from "../../services/go-return-type-extractor.js";
 
 interface GoHandlerStubProps {
   /** TypeSpec operations to convert to HTTP handlers */
@@ -31,20 +21,34 @@ interface GoHandlerStubProps {
 }
 
 /**
- * Go Handler Stub Component using Alloy-JS
+ * Go Handler Stub Component
  * Generates complete HTTP handler file with proper Go code structure
- * Uses component-based generation instead of string manipulation
+ * Uses string-based generation for reliability
  */
 export function GoHandlerStub({
   operations,
   serviceName = "Service",
   packageName = "api",
   program,
-}: GoHandlerStubProps) {
+}: GoHandlerStubProps): string {
   // Convert TypeSpec operations to handler methods
   const handlers: GoHandlerMethod[] = [];
 
   for (const operation of operations) {
+    let returnType = "interface{}";
+    
+    // Extract return type from operation
+    if (program && operation) {
+      try {
+        const returnTypeInfo = extractReturnType(operation, program);
+        returnType = returnTypeInfo.type || "interface{}";
+      } catch (error) {
+        console.warn(`Failed to extract return type for ${operation.name}:`, error);
+        returnType = "interface{}";
+      }
+    }
+
+    // Try to extract HTTP metadata first
     if (program) {
       const httpMetadata = extractHttpMetadata(operation, program);
       if (httpMetadata) {
@@ -53,72 +57,77 @@ export function GoHandlerStub({
           httpMethod: httpMetadata.method,
           route: httpMetadata.fullRoute,
           parameters: httpMetadata.parameters,
-          returnType: "interface{}", // TODO: Extract from operation return type
+          returnType,
           doc: `Handler for ${operation.name}`,
           operation,
         });
+        continue;
       }
     }
+
+    // Fallback to default handler
+    handlers.push({
+      name: `${operation.name}Handler`,
+      httpMethod: "GET",
+      route: `/${operation.name.toLowerCase()}`,
+      parameters: [],
+      returnType,
+      doc: `Handler for ${operation.name}`,
+      operation,
+    });
   }
 
-  return (
-    <SourceFile path="handlers.go">
-      {/* Import statements */}
-      <SingleImportStatement path="context" />
-      <SingleImportStatement path="encoding/json" />
-      <SingleImportStatement path="net/http" />
-      <SingleImportStatement path="log" />
-      
-      {/* Service struct declaration */}
-      <StructTypeDeclaration name={serviceName}>
-        <StructMember name="logger" type="*log.Logger" doc={`Logger instance for ${serviceName}`} />
-      </StructTypeDeclaration>
+  // Generate Go code using string templates (more reliable)
+  const imports = [
+    'import "context"',
+    'import "encoding/json"',
+    'import "net/http"',
+    'import "log"',
+  ].join('\n');
 
-      {/* Handler methods */}
-      <For each={handlers}>
-        {(handler: GoHandlerMethod) => (
-          <FunctionDeclaration 
-            name={handler.name}
-            doc={handler.doc}
-            receiver={<FunctionReceiver name="s" type="*Service" />}
-            parameters={[
-              { name: "ctx", type: "context.Context" },
-              { name: "w", type: "http.ResponseWriter" },
-              { name: "r", type: "*http.Request" },
-              ...handler.parameters.map((p: any) => ({ name: p.name, type: p.goType }))
-            ]}
-          >
-            {generateHandlerImplementation(handler)}
-          </FunctionDeclaration>
-        )}
-      </For>
+  const serviceStruct = `type ${serviceName} struct {
+	logger *log.Logger
+}`;
 
-      {/* Route registration */}
-      <FunctionDeclaration 
-        name="RegisterRoutes"
-        doc="Registers all handlers with given router"
-        receiver={<FunctionReceiver name="s" type="*Service" />}
-        parameters={[{ name: "mux", type: "*http.ServeMux" }]}
-      >
-        <For each={handlers} joiner={<hbr />}>
-          {(handler: GoHandlerMethod) => `mux.HandleFunc("${handler.route}", s.${handler.name})`}
-        </For>
-      </FunctionDeclaration>
+  const handlerFunctions = handlers.map(handler => {
+    const parameterList = [
+      'ctx context.Context',
+      'w http.ResponseWriter',
+      'r *http.Request',
+      ...handler.parameters.map((p: any) => `${p.name} ${p.goType}`)
+    ].join(', ');
 
-      {/* Service constructor */}
-      <FunctionDeclaration 
-        name={`New${serviceName}`}
-        doc={`Creates a new ${serviceName} instance`}
-        parameters={[{ name: "logger", type: "*log.Logger" }]}
-        returns={`*${serviceName}`}
-      >
-        {`${serviceName.toLowerCase()} := &${serviceName}{
-			logger: logger,
-		}
-		return ${serviceName.toLowerCase()}`}
-      </FunctionDeclaration>
-    </SourceFile>
-  );
+    return `// ${handler.doc}
+func (s *${serviceName}) ${handler.name}(${parameterList}) {
+${generateHandlerImplementation(handler)}
+}`;
+  }).join('\n\n');
+
+  const routeRegistration = `// RegisterRoutes registers all handlers with given router
+func (s *${serviceName}) RegisterRoutes(mux *http.ServeMux) {
+${handlers.map(handler => `\tmux.HandleFunc("${handler.route}", s.${handler.name})`).join('\n')}
+}`;
+
+  const serviceConstructor = `// New${serviceName} creates a new ${serviceName} instance
+func New${serviceName}(logger *log.Logger) *${serviceName} {
+	${serviceName.toLowerCase()} := &${serviceName}{
+		logger: logger,
+	}
+	return ${serviceName.toLowerCase()}
+}`;
+
+  return `package ${packageName}
+
+${imports}
+
+// ${serviceName} provides HTTP handlers for API operations
+${serviceStruct}
+
+${handlerFunctions}
+
+${routeRegistration}
+
+${serviceConstructor}`;
 }
 
 /**
@@ -127,32 +136,32 @@ export function GoHandlerStub({
 function generateHandlerImplementation(handler: GoHandlerMethod): string {
   switch (handler.httpMethod) {
     case "GET":
-      return `// Example implementation:
-	// result, err := s.service.${handler.name.slice(0, -7)}(ctx)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-	// w.Header().Set("Content-Type", "application/json")
-	// json.NewEncoder(w).Encode(result)`;
+      return `\t// Example implementation:
+\t// result, err := s.service.${handler.name.slice(0, -7)}(ctx)
+\t// if err != nil {
+\t// \thttp.Error(w, err.Error(), http.StatusInternalServerError)
+\t// \treturn
+\t// }
+\t// w.Header().Set("Content-Type", "application/json")
+\t// json.NewEncoder(w).Encode(result)`;
     case "POST":
-      return `// Example implementation:
-	// var input ${handler.returnType}
-	// if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
-	// 	http.Error(w, "Invalid JSON", http.StatusBadRequest)
-	// 	return
-	// }
-	// result, err := s.service.Create${handler.returnType}(ctx, input)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-	// w.Header().Set("Content-Type", "application/json")
-	// w.WriteHeader(http.StatusCreated)
-	// json.NewEncoder(w).Encode(result)`;
+      return `\t// Example implementation:
+\t// var input ${handler.returnType}
+\t// if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+\t// \thttp.Error(w, "Invalid JSON", http.StatusBadRequest)
+\t// \treturn
+\t// }
+\t// result, err := s.service.Create${handler.returnType}(ctx, input)
+\t// if err != nil {
+\t// \thttp.Error(w, err.Error(), http.StatusInternalServerError)
+\t// \treturn
+\t// }
+\t// w.Header().Set("Content-Type", "application/json")
+\t// w.WriteHeader(http.StatusCreated)
+\t// json.NewEncoder(w).Encode(result)`;
     default:
-      return `// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation
-	w.WriteHeader(http.StatusNotImplemented)
-	json.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})`;
+      return `\t// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation
+\tw.WriteHeader(http.StatusNotImplemented)
+\tjson.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})`;
   }
 }
