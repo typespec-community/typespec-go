@@ -167,6 +167,17 @@ export class Entities {
  */
 export class EntityValidation {
   /**
+   * Generic validation helper - eliminates duplication
+   * SINGLE SOURCE OF TRUTH: Centralized validation pattern
+   */
+  private static createValidationResult(errors: string[]): { isValid: boolean; errors: string[] } {
+    return {
+      isValid: errors.length === 0,
+      errors,
+    };
+  }
+
+  /**
    * Validate all entities in an object
    */
   static validateEntities(entities: Record<string, unknown>): {
@@ -256,10 +267,7 @@ export class EntityValidation {
       errors.push("Model properties must be an object");
     }
 
-    return {
-      isValid: errors.length === 0,
-      errors,
-    };
+    return this.createValidationResult(errors);
   }
 
   /**
@@ -290,10 +298,7 @@ export class EntityValidation {
       errors.push("Field must have a valid jsonTag");
     }
 
-    return {
-      isValid: errors.length === 0,
-      errors,
-    };
+    return this.createValidationResult(errors);
   }
 }
 

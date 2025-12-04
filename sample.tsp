@@ -84,7 +84,7 @@ namespace SampleAPI {
   model ErrorResponse {
     error: string;
     message: string;
-    details?: Record<string, any>;
+    details?: Record<unknown>;
     correlationId?: string;
   }
 

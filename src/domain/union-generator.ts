@@ -72,6 +72,19 @@ export class UnionGenerator {
   }
 
   /**
+   * Get variant name with proper capitalization - eliminates duplication
+   * SINGLE SOURCE OF TRUTH: Centralized variant naming logic
+   */
+  private static getVariantName(variant: { name: string; type: TypeSpecTypeNode }): string {
+    // Use variant type name if available, otherwise fall back to variant name
+    const typeName = GeneratorUtils.getTypeName(variant.type);
+    let variantName = typeName || variant.name;
+
+    // Ensure variant name is properly capitalized
+    return GeneratorUtils.capitalizeFirst(variantName);
+  }
+
+  /**
    * Generate Go union code using sealed interface pattern
    */
   private generateUnionCode(unionModel: {
@@ -105,12 +118,7 @@ export class UnionGenerator {
 
     // Generate variant structs
     for (const variant of unionModel.variants) {
-      // Use variant type name if available, otherwise fall back to variant name
-      const typeName = GeneratorUtils.getTypeName(variant.type);
-      let variantName = typeName || variant.name;
-
-      // Ensure the variant name is properly capitalized
-      variantName = GeneratorUtils.capitalizeFirst(variantName);
+      const variantName = this.getVariantName(variant);
 
       lines.push(`// ${variantName} - ${unionModel.name} variant`);
       lines.push(`type ${variantName} struct {`);
