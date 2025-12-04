@@ -4,7 +4,7 @@
  */
 
 import { expect, test } from "vitest";
-import { render, Output, refkey, Reference } from "@alloy-js/core";
+import { render, Output, refkey } from "@alloy-js/core";
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoPackageDirectory } from "../components/go/index.js";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";

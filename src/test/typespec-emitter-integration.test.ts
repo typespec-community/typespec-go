@@ -67,7 +67,7 @@ test("TypeSpec AssetEmitter Integration - Mock Program", async () => {
 
   // Create mock emit context
   const mockContext: EmitContext = {
-    program: mockProgram as EmitContext["program"],
+    program: mockProgram,
     emitterOutputDir: "./test-output",
     options: {},
     getAssetEmitter: () => ({ writeOutput: async () => {} }),

@@ -3,7 +3,8 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { render, Output, refkey, Reference } from "@alloy-js/core";
+import { render, Output, refkey } from "@alloy-js/core";
+import { Reference } from "@alloy-js/go";
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
 import { GoEnumDeclaration } from "../components/go/GoEnumDeclaration.js";
