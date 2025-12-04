@@ -14,19 +14,10 @@ import type {
  */
 export class MockFactory {
   /**
-   * Create a mock Scalar type
+   * Create a properties map from a record of properties
+   * ELIMINATES DUPLICATION: Shared logic for properties map creation
    */
-  static createScalar(name: string): Scalar {
-    return {
-      kind: "Scalar",
-      name,
-    } as Scalar;
-  }
-
-  /**
-   * Create a mock Model type
-   */
-  static createModel(name: string, properties: Record<string, Type> = {}): Model {
+  private static createPropertiesMap(properties: Record<string, Type>) {
     const propsMap = new Map() as {
       set(key: string, value: any): void;
       has(key: string): boolean;
@@ -41,6 +32,24 @@ export class MockFactory {
         optional: false,
       });
     });
+
+    return propsMap;
+  }
+  /**
+   * Create a mock Scalar type
+   */
+  static createScalar(name: string): Scalar {
+    return {
+      kind: "Scalar",
+      name,
+    } as Scalar;
+  }
+
+  /**
+   * Create a mock Model type
+   */
+  static createModel(name: string, properties: Record<string, Type> = {}): Model {
+    const propsMap = this.createPropertiesMap(properties);
 
     return {
       kind: "Model",
@@ -112,22 +121,7 @@ export class MockFactory {
       parameters?: Record<string, Type>;
     } = {},
   ): Operation {
-    const propsMap = new Map() as {
-      set(key: string, value: any): void;
-      has(key: string): boolean;
-      get(key: string): any;
-      rekey?: () => void;
-    };
-
-    if (options.parameters) {
-      Object.entries(options.parameters).forEach(([propName, propType]) => {
-        propsMap.set(propName, {
-          name: propName,
-          type: propType,
-          optional: false,
-        });
-      });
-    }
+    const propsMap = this.createPropertiesMap(options.parameters || {});
 
     return {
       name,

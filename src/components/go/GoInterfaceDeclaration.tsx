@@ -8,8 +8,9 @@ import type { Operation, Model, Type, Program, Namespace } from "@typespec/compi
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import { TypeExpression } from "../TypeExpression.js";
+import { refkey } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
-const { InterfaceDeclaration, TypeDeclaration, SourceFile } = go;
+const { InterfaceDeclaration, InterfaceFunction } = go;
 
 interface GoInterfaceDeclarationProps {
   /** Interface name */
@@ -55,32 +56,38 @@ export function GoInterfaceDeclaration({
   packageName = "api",
   program,
 }: GoInterfaceDeclarationProps) {
-  // Get documentation from @doc decorator
-  const doc = program ? getDocumentation(program, operations[0] as any) : undefined;
-  const interfaceDoc = doc
-    ? `${doc} - Generated from TypeSpec operations`
-    : "Generated from TypeSpec operations";
-
   // Convert operations to method signatures
   const methods = operations.map((op) => operationToMethod(op, program));
 
+  // Build interface documentation
+  const interfaceDoc = `${name} defines the service interface`;
+
   return (
-    <>
-      <TypeDeclaration name={name} doc={interfaceDoc}>
-        <InterfaceDeclaration>
-          {methods.map((method) => (
-            <>
-              {method.doc && `\t// ${method.name} ${method.doc}`}
-              {`\t${method.name}(${method.parameters.map((p) => `${p.name} ${p.type}`).join(", ")}) ${method.returns
-                .map((r) => r.type)
-                .filter((t) => t !== "")
-                .join(", ")}`}
-            </>
-          ))}
-        </InterfaceDeclaration>
-      </TypeDeclaration>
-    </>
+    <go.TypeDeclaration name={name} doc={interfaceDoc}>
+      <InterfaceDeclaration>
+        {methods.map((method) => (
+          <InterfaceFunction 
+            name={method.name}
+            parameters={method.parameters}
+            returns={buildGoSignature(method.returns)}
+            doc={method.doc}
+          />
+        ))}
+      </InterfaceDeclaration>
+    </go.TypeDeclaration>
   );
+}
+
+/**
+ * Build Go return signature string from return types
+ */
+function buildGoSignature(returns: GoReturnType[]): string {
+  const returnTypes = returns
+    .map((r) => r.type)
+    .filter((t) => t !== "")
+    .join(", ");
+  
+  return returns.length > 1 ? `(${returnTypes})` : returnTypes;
 }
 
 /**
@@ -144,39 +151,6 @@ function extractReturns(operation: Operation, program?: Program): GoReturnType[]
  */
 function toCamelCase(s: string): string {
   return s.charAt(0).toLowerCase() + s.slice(1);
-}
-
-/**
- * Generate Go interface code
- */
-function generateInterfaceCode(name: string, methods: GoMethodSignature[]): string {
-  const lines: string[] = [];
-
-  // Interface documentation
-  lines.push(`// ${name} defines the service interface`);
-  lines.push(`type ${name} interface {`);
-
-  // Methods
-  for (const method of methods) {
-    if (method.doc) {
-      lines.push(`\t// ${method.name} ${method.doc}`);
-    }
-
-    const params = method.parameters.map((p) => `${p.name} ${p.type}`).join(", ");
-
-    const returns = method.returns
-      .map((r) => r.type)
-      .filter((t) => t !== "")
-      .join(", ");
-
-    const returnPart = method.returns.length > 1 ? `(${returns})` : returns;
-
-    lines.push(`\t${method.name}(${params}) ${returnPart}`);
-  }
-
-  lines.push(`}`);
-
-  return lines.join("\n");
 }
 
 /**
