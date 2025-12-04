@@ -6,8 +6,7 @@
 
 import type {Operation, Program, Type} from "@typespec/compiler"
 import {For, refkey} from "@alloy-js/core"
-import * as go from "@alloy-js/go"
-const { ImportStatements, Code } = go
+import {Reference, ImportStatements, Code} from "@alloy-js/go"
 import {capitalize} from "../../utils/strings.js"
 import {getDocumentation} from "../../utils/typespec-utils.js"
 import {extractHttpMetadata} from "../../utils/typespec-http-utils.js"
