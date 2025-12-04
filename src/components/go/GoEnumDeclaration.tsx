@@ -101,19 +101,19 @@ export function GoEnumDeclaration({
 				returns="bool"
 				receiver={<FunctionReceiver name="e" type={typeName}/>}
 			>
+				{/*TODO: possibly improvable, may need a alloy/go update*/}
 				<Switch>
 					<For each={members}>
-						<Match></Match>
+						{(it) => <Match>
+							${typeName}${capitalize(it.name)}:
+							return true
+						</Match>}
 					</For>
+					<Match>
+						default:
+						return false
+					</Match>
 				</Switch>
-				{`switch e {`}
-				{members.map((m) => (
-					<>{`case ${typeName}${capitalize(m.name)}:`}
-					{`return true`}</>
-				))}
-				{`default:`}
-				{`return false`}
-				{`}`}
 			</FunctionDeclaration>
 		</>
 	)
