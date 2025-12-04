@@ -1,5 +1,5 @@
 import {expect, test} from "vitest"
-import {render} from "@alloy-js/core"
+import {renderAsync} from "@alloy-js/core"
 import {getEnumValues, GoEnumDeclaration} from "../components/go/GoEnumDeclaration.js"
 import {GoUnionDeclaration} from "../components/go/GoUnionDeclaration.js"
 import type {Enum, Union} from "@typespec/compiler"
@@ -20,7 +20,7 @@ test("GoEnumDeclaration generates valid Go string enum", () => {
 	}
 
 	const jsx = <GoEnumDeclaration enumType={mockEnum}/>
-	const result = render(jsx)
+	const result = await renderAsync(jsx)
 
 	// Verify Go code structure
 	expect(result).toContain("type Status string")
@@ -44,7 +44,7 @@ test("GoEnumDeclaration generates valid Go iota enum", () => {
 	}
 
 	const jsx = <GoEnumDeclaration enumType={mockEnum} useIota={true}/>
-	const result = render(jsx)
+	const result = await renderAsync(jsx)
 
 	// Verify iota pattern
 	expect(result).toContain("type Priority int")
@@ -71,7 +71,7 @@ test("getEnumValues extracts enum member information", () => {
 /**
  * Test union generation integration
  */
-test("GoUnionDeclaration generates sealed interface pattern", () => {
+test("GoUnionDeclaration generates sealed interface pattern", async () => {
 	// Create mock union matching TypeSpec Union interface
 	const mockUnion: Union = {
 		name: "PaymentMethod",
@@ -93,7 +93,7 @@ test("GoUnionDeclaration generates sealed interface pattern", () => {
 	expect(result).toContain("func (Bank) isPaymentMethod()")
 })
 
-test("GoUnionDeclaration generates discriminated union with unmarshaler", () => {
+test("GoUnionDeclaration generates discriminated union with unmarshaler", async () => {
 	const mockUnion: Partial<Union> = {
 		name: "Event",
 		kind: "Union",
@@ -115,7 +115,7 @@ test("GoUnionDeclaration generates discriminated union with unmarshaler", () => 
 	expect(result).toContain("switch base.Type")
 })
 
-test("GoUnionDeclaration handles empty union gracefully", () => {
+test("GoUnionDeclaration handles empty union gracefully", async () => {
 	const emptyUnion: Union = {
 		name: "EmptyUnion",
 		kind: "Union",

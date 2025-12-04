@@ -23,7 +23,7 @@ interface GoModFileProps {
  */
 export function GoModFile({
   modulePath,
-  goVersion = "1.25",
+  goVersion = "1.21",
   requires = [],
 }: GoModFileProps): string {
   let content = `module ${modulePath}

@@ -6,7 +6,7 @@
  */
 
 import { StandaloneGoGenerator } from "../src/standalone-generator.js";
-import type { GoEmitterResult } from "../src/domain/unified-errors.js";
+import type { GoEmitterResult } from "../src/domain/error-types";
 
 /**
  * Example 1: Basic Go struct generation

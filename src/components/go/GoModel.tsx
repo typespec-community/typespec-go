@@ -7,7 +7,7 @@
 import { StructTypeDeclaration, StructMember } from "@alloy-js/go";
 import type { Model, ModelProperty } from "@typespec/compiler";
 import { refkey } from "@alloy-js/core";
-import { TypeExpression } from "./TypeExpression.js";
+import { TypeExpression } from "../TypeExpression";
 
 /**
  * Go Model Component
