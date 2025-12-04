@@ -81,10 +81,9 @@ export function GoUnionDeclaration({
         return (
           <>
             <TypeDeclaration name={variantName}>
-              {discriminator 
+              {discriminator
                 ? `struct {\n\tType string \`json:"${discriminator}"\`\n}`
-                : "struct {}\n"
-              }
+                : "struct {}\n"}
             </TypeDeclaration>
             <FunctionDeclaration
               name={methodReceiverName}

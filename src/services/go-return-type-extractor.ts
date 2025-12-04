@@ -30,22 +30,22 @@ export function extractReturnType(operation: Operation, program: Program): GoRet
       type: "void",
       returnsError: false,
       signature: "",
-      goType: ""
+      goType: "",
     };
   }
 
   const returnType = operation.returnType;
-  
+
   // Handle different return type patterns
   if (returnType.kind === "Tuple") {
-    return extractTupleReturnType(returnType, program);
+    return extractTupleReturnType(returnType);
   }
-  
+
   if (returnType.kind === "Union" && isErrorUnion(returnType)) {
-    return extractErrorReturnType(returnType, program);
+    return extractErrorReturnType(returnType);
   }
-  
-  return extractSimpleReturnType(returnType, program);
+
+  return extractSimpleReturnType(returnType);
 }
 
 /**
@@ -56,18 +56,18 @@ function extractTupleReturnType(tupleType: Type): GoReturnType {
   const elements = tupleTypeSpec.values || [];
   const mainType = elements.find((el: Type) => !isErrorType(el));
   const errorType = elements.find((el: Type) => isErrorType(el));
-  
+
   const mainGoType = mainType ? TypeExpression({ type: mainType }) : "";
   const returnsError = !!errorType;
-  
+
   const signature = returnsError ? `(${mainGoType}, error)` : mainGoType;
   const goType = returnsError ? `(${mainGoType}, error)` : mainGoType;
-  
+
   return {
     type: mainGoType || "void",
     returnsError,
     signature,
-    goType
+    goType,
   };
 }
 
@@ -79,25 +79,25 @@ function extractErrorReturnType(unionType: Type): GoReturnType {
   const options = unionTypeSpec.options || [];
   const nonErrorTypes = options.filter((opt: Type) => !isErrorType(opt));
   const mainType = nonErrorTypes[0];
-  
+
   if (!mainType) {
     return {
       type: "void",
       returnsError: true,
       signature: "error",
-      goType: "error"
+      goType: "error",
     };
   }
-  
+
   const mainGoType = TypeExpression({ type: mainType });
   const signature = `(${mainGoType}, error)`;
   const goType = `(${mainGoType}, error)`;
-  
+
   return {
     type: mainGoType,
     returnsError: true,
     signature,
-    goType
+    goType,
   };
 }
 
@@ -108,12 +108,12 @@ function extractSimpleReturnType(returnType: Type): GoReturnType {
   const mainGoType = TypeExpression({ type: returnType });
   const signature = mainGoType;
   const goType = mainGoType;
-  
+
   return {
     type: mainGoType,
     returnsError: false,
     signature,
-    goType
+    goType,
   };
 }
 
@@ -122,25 +122,25 @@ function extractSimpleReturnType(returnType: Type): GoReturnType {
  */
 function isErrorType(type: Type): boolean {
   if (!type) return false;
-  
+
   const typeSpec = type as { name?: string; kind?: string; decorators?: { name: string }[] };
-  
+
   // Common TypeSpec error type patterns
-  if (typeSpec.name && typeSpec.name.toLowerCase().includes('error')) {
+  if (typeSpec.name && typeSpec.name.toLowerCase().includes("error")) {
     return true;
   }
-  
+
   if (typeSpec.kind === "Model" && typeSpec.name === "Error") {
     return true;
   }
-  
+
   // Check for @error decorator
   if (typeSpec.decorators) {
-    return typeSpec.decorators.some((dec: { name: string }) => 
-      dec.name === "error" || dec.name === "$error"
+    return typeSpec.decorators.some(
+      (dec: { name: string }) => dec.name === "error" || dec.name === "$error",
     );
   }
-  
+
   return false;
 }
 

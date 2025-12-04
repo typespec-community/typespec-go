@@ -596,10 +596,7 @@ export function mapTypeSpecTypeToGo(
  * Convenience function: Get Go type string from TypeSpec type
  * PROXY PATTERN: Extracts just the Go type string for simple cases
  */
-export function getGoTypeString(
-  type: TypeSpecPropertyNode["type"],
-  fieldName?: string,
-): string {
+export function getGoTypeString(type: TypeSpecPropertyNode["type"], fieldName?: string): string {
   const mapping = CleanTypeMapper.mapTypeSpecType(type, fieldName);
   return mapping.goType;
 }
@@ -611,8 +608,8 @@ export function getRequiredImportsForTypes(
   types: Array<{ type: TypeSpecPropertyNode["type"] }>,
   fieldNames?: string[],
 ): string[] {
-  const mappings = types.map((item, index) => 
-    CleanTypeMapper.mapTypeSpecType(item.type, fieldNames?.[index])
+  const mappings = types.map((item, index) =>
+    CleanTypeMapper.mapTypeSpecType(item.type, fieldNames?.[index]),
   );
   return CleanTypeMapper.getRequiredImports(mappings);
 }

@@ -1,4 +1,12 @@
-import type { Model, Type, Operation, Namespace, Scalar, Program, EmitContext } from "@typespec/compiler";
+import type {
+  Model,
+  Type,
+  Operation,
+  Namespace,
+  Scalar,
+  Program,
+  EmitContext,
+} from "@typespec/compiler";
 
 /**
  * Factory for creating TypeSpec compiler mocks to test the emitter
@@ -19,7 +27,12 @@ export class MockFactory {
    * Create a mock Model type
    */
   static createModel(name: string, properties: Record<string, Type> = {}): Model {
-    const propsMap = new Map() as { set(key: string, value: any): void; has(key: string): boolean; get(key: string): any; rekey?: () => void };
+    const propsMap = new Map() as {
+      set(key: string, value: any): void;
+      has(key: string): boolean;
+      get(key: string): any;
+      rekey?: () => void;
+    };
 
     Object.entries(properties).forEach(([propName, propType]) => {
       propsMap.set(propName, {
@@ -84,19 +97,27 @@ export class MockFactory {
       stateSet: {} as any,
       stateMap: new Map(),
       reportDiagnostics: () => {},
-      resolveTypeReference: () => ({} as any),
-      resolveType: () => ({} as any),
+      resolveTypeReference: () => ({}) as any,
+      resolveType: () => ({}) as any,
     } as unknown as Program;
   }
 
   /**
    * Create a mock Operation with complete required properties
    */
-  static createOperation(name: string, options: {
-    returnType?: Type;
-    parameters?: Record<string, Type>;
-  } = {}): Operation {
-    const propsMap = new Map() as { set(key: string, value: any): void; has(key: string): boolean; get(key: string): any; rekey?: () => void };
+  static createOperation(
+    name: string,
+    options: {
+      returnType?: Type;
+      parameters?: Record<string, Type>;
+    } = {},
+  ): Operation {
+    const propsMap = new Map() as {
+      set(key: string, value: any): void;
+      has(key: string): boolean;
+      get(key: string): any;
+      rekey?: () => void;
+    };
 
     if (options.parameters) {
       Object.entries(options.parameters).forEach(([propName, propType]) => {
@@ -131,10 +152,13 @@ export class MockFactory {
   /**
    * Create a mock Namespace with complete required properties
    */
-  static createNamespace(name: string, options: {
-    operations?: Record<string, Operation>;
-    models?: Record<string, Model>;
-  } = {}): Namespace {
+  static createNamespace(
+    name: string,
+    options: {
+      operations?: Record<string, Operation>;
+      models?: Record<string, Model>;
+    } = {},
+  ): Namespace {
     const opsMap = new Map<string, Operation>();
     const modelsMap = new Map<string, Model>();
 

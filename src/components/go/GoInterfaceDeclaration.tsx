@@ -1,6 +1,6 @@
 /**
  * Go Interface Declaration Component
- * Generates Go interfaces from TypeSpec operations
+ * Generates Go interfaces from TypeSpec operations using 100% Alloy-JS components
  * Supports service interfaces with HTTP method mappings
  */
 
@@ -8,6 +8,8 @@ import type { Operation, Model, Type, Program, Namespace } from "@typespec/compi
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import { TypeExpression } from "../TypeExpression.js";
+import * as go from "@alloy-js/go";
+const { InterfaceDeclaration, TypeDeclaration, SourceFile } = go;
 
 interface GoInterfaceDeclarationProps {
   /** Interface name */
@@ -45,17 +47,40 @@ interface GoReturnType {
 
 /**
  * Go Interface Declaration Component
- * Generates Go interface from TypeSpec operations
+ * Generates Go interface from TypeSpec operations using Alloy-JS components
  */
 export function GoInterfaceDeclaration({
   name,
   operations,
   packageName = "api",
   program,
-}: GoInterfaceDeclarationProps): string {
+}: GoInterfaceDeclarationProps) {
+  // Get documentation from @doc decorator
+  const doc = program ? getDocumentation(program, operations[0] as any) : undefined;
+  const interfaceDoc = doc
+    ? `${doc} - Generated from TypeSpec operations`
+    : "Generated from TypeSpec operations";
+
+  // Convert operations to method signatures
   const methods = operations.map((op) => operationToMethod(op, program));
 
-  return generateInterfaceCode(name, methods);
+  return (
+    <>
+      <TypeDeclaration name={name} doc={interfaceDoc}>
+        <InterfaceDeclaration>
+          {methods.map((method) => (
+            <>
+              {method.doc && `\t// ${method.name} ${method.doc}`}
+              {`\t${method.name}(${method.parameters.map((p) => `${p.name} ${p.type}`).join(", ")}) ${method.returns
+                .map((r) => r.type)
+                .filter((t) => t !== "")
+                .join(", ")}`}
+            </>
+          ))}
+        </InterfaceDeclaration>
+      </TypeDeclaration>
+    </>
+  );
 }
 
 /**

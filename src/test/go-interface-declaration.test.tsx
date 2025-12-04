@@ -1,5 +1,8 @@
 import { describe, test, expect } from "vitest";
-import { GoInterfaceDeclaration, collectOperations } from "../components/go/GoInterfaceDeclaration.js";
+import {
+  GoInterfaceDeclaration,
+  collectOperations,
+} from "../components/go/GoInterfaceDeclaration.js";
 import { MockFactory } from "../testing/mock-factory.js";
 
 describe("GoInterfaceDeclaration Component", () => {
@@ -7,14 +10,14 @@ describe("GoInterfaceDeclaration Component", () => {
     const mockOperation = MockFactory.createOperation("getUser", {
       returnType: MockFactory.createModel("User"),
       parameters: {
-        id: MockFactory.createScalar("string")
-      }
+        id: MockFactory.createScalar("string"),
+      },
     });
 
     const output = GoInterfaceDeclaration({
       name: "UserService",
       operations: [mockOperation],
-      packageName: "test"
+      packageName: "test",
     });
 
     expect(output).toContain("type UserService interface {");
@@ -24,13 +27,13 @@ describe("GoInterfaceDeclaration Component", () => {
   test("handles operations with no return type", () => {
     const mockOperation = MockFactory.createOperation("deleteUser", {
       parameters: {
-        id: MockFactory.createScalar("string")
-      }
+        id: MockFactory.createScalar("string"),
+      },
     });
 
     const output = GoInterfaceDeclaration({
       name: "UserService",
-      operations: [mockOperation]
+      operations: [mockOperation],
     });
 
     expect(output).toContain("DeleteUser(ctx context.Context, id string) error");
@@ -40,8 +43,8 @@ describe("GoInterfaceDeclaration Component", () => {
     const mockNamespace = MockFactory.createNamespace("TestAPI", {
       operations: {
         getUser: MockFactory.createOperation("getUser"),
-        createUser: MockFactory.createOperation("createUser")
-      }
+        createUser: MockFactory.createOperation("createUser"),
+      },
     });
 
     const operations = collectOperations(mockNamespace);

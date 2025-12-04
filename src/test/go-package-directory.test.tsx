@@ -8,16 +8,13 @@ import { MockFactory } from "../testing/mock-factory.js";
 describe("GoPackageDirectory Component", () => {
   test("generates proper package structure", () => {
     const mockModel = MockFactory.createModel("User", {
-      id: MockFactory.createScalar("string")
+      id: MockFactory.createScalar("string"),
     });
 
     const output = render(
       <Output>
-        <GoPackageDirectory 
-          models={[mockModel]}
-          packageName="test"
-        />
-      </Output>
+        <GoPackageDirectory models={[mockModel]} packageName="test" />
+      </Output>,
     );
 
     // Navigate the structure to get the models.go content
@@ -34,12 +31,8 @@ describe("GoPackageDirectory Component", () => {
 
     const output = render(
       <Output>
-        <GoPackageDirectory 
-          operations={[mockOperation]}
-          models={[]}
-          packageName="test"
-        />
-      </Output>
+        <GoPackageDirectory operations={[mockOperation]} models={[]} packageName="test" />
+      </Output>,
     );
 
     // Check that output contains something

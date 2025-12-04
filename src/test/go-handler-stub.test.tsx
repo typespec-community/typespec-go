@@ -7,9 +7,9 @@ describe("GoHandlerStub Component", () => {
     const mockOperation = MockFactory.createOperation("CreateUser");
 
     const output = GoHandlerStub({
-      operations: [mockOperation], 
+      operations: [mockOperation],
       serviceName: "UserService",
-      packageName: "api"
+      packageName: "api",
     });
 
     // Check that it contains the essential parts
@@ -25,9 +25,9 @@ describe("GoHandlerStub Component", () => {
     const mockOperation = MockFactory.createOperation("GetUser");
 
     const output = GoHandlerStub({
-      operations: [mockOperation], 
+      operations: [mockOperation],
       serviceName: "UserService",
-      packageName: "api"
+      packageName: "api",
     });
 
     // Check for handler method signature

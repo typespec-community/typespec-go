@@ -36,7 +36,7 @@ export function GoHandlerStub({
 
   for (const operation of operations) {
     let returnType = "interface{}";
-    
+
     // Extract return type from operation
     if (program && operation) {
       try {
@@ -83,29 +83,31 @@ export function GoHandlerStub({
     'import "encoding/json"',
     'import "net/http"',
     'import "log"',
-  ].join('\n');
+  ].join("\n");
 
   const serviceStruct = `type ${serviceName} struct {
 	logger *log.Logger
 }`;
 
-  const handlerFunctions = handlers.map(handler => {
-    const parameterList = [
-      'ctx context.Context',
-      'w http.ResponseWriter',
-      'r *http.Request',
-      ...handler.parameters.map((p: any) => `${p.name} ${p.goType}`)
-    ].join(', ');
+  const handlerFunctions = handlers
+    .map((handler) => {
+      const parameterList = [
+        "ctx context.Context",
+        "w http.ResponseWriter",
+        "r *http.Request",
+        ...handler.parameters.map((p: any) => `${p.name} ${p.goType}`),
+      ].join(", ");
 
-    return `// ${handler.doc}
+      return `// ${handler.doc}
 func (s *${serviceName}) ${handler.name}(${parameterList}) {
 ${generateHandlerImplementation(handler)}
 }`;
-  }).join('\n\n');
+    })
+    .join("\n\n");
 
   const routeRegistration = `// RegisterRoutes registers all handlers with given router
 func (s *${serviceName}) RegisterRoutes(mux *http.ServeMux) {
-${handlers.map(handler => `\tmux.HandleFunc("${handler.route}", s.${handler.name})`).join('\n')}
+${handlers.map((handler) => `\tmux.HandleFunc("${handler.route}", s.${handler.name})`).join("\n")}
 }`;
 
   const serviceConstructor = `// New${serviceName} creates a new ${serviceName} instance
