@@ -4,7 +4,7 @@
  * Supports both string and iota patterns with proper Go components
  */
 
-import type {Enum} from "@typespec/compiler"
+import type {Enum, Program} from "@typespec/compiler"
 import {capitalize} from "../../utils/strings.js"
 import {getDocumentation} from "../../utils/typespec-utils.js"
 import {
@@ -14,8 +14,17 @@ import {
 	VariableDeclaration,
 	VariableDeclarationGroup,
 } from "@alloy-js/go"
-import {GoEnumDeclarationProps} from "./GoEnumDeclarationProps"
 
+interface GoEnumDeclarationProps {
+	/** TypeSpec enum to convert to Go constants */
+	enum: Enum;
+	/** Package name for documentation */
+	packageName?: string;
+	/** Whether to use iota for integer enums */
+	useIota?: boolean;
+	/** TypeSpec program for accessing @doc decorators */
+	program?: Program;
+}
 
 /**
  * Go Enum Declaration Component
@@ -68,14 +77,13 @@ export function GoEnumDeclaration({
 
 			{isStringEnum && (
 				<FunctionDeclaration name={`${typeName}String`}>
-					<FunctionReceiver receiver={`e ${typeName}`}/>
+					<FunctionReceiver name={`e`} type={typeName}/>
 					string
 				</FunctionDeclaration>
 			)}
 
 			<FunctionDeclaration name={`${typeName}IsValid`}>
-				<FunctionReceiver receiver={`e ${typeName}`}/>
-				bool
+				<FunctionReceiver name={`e ${typeName}`} type={"bool"}/>
 			</FunctionDeclaration>
 		</>
 	)
