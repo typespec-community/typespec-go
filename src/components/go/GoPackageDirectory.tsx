@@ -116,7 +116,7 @@ export function GoPackageDirectory({
         {/* Main models file with proper import block */}
         <SourceFile path="models.go">
           {needsTimeImport
-            ? <SingleImportStatement path={""}>time</SingleImportStatement>
+            ? <SingleImportStatement path="" local={true} />
             : <></>}
           <For each={models}>
             {(model: Model) => (

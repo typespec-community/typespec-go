@@ -4,17 +4,15 @@
  * Following Alloy-JS patterns with zero string-based logic
  */
 
-import type { ModelProperty, Program, Type } from "@typespec/compiler";
-// import { TypeSpecModel } from "../../types/typespec-domain.js"; // Using native TypeSpec types now
+import type { Model, Program, Type } from "@typespec/compiler";
 import { Reference, StructDeclaration, StructMember, TypeDeclaration } from "@alloy-js/go";
 import { For, refkey } from "@alloy-js/core";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
-import { TypeSpecModel } from "../../types/typespec-domain";
 
 interface GoStructDeclarationProps {
   /** TypeSpec model to convert to Go struct */
-  model: TypeSpecModel;
+  model: Model;
   /** Optional struct documentation (overrides @doc) */
   documentation?: string;
   /** Package name for struct */

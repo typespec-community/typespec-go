@@ -24,4 +24,4 @@ export * from '../types/typespec-domain.js'
 export * from '../domain/error-types.js'
 
 // Emitter exports
-export * from '../emitter/main.js'
+// export * from '../emitter/main.js'  // Commented out - file doesn't exist

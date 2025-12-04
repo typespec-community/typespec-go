@@ -69,8 +69,9 @@ export function GoEnumDeclaration({
             <VariableDeclaration
               name={`${typeName}${capitalize(member.name)}`}
               type={typeName}
-              initializer={index === 0 ? "iota" : undefined}
-            />
+            >
+              {index === 0 ? "iota" : null}
+            </VariableDeclaration>
           ))}
         </>
       )}
