@@ -5,15 +5,16 @@
  */
 
 import type {Operation, Program, Type} from "@typespec/compiler"
-// import {For, refkey} from "@alloy-js/core"
-// import {ImportStatements, Reference} from "@alloy-js/go"
+import {For, refkey, Reference} from "@alloy-js/core"
+import * as go from "@alloy-js/go"
+const { ImportStatements } = go
 import {capitalize} from "../../utils/strings.js"
 import {getDocumentation} from "../../utils/typespec-utils.js"
 import {extractHttpMetadata} from "../../utils/typespec-http-utils.js"
 import {JSX} from "@alloy-js/core/jsx-runtime"
 import {GoHandlerMethod} from "./GoHandlerMethod"
-// import {GoHandlerMethodComponent} from "./GoHandlerMethodComponent"
-// import {GoRouteRegistrationComponent} from "./GoRouteRegistrationComponent"
+import {GoHandlerMethodComponent} from "./GoHandlerMethodComponent"
+import {GoRouteRegistrationComponent} from "./GoRouteRegistrationComponent"
 
 
 interface GoHandlerStubProps {
