@@ -7,6 +7,7 @@
 import type { Operation, Model, Type, Program, Namespace } from "@typespec/compiler";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
+import { mapTypeSpecTypeToGo } from "../../domain/clean-type-mapper.js";
 
 interface GoInterfaceDeclarationProps {
   /** Interface name */
@@ -62,8 +63,8 @@ export function GoInterfaceDeclaration({
  */
 function operationToMethod(operation: Operation, program?: Program): GoMethodSignature {
   const methodName = capitalize(operation.name);
-  const parameters = extractParameters(operation);
-  const returns = extractReturns(operation);
+  const parameters = extractParameters(operation, program);
+  const returns = extractReturns(operation, program);
   const doc = program ? getDocumentation(program, operation) : undefined;
 
   return {
@@ -77,7 +78,7 @@ function operationToMethod(operation: Operation, program?: Program): GoMethodSig
 /**
  * Extract parameters from operation
  */
-function extractParameters(operation: Operation): GoParameter[] {
+function extractParameters(operation: Operation, program?: Program): GoParameter[] {
   const params: GoParameter[] = [];
 
   // Always include context as first parameter
@@ -88,7 +89,7 @@ function extractParameters(operation: Operation): GoParameter[] {
     for (const [name, prop] of operation.parameters.properties) {
       params.push({
         name: toCamelCase(name),
-        type: mapTypeToGo(prop.type),
+        type: mapTypeSpecTypeToGo(prop.type, program).goType,
       });
     }
   }
@@ -99,71 +100,18 @@ function extractParameters(operation: Operation): GoParameter[] {
 /**
  * Extract return types from operation
  */
-function extractReturns(operation: Operation): GoReturnType[] {
+function extractReturns(operation: Operation, program?: Program): GoReturnType[] {
   const returns: GoReturnType[] = [];
 
   // Map return type
   if (operation.returnType) {
-    returns.push({ type: mapTypeToGo(operation.returnType) });
+    returns.push({ type: mapTypeSpecTypeToGo(operation.returnType, program).goType });
   }
 
   // Always return error
   returns.push({ type: "error" });
 
   return returns;
-}
-
-/**
- * Map TypeSpec type to Go type
- */
-function mapTypeToGo(type: Type): string {
-  switch (type.kind) {
-    case "String":
-      return "string";
-    case "Boolean":
-      return "bool";
-    case "Number":
-      return "float64";
-    case "Scalar":
-      return mapScalarToGo(type.name || "");
-    case "Model":
-      if (type.name === "void") return "";
-      return type.name || "interface{}";
-    case "Enum":
-      return type.name || "string";
-    case "Union":
-      return type.name || "interface{}";
-    default:
-      return "interface{}";
-  }
-}
-
-/**
- * Map scalar type to Go
- */
-function mapScalarToGo(name: string): string {
-  const scalarMap: Record<string, string> = {
-    string: "string",
-    int8: "int8",
-    int16: "int16",
-    int32: "int32",
-    int64: "int64",
-    uint8: "uint8",
-    uint16: "uint16",
-    uint32: "uint32",
-    uint64: "uint64",
-    integer: "int",
-    float32: "float32",
-    float64: "float64",
-    boolean: "bool",
-    bytes: "[]byte",
-    utcDateTime: "time.Time",
-    plainDate: "time.Time",
-    plainTime: "time.Time",
-    duration: "time.Duration",
-  };
-
-  return scalarMap[name.toLowerCase()] || "interface{}";
 }
 
 /**
