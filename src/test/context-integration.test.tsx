@@ -1,6 +1,6 @@
 import { test, expect } from "vitest";
 import { GoPackageDirectory } from "../components/go/index.js";
-import { Output } from "@alloy-js/core";
+import { Output, refkey, Reference } from "@alloy-js/core";
 
 /**
  * Test that components work in proper Alloy-JS context

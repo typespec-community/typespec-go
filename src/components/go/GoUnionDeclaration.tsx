@@ -50,11 +50,11 @@ export function GoUnionDeclaration({
       {/* Sealed interface */}
       <TypeDeclaration name={typeName} doc={interfaceDoc}>
         <FunctionDeclaration name={`is${typeName}`} returns="">
-          {/* This creates the method signature for the sealed interface */}
+          {/* This creates method signature for sealed interface */}
         </FunctionDeclaration>
         {discriminator && (
           <FunctionDeclaration name="GetType" returns="string">
-            {/* This creates the discriminator method signature */}
+            {/* This creates discriminator method signature */}
           </FunctionDeclaration>
         )}
       </TypeDeclaration>
@@ -144,79 +144,6 @@ export function GoUnionDeclaration({
       )}
     </>
   );
-}
-  const lines: string[] = [];
-
-  // Sealed interface with documentation
-  const docComment = doc ? `${doc} ` : "";
-  lines.push(`// ${typeName} is a sealed interface ${docComment}representing a union type`);
-  lines.push(`type ${typeName} interface {`);
-  lines.push(`\tis${typeName}()`);
-  if (discriminator) {
-    lines.push(`\tGetType() string`);
-  }
-  lines.push(`}`);
-  lines.push("");
-
-  // Generate variant structs
-  for (const variant of variants) {
-    const variantName = getVariantName(variant, typeName);
-
-    lines.push(`// ${variantName} implements ${typeName}`);
-    lines.push(`type ${variantName} struct {`);
-
-    if (discriminator) {
-      lines.push(`\tType string \`json:"${discriminator}"\``);
-    }
-
-    // Add value field for simple unions
-    const goType = getVariantGoType(variant);
-    if (goType !== "struct{}") {
-      lines.push(`\tValue ${goType} \`json:"value,omitempty"\``);
-    }
-
-    lines.push(`}`);
-    lines.push("");
-
-    // Implement sealed interface
-    lines.push(`func (${variantName}) is${typeName}() {}`);
-
-    if (discriminator) {
-      const variantNameStr = String(variant.name);
-      lines.push(`func (v ${variantName}) GetType() string { return "${variantNameStr}" }`);
-    }
-    lines.push("");
-  }
-
-  // Add unmarshalling helper for discriminated unions
-  if (discriminator) {
-    lines.push(`// Unmarshal${typeName} unmarshals JSON into the appropriate variant`);
-    lines.push(`func Unmarshal${typeName}(data []byte) (${typeName}, error) {`);
-    lines.push(`\tvar base struct { Type string \`json:"${discriminator}"\` }`);
-    lines.push(`\tif err := json.Unmarshal(data, &base); err != nil {`);
-    lines.push(`\t\treturn nil, err`);
-    lines.push(`\t}`);
-    lines.push(`\t`);
-    lines.push(`\tswitch base.Type {`);
-
-    for (const variant of variants) {
-      const variantName = getVariantName(variant, typeName);
-      const variantNameStr = String(variant.name);
-      lines.push(`\tcase "${variantNameStr}":`);
-      lines.push(`\t\tvar v ${variantName}`);
-      lines.push(`\t\tif err := json.Unmarshal(data, &v); err != nil {`);
-      lines.push(`\t\t\treturn nil, err`);
-      lines.push(`\t\t}`);
-      lines.push(`\t\treturn v, nil`);
-    }
-
-    lines.push(`\tdefault:`);
-    lines.push(`\t\treturn nil, fmt.Errorf("unknown ${typeName} type: %s", base.Type)`);
-    lines.push(`\t}`);
-    lines.push(`}`);
-  }
-
-  return lines.join("\n");
 }
 
 /**
