@@ -44,13 +44,16 @@ export function GoHandlerStub({
 	// Convert operations to handlers, filtering out those without HTTP metadata
 	const handlers = operations
 		.map((op) => operationToHandler(op, program))
-		.filter((handler): handler is GoHandlerMethod => handler !== null)
+		.filter((handler): handler is GoHandlerMethod => handler !== null && handler !== undefined)
+
+	// Ensure no null/undefined handlers for JSX compatibility
+	const validHandlers = handlers.filter(Boolean)
 
 	const serviceRef = refkey(serviceName)
 
 	return (
 		<GoHandlerContent
-			handlers={handlers}
+			handlers={validHandlers}
 			serviceName={serviceName}
 			packageName={packageName}
 			serviceRef={serviceRef}
@@ -91,7 +94,7 @@ function operationToHandler(operation: Operation, program?: Program): GoHandlerM
 /**
  * Map handler return type using Alloy-JS components
  */
-function mapHandlerReturnType(operation: Operation): string | JSX.Element {
+function mapHandlerReturnType(operation: Operation): string {
 	if (operation.returnType) {
 		const goType = mapTypeToGo(operation.returnType)
 		return goType !== "" ? goType : "void"
@@ -102,9 +105,7 @@ function mapHandlerReturnType(operation: Operation): string | JSX.Element {
 /**
  * Map TypeSpec type to Go type using Alloy-JS refkey system
  */
-function mapTypeToGo(type: Type): string | JSX.Element {
-	const typeRef = refkey(type)
-
+function mapTypeToGo(type: Type): string {
 	switch (type.kind) {
 		case "String":
 			return "string"
@@ -116,11 +117,11 @@ function mapTypeToGo(type: Type): string | JSX.Element {
 			return mapScalarToGo(type.name || "")
 		case "Model":
 			if (type.name === "void") return ""
-			return type.name
+			return type.name || "interface{}"
 		case "Enum":
-			return type.name
+			return type.name || "interface{}"
 		case "Union":
-			return type.name
+			return type.name || "interface{}"
 		default:
 			return "interface{}"
 	}
