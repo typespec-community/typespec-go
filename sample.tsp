@@ -3,7 +3,9 @@
  * Comprehensive example for TypeSpec Go emitter testing
  */
 
-using TypeSpec.Http;
+import "@typespec/http";
+
+using Http;
 
 namespace SampleAPI {
   @doc("User model with comprehensive fields")
@@ -247,19 +249,24 @@ namespace SampleAPI {
   @doc("User service operations")
   @route("/users")
   interface UserService {
-    @get("/{id}")
-    getUser(id: string): ApiResponse<UserResponse>;
+    @get
+    @route("/{id}")
+    getUser(@path id: string): ApiResponse<UserResponse>;
 
-    @post("/")
+    @post
+    @route("/")
     createUser(@body request: CreateUserRequest): ApiResponse<UserResponse>;
 
-    @put("/{id}")
-    updateUser(id: string, @body request: UpdateUserRequest): ApiResponse<UserResponse>;
+    @put
+    @route("/{id}")
+    updateUser(@path id: string, @body request: UpdateUserRequest): ApiResponse<UserResponse>;
 
-    @delete("/{id}")
-    deleteUser(id: string): ApiResponse<void>;
+    @delete
+    @route("/{id}")
+    deleteUser(@path id: string): ApiResponse<void>;
 
-    @get("/")
+    @get
+    @route("/")
     listUsers(@query page: int32 = 1, @query pageSize: int32 = 20): PaginatedResponse<UserResponse>;
   }
 }

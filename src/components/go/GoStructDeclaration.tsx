@@ -118,7 +118,7 @@ function getTypeFromTemplateArg(arg: unknown): Type | undefined {
  * Uses Alloy.js Reference system for automatic import management
  * Maps TypeSpec scalar types to native Go types
  */
-function mapTypeSpecToGoType(type: Type): JSX.Element | string {
+function mapTypeSpecToGoType(type: Type): any {
   switch (type.kind) {
     case "String":
       return "string";
