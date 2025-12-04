@@ -136,7 +136,9 @@ namespace SampleAPI {
   }
 
   @doc("Complex union type for search results")
-  union SearchResult = User | Product | Order;
+  union SearchResult {
+    User | Product | Order;
+  }
 
   @doc("Product model")
   model Product {
@@ -200,10 +202,11 @@ namespace SampleAPI {
   }
 
   @doc("Complex notification type union")
-  union NotificationType = 
-    | { email: string, subject?: string }
-    | { sms: string, countryCode?: string }
-    | { push: string, deviceToken: string };
+  union NotificationType {
+    { email: string, subject?: string } |
+    { sms: string, countryCode?: string } |
+    { push: string, deviceToken: string };
+  }
 
   @doc("Task model for project management")
   model Task {

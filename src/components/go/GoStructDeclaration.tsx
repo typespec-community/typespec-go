@@ -51,7 +51,7 @@ export function GoStructDeclaration({
             const typeRef = refkey(prop.type);
             
             // 100% ALLOY.JS - Use Reference system for automatic imports
-            let goTypeElement: JSX.Element | string;
+            let goTypeElement: any;
 
             if (prop.type.kind === "Model") {
               // Model type - Reference for automatic import
@@ -69,7 +69,7 @@ export function GoStructDeclaration({
 
             // Add pointer for optional model/struct fields with Reference
             const shouldUsePointer = prop.optional && usePointersForOptional && isNestedModelType(prop.type);
-            const finalType = shouldUsePointer ? <Reference refkey={typeRef} type pointer /> : goTypeElement;
+            const finalType = shouldUsePointer ? <Reference refkey={typeRef} typeRef pointer /> : goTypeElement;
 
             // Ensure proper JSON tag format: `json:"name"` or `json:"name,omitempty"`
             const jsonTagValue = prop.optional ? `${prop.name},omitempty` : prop.name;

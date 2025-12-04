@@ -85,6 +85,23 @@ export class UnionGenerator {
   }
 
   /**
+   * Start variant struct generation - eliminates duplication
+   * SINGLE SOURCE OF TRUTH: Centralized variant structure pattern
+   */
+  private static startVariantStruct(
+    variant: { name: string; type: TypeSpecTypeNode },
+    unionModelName: string,
+    lines: string[],
+  ): string {
+    const variantName = this.getVariantName(variant);
+
+    lines.push(`// ${variantName} - ${unionModelName} variant`);
+    lines.push(`type ${variantName} struct {`);
+
+    return variantName;
+  }
+
+  /**
    * Generate Go union code using sealed interface pattern
    */
   private generateUnionCode(unionModel: {
@@ -118,7 +135,7 @@ export class UnionGenerator {
 
     // Generate variant structs
     for (const variant of unionModel.variants) {
-      const variantName = this.getVariantName(variant);
+      const variantName = this.startVariantStruct(variant, unionModel.name, lines);
 
       lines.push(`// ${variantName} - ${unionModel.name} variant`);
       lines.push(`type ${variantName} struct {`);
