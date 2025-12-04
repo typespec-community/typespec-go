@@ -100,13 +100,14 @@ export function GoEnumDeclaration({
 				returns="bool"
 				receiver={<FunctionReceiver name="e" type={typeName}/>}
 			>
-				TODO: FIX THIS! ASAP!
-				switch e {"{"}
-				{members.map((m) => `${typeName}${capitalize(m.name)}`).join(", ")}:
-				return true
-				default:
-				return false
-				{"}"}
+				{`switch e {`}
+				{members.map((m) => (
+					<>{`case ${typeName}${capitalize(m.name)}:`}
+					{`return true`}</>
+				))}
+				{`default:`}
+				{`return false`}
+				{`}`}
 			</FunctionDeclaration>
 		</>
 	)
