@@ -1,5 +1,5 @@
 import {expect, test} from "vitest"
-import {renderAsync} from "@alloy-js/core"
+import {render, Output, ModuleDirectory, SourceDirectory, SourceFile} from "@alloy-js/core"
 import {getEnumValues, GoEnumDeclaration} from "../components/go/GoEnumDeclaration.js"
 import {GoUnionDeclaration} from "../components/go/GoUnionDeclaration.js"
 import type {Enum, Union} from "@typespec/compiler"
