@@ -168,23 +168,6 @@ export class StructuredLogger {
   }
 
   /**
-   * Generic context factory - eliminates duplication
-   * SINGLE SOURCE OF TRUTH: Centralized context logger creation
-   */
-  private static createContextLogger(context: LogContext) {
-    return {
-      debug: (message: string, details?: Record<string, unknown>) =>
-        this.debug(context, message, details),
-      info: (message: string, details?: Record<string, unknown>) =>
-        this.info(context, message, details),
-      warn: (message: string, details?: Record<string, unknown>) =>
-        this.warn(context, message, details),
-      error: (message: string, details?: Record<string, unknown>, errorId?: string) =>
-        this.error(context, message, details, errorId),
-    };
-  }
-
-  /**
    * Create child logger with specific context
    * COMPOSABLE: Context-specific loggers
    */
