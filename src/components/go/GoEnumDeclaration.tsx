@@ -56,8 +56,9 @@ export function GoEnumDeclaration({
             <VariableDeclaration
               name={`${typeName}${capitalize(member.name)}`}
               type={typeName}
-              initializer={isStringEnum ? `"${member.value}"` : member.value}
-            />
+            >
+              {isStringEnum ? `"${member.value}"` : member.value}
+            </VariableDeclaration>
           ))}
         </VariableDeclarationGroup>
       )}
