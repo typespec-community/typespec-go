@@ -280,8 +280,8 @@ flowchart TD
     TypeGuard -->|Model| ModelRef[Alloy-js Reference<br/>Import Management]
     TypeGuard -->|Enum| EnumRef[Alloy-js Reference<br/>Import Management]
     TypeGuard -->|Union| UnionRef[Alloy-js Reference<br/>Import Management]
-    TypeGuard -->|Array| ArraySlice[Template Literal<br/>[]ElementType]
-    TypeGuard -->|Record| MapType[Template Literal<br/>map[KeyType]ValueType]
+    TypeGuard -->|Array| ArraySlice["Template Literal<br/>[]ElementType"]
+    TypeGuard -->|Record| MapType["Template Literal<br/>map[KeyType]ValueType"]
     
     MapScalar --> ScalarCheck{Scalar.name?}
     ScalarCheck -->|int*| GoInt[Direct Go Type]
