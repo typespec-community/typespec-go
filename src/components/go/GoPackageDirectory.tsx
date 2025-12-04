@@ -7,7 +7,7 @@
 import type { Model, Enum, Union, Operation, Type, Program } from "@typespec/compiler";
 import { For } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
-const { ModuleDirectory, SourceDirectory, SourceFile } = go;
+const { ModuleDirectory, SourceDirectory, SourceFile, SingleImportStatement } = go;
 import { GoStructDeclaration } from "./GoStructDeclaration.js";
 import { GoEnumDeclaration } from "./GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "./GoUnionDeclaration.js";
@@ -15,7 +15,6 @@ import { GoModFile } from "./GoModFile.js";
 import { GoInterfaceDeclaration } from "./GoInterfaceDeclaration.js";
 import { GoHandlerStub } from "./GoHandlerStub.js";
 import { capitalize } from "../../utils/strings.js";
-import { SingleImportStatement } from "@alloy-js/go";
 
 /**
  * Type guard to check if a TypeSpec Type is a time-related scalar
@@ -76,7 +75,7 @@ function needsFmtPackage(unions?: Union[]): boolean {
  * Supports models, enums, and unions with proper Go file organization
  */
 export function GoPackageDirectory({
-  models,
+  models = [],
   enums = [],
   unions = [],
   operations = [],
@@ -109,13 +108,13 @@ export function GoPackageDirectory({
       {/* go.mod file at module root */}
       {generateGoMod && (
         <SourceFile path="go.mod">
-          {GoModFile({ modulePath: moduleDirectory, goVersion })}
+          <GoModFile modulePath={moduleDirectory} goVersion={goVersion} />
         </SourceFile>
       )}
       <SourceDirectory path={packageName}>
         {/* Main models file with proper import block */}
         <SourceFile path="models.go">
-          {needsTimeImport ? <SingleImportStatement path="" local={true} /> : <></>}
+          {needsTimeImport && <SingleImportStatement path="time" />}
           <For each={models}>
             {(model: Model) => (
               <GoStructDeclaration
@@ -152,9 +151,7 @@ export function GoPackageDirectory({
         {/* Interfaces file - only if we have operations */}
         {hasOperations && (
           <SourceFile path="interfaces.go">
-            {`// Service interfaces generated from TypeSpec operations
-
-`}
+            {/* Service interfaces generated from TypeSpec operations */}
             <GoInterfaceDeclaration
               name={`${capitalize(packageName)}Service`}
               operations={operations}
@@ -167,16 +164,14 @@ export function GoPackageDirectory({
         {/* Unions file - only if we have unions */}
         {hasUnions && (
           <SourceFile path="unions.go">
-            {needsFmt
-              ? `import (
-	"encoding/json"
-	"fmt"
-)
-
-`
-              : `import "encoding/json"
-
-`}
+            {needsFmt ? (
+              <>
+                <SingleImportStatement path="encoding/json" />
+                <SingleImportStatement path="fmt" />
+              </>
+            ) : (
+              <SingleImportStatement path="encoding/json" />
+            )}
             <For each={unions}>
               {(union: Union) => (
                 <GoUnionDeclaration
