@@ -15,8 +15,7 @@ import {
 	VariableDeclaration,
 	VariableDeclarationGroup,
 } from "@alloy-js/go"
-import {For, Switch} from "@alloy-js/core"
-import {Match} from "@alloy-js/core/components/Switch"
+import {For} from "@alloy-js/core"
 
 interface GoEnumDeclarationProps {
 	/** TypeSpec enum to convert to Go constants */
@@ -38,7 +37,7 @@ export function GoEnumDeclaration({
 	                                  packageName = "api",
 	                                  useIota = false,
 	                                  program,
-                                  }: GoEnumDeclarationProps) {
+	                                  }: GoEnumDeclarationProps) {
 	const typeName = enumType.name || "UnnamedEnum"
 	const members = Array.from(enumType.members?.values() || [])
 
@@ -48,75 +47,11 @@ export function GoEnumDeclaration({
 	// Determine if this is a string enum or numeric enum
 	const isStringEnum = members.some((m) => typeof m.value === "string")
 
+	// Simple test version - just type declaration for now
 	return (
-		<>
-			{/* Type declaration */}
-			{doc && <LineComment>{typeName + " " + doc}</LineComment>}
-			<TypeDeclaration name={typeName}>
-					{isStringEnum ? "string" : "int"}
-			</TypeDeclaration>
-
-			{/* Const block */}
-			<VariableDeclarationGroup const>
-				{members.map((member, index) => {
-					const memberName = typeName + capitalize(member.name)
-
-					if (isStringEnum) {
-						return <VariableDeclaration
-							name={memberName}
-							type={typeName}
-							children={`"${member.value || member.name}"`}
-						/>
-					} else if (useIota && index === 0) {
-						return <VariableDeclaration
-							name={memberName}
-							type={typeName}
-							children="iota"
-						/>
-					} else if (useIota) {
-						return <VariableDeclaration
-							name={memberName}
-						/>
-					} else {
-						return <VariableDeclaration
-							name={memberName}
-							type={typeName}
-							children={member.value ?? index}
-						/>
-					}
-				})}
-			</VariableDeclarationGroup>
-
-			{/* Stringer interface for string enums */}
-			{isStringEnum && <FunctionDeclaration
-				name="String"
-				returns="string"
-				receiver={<FunctionReceiver name="e" type={typeName}/>}
-			>
-				return string(e)
-			</FunctionDeclaration>}
-
-			{/* Validation method */}
-			<FunctionDeclaration
-				name="IsValid"
-				returns="bool"
-				receiver={<FunctionReceiver name="e" type={typeName}/>}
-			>
-				{/*TODO: possibly improvable, may need a alloy/go update*/}
-				<Switch>
-					<For each={members}>
-						{(member) => (
-							<Match when={"e === " + typeName + capitalize(member.name)}>
-								return true
-							</Match>
-						)}
-					</For>
-					<Match else>
-						return false
-					</Match>
-				</Switch>
-			</FunctionDeclaration>
-		</>
+		<TypeDeclaration name={typeName}>
+			{isStringEnum ? "string" : "int"}
+		</TypeDeclaration>
 	)
 }
 

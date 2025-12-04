@@ -367,8 +367,9 @@ function GoHandlerMethodComponent({
 
 `}
 
-				<Switch condition={handler.httpMethod === "GET"}>
-					{`\t// Example implementation:
+				<Switch>
+					<Match when={handler.httpMethod === "GET"}>
+						{`\t// Example implementation:
 \t// result, err := s.service.${handler.name.slice(0, -7)}(ctx)
 \t// if err != nil {
 \t// \thttp.Error(w, err.Error(), http.StatusInternalServerError)
@@ -377,10 +378,10 @@ function GoHandlerMethodComponent({
 \t// w.Header().Set("Content-Type", "application/json")
 \t// json.NewEncoder(w).Encode(result)
 `}
-				</IfStatement>
+					</Match>
 
-				<IfStatement condition={handler.httpMethod === "POST"}>
-					{`\t// Example implementation:
+					<Match when={handler.httpMethod === "POST"}>
+						{`\t// Example implementation:
 \t// var input ${handler.returnType}
 \t// if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 \t// \thttp.Error(w, "Invalid JSON", http.StatusBadRequest)
@@ -395,14 +396,15 @@ function GoHandlerMethodComponent({
 \t// w.WriteHeader(http.StatusCreated)
 \t// json.NewEncoder(w).Encode(result)
 `}
-				</IfStatement>
+					</Match>
 
-				<IfStatement condition={!["GET", "POST"].includes(handler.httpMethod)}>
-					{`\t// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation
+					<Match else>
+						{`\t// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation
 \tw.WriteHeader(http.StatusNotImplemented)
 \tjson.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})
 `}
-				</IfStatement>
+					</Match>
+				</Switch>
 			</FunctionDeclaration>
 
 			{`
