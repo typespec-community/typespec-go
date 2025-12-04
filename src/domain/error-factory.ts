@@ -7,94 +7,17 @@
  * EFFECT.TS READY: Railway programming compatible
  */
 
-/**
- * Base error types with discriminated unions
- */
-export interface BaseError {
-  readonly _tag: "error";
-  readonly kind: string;
-  readonly message: string;
-  readonly timestamp: Date;
-  readonly errorId: string;
-}
-
-/**
- * Success result type
- */
-export interface Success<T> {
-  readonly _tag: "success";
-  readonly data: T;
-  readonly metadata?: Record<string, unknown>;
-}
-
-/**
- * TypeSpec Compiler Error
- */
-export interface TypeSpecCompilerError extends BaseError {
-  readonly kind: "typespec_compiler";
-  readonly modelName?: string;
-  readonly propertyName?: string;
-  readonly typeSpecSource?: string;
-  readonly resolution?: string;
-}
-
-/**
- * Go Code Generation Error
- */
-export interface GoCodeGenerationError extends BaseError {
-  readonly kind: "go_code_generation";
-  readonly fileName?: string;
-  readonly goCode?: string;
-  readonly line_number?: number;
-  readonly resolution?: string;
-}
-
-/**
- * Validation Error
- */
-export interface ValidationError extends BaseError {
-  readonly kind: "validation";
-  readonly modelName?: string;
-  readonly propertyName?: string;
-  readonly invalidValue?: unknown;
-  readonly resolution?: string;
-}
-
-/**
- * System Error
- */
-export interface SystemError extends BaseError {
-  readonly kind: "system";
-  readonly stack?: string;
-  readonly cause?: Error;
-  readonly resolution?: string;
-}
-
-/**
- * Type Mapping Error
- */
-export interface TypeMappingError extends BaseError {
-  readonly kind: "type_mapping";
-  readonly typeSpecType?: string;
-  readonly fieldName?: string;
-  readonly supportedTypes?: string[];
-  readonly resolution?: string;
-}
-
-/**
- * All error types union
- */
-export type AnyError =
-  | TypeSpecCompilerError
-  | GoCodeGenerationError
-  | ValidationError
-  | SystemError
-  | TypeMappingError;
-
-/**
- * Go Emitter Result union type
- */
-export type GoEmitterResult<T = Map<string, string>> = Success<T> | AnyError;
+import type {
+  BaseError,
+  Success,
+  TypeSpecCompilerError,
+  GoCodeGenerationError,
+  ValidationError,
+  SystemError,
+  TypeMappingError,
+  AnyError,
+  GoEmitterResult,
+} from "./error-types.js";
 
 /**
  * Error Factory - Single source of truth for error creation

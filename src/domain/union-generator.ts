@@ -171,10 +171,7 @@ export class UnionGenerator {
 
     // Generate variant structs with discriminator field
     for (const variant of unionModel.variants) {
-      // Use variant type name if available, otherwise fall back to variant name
-      const typeName = GeneratorUtils.getTypeName(variant.type);
-      let variantName = typeName || variant.name;
-      variantName = GeneratorUtils.capitalizeFirst(variantName);
+      const variantName = this.getVariantName(variant);
 
       lines.push(`// ${variantName} - ${unionModel.name} variant`);
       lines.push(`type ${variantName} struct {`);

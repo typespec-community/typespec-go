@@ -1,4 +1,5 @@
 import { test, expect } from "vitest";
+import { render } from "@alloy-js/core";
 import { GoEnumDeclaration, getEnumValues } from "../components/go/GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "../components/go/GoUnionDeclaration.js";
 import type { Enum, EnumMember, Union, UnionVariant } from "@typespec/compiler";
@@ -18,7 +19,8 @@ test("GoEnumDeclaration generates valid Go string enum", () => {
     ]),
   };
 
-  const result = GoEnumDeclaration({ enum: mockEnum as Enum });
+  const jsx = <GoEnumDeclaration enum={mockEnum as Enum} />;
+  const result = render(jsx);
 
   // Verify Go code structure
   expect(result).toContain("type Status string");
@@ -41,7 +43,8 @@ test("GoEnumDeclaration generates valid Go iota enum", () => {
     ]),
   };
 
-  const result = GoEnumDeclaration({ enum: mockEnum as Enum, useIota: true });
+  const jsx = <GoEnumDeclaration enum={mockEnum as Enum, useIota: true} />;
+  const result = render(jsx);
 
   // Verify iota pattern
   expect(result).toContain("type Priority int");

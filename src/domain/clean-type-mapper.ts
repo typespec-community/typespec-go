@@ -130,14 +130,22 @@ export class CleanTypeMapper {
   }
 
   /**
+   * Generic helper for checking if type has 'name' property
+   * ELIMINATES DUPLICATION: Single function for name-based type checks
+   */
+  private static hasTypeName(type: unknown): type is { name: string } {
+    return typeof type === "object" && type !== null && "name" in type;
+  }
+
+  /**
    * Map TypeSpec scalar type
    */
   private static mapScalarType(
     type: TypeSpecPropertyNode["type"],
     fieldName?: string,
   ): GoTypeMapping {
-    if (typeof type === "object" && type !== null && "name" in type) {
-      const scalarName = (type as { name: string }).name;
+    if (this.hasTypeName(type)) {
+      const scalarName = type.name;
       const mapping = this.SCALAR_MAPPINGS[scalarName];
 
       if (mapping) {
@@ -171,8 +179,8 @@ export class CleanTypeMapper {
     type: TypeSpecPropertyNode["type"],
     fieldName?: string,
   ): GoTypeMapping {
-    if (typeof type === "object" && type !== null && "name" in type) {
-      const modelName = (type as { name: string }).name;
+    if (this.hasTypeName(type)) {
+      const modelName = type.name;
       return {
         goType: modelName,
         usePointerForOptional: true,
@@ -180,12 +188,7 @@ export class CleanTypeMapper {
     }
 
     // Handle case where model type is just { kind: "model" }
-    if (
-      typeof type === "object" &&
-      type !== null &&
-      "kind" in type &&
-      (type as { kind: string }).kind === "model"
-    ) {
+    if (this.isTypeSpecModel(type)) {
       return {
         goType: "interface{}",
         usePointerForOptional: true,
@@ -277,8 +280,8 @@ export class CleanTypeMapper {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _fieldName?: string,
   ): GoTypeMapping {
-    if (typeof type === "object" && type !== null && "name" in type) {
-      const enumName = (type as { name: string }).name;
+    if (this.hasTypeName(type)) {
+      const enumName = type.name;
       // Generate Go enum with string suffix
       const goEnumName = `${enumName}Type`;
       return {
@@ -297,12 +300,7 @@ export class CleanTypeMapper {
     type: TypeSpecPropertyNode["type"],
     fieldName?: string,
   ): GoTypeMapping {
-    if (
-      typeof type === "object" &&
-      type !== null &&
-      "kind" in type &&
-      (type as { kind: string }).kind === "array"
-    ) {
+    if (this.isTypeSpecArray(type)) {
       const arrayType = type as { elementType?: TypeSpecPropertyNode["type"] };
 
       // Check if elementType exists
@@ -401,8 +399,8 @@ export class CleanTypeMapper {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _fieldName?: string,
   ): GoTypeMapping {
-    if (typeof type === "object" && type !== null && "name" in type) {
-      const templateName = (type as { name: string }).name;
+    if (this.hasTypeName(type)) {
+      const templateName = type.name;
       // Template types become their parameter name in Go
       return {
         goType: templateName,

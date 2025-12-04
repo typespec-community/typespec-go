@@ -82,6 +82,24 @@ function mapScalarToGoPrimitive(scalar: Scalar): GoPrimitiveType {
 }
 
 /**
+ * Handle array element mapping - eliminates duplication
+ * SINGLE SOURCE OF TRUTH: Centralized element mapping logic
+ */
+function handleArrayElementMapping(
+  program: Program,
+  elementType: Type,
+  errorTag: string,
+): TypeMappingResult {
+  const elementMapping = mapTypeSpecType(program, elementType);
+
+  if (elementMapping._tag === "success") {
+    return { _tag: "success", result: `[]${elementMapping.result}` };
+  } else {
+    return { _tag: errorTag as any, elementType };
+  }
+}
+
+/**
  * Handle TypeSpec array types with type safety
  * Arrays can come from Model with indexer or Array type
  */
@@ -89,25 +107,21 @@ function mapArrayType(program: Program, type: Type): TypeMappingResult {
   // Handle Model with indexer (string[] syntax) - check indexer property
   if (type.kind === "Model" && "indexer" in type && (type as Model).indexer?.value) {
     const modelType = type as Model;
-    const elementMapping = mapTypeSpecType(program, modelType.indexer!.value);
-
-    if (elementMapping._tag === "success") {
-      return { _tag: "success", result: `[]${elementMapping.result}` };
-    } else {
-      return { _tag: "invalid-array", elementType: modelType.indexer!.value };
-    }
+    return handleArrayElementMapping(
+      program,
+      modelType.indexer!.value,
+      "invalid-array",
+    );
   }
 
   // Handle potential Array type (check for elementType property)
   if ("elementType" in type) {
     const elementType = (type as unknown as ArrayType).elementType;
-    const elementMapping = mapTypeSpecType(program, elementType);
-
-    if (elementMapping._tag === "success") {
-      return { _tag: "success", result: `[]${elementMapping.result}` };
-    } else {
-      return { _tag: "invalid-array", elementType };
-    }
+    return handleArrayElementMapping(
+      program,
+      elementType,
+      "invalid-array",
+    );
   }
 
   // Not an array type

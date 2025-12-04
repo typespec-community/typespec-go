@@ -104,10 +104,10 @@ export class StructuredLogger {
   }
 
   /**
-   * Write structured log to output
-   * OBSERVABILITY: JSON format for log aggregation
+   * Generic log level writer - eliminates duplication
+   * SINGLE SOURCE OF TRUTH: Centralized log level handling
    */
-  private static writeLog(entry: LogEntry): void {
+  private static writeLogLevel(entry: LogEntry): void {
     const logJson = JSON.stringify(entry);
 
     switch (entry.level) {
@@ -127,6 +127,14 @@ export class StructuredLogger {
   }
 
   /**
+   * Write structured log to output
+   * OBSERVABILITY: JSON format for log aggregation
+   */
+  private static writeLog(entry: LogEntry): void {
+    this.writeLogLevel(entry);
+  }
+
+  /**
    * Set correlation ID for request tracking
    * OBSERVABILITY: Track operations across systems
    */
@@ -143,10 +151,10 @@ export class StructuredLogger {
   }
 
   /**
-   * Create child logger with specific context
-   * COMPOSABLE: Context-specific loggers
+   * Generic context factory - eliminates duplication
+   * SINGLE SOURCE OF TRUTH: Centralized context logger creation
    */
-  static withContext(context: LogContext) {
+  private static createContextLogger(context: LogContext) {
     return {
       debug: (message: string, details?: Record<string, unknown>) =>
         this.debug(context, message, details),
@@ -157,6 +165,14 @@ export class StructuredLogger {
       error: (message: string, details?: Record<string, unknown>, errorId?: string) =>
         this.error(context, message, details, errorId),
     };
+  }
+
+  /**
+   * Create child logger with specific context
+   * COMPOSABLE: Context-specific loggers
+   */
+  static withContext(context: LogContext) {
+    return this.createContextLogger(context);
   }
 }
 
@@ -173,6 +189,27 @@ export class DevelopmentLogger {
     [LogContext.DOMAIN_VALIDATION]: "📋",
     [LogContext.SYSTEM_PERFORMANCE]: "⚡",
   };
+
+  /**
+   * Generic development log level writer - eliminates duplication
+   * SINGLE SOURCE OF TRUTH: Centralized development log handling
+   */
+  private static writeDevelopmentLogLevel(level: LogLevel, output: string): void {
+    switch (level) {
+      case LogLevel.DEBUG:
+        console.log(output);
+        break;
+      case LogLevel.INFO:
+        console.log(output);
+        break;
+      case LogLevel.WARN:
+        console.warn(output);
+        break;
+      case LogLevel.ERROR:
+        console.error(output);
+        break;
+    }
+  }
 
   /**
    * Pretty log development message
@@ -194,20 +231,7 @@ export class DevelopmentLogger {
       output += `\n   Details: ${JSON.stringify(details, null, 2)}`;
     }
 
-    switch (level) {
-      case LogLevel.DEBUG:
-        console.log(output);
-        break;
-      case LogLevel.INFO:
-        console.log(output);
-        break;
-      case LogLevel.WARN:
-        console.warn(output);
-        break;
-      case LogLevel.ERROR:
-        console.error(output);
-        break;
-    }
+    this.writeDevelopmentLogLevel(level, output);
   }
 }
 
@@ -219,28 +243,47 @@ export class DevelopmentLogger {
 export class Logger {
   private static isDevelopment = process.env.NODE_ENV !== "production";
 
-  static debug(context: LogContext, message: string, details?: Record<string, unknown>): void {
+  /**
+   * Generic logger method factory - eliminates duplication
+   * SINGLE SOURCE OF TRUTH: Centralized environment-aware logging
+   */
+  private static logWithLevel(
+    level: LogLevel,
+    context: LogContext,
+    message: string,
+    details?: Record<string, unknown>,
+    errorId?: string,
+  ): void {
     if (this.isDevelopment) {
-      DevelopmentLogger.log(LogLevel.DEBUG, context, message, details);
+      DevelopmentLogger.log(level, context, message, details);
     } else {
-      StructuredLogger.debug(context, message, details);
+      switch (level) {
+        case LogLevel.DEBUG:
+          StructuredLogger.debug(context, message, details);
+          break;
+        case LogLevel.INFO:
+          StructuredLogger.info(context, message, details);
+          break;
+        case LogLevel.WARN:
+          StructuredLogger.warn(context, message, details);
+          break;
+        case LogLevel.ERROR:
+          StructuredLogger.error(context, message, details, errorId);
+          break;
+      }
     }
+  }
+
+  static debug(context: LogContext, message: string, details?: Record<string, unknown>): void {
+    this.logWithLevel(LogLevel.DEBUG, context, message, details);
   }
 
   static info(context: LogContext, message: string, details?: Record<string, unknown>): void {
-    if (this.isDevelopment) {
-      DevelopmentLogger.log(LogLevel.INFO, context, message, details);
-    } else {
-      StructuredLogger.info(context, message, details);
-    }
+    this.logWithLevel(LogLevel.INFO, context, message, details);
   }
 
   static warn(context: LogContext, message: string, details?: Record<string, unknown>): void {
-    if (this.isDevelopment) {
-      DevelopmentLogger.log(LogLevel.WARN, context, message, details);
-    } else {
-      StructuredLogger.warn(context, message, details);
-    }
+    this.logWithLevel(LogLevel.WARN, context, message, details);
   }
 
   static error(
@@ -249,11 +292,7 @@ export class Logger {
     details?: Record<string, unknown>,
     errorId?: string,
   ): void {
-    if (this.isDevelopment) {
-      DevelopmentLogger.log(LogLevel.ERROR, context, message, details);
-    } else {
-      StructuredLogger.error(context, message, details, errorId);
-    }
+    this.logWithLevel(LogLevel.ERROR, context, message, details, errorId);
   }
 
   static withContext(context: LogContext) {
