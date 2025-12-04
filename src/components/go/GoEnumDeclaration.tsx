@@ -15,7 +15,6 @@ import {
 	VariableDeclaration,
 	VariableDeclarationGroup,
 } from "@alloy-js/go"
-import {AppendFile} from "@alloy-js/core"
 
 interface GoEnumDeclarationProps {
 	/** TypeSpec enum to convert to Go constants */
@@ -49,66 +48,66 @@ export function GoEnumDeclaration({
 
 	return (
 		<>
-		{/* Type declaration */}
-		{doc && <LineComment>{`${typeName} ${doc}`}</LineComment>}
-		<TypeDeclaration name={typeName}>
-			{isStringEnum ? "string" : "int"}
-		</TypeDeclaration>
+			{/* Type declaration */}
+			{doc && <LineComment>{`${typeName} ${doc}`}</LineComment>}
+			<TypeDeclaration name={typeName}>
+				{isStringEnum ? "string" : "int"}
+			</TypeDeclaration>
 
-		{/* Const block */}
-		<VariableDeclarationGroup const>
-			{members.map((member, index) => {
-				const memberName = `${typeName}${capitalize(member.name)}`
+			{/* Const block */}
+			<VariableDeclarationGroup const>
+				{members.map((member, index) => {
+					const memberName = `${typeName}${capitalize(member.name)}`
 
-				if (isStringEnum) {
-					return <VariableDeclaration
-						name={memberName}
-						type={typeName}
-						children={`"${member.value || member.name}"`}
-					/>
-				} else if (useIota && index === 0) {
-					return <VariableDeclaration
-						name={memberName}
-						type={typeName}
-						children="iota"
-					/>
-				} else if (useIota) {
-					return <VariableDeclaration
-						name={memberName}
-					/>
-				} else {
-					return <VariableDeclaration
-						name={memberName}
-						type={typeName}
-						children={member.value ?? index}
-					/>
-				}
-			})}
-		</VariableDeclarationGroup>
+					if (isStringEnum) {
+						return <VariableDeclaration
+							name={memberName}
+							type={typeName}
+							children={`"${member.value || member.name}"`}
+						/>
+					} else if (useIota && index === 0) {
+						return <VariableDeclaration
+							name={memberName}
+							type={typeName}
+							children="iota"
+						/>
+					} else if (useIota) {
+						return <VariableDeclaration
+							name={memberName}
+						/>
+					} else {
+						return <VariableDeclaration
+							name={memberName}
+							type={typeName}
+							children={member.value ?? index}
+						/>
+					}
+				})}
+			</VariableDeclarationGroup>
 
-		{/* Stringer interface for string enums */}
-		{isStringEnum && <FunctionDeclaration
-			name="String"
-			returns="string"
-			receiver={<FunctionReceiver name="e" type={typeName}/>}
-		>
-			return string(e)
-		</FunctionDeclaration>}
+			{/* Stringer interface for string enums */}
+			{isStringEnum && <FunctionDeclaration
+				name="String"
+				returns="string"
+				receiver={<FunctionReceiver name="e" type={typeName}/>}
+			>
+				return string(e)
+			</FunctionDeclaration>}
 
-		{/* Validation method */}
-		<FunctionDeclaration
-			name="IsValid"
-			returns="bool"
-			receiver={<FunctionReceiver name="e" type={typeName}/>}
-		>
-			TODO: FIX THIS! ASAP!
-			switch e {"{"}
-			{members.map((m) => `${typeName}${capitalize(m.name)}`).join(", ")}:
-			return true
-			default:
-			return false
-			{"}"}
-		</FunctionDeclaration>
+			{/* Validation method */}
+			<FunctionDeclaration
+				name="IsValid"
+				returns="bool"
+				receiver={<FunctionReceiver name="e" type={typeName}/>}
+			>
+				TODO: FIX THIS! ASAP!
+				switch e {"{"}
+				{members.map((m) => `${typeName}${capitalize(m.name)}`).join(", ")}:
+				return true
+				default:
+				return false
+				{"}"}
+			</FunctionDeclaration>
 		</>
 	)
 }
