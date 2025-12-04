@@ -54,23 +54,27 @@ export function GoUnionDeclaration({
   const docComment = doc ? doc + "" : "";
   const interfaceDoc = "// " + typeName + " is a sealed interface " + docComment + "representing a union type";
 
-  // Extract template parameters if this is a template union
-  const extractedParams = templateParameters.length > 0 ? templateParameters : [];
-  const extractedConstraints = templateConstraints.length > 0 ? templateConstraints : [];
+  // Convert template constraints to TypeParameter format
+  const typeParameters = templateParameters.map((param, index) => {
+    const constraintInfo = templateConstraints[index];
+    const constraint = constraintInfo?.constraints?.[0] || "any";
+    
+    return {
+      name: param.name || "T",
+      constraint: constraint.name || constraint || "any"
+    };
+  });
 
   return (
-    <TypeDeclaration name={typeName} doc={interfaceDoc}>
-      {extractedParams.length > 0 ? (
-        // Generic union with type parameters
-        `interface {
-          // Generic union implementation
-        }`
-      ) : (
-        // Simple union
-        `interface {
-          // Test union implementation
-        }`
-      )}
+    <TypeDeclaration 
+      name={typeName} 
+      doc={interfaceDoc}
+      typeParameters={typeParameters.length > 0 ? typeParameters : undefined}
+    >
+      {`interface {
+        // Sealed interface for union type
+        getTypeName() string
+      }`}
     </TypeDeclaration>
   );
 }

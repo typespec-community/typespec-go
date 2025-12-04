@@ -1,4 +1,4 @@
-import {For, refkey} from "@alloy-js/core"
+import {refkey} from "@alloy-js/core"
 import {FunctionDeclaration, FunctionReceiver} from "@alloy-js/go"
 import {GoHandlerMethod} from "./GoHandlerMethod"
 
@@ -13,20 +13,16 @@ type GoRouteRegistrationComponentProps = {
  */
 export function GoRouteRegistrationComponent({handlers, serviceName}: GoRouteRegistrationComponentProps) {
 	const serviceRef = refkey(serviceName)
-	
+
 	return (
 		<FunctionDeclaration
 			name="RegisterRoutes"
 			doc="RegisterRoutes registers all handlers with given router"
 		>
-			<FunctionReceiver name={`s *${serviceName}`} />
+			<FunctionReceiver name={`s *${serviceName}`} type={undefined}/>
 			{`mux *http.ServeMux`}
-			
-			<For each={handlers}>
-				{(handler: GoHandlerMethod) => (
-					{`mux.HandleFunc("${handler.route}", s.${handler.name})`}
-				)}
-			</For>
+
+			{handlers.map(handler => `mux.HandleFunc("${handler.route}", s.${handler.name})`).join('\n\t')}
 		</FunctionDeclaration>
 	)
 }
