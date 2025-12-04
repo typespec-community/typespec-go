@@ -4,12 +4,17 @@
  * Replaces string-based generation with component-based architecture
  */
 
-import type {ModelProperty, Operation, Program, Type} from "@typespec/compiler"
-import {For, refkey, StatementList, Switch, Match} from "@alloy-js/core"
-import {FunctionDeclaration, ImportStatements, Reference} from "@alloy-js/go"
+import type {Operation, Program, Type} from "@typespec/compiler"
+import {For, refkey} from "@alloy-js/core"
+import {ImportStatements, Reference} from "@alloy-js/go"
 import {capitalize} from "../../utils/strings.js"
 import {getDocumentation} from "../../utils/typespec-utils.js"
-import {extractHttpMetadata, HttpOperationMetadata, HttpParameter} from "../../utils/typespec-http-utils.js"
+import {extractHttpMetadata} from "../../utils/typespec-http-utils.js"
+import {JSX} from "@alloy-js/core/jsx-runtime"
+import {GoHandlerMethod} from "./GoHandlerMethod"
+import {GoHandlerMethodComponent} from "./GoHandlerMethodComponent"
+import {GoRouteRegistrationComponent} from "./GoRouteRegistrationComponent"
+
 
 interface GoHandlerStubProps {
 	/** TypeSpec operations to convert to HTTP handlers */
@@ -21,25 +26,6 @@ interface GoHandlerStubProps {
 	/** TypeSpec program for accessing @doc decorators */
 	program?: Program;
 }
-
-interface GoHandlerMethod {
-	/** Handler function name */
-	name: string;
-	/** HTTP method (GET, POST, etc.) */
-	httpMethod: string;
-	/** Route path */
-	route: string;
-	/** Method parameters */
-	parameters: HttpParameter[];
-	/** Return type */
-	returnType: string | JSX.Element;
-	/** Documentation comment */
-	doc?: string;
-	/** TypeSpec operation for refkey tracking */
-	operation?: Operation;
-}
-
-
 
 /**
  * Go Handler Stub Component using Alloy-JS
@@ -56,17 +42,15 @@ export function GoHandlerStub({
 	const handlers = operations
 		.map((op) => operationToHandler(op, program))
 		.filter((handler): handler is GoHandlerMethod => handler !== null)
-	
+
 	const serviceRef = refkey(serviceName)
 
-	return (
-		<GoHandlerContent
-			handlers={handlers}
-			serviceName={serviceName}
-			packageName={packageName}
-			serviceRef={serviceRef}
-		/>
-	)
+	return <GoHandlerContent
+		handlers={handlers}
+		serviceName={serviceName}
+		packageName={packageName}
+		serviceRef={serviceRef}
+	/>
 }
 
 /**
@@ -96,40 +80,6 @@ function operationToHandler(operation: Operation, program?: Program): GoHandlerM
 		returnType,
 		doc,
 		operation: operation,
-	}
-}
-
-
-
-/**
- * Infer route path from operation name
- */
-function inferRoute(operationName: string): string {
-	const name = operationName.toLowerCase()
-
-	// Extract resource name from operation
-	// getUser -> /users/{id}
-	// listUsers -> /users
-	// createUser -> /users
-
-	if (name.includes("list")) {
-		const resource = name.replace("list", "").replace("s", "") + "s"
-		return `/${resource}`
-	} else if (name.includes("create")) {
-		const resource = name.replace("create", "") + "s"
-		return `/${resource}`
-	} else if (name.startsWith("get") && name !== "get") {
-		const resource = name.slice(3).replace(/s$/, "")
-		return `/${resource}s/{id}`
-	} else if (name.startsWith("update")) {
-		const resource = name.replace("update", "").replace(/s$/, "")
-		return `/${resource}s/{id}`
-	} else if (name.startsWith("delete")) {
-		const resource = name.replace("delete", "").replace("s", "") + "s"
-		return `/${resource}/{id}`
-	} else {
-		// Default: use operation name as route
-		return `/${operationName.toLowerCase()}`
 	}
 }
 
@@ -199,12 +149,6 @@ function mapScalarToGo(name: string): string {
 	return scalarMap[name.toLowerCase()] || "interface{}"
 }
 
-/**
- * Convert to camelCase
- */
-function toCamelCase(s: string): string {
-	return s.charAt(0).toLowerCase() + s.slice(1)
-}
 
 /**
  * Alloy-JS Component for Go handler content generation
@@ -235,7 +179,7 @@ function GoHandlerContent({
 				"context",
 				"encoding/json",
 				"net/http",
-				"time"
+				"time",
 			]}/>
 
 			{/* Service struct */}
@@ -265,119 +209,4 @@ type ${serviceName} struct {
 		</>
 	)
 }
-
-/**
- * Component for individual handler method generation
- */
-function GoHandlerMethodComponent({
-	                                  handler,
-	                                  serviceName,
-	                                  serviceRef,
-                                  }: {
-	handler: GoHandlerMethod;
-	serviceName: string;
-	serviceRef: ReturnType<typeof refkey>;
-}) {
-	return (
-		<>
-			{/* Handler documentation */}
-			{handler.doc ? (
-				`// ${handler.name} ${handler.doc}`
-			) : (
-				`// ${handler.name} handles ${handler.httpMethod} ${handler.route}`
-			)}
-
-			{/* Function signature */}
-			<FunctionDeclaration
-				name={handler.name}
-				receiver={`s *${serviceName}`}
-				parameters={handler.parameters.map(p => ({
-					name: p.name,
-					type: p.goType,
-				}))}
-				returnType=""
-			>
-				{/* Handler implementation placeholder */}
-				{`\t// TODO: Implement ${handler.name} handler with business logic
-\t// Route: ${handler.httpMethod} ${handler.route}
-
-`}
-
-				{`// Handler implementation:`}
-					<Match when={handler.httpMethod === "GET"}>
-						{`\t// Example implementation:
-\t// result, err := s.service.${handler.name.slice(0, -7)}(ctx)
-\t// if err != nil {
-\t// \thttp.Error(w, err.Error(), http.StatusInternalServerError)
-\t// \treturn
-\t// }
-\t// w.Header().Set("Content-Type", "application/json")
-\t// json.NewEncoder(w).Encode(result)
-`}
-					</Match>
-
-					<Match when={handler.httpMethod === "POST"}>
-						{`\t// Example implementation:
-\t// var input ${handler.returnType}
-\t// if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
-\t// \thttp.Error(w, "Invalid JSON", http.StatusBadRequest)
-\t// \treturn
-\t// }
-\t// result, err := s.service.Create${handler.returnType}(ctx, input)
-\t// if err != nil {
-\t// \thttp.Error(w, err.Error(), http.StatusInternalServerError)
-\t// \treturn
-\t// }
-\t// w.Header().Set("Content-Type", "application/json")
-\t// w.WriteHeader(http.StatusCreated)
-\t// json.NewEncoder(w).Encode(result)
-`}
-					</Match>
-
-					<Match else>
-						{`\t// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation
-\tw.WriteHeader(http.StatusNotImplemented)
-\tjson.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})
-`}
-					</Match>
-				{`// End Switch replacement`}
-			</FunctionDeclaration>
-
-			{`
-
-`}
-		</>
-	)
-}
-
-/**
- * Component for route registration function
- */
-function GoRouteRegistrationComponent({
-	                                      handlers,
-	                                      serviceName,
-                                      }: {
-	handlers: GoHandlerMethod[];
-	serviceName: string;
-}) {
-	return (
-		<>
-			{`// RegisterRoutes registers all handlers with given router
-func (s *${serviceName}) RegisterRoutes(mux *http.ServeMux) {
-`}
-
-			<For each={handlers}>
-				{(handler: GoHandlerMethod) => (
-					<StatementList>
-						{`\tmux.HandleFunc("${handler.route}", s.${handler.name})`}
-					</StatementList>
-				)}
-			</For>
-
-			{`}
-`}
-		</>
-	)
-}
-
 

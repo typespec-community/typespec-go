@@ -4,29 +4,18 @@
  * Supports both string and iota patterns with proper Go components
  */
 
-import type {Enum, Program} from "@typespec/compiler"
+import type {Enum} from "@typespec/compiler"
 import {capitalize} from "../../utils/strings.js"
 import {getDocumentation} from "../../utils/typespec-utils.js"
 import {
 	FunctionDeclaration,
 	FunctionReceiver,
-	LineComment,
 	TypeDeclaration,
 	VariableDeclaration,
 	VariableDeclarationGroup,
 } from "@alloy-js/go"
-import {For} from "@alloy-js/core"
+import {GoEnumDeclarationProps} from "./GoEnumDeclarationProps"
 
-interface GoEnumDeclarationProps {
-	/** TypeSpec enum to convert to Go constants */
-	enum: Enum;
-	/** Package name for documentation */
-	packageName?: string;
-	/** Whether to use iota for integer enums */
-	useIota?: boolean;
-	/** TypeSpec program for accessing @doc decorators */
-	program?: Program;
-}
 
 /**
  * Go Enum Declaration Component
@@ -37,7 +26,7 @@ export function GoEnumDeclaration({
 	                                  packageName = "api",
 	                                  useIota = false,
 	                                  program,
-	                                  }: GoEnumDeclarationProps) {
+                                  }: GoEnumDeclarationProps) {
 	const typeName = enumType.name || "UnnamedEnum"
 	const members = Array.from(enumType.members?.values() || [])
 
@@ -52,40 +41,40 @@ export function GoEnumDeclaration({
 			<TypeDeclaration name={typeName}>
 				{isStringEnum ? "string" : "int"}
 			</TypeDeclaration>
-			
+
 			{!useIota && (
 				<VariableDeclarationGroup>
 					{members.map((member) => (
-						<VariableDeclaration 
-							name={`${typeName}${capitalize(member.name)}`} 
+						<VariableDeclaration
+							name={`${typeName}${capitalize(member.name)}`}
 							type={typeName}
 							value={isStringEnum ? `"${member.value}"` : member.value}
 						/>
 					))}
 				</VariableDeclarationGroup>
 			)}
-			
+
 			{useIota && (
 				<>
 					{members.map((member, index) => (
-						<VariableDeclaration 
-							name={`${typeName}${capitalize(member.name)}`} 
+						<VariableDeclaration
+							name={`${typeName}${capitalize(member.name)}`}
 							type={typeName}
 							value={index === 0 ? "iota" : undefined}
 						/>
 					))}
 				</>
 			)}
-			
+
 			{isStringEnum && (
 				<FunctionDeclaration name={`${typeName}String`}>
-					<FunctionReceiver receiver={`e ${typeName}`} />
+					<FunctionReceiver receiver={`e ${typeName}`}/>
 					string
 				</FunctionDeclaration>
 			)}
-			
+
 			<FunctionDeclaration name={`${typeName}IsValid`}>
-				<FunctionReceiver receiver={`e ${typeName}`} />
+				<FunctionReceiver receiver={`e ${typeName}`}/>
 				bool
 			</FunctionDeclaration>
 		</>

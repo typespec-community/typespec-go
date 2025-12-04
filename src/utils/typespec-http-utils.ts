@@ -3,7 +3,7 @@
  * Extract HTTP metadata from TypeSpec operations and decorators
  */
 
-import type {Program, Operation, ModelProperty} from "@typespec/compiler"
+import type {Program, Operation, ModelProperty, Type} from "@typespec/compiler"
 import { 
 	getHttpOperation, 
 	getRoutePath, 
@@ -158,7 +158,7 @@ function determineParameterSource(
 	}
 	
 	// Check if parameter name appears in the path template
-	const path = getHttpPath(httpOp) || ""
+	const path = getRoutePath(httpOp) || ""
 	if (path.includes(`{${name}}`)) {
 		return "path"
 	}
@@ -175,7 +175,7 @@ function determineParameterSource(
 /**
  * Map TypeSpec type to Go type (simplified version)
  */
-function mapTypeSpecToGo(type: any): string {
+function mapTypeSpecToGo(type: Type): string {
 	switch (type.kind) {
 		case "String":
 			return "string"
