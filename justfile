@@ -4,7 +4,7 @@
 # Build TypeScript compilation
 build:
 	@echo "🔨 Building TypeScript..."
-	bun run build
+	bunx alloy build
 	@echo "✅ Build complete"
 
 # Run test suite

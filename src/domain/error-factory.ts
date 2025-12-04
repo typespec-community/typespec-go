@@ -8,10 +8,7 @@
  */
 
 import type {
-  BaseError,
   Success,
-  TypeSpecCompilerError,
-  GoCodeGenerationError,
   ValidationError,
   SystemError,
   TypeMappingError,

@@ -11,37 +11,6 @@
 // PRIMARY EXPORT - TypeSpec AssetEmitter Integration
 export {$onEmit} from "./emitter/typespec-go-emitter.js"
 
-// LEGACY EXPORTS - Maintained for backward compatibility
-export {StandaloneGoGenerator} from "./standalone-generator.js"
-
-// Export types that are used in this file
-import type {GoEmitterResult} from "./domain/error-types.js"
-
-export type {GoEmitterResult}
-
-export {ErrorFactory} from "./domain/unified-errors.js"
-
-export type ErrorHandler = (error: GoEmitterResult) => void;
-
-export type {InvalidModelReason} from "./types/errors.js"
-
-// Professional logging system
-export {
-	Logger,
-	StructuredLogger,
-	DevelopmentLogger,
-	LogLevel,
-	LogContext,
-} from "./domain/structured-logging.js"
-
-// Professional domain types (single source)
-export type {
-	TypeSpecModel,
-	TypeSpecPropertyNode,
-	TypeSpecTypeNode,
-	GoEmitterOptions,
-} from "./types/typespec-domain.js"
-
 /**
  * Library metadata for TypeSpec integration
  */

@@ -88,14 +88,14 @@ function mapScalarToGoPrimitive(scalar: Scalar): GoPrimitiveType {
 function handleArrayElementMapping(
   program: Program,
   elementType: Type,
-  errorTag: string,
+  errorTag: TypeMappingResult["_tag"],
 ): TypeMappingResult {
   const elementMapping = mapTypeSpecType(program, elementType);
 
   if (elementMapping._tag === "success") {
     return { _tag: "success", result: `[]${elementMapping.result}` };
   } else {
-    return { _tag: errorTag as any, elementType };
+    return { _tag: errorTag, elementType };
   }
 }
 

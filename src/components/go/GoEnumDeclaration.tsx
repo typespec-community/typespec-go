@@ -33,7 +33,7 @@ interface GoEnumDeclarationProps {
  * Generates proper Go const blocks with type safety using Alloy.js components
  */
 export function GoEnumDeclaration({
-	                                  enum: enumType,
+	                                  enumType,
 	                                  packageName = "api",
 	                                  useIota = false,
 	                                  program,

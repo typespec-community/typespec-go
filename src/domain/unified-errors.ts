@@ -8,7 +8,7 @@
  */
 
 // Import all types first
-import type {GoCodeGenerationError, GoEmitterResult, TypeSpecCompilerError, ValidationError} from "./error-types.js"
+import type {GoEmitterResult, ValidationError} from "./error-types.js"
 // Import ErrorFactory (used in this file)
 import {ErrorFactory} from "./error-factory.js"
 

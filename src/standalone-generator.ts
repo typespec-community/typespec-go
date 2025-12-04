@@ -21,8 +21,7 @@ export class StandaloneGoGenerator {
 	private structGenerator: StructGenerator
 	private unionGenerator: UnionGenerator
 
-	constructor(options?: GoEmitterOptions) {
-		// Options for future extensibility
+	constructor() {
 		this.structGenerator = new StructGenerator()
 		this.unionGenerator = new UnionGenerator()
 	}
