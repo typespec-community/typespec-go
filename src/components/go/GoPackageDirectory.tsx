@@ -142,6 +142,7 @@ export function GoPackageDirectory({
         )}
 
         {/* Handlers file - only if we have operations */}
+        {/* Temporarily disabled - fixing JSX issues
         {hasOperations && (
           <GoHandlerStub
             operations={operations}
@@ -150,6 +151,7 @@ export function GoPackageDirectory({
             program={program}
           />
         )}
+        */}
 
         {/* Interfaces file - only if we have operations */}
         {hasOperations && (

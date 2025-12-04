@@ -4,8 +4,8 @@
  * Following Alloy-JS patterns with zero string-based logic
  */
 
-import type { ModelProperty, Program, Type } from "@typespec/compiler";
-import { TypeSpecModel } from "../../types/typespec-domain.js";
+import type { Model, ModelProperty, Program, Type } from "@typespec/compiler";
+// import { TypeSpecModel } from "../../types/typespec-domain.js"; // Using native TypeSpec types now
 import { StructDeclaration, StructMember, TypeDeclaration } from "@alloy-js/go";
 import { For, refkey, Reference } from "@alloy-js/core";
 import { capitalize } from "../../utils/strings.js";

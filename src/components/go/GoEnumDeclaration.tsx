@@ -19,7 +19,7 @@ import {AppendFile} from "@alloy-js/core"
 
 interface GoEnumDeclarationProps {
 	/** TypeSpec enum to convert to Go constants */
-	enumType: Enum;
+	enum: Enum;
 	/** Package name for documentation */
 	packageName?: string;
 	/** Whether to use iota for integer enums */
@@ -33,7 +33,7 @@ interface GoEnumDeclarationProps {
  * Generates proper Go const blocks with type safety using Alloy.js components
  */
 export function GoEnumDeclaration({
-	                                  enumType,
+	                                  enum: enumType,
 	                                  packageName = "api",
 	                                  useIota = false,
 	                                  program,
@@ -47,7 +47,8 @@ export function GoEnumDeclaration({
 	// Determine if this is a string enum or numeric enum
 	const isStringEnum = members.some((m) => typeof m.value === "string")
 
-	return <AppendFile path={typeName}>
+	return (
+		<>
 		{/* Type declaration */}
 		{doc && <LineComment>{`${typeName} ${doc}`}</LineComment>}
 		<TypeDeclaration name={typeName}>
@@ -108,7 +109,8 @@ export function GoEnumDeclaration({
 			return false
 			{"}"}
 		</FunctionDeclaration>
-	</AppendFile>
+		</>
+	)
 }
 
 /**
