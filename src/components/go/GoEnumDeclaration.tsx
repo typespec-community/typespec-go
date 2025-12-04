@@ -15,7 +15,8 @@ import {
 	VariableDeclaration,
 	VariableDeclarationGroup,
 } from "@alloy-js/go"
-import {For, Match, Switch} from "@alloy-js/core"
+import {For, Switch} from "@alloy-js/core"
+import {Match} from "@alloy-js/core/components/Switch"
 
 interface GoEnumDeclarationProps {
 	/** TypeSpec enum to convert to Go constants */
