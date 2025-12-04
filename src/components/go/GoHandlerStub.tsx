@@ -5,7 +5,7 @@
  */
 
 import type {ModelProperty, Operation, Program, Type} from "@typespec/compiler"
-import {For, refkey, StatementList, Switch} from "@alloy-js/core"
+import {For, refkey, StatementList, Switch, Match} from "@alloy-js/core"
 import {FunctionDeclaration, Reference} from "@alloy-js/go"
 import {capitalize} from "../../utils/strings.js"
 import {getDocumentation} from "../../utils/typespec-utils.js"
@@ -31,7 +31,7 @@ interface GoHandlerMethod {
 	/** Method parameters */
 	parameters: HandlerParameter[];
 	/** Return type */
-	returnType: string | any;
+	returnType: string | JSX.Element;
 	/** Documentation comment */
 	doc?: string;
 	/** TypeSpec operation for refkey tracking */
@@ -42,7 +42,7 @@ interface HandlerParameter {
 	/** Parameter name */
 	name: string;
 	/** Go type */
-	type: string | any;
+	type: string | JSX.Element;
 	/** Source (path, query, body) */
 	source: string;
 	/** TypeSpec property for refkey tracking */
@@ -197,7 +197,7 @@ function inferParameterSource(name: string, prop: ModelProperty): string {
 /**
  * Map handler return type using Alloy-JS components
  */
-function mapHandlerReturnType(operation: Operation): string | any {
+function mapHandlerReturnType(operation: Operation): string | JSX.Element {
 	if (operation.returnType) {
 		const goType = mapTypeToGo(operation.returnType)
 		return goType !== "" ? goType : "void"
@@ -208,7 +208,7 @@ function mapHandlerReturnType(operation: Operation): string | any {
 /**
  * Map TypeSpec type to Go type using Alloy-JS refkey system
  */
-function mapTypeToGo(type: Type): string | any {
+function mapTypeToGo(type: Type): string | JSX.Element {
 	const typeRef = refkey(type)
 
 	switch (type.kind) {
@@ -275,7 +275,7 @@ interface GoHandlerContentProps {
 	handlers: GoHandlerMethod[];
 	serviceName: string;
 	packageName: string;
-	serviceRef: any;
+	serviceRef: ReturnType<typeof refkey>;
 }
 
 function GoHandlerContent({
@@ -340,7 +340,7 @@ function GoHandlerMethodComponent({
                                   }: {
 	handler: GoHandlerMethod;
 	serviceName: string;
-	serviceRef: any;
+	serviceRef: ReturnType<typeof refkey>;
 }) {
 	return (
 		<>
@@ -444,101 +444,4 @@ func (s *${serviceName}) RegisterRoutes(mux *http.ServeMux) {
 	)
 }
 
-/**
- * Generate Go handler code
- */
-function generateHandlerCode(
-	serviceName: string,
-	handlers: GoHandlerMethod[],
-	packageName: string,
-): string {
-//TODO: THIS IS SHIT! Use alloy/go!
 
-	const lines: string[] = []
-
-	// Package and imports
-	lines.push(`package ${packageName}`)
-	lines.push("")
-	lines.push("import (")
-	lines.push(`\t"${packageName}" // Generated models`)
-	lines.push('\t"context"')
-	lines.push('\t"encoding/json"')
-	lines.push('\t"net/http"')
-	lines.push('\t"time"')
-	lines.push(")")
-	lines.push("")
-
-	// Service struct
-	lines.push(`// ${serviceName} provides HTTP handlers for API operations`)
-	lines.push(`type ${serviceName} struct {`)
-	lines.push(`\t// Add service dependencies here (database, repositories, etc.)`)
-	lines.push("}")
-	lines.push("")
-
-	// Generate handler methods
-	for (const handler of handlers) {
-		if (handler.doc) {
-			lines.push(`// ${handler.name} ${handler.doc}`)
-		} else {
-			lines.push(`// ${handler.name} handles ${handler.httpMethod} ${handler.route}`)
-		}
-
-		lines.push(`func (s *${serviceName}) ${handler.name}(`)
-
-		// Parameters
-		const params = handler.parameters.map((p) => `${p.name} ${p.type}`).join(", ")
-		lines.push(`\t${params}) {`)
-
-		// Handler implementation - developer action required
-		lines.push(`\t// TODO: Implement ${handler.name} handler with business logic`)
-		lines.push(`\t// Route: ${handler.httpMethod} ${handler.route}`)
-		lines.push("")
-
-		if (handler.httpMethod === "GET") {
-			lines.push(`\t// Example implementation:`)
-			lines.push(`\t// result, err := s.service.${handler.name.slice(0, -7)}(ctx)`)
-			lines.push(`\t// if err != nil {`)
-			lines.push(`\t// \thttp.Error(w, err.Error(), http.StatusInternalServerError)`)
-			lines.push(`\t// \treturn`)
-			lines.push(`\t// }`)
-			lines.push(`\t// w.Header().Set("Content-Type", "application/json")`)
-			lines.push(`\t// json.NewEncoder(w).Encode(result)`)
-		} else if (handler.httpMethod === "POST") {
-			lines.push(`\t// Example implementation:`)
-			lines.push(`\t// var input ${handler.returnType}`)
-			lines.push(`\t// if err := json.NewDecoder(r.Body).Decode(&input); err != nil {`)
-			lines.push(`\t// \thttp.Error(w, "Invalid JSON", http.StatusBadRequest)`)
-			lines.push(`\t// \treturn`)
-			lines.push(`\t// }`)
-			lines.push(`\t// result, err := s.service.Create${handler.returnType}(ctx, input)`)
-			lines.push(`\t// if err != nil {`)
-			lines.push(`\t// \thttp.Error(w, err.Error(), http.StatusInternalServerError)`)
-			lines.push(`\t// \treturn`)
-			lines.push(`\t// }`)
-			lines.push(`\t// w.Header().Set("Content-Type", "application/json")`)
-			lines.push(`\t// w.WriteHeader(http.StatusCreated)`)
-			lines.push(`\t// json.NewEncoder(w).Encode(result)`)
-		} else {
-			lines.push(
-				`\t// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation`,
-			)
-			lines.push(`\tw.WriteHeader(http.StatusNotImplemented)`)
-			lines.push(`\tjson.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})`)
-		}
-
-		lines.push("}")
-		lines.push("")
-	}
-
-	// Route registration helper
-	lines.push("// RegisterRoutes registers all handlers with the given router")
-	lines.push(`func (s *${serviceName}) RegisterRoutes(mux *http.ServeMux) {`)
-
-	for (const handler of handlers) {
-		lines.push(`\tmux.HandleFunc("${handler.route}", s.${handler.name})`)
-	}
-
-	lines.push("}")
-
-	return lines.join("\n")
-}
