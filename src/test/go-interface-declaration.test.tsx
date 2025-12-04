@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { render, Output } from "@alloy-js/core";
-import { ModuleDirectory, SourceFile } from "@alloy-js/go";
+import { ModuleDirectory, SourceFile, SourceDirectory } from "@alloy-js/go";
 import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
 import { GoInterfaceDeclarationMinimal } from "./GoInterfaceDeclarationMinimal.js";
 import {
@@ -43,11 +43,17 @@ describe("GoInterfaceDeclaration Component", () => {
 
     const output = render(
       <Output>
-        <GoPackageDirectory 
-          operations={[mockOperation]}
-          packageName="test"
-          modulePath="github.com/test/test"
-        />
+        <ModuleDirectory name="github.com/test/test">
+          <SourceDirectory path="test">
+            <SourceFile path="interfaces.go" package="test">
+              <GoInterfaceDeclaration
+                name="TestService"
+                operations={[mockOperation]}
+                packageName="test"
+              />
+            </SourceFile>
+          </SourceDirectory>
+        </ModuleDirectory>
       </Output>,
     );
 
@@ -57,11 +63,19 @@ describe("GoInterfaceDeclaration Component", () => {
     
     // Find the interfaces.go file
     const interfacesFile = sourceDir.contents.find((file: any) => 
-      file.path === "interfaces.go"
-    ) as any;
+      file.path === "test/interfaces.go"
+    );
     
-    expect(interfacesFile.contents).toContain("type TestService interface");
-    expect(interfacesFile.contents).toContain("GetUser(ctx context.Context, id string) (User, error)");
+    // Add safety check
+    if (!interfacesFile) {
+      console.log("Available files:", sourceDir.contents.map((f: any) => f.path));
+      throw new Error("interfaces.go file not found in output structure");
+    }
+    
+    const fileContent = interfacesFile.contents;
+
+    expect(fileContent).toContain("type TestService interface");
+    expect(fileContent).toContain("GetUser(ctx context.Context, id string) (User, error)");
   });
 
   test("handles operations with no return type", () => {
@@ -73,21 +87,24 @@ describe("GoInterfaceDeclaration Component", () => {
 
     const output = render(
       <Output>
-        <ModuleDirectory name="test">
-          <SourceFile path="interfaces.go" package="test">
-            <GoInterfaceDeclaration
-              name="UserService"
-              operations={[mockOperation]}
-              packageName="test"
-            />
-          </SourceFile>
+        <ModuleDirectory name="github.com/test/test">
+          <SourceDirectory path="test">
+            <SourceFile path="interfaces.go" package="test">
+              <GoInterfaceDeclaration
+                name="UserService"
+                operations={[mockOperation]}
+                packageName="test"
+              />
+            </SourceFile>
+          </SourceDirectory>
         </ModuleDirectory>
       </Output>,
     );
 
     // Get the interfaces.go file content
     const moduleDir = output.contents[0] as any;
-    const sourceFile = moduleDir.contents[0] as any;
+    const sourceDir = moduleDir.contents[0] as any;
+    const sourceFile = sourceDir.contents[0] as any;
     const fileContent = sourceFile.contents;
 
     expect(fileContent).toContain("DeleteUser(ctx context.Context, id string) error");

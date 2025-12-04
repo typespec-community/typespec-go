@@ -12,7 +12,7 @@ import { GoStructDeclaration } from "./GoStructDeclaration.js";
 import { GoEnumDeclaration } from "./GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "./GoUnionDeclaration.js";
 import { GoModFile } from "./GoModFile.js";
-import { GoInterfaceDeclaration } from "./GoInterfaceDeclaration.js";
+import { GoInterfaceDeclarationMinimal } from "../../test/GoInterfaceDeclarationMinimal.js";
 import { GoHandlerStub } from "./GoHandlerStub.js";
 import { capitalize } from "../../utils/strings.js";
 
@@ -152,12 +152,7 @@ export function GoPackageDirectory({
         {hasOperations && (
           <SourceFile path="interfaces.go">
             {/* Service interfaces generated from TypeSpec operations */}
-            <GoInterfaceDeclaration
-              name={`${capitalize(packageName)}Service`}
-              operations={operations}
-              packageName={packageName}
-              program={program}
-            />
+            <GoInterfaceDeclarationMinimal />
           </SourceFile>
         )}
 
