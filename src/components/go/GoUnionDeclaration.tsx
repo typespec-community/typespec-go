@@ -5,7 +5,15 @@
  */
 
 import type { Union, UnionVariant, Program } from "@typespec/compiler";
-import { capitalize } from "../../utils/strings.js";
+import { capitalize, For } from "@alloy-js/core";
+import { 
+  TypeDeclaration, 
+  StructDeclaration, 
+  StructMember,
+  FunctionDeclaration,
+  FunctionReceiver,
+  SourceFile
+} from "@alloy-js/go";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 
 interface GoUnionDeclarationProps {
@@ -21,7 +29,7 @@ interface GoUnionDeclarationProps {
 
 /**
  * Go Union Declaration Component
- * Generates sealed interface pattern for type safety
+ * Generates sealed interface pattern for type safety using 100% Alloy components
  */
 export function GoUnionDeclaration({
   union,
@@ -34,19 +42,109 @@ export function GoUnionDeclaration({
 
   // Get documentation from @doc decorator
   const doc = program ? getDocumentation(program, union) : undefined;
+  const docComment = doc ? `${doc} ` : "";
+  const interfaceDoc = `// ${typeName} is a sealed interface ${docComment}representing a union type`;
 
-  return generateUnionCode(typeName, variants, discriminator, doc);
+  return (
+    <>
+      {/* Sealed interface */}
+      <TypeDeclaration name={typeName} doc={interfaceDoc}>
+        <FunctionDeclaration name={`is${typeName}`} returns="">
+          {/* This creates the method signature for the sealed interface */}
+        </FunctionDeclaration>
+        {discriminator && (
+          <FunctionDeclaration name="GetType" returns="string">
+            {/* This creates the discriminator method signature */}
+          </FunctionDeclaration>
+        )}
+      </TypeDeclaration>
+
+      {/* Variant structs */}
+      <For each={variants}>
+        {(variant) => {
+          const variantName = getVariantName(variant, typeName);
+          const goType = getVariantGoType(variant);
+          const variantDoc = `// ${variantName} implements ${typeName}`;
+
+          return (
+            <>
+              <TypeDeclaration name={variantName} doc={variantDoc}>
+                <StructDeclaration>
+                  {discriminator && (
+                    <StructMember 
+                      name="Type" 
+                      type="string" 
+                      tag={{ json: discriminator }} 
+                    />
+                  )}
+                  
+                  {/* Add value field for simple unions */}
+                  {goType !== "struct{}" && (
+                    <StructMember 
+                      name="Value" 
+                      type={goType} 
+                      tag={{ json: "value,omitempty" }} 
+                    />
+                  )}
+                </StructDeclaration>
+              </TypeDeclaration>
+
+              {/* Implement sealed interface method */}
+              <FunctionDeclaration 
+                name={`is${typeName}`}
+                returns=""
+                receiver={<FunctionReceiver name={`_`} type={`${variantName}`} />}
+              >
+                {/* Empty method body - just return signature */}
+              </FunctionDeclaration>
+
+              {/* Implement discriminator method if needed */}
+              {discriminator && (
+                <FunctionDeclaration 
+                  name="GetType"
+                  returns="string"
+                  receiver={<FunctionReceiver name="v" type={`${variantName}`} />}
+                >
+                  {`return "${String(variant.name)}"`}
+                </FunctionDeclaration>
+              )}
+            </>
+          );
+        }}
+      </For>
+
+      {/* Unmarshalling helper for discriminated unions */}
+      {discriminator && (
+        <FunctionDeclaration 
+          name={`Unmarshal${typeName}`}
+          params={["data []byte"]}
+          returns={[`${typeName}`, "error"]}
+        >
+          {`var base struct { Type string json:"${discriminator}" }`}
+          {`if err := json.Unmarshal(data, &base); err != nil { return nil, err }`}
+          {`switch base.Type {`}
+          <For each={variants}>
+            {(variant) => {
+              const variantName = getVariantName(variant, typeName);
+              const variantNameStr = String(variant.name);
+              return (
+                <>
+                  {`case "${variantNameStr}":`}
+                  {`var v ${variantName}`}
+                  {`if err := json.Unmarshal(data, &v); err != nil { return nil, err }`}
+                  {`return v, nil`}
+                </>
+              );
+            }}
+          </For>
+          {`default:`}
+          {`return nil, fmt.Errorf("unknown ${typeName} type: %s", base.Type)`}
+          {`}`}
+        </FunctionDeclaration>
+      )}
+    </>
+  );
 }
-
-/**
- * Generate Go union code using sealed interface pattern
- */
-function generateUnionCode(
-  typeName: string,
-  variants: UnionVariant[],
-  discriminator?: string,
-  doc?: string,
-): string {
   const lines: string[] = [];
 
   // Sealed interface with documentation
