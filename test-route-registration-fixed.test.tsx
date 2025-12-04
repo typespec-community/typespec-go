@@ -1,5 +1,5 @@
-import { render, Output, ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/core";
-import { GoRouteRegistrationComponent } from "../src/components/go/GoRouteRegistrationComponent.js";
+import { render, Output } from "@alloy-js/core";
+import { GoRouteRegistrationComponent } from "./dist/components/go/GoRouteRegistrationComponent.js";
 
 // Mock GoHandlerMethod for testing
 const mockHandlers = [
