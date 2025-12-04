@@ -5,7 +5,8 @@
  */
 
 import type { Union, UnionVariant, Program } from "@typespec/compiler";
-import { capitalize, For } from "@alloy-js/core";
+import { For } from "@alloy-js/core";
+import { capitalize } from "../../utils/strings.js";
 import { 
   TypeDeclaration, 
   StructDeclaration, 

@@ -15,6 +15,7 @@ import {
 	VariableDeclaration,
 	VariableDeclarationGroup,
 } from "@alloy-js/go"
+import {For, Match, Switch} from "@alloy-js/core"
 
 interface GoEnumDeclarationProps {
 	/** TypeSpec enum to convert to Go constants */
@@ -100,6 +101,11 @@ export function GoEnumDeclaration({
 				returns="bool"
 				receiver={<FunctionReceiver name="e" type={typeName}/>}
 			>
+				<Switch>
+					<For each={members}>
+						<Match></Match>
+					</For>
+				</Switch>
 				{`switch e {`}
 				{members.map((m) => (
 					<>{`case ${typeName}${capitalize(m.name)}:`}
