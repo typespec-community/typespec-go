@@ -15,6 +15,7 @@ import { GoModFile } from "./GoModFile.js";
 import { GoInterfaceDeclaration } from "./GoInterfaceDeclaration.js";
 // import { GoHandlerStub } from "./GoHandlerStub.js"; // Temporarily disabled - fixing JSX issues
 import { capitalize } from "../../utils/strings.js";
+import {SingleImportStatement} from "@alloy-js/go"
 
 /**
  * Type guard to check if a TypeSpec Type is a time-related scalar
@@ -115,10 +116,8 @@ export function GoPackageDirectory({
         {/* Main models file with proper import block */}
         <SourceFile path="models.go">
           {needsTimeImport
-            ? `import "time"
-
-`
-            : ""}
+            ? <SingleImportStatement path={""}>time</SingleImportStatement>
+            : <></>}
           <For each={models}>
             {(model: Model) => (
               <GoStructDeclaration

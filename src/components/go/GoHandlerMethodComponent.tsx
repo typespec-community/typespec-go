@@ -4,7 +4,7 @@ const { FunctionDeclaration } = go;
 import * as ts from "@alloy-js/typescript";
 const { SingleLineCommentBlock } = ts;
 import { refkey } from "@alloy-js/core";
-import { GoHandlerMethod } from "./GoHandlerMethod";
+import type {GoHandlerMethod} from "./GoHandlerMethod"
 
 /**
  * Component for individual handler method generation

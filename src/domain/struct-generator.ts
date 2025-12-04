@@ -2,7 +2,7 @@ import { defaultErrorHandler } from "./unified-errors.js";
 import { CleanTypeMapper } from "./clean-type-mapper.js";
 import type { TypeSpecPropertyNode } from "../types/typespec-domain.js";
 import { GeneratorUtils } from "./generator-utils.js";
-import { GoEmitterResult } from "./error-types";
+import type {GoEmitterResult} from "./error-types"
 import { ErrorFactory } from "./error-factory";
 
 /**
