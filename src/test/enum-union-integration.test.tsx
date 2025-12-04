@@ -19,7 +19,7 @@ test("GoEnumDeclaration generates valid Go string enum", () => {
 		]),
 	}
 
-	const jsx = <GoEnumDeclaration enum={mockEnum}/>
+	const jsx = <GoEnumDeclaration enumType={mockEnum}/>
 	const result = render(jsx)
 
 	// Verify Go code structure
@@ -43,7 +43,7 @@ test("GoEnumDeclaration generates valid Go iota enum", () => {
 		]),
 	}
 
-	const jsx = <GoEnumDeclaration enum={mockEnum} useIota={true}/>
+	const jsx = <GoEnumDeclaration enumType={mockEnum} useIota={true}/>
 	const result = render(jsx)
 
 	// Verify iota pattern
