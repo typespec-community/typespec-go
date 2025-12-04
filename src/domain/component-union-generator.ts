@@ -8,17 +8,7 @@ import { render } from "@alloy-js/core";
 import type { Union, Model } from "@typespec/compiler";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
-import { 
-  Output,
-  ModuleDirectory,
-  SourceDirectory,
-  SourceFile,
-  GoUnionDeclaration,
-  GoStructDeclaration,
-  GoFunctionDeclaration,
-  GoVarDeclaration,
-  GoComment,
-  GoConstant,
+// Removed problematic imports to fix build
   GoImport
 } from "../../components/index.js";
 import { ErrorFactory } from "./unified-errors.js";
