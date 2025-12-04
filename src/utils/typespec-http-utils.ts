@@ -6,6 +6,7 @@
 import type { Program, Operation, ModelProperty, Type } from "@typespec/compiler";
 import { getHttpOperation } from "@typespec/http";
 import type { HttpOperation } from "@typespec/http";
+import { mapTypeSpecTypeToGo } from "../domain/clean-type-mapper.js";
 
 /**
  * HTTP operation metadata extracted from TypeSpec decorators
@@ -120,8 +121,8 @@ function extractHttpParameter(
   prop: ModelProperty,
   httpOp: HttpOperation,
 ): HttpParameter | null {
-  // Map TypeSpec type to Go type (simplified version)
-  const goType = mapTypeSpecToGo(prop.type);
+  // Map TypeSpec type to Go type using unified type mapper
+  const goType = mapTypeSpecTypeToGo(prop.type, name).goType;
 
   // Determine parameter source from HTTP operation
   const source = determineParameterSource(name, prop, httpOp);
@@ -174,56 +175,6 @@ function determineParameterSource(
 
   // Default to body for complex types
   return "body";
-}
-
-/**
- * Map TypeSpec type to Go type (simplified version)
- */
-function mapTypeSpecToGo(type: Type): string {
-  switch (type.kind) {
-    case "String":
-      return "string";
-    case "Boolean":
-      return "bool";
-    case "Number":
-      return "float64";
-    case "Scalar":
-      return mapScalarToGo(type.name || "");
-    case "Model":
-      return type.name || "interface{}";
-    case "Enum":
-      return type.name || "string";
-    default:
-      return "interface{}";
-  }
-}
-
-/**
- * Map scalar TypeSpec types to Go types
- */
-function mapScalarToGo(name: string): string {
-  const scalarMap: Record<string, string> = {
-    string: "string",
-    int8: "int8",
-    int16: "int16",
-    int32: "int32",
-    int64: "int64",
-    uint8: "uint8",
-    uint16: "uint16",
-    uint32: "uint32",
-    uint64: "uint64",
-    integer: "int",
-    float32: "float32",
-    float64: "float64",
-    boolean: "bool",
-    bytes: "[]byte",
-    utcDateTime: "time.Time",
-    plainDate: "time.Time",
-    plainTime: "time.Time",
-    duration: "time.Duration",
-  };
-
-  return scalarMap[name.toLowerCase()] || "interface{}";
 }
 
 /**
