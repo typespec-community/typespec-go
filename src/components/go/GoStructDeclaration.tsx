@@ -7,8 +7,6 @@
 import type { ModelProperty, Program, Type } from "@typespec/compiler";
 import { TypeSpecModel } from "../../types/typespec-domain.js";
 import { StructDeclaration, StructMember, TypeDeclaration } from "@alloy-js/go";
-import { For, refkey } from "@alloy-js/core";
-import { Reference } from "@alloy-js/go";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 
@@ -57,13 +55,13 @@ export function GoStructDeclaration({
 
             if (prop.type.kind === "Model") {
               // Model type - Reference for automatic import
-              goTypeElement = <Reference refkey={typeRef} type />;
+              goTypeElement = <Reference refkey={typeRef} typeRef />;
             } else if (prop.type.kind === "Enum") {
               // Enum type - Reference for automatic import
-              goTypeElement = <Reference refkey={typeRef} type />;
+              goTypeElement = <Reference refkey={typeRef} typeRef />;
             } else if (prop.type.kind === "Union") {
               // Union type - Reference for automatic import
-              goTypeElement = <Reference refkey={typeRef} type />;
+              goTypeElement = <Reference refkey={typeRef} typeRef />;
             } else {
               // Built-in types - Use native Go types (no import needed)
               goTypeElement = mapTypeSpecToGoType(prop.type);

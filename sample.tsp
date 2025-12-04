@@ -3,7 +3,7 @@
  * Comprehensive example for TypeSpec Go emitter testing
  */
 
-using TypeSpec.Http
+using TypeSpec.Http;
 
 namespace SampleAPI {
   @doc("User model with comprehensive fields")

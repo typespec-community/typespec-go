@@ -447,15 +447,19 @@ export class CleanTypeMapper {
   }
 
   /**
+   * Generic helper for basic type structure validation - eliminates duplication
+   * SINGLE SOURCE OF TRUTH: Centralized type checking pattern
+   */
+  private static isTypeSpecObject(type: unknown): type is { kind: string } {
+    return typeof type === "object" && type !== null && "kind" in type;
+  }
+
+  /**
    * Type guard: Check if type is TypeSpec built-in
    */
   private static isTypeSpecBuiltin(type: unknown): boolean {
-    if (
-      typeof type === "object" &&
-      type !== null &&
-      "kind" in type
-    ) {
-      const kind = (type as { kind: string }).kind;
+    if (this.isTypeSpecObject(type)) {
+      const kind = type.kind;
       return [
         "String",
         "Boolean",
@@ -507,12 +511,8 @@ export class CleanTypeMapper {
    * Type guard: Check if type is TypeSpec map/record
    */
   private static isTypeSpecMap(type: unknown): boolean {
-    if (
-      typeof type === "object" &&
-      type !== null &&
-      "kind" in type
-    ) {
-      const kind = (type as { kind: string }).kind;
+    if (this.isTypeSpecObject(type)) {
+      const kind = type.kind;
       return kind === "map" || kind === "record";
     }
     return false;

@@ -34,7 +34,7 @@ export type TypeSpecTypeNode =
  * TypeSpec scalar type
  */
 export interface TypeSpecScalarType {
-  kind: "scalar";
+  kind: "Scalar" | "scalar";
   name: string;
 }
 
@@ -42,7 +42,7 @@ export interface TypeSpecScalarType {
  * TypeSpec model type
  */
 export interface TypeSpecModelType {
-  kind: "model";
+  kind: "Model" | "model";
   name: string;
 }
 
