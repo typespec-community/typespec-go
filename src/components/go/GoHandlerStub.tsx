@@ -99,26 +99,7 @@ function operationToHandler(operation: Operation, program?: Program): GoHandlerM
 	}
 }
 
-/**
- * Infer HTTP method from operation name
- */
-function inferHttpMethod(operationName: string): string {
-	const name = operationName.toLowerCase()
 
-	if (name.startsWith("get") || name.includes("list") || name.includes("find")) {
-		return "GET"
-	} else if (name.startsWith("create") || name.startsWith("post") || name.includes("add")) {
-		return "POST"
-	} else if (name.startsWith("update") || name.startsWith("put") || name.includes("modify")) {
-		return "PUT"
-	} else if (name.startsWith("patch") || name.includes("partial")) {
-		return "PATCH"
-	} else if (name.startsWith("delete") || name.startsWith("remove") || name.includes("destroy")) {
-		return "DELETE"
-	} else {
-		return "POST" // Default to POST
-	}
-}
 
 /**
  * Infer route path from operation name
@@ -149,50 +130,6 @@ function inferRoute(operationName: string): string {
 	} else {
 		// Default: use operation name as route
 		return `/${operationName.toLowerCase()}`
-	}
-}
-
-/**
- * Extract handler parameters from operation using Alloy-JS refkeys
- */
-function extractHandlerParameters(operation: Operation): HandlerParameter[] {
-	const params: HandlerParameter[] = []
-
-	// Always include context and writer
-	params.push({name: "ctx", type: "context.Context", source: "context"})
-	params.push({name: "w", type: "http.ResponseWriter", source: "response"})
-	params.push({name: "r", type: "*http.Request", source: "request"})
-
-	// Add operation parameters
-	if (operation.parameters) {
-		for (const [name, prop] of operation.parameters.properties) {
-			const source = inferParameterSource(name, prop)
-			params.push({
-				name: toCamelCase(name),
-				type: mapTypeToGo(prop.type),
-				source,
-				property: prop,
-			})
-		}
-	}
-
-	return params
-}
-
-/**
- * Infer parameter source (path, query, body)
- */
-function inferParameterSource(name: string, prop: ModelProperty): string {
-	const lowerName = name.toLowerCase()
-
-	if (lowerName === "id" || lowerName.includes("id")) {
-		return "path"
-	} else if (prop.type?.kind === "String" && prop.optional) {
-		return "query"
-	} else if (prop.type?.kind === "Model") {
-		return "body"
-	} else {
-		return "query"
 	}
 }
 
@@ -359,7 +296,7 @@ function GoHandlerMethodComponent({
 				receiver={`s *${serviceName}`}
 				parameters={handler.parameters.map(p => ({
 					name: p.name,
-					type: p.type,
+					type: p.goType,
 				}))}
 				returnType=""
 			>
