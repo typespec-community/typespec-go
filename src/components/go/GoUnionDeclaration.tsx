@@ -50,7 +50,7 @@ export function GoUnionDeclaration({
     const constraint = constraintInfo?.constraints?.[0] || "any";
 
     return {
-      name: param.name || "T",
+      name: (param as any).name || "T",
       constraint: constraint.name || constraint || "any",
     };
   });

@@ -45,16 +45,16 @@ This is a **professional TypeSpec compiler plugin** that generates production-re
 
 ### **Primary Development Workflow** (Use Justfile Commands)
 ```bash
-# Build the project (required before testing)
+# 🔥 BUILD ALLOY-JS COMPONENTS (required before testing)
 just build         # or: bunx alloy build
 
-# Run test suite with comprehensive coverage
+# 🔥 RUN TEST SUITE (verifies Alloy components work)
 just test          # or: bunx vitest --run --testTimeout 30000
 
-# Lint code (ESLint with strict any-type enforcement)
+# 🔥 LINT CODE (ESLint with strict any-type enforcement)
 just lint          # or: bun run lint
 
-# Type checking without emitting
+# 🔥 TYPE CHECKING (validates TypeScript + JSX compilation)
 just check         # or: bunx tsc --noEmit --strict
 
 # Full development workflow (build + test + lint)
@@ -65,6 +65,25 @@ just qa
 
 # Check project status (build + test validation)
 just status
+```
+
+### **🚨 ALLOY-JS SPECIFIC BUILD PROCESS**
+```bash
+# 🔥 PRIMARY BUILD - ALLOY-JS COMPONENTS
+bunx alloy build                    # Compiles JSX components to JavaScript
+# Internally: Processes .tsx files, resolves refkeys, builds component tree
+
+# 🔥 DEVELOPMENT BUILD WITH WATCH
+bunx alloy build --watch            # Watch mode for component development
+# Auto-recompiles when .tsx files change
+
+# 🔥 TEST BUILD - VERIFIES COMPONENTS WORK
+bunx vitest run                     # Runs component integration tests
+# Uses @alloy-js/rollup-plugin for JSX compilation
+
+# 🔥 TYPE CHECKING - VALIDATES COMPONENT TYPES
+bunx tsc --noEmit --strict         # TypeScript compilation check
+# Validates component props, refkey usage, JSX syntax
 ```
 
 ### **Package Management**
@@ -164,58 +183,238 @@ export function GoModel({ model, packageName, options }: GoModelProps) {
 }
 ```
 
-### **Directory Structure**
+### **🚨 ALLOY-JS COMPONENT DEVELOPMENT - STRICT GUIDELINES**
+
+#### **Component Creation - MANDATORY PATTERN**
+```typescript
+/**
+ * Component Name - Brief Description
+ * ALWAYS follow this exact pattern
+ */
+
+// 1. IMPORTS - EXACT ORDER
+import type { Model, ModelProperty } from "@typespec/compiler"; // TypeSpec types first
+import { refkey, For } from "@alloy-js/core";                 // Alloy Core second
+import * as go from "@alloy-js/go";                            // Alloy Go third
+const { StructTypeDeclaration, StructMember } = go;            // Destructure immediately
+
+// 2. INTERFACE DEFINITIONS - ALWAYS typed
+interface GoModelProps {
+  model: Model;
+  packageName?: string;
+  options?: GenerationOptions;
+}
+
+// 3. COMPONENT FUNCTION - ALWAYS exported
+export function GoModel({ model, packageName, options }: GoModelProps) {
+  // 4. REFKEY CREATION - ALWAYS for main object
+  const modelRefkey = refkey(model);
+  
+  // 5. JSX RETURN - ALWAYS component composition
+  return (
+    <StructTypeDeclaration name={model.name} refkey={modelRefkey}>
+      {/* 6. ITERATION - ALWAYS use For component */}
+      <For each={model.properties} to={(prop) => (
+        <StructMember
+          name={prop.name}
+          type={TypeExpression({ type: prop.type })}
+          {/* 7. CONDITIONAL ATTRIBUTES - spread pattern */}
+          {...(prop.optional && { pointer: true })}
+        />
+      )} />
+    </StructTypeDeclaration>
+  );
+}
+```
+
+#### **Component Testing - MANDATORY PATTERN**
+```typescript
+import { describe, test, expect } from "vitest";
+import { render } from "@alloy-js/core";
+import { GoModel } from "../go/GoModel.js";
+
+describe("GoModel Component", () => {
+  test("renders struct declaration correctly", async () => {
+    const mockModel = createMockTypeSpecModel();
+    
+    const output = render(<GoModel model={mockModel} />);
+    
+    // 1. COMPONENT OUTPUT VERIFICATION
+    expect(output).toContain("type TestModel struct");
+    
+    // 2. REFK VERIFICATION
+    expect(output).toContain('refkey="TestModel"');
+    
+    // 3. PROPER GO SYNTAX
+    expect(output).toMatch(/type \w+ struct \{[^}]+\}/);
+  });
+});
+```
+
+#### **Component Composition - HIGHER-ORDER PATTERNS**
+```typescript
+// HIGHER-ORDER COMPONENTS FOR COMPLEX PATTERNS
+export function GoPackage({ namespace, children }: GoPackageProps) {
+  return (
+    <Package name={packageName}>
+      <Import path="encoding/json" />
+      <Import path="time" />
+      {children}
+    </Package>
+  );
+}
+
+// COMPLEX COMPONENT COMPOSITION
+export function GoModelsFromNamespace({ namespace }: { namespace: Namespace }) {
+  return (
+    <GoPackage namespace={namespace}>
+      <For each={namespace.models} to={(model) => (
+        <GoModel model={model} />
+      )} />
+    </GoPackage>
+  );
+}
+```
+
+### **🚨 ALLOY-JS FIRST DIRECTORY STRUCTURE**
 ```
 src/
-├── components/          # Alloy-JS components for Go generation
-│   ├── go/             # Go-specific components
-│   │   ├── GoModel.tsx         # Struct generation
-│   │   ├── GoEnumDeclaration.tsx # Enum generation
-│   │   ├── GoUnionDeclaration.tsx # Union generation
-│   │   └── GoPackageDirectory.tsx # Package organization
-│   └── TypeExpression.tsx       # Type mapping component
-├── domain/             # Business logic and validation
-│   ├── clean-type-mapper.ts     # Type mapping logic
-│   ├── error-entities.ts         # Error handling
-│   └── structured-logging.ts     # Logging system
-├── services/           # Service layer
-│   └── type-mapping.service.ts  # Type mapping delegation
-├── contexts/           # React-like contexts
-│   └── TypeSpecContext.tsx      # TypeSpec compiler context
-└── emitter/            # Main AssetEmitter
-    └── typespec-go-emitter.tsx   # Primary export
+├── components/          # 🔥 100% ALLOY-JS COMPONENTS - NO STRINGS ALLOWED
+│   ├── go/             # 🚀 ALLOY-JS GO COMPONENTS ONLY
+│   │   ├── GoModel.tsx             # Struct generation (Alloy Go)
+│   │   ├── GoEnumDeclaration.tsx    # Enum generation (Alloy Go)
+│   │   ├── GoUnionDeclaration.tsx    # Union generation (Alloy Go)
+│   │   ├── GoPackageDirectory.tsx   # Package organization (Alloy Core)
+│   │   ├── GoStructDeclaration.tsx   # Struct declaration (Alloy Go)
+│   │   ├── GoInterfaceDeclaration.tsx # Interface generation (Alloy Go)
+│   │   ├── GoModFile.tsx            # Go mod generation (Alloy Go)
+│   │   ├── GoHandlerMethodComponent.tsx # HTTP handlers (Alloy Go)
+│   │   ├── GoRouteRegistrationComponent.tsx # Route reg (Alloy Go)
+│   │   ├── GoHandlerStub.tsx        # Handler stubs (Alloy Go)
+│   │   └── index.ts                 # Component exports (DISABLED - NO RE-EXPORTS)
+│   └── TypeExpression.tsx             # Type mapping component (Alloy Core)
+├── domain/             # Business logic - SUPPORTS ALLOY COMPONENTS
+│   ├── clean-type-mapper.ts          # Type mapping logic (feeds components)
+│   ├── error-entities.ts             # Error handling (component-safe)
+│   └── structured-logging.ts          # Logging system (component-friendly)
+├── services/           # Service layer - FEEDS ALLOY COMPONENTS
+│   └── type-mapping.service.ts       # Type mapping delegation
+├── contexts/           # React-like contexts for ALLOY COMPONENTS
+│   └── TypeSpecContext.tsx           # TypeSpec compiler context
+├── utils/              # Utilities SUPPORTING ALLOY COMPONENTS
+│   ├── strings.ts                     # String utilities (NO CODE GEN)
+│   ├── typespec-utils.ts              # TypeSpec helpers
+│   └── bdd-framework.ts              # Testing framework
+└── emitter/            # Main AssetEmitter - ORCHESTRATES ALLOY COMPONENTS
+    └── typespec-go-emitter.tsx         # Primary export (Alloy orchestration)
+```
+
+### **🚨 FORBIDDEN PATTERNS - ABSOLUTELY NOT ALLOWED**
+```
+src/
+├── forbidden/         # 🚫 NEVER CREATE - STRING-BASED GENERATION
+│   ├── string-builders.ts      # 🚫 FORBIDDEN - Template literals
+│   ├── code-concatenation.ts   # 🚫 FORBIDDEN - String concatenation
+│   └── manual-generation.ts    # 🚫 FORBIDDEN - Manual code building
 ```
 
 ---
 
-## 🧪 TESTING PATTERNS
+## 🧪 🚨 ALLOY-JS TESTING PATTERNS
 
-### **Test Structure** 
+### **🔥 ALLOY COMPONENT TESTING - MANDATORY APPROACH**
+
+#### **Test Structure for Alloy Components**
 - **Location:** `src/test/**/*.test.ts` and `src/test/**/*.test.tsx`
-- **Framework:** Vitest with JSX support
+- **Framework:** Vitest with **Alloy-JS rollup plugin** for JSX support
 - **Categories:**
-  - Component tests (`.tsx` files)
-  - Integration tests
-  - Type mapping tests
-  - Performance tests
+  - **Component Tests** (`.tsx` files) - Direct component rendering
+  - **Integration Tests** - End-to-end TypeSpec workflows
+  - **Type Mapping Tests** - TypeSpec → Go type conversion
+  - **Performance Tests** - Sub-millisecond generation validation
 
-### **Running Tests**
+### **🚨 COMPONENT TESTING - STRICT PATTERNS**
+
+#### **Basic Component Test Template**
+```typescript
+import { describe, test, expect } from "vitest";
+import { render } from "@alloy-js/core";
+import { GoModel } from "../go/GoModel.js";
+import { createMockTypeSpecModel } from "./mocks/typespec-mocks.js";
+
+describe("🔥 GoModel Component - ALLOY-JS", () => {
+  test("renders struct declaration using Alloy Go components", async () => {
+    const mockModel = createMockTypeSpecModel({
+      name: "TestUser",
+      properties: [
+        { name: "id", type: { kind: "String" } },
+        { name: "name", type: { kind: "String" }, optional: true }
+      ]
+    });
+    
+    // 🔥 RENDER COMPONENT - ALWAYS use render() from @alloy-js/core
+    const output = render(<GoModel model={mockModel} />);
+    
+    // 🔥 VERIFY ALLOY OUTPUT
+    expect(output).toContain("type TestUser struct");
+    expect(output).toContain('ID string `json:"id"`');
+    expect(output).toContain('Name *string `json:"name,omitempty"`');
+  });
+});
+```
+
+#### **Component Integration Test Template**
+```typescript
+describe("🔥 Component Integration - ALLOY-JS", () => {
+  test("GoPackageDirectory composes multiple components", async () => {
+    const mockNamespace = createMockNamespace({
+      name: "TestAPI",
+      models: [userModel, productModel]
+    });
+    
+    const output = render(
+      <GoPackageDirectory namespace={mockNamespace} />
+    );
+    
+    // 🔥 VERIFY PACKAGE COMPOSITION
+    expect(output).toContain("package testapi");
+    expect(output).toContain("import");
+    expect(output).toContain("type User struct");
+    expect(output).toContain("type Product struct");
+  });
+});
+```
+
+### **Running Tests - ALLOY-JS FOCUSED**
 ```bash
-# All tests
+# 🔥 ALL TESTS (validates Alloy components)
 just test
 
-# Specific test file
+# 🔥 COMPONENT-ONLY TESTS
+bunx vitest run src/test/components-*.test.tsx
+
+# 🔥 SPECIFIC COMPONENT TEST
 bunx vitest run src/test/components-basic.test.tsx
 
-# Tests with coverage
+# 🔥 INTEGRATION TESTS (TypeSpec + Alloy)
+bunx vitest run src/test/integration-*.test.ts
+
+# 🔥 PERFORMANCE TESTS (validates sub-millisecond generation)
+bunx vitest run src/test/*performance*.test.ts
+
+# 🔥 TESTS WITH COVERAGE
 just test-cov
 
-# TypeSpec-specific tests
+# 🔥 TYPESPEC INTEGRATION TESTS
 bun run test:typespec
 ```
 
 ### **Test Status (Current)**
 - **Pass Rate:** 111/125 tests passing (88.8%)
+- **🚨 Critical:** 14 component tests failing due to TypeScript compilation errors
+- **🚨 Critical:** JSX compilation issues with `verbatimModuleSyntax`
+- **🚨 Critical:** Component exports missing from `src/components/go/index.ts`
+- **✅ Working:** Basic type mapping, performance tests, E2E integration
 - **Critical Issues:** TypeScript compilation errors (38+)
 - **Focus Areas:** Type safety, component integration, type mapping
 
@@ -316,6 +515,152 @@ export class TypeMappingService {
 
 ---
 
+## 🚫🚨 ABSOLUTELY FORBIDDEN PATTERNS - ZERO EXCEPTIONS
+
+### **🔥 FORBIDDEN: STRING-BASED CODE GENERATION**
+```typescript
+// 🚫 NEVER DO THIS - STRING GENERATION
+const goCode = `type ${model.name} struct {
+  ${fields.map(f => `${f.name} ${f.type} \`json:"${f.name}"\``).join('\n')}
+}`;
+
+// 🚫 NEVER DO THIS - TEMPLATE LITERALS
+const goStruct = `type User struct {
+  ID string \`json:"id"\`
+  Name *string \`json:"name,omitempty"\`
+}`;
+
+// 🚫 NEVER DO THIS - STRING CONCATENATION
+let goFile = "package api\n\n";
+goFile += "import \"encoding/json\"\n\n";
+goFile += generateStruct(model);
+```
+
+### **🔥 FORBIDDEN: MANUAL CODE BUILDING**
+```typescript
+// 🚫 NEVER DO THIS - MANUAL CONSTRUCTION
+function buildGoStruct(model) {
+  let result = `type ${model.name} struct {\n`;
+  for (const prop of model.properties) {
+    result += `  ${prop.name} ${mapType(prop.type)}\n`;
+  }
+  result += '}';
+  return result;
+}
+
+// 🚫 NEVER DO THIS - STRING ARRAYS
+const goLines = [];
+goLines.push("type User struct {");
+goLines.push("  ID string;");
+goLines.push("}");
+return goLines.join("\n");
+```
+
+### **🔥 FORBIDDEN: NON-ALLOY APPROACHES**
+```typescript
+// 🚫 NEVER DO THIS - MANUAL JSX
+const jsxCode = <div>
+  <StructType name={model.name}>
+    {model.properties.map(prop => 
+      <StructMember name={prop.name} type={prop.type} />
+    )}
+  </StructType>
+</div>;
+
+// 🚫 NEVER DO THIS - CUSTOM RENDERING
+function renderGoCode(ast) {
+  // Custom AST traversal logic
+  // Manual string building
+  // Non-Alloy rendering
+}
+```
+
+### **🔥 FORBIDDEN: DIRECT MANIPULATION**
+```typescript
+// 🚫 NEVER DO THIS - DIRECT MANIPULATION
+const refkeyRegistry = {};
+refkeyRegistry[model.name] = model; // Manual tracking
+
+// 🚫 NEVER DO THIS - MANUAL CACHING
+const componentCache = new Map();
+if (!componentCache.has(model.id)) {
+  componentCache.set(model.id, renderComponent(model));
+}
+
+// 🚫 NEVER DO THIS - MANUAL DEPENDENCY TRACKING
+const dependencies = [];
+for (const prop of model.properties) {
+  if (isUserDefined(prop.type)) {
+    dependencies.push(prop.type);
+  }
+}
+```
+
+---
+
+### **✅✅ ABSOLUTELY REQUIRED PATTERNS - NO EXCEPTIONS**
+
+### **🔥 REQUIRED: ALLOY-JS COMPONENTS ONLY**
+```typescript
+// ✅ ALWAYS DO THIS - ALLOY COMPONENTS
+import * as go from "@alloy-js/go";
+const { StructTypeDeclaration, StructMember } = go;
+
+export function GoModel({ model }: GoModelProps) {
+  const modelRefkey = refkey(model);
+  
+  return (
+    <StructTypeDeclaration name={model.name} refkey={modelRefkey}>
+      <For each={model.properties} to={(prop) => (
+        <StructMember
+          name={prop.name}
+          type={TypeExpression({ type: prop.type })}
+          {...(prop.optional && { pointer: true })}
+        />
+      )} />
+    </StructTypeDeclaration>
+  );
+}
+```
+
+### **🔥 REQUIRED: ALLOY CORE UTILITIES**
+```typescript
+// ✅ ALWAYS DO THIS - ALLOY CORE
+import { refkey, For, createRefkey } from "@alloy-js/core";
+
+// ✅ ALWAYS USE REFK FOR TYPE MANAGEMENT
+const modelRefkey = refkey(model);
+const customRefkey = createRefkey("custom-name");
+
+// ✅ ALWAYS USE FOR COMPONENT
+<For each={items} to={(item) => <Component item={item} />} />
+```
+
+### **🔥 REQUIRED: COMPONENT COMPOSITION**
+```typescript
+// ✅ ALWAYS DO THIS - COMPOSITION
+export function GoPackage({ namespace, children }: GoPackageProps) {
+  return (
+    <Package name={getPackageName(namespace)}>
+      <Import path="encoding/json" />
+      <Import path="time" />
+      {children}
+    </Package>
+  );
+}
+
+// ✅ ALWAYS DO THIS - HIGHER-ORDER COMPONENTS
+export function GoNamespacePackage({ namespace }: { namespace: Namespace }) {
+  return (
+    <GoPackage namespace={namespace}>
+      <For each={namespace.models} to={(model) => (
+        <GoModel model={model} />
+      )} />
+    </GoPackage>
+  );
+}
+```
+
 ## 🛠️ TROUBLESHOOTING COMMON ISSUES
 
 ### **TypeScript Compilation Errors**
@@ -340,28 +685,56 @@ just format       # Prettier formatting
 
 ---
 
-## 🎯 DEVELOPMENT PRIORITIES
+## 🎯 🚨 ALLOY-JS DEVELOPMENT PRIORITIES
 
-### **Immediate Focus (Critical Path)**
-1. **Type Safety Excellence:** Eliminate all TypeScript compilation errors
-2. **Component Integration:** Fix failing component tests (14/125 failing)
-3. **AssetEmitter Completion:** Full `createAssetEmitter` implementation
-4. **Type Mapping:** Complete union and enum generation
+### **🔥 IMMEDIATE FOCUS (ALLOY CRITICAL PATH)**
+1. **🚨 ALLOY COMPONENT CRISIS:** Fix 38 TypeScript compilation errors in Alloy components
+2. **🚨 COMPONENT EXPORT SYSTEM:** Complete component exports in `src/components/go/index.ts`
+3. **🚨 ALLOY JSX COMPILATION:** Resolve `verbatimModuleSyntax` conflicts with JSX
+4. **🚨 REFK SYSTEM INTEGRATION:** Fix component refkey references across all files
 
-### **Quality Gates**
-- ✅ **TypeScript Strict:** Zero compilation errors required
+### **🔥 HIGH IMPACT (ALLOY EXCELLENCE)**
+5. **🚨 ALLOY TYPE MAPPING:** Complete union and enum generation using Alloy components
+6. **🚨 ALLOY INTEGRATION:** Achieve 100% component test success rate
+7. **🚨 ASSETEMITTER COMPLETION:** Full `createAssetEmitter` with Alloy components
+8. **🚨 ALLOY PERFORMANCE:** Optimize component rendering pipeline
+
+### **🔥 MEDIUM IMPACT (ALLOY COMPLETION)**
+9. **🚨 ADVANCED ALLOY COMPONENTS:** Complete HTTP handlers and route registration
+10. **🚨 ALLOY ERROR HANDLING:** Unified error system with component boundaries
+11. **🚨 ALLOY TEMPLATES:** Go generics from TypeSpec templates
+12. **🚨 ALLOY DOCUMENTATION:** Component-level documentation generation
+
+### **Quality Gates - ALLOY REQUIREMENTS**
+- ✅ **TypeScript Strict:** Zero compilation errors (Alloy components only)
 - ✅ **ESLint:** Clean codebase with zero any types
+- ✅ **Alloy Components:** 100% component-based, zero string generation
 - ✅ **Performance:** Sub-millisecond generation maintained
-- ✅ **Tests:** 100% success rate required for production
+- ✅ **Tests:** 100% success rate (all component tests passing)
 
 ---
 
-## 📚 KEY REFERENCE FILES
+## 📚 🚨 ALLOY-JS KEY REFERENCE FILES
 
-### **Core Implementation**
-- `src/emitter/typespec-go-emitter.tsx` - Main AssetEmitter
-- `src/components/go/GoModel.tsx` - Model generation pattern
-- `src/services/type-mapping.service.ts` - Type mapping delegation
+### **🔥 Core ALLOY-JS Implementation**
+- `src/emitter/typespec-go-emitter.tsx` - **Main AssetEmitter (orchestrates all Alloy components)**
+- `src/components/go/GoModel.tsx` - **Model generation (Alloy Go pattern)**
+- `src/components/go/GoStructDeclaration.tsx` - **Struct generation (Alloy Go pattern)**
+- `src/components/TypeExpression.tsx` - **Type mapping (Alloy Core pattern)**
+- `src/services/type-mapping.service.ts` - **Type mapping delegation (feeds Alloy components)**
+
+### **🔥 ALLOY Component Examples**
+- `src/components/go/GoEnumDeclaration.tsx` - **Enum generation (Alloy Go)**
+- `src/components/go/GoUnionDeclaration.tsx` - **Union generation (Alloy Go)**
+- `src/components/go/GoPackageDirectory.tsx` - **Package organization (Alloy Core)**
+- `src/components/go/GoInterfaceDeclaration.tsx` - **Interface generation (Alloy Go)**
+- `src/components/go/GoRouteRegistrationComponent.tsx` - **HTTP routing (Alloy Go)**
+
+### **🔥 ALLOY Testing Examples**
+- `src/test/components-basic.test.tsx` - **Component testing pattern**
+- `src/test/integration-working-e2e.test.ts` - **E2E Alloy component integration**
+- `src/test/typespec-integration-basic.test.ts` - **TypeSpec + Alloy integration**
+- `src/components/go/index.ts` - **Component exports (currently disabled)**
 
 ### **Type Integration**
 - `src/domain/clean-type-mapper.ts` - Type mapping logic
@@ -375,21 +748,58 @@ just format       # Prettier formatting
 
 ---
 
-## 🚫 PROHIBITED PATTERNS
+## 🚫🚨 PROHIBITED PATTERNS - ALLOY-JS ENFORCEMENT
 
-### **Never Do These**
-- **No CLI Development:** Focus exclusively on AssetEmitter
-- **No String Manipulation:** Use component-based generation
-- **No npm Commands:** Always use `bun` package manager
-- **No Any Types:** Zero tolerance for `(type as any)` casts
-- **No Manual Git Operations:** Use `git town` for branch management
+### **🔥 NEVER DO THESE - ABSOLUTE ZERO TOLERANCE**
+- **🚫 NO STRING-BASED CODE GENERATION** - Forbidden under all circumstances
+- **🚫 NO CLI Development** - Focus exclusively on AssetEmitter with Alloy components  
+- **🚫 NO MANUAL CODE BUILDING** - Use only Alloy-JS components
+- **🚫 NO npm Commands** - Always use `bun` package manager
+- **🚫 NO Any Types** - Zero tolerance for `(type as any)` casts
+- **🚫 NO Manual Git Operations** - Use `git town` for branch management
+- **🚫 NO TEMPLATE LITERALS FOR GO CODE** - Use Alloy Go components only
+- **🚫 NO JSX OUTSIDE COMPONENTS** - All JSX must be in component functions
 
-### **Always Do These**
-- **Build Before Test:** `just build` required before `just test`
-- **Type-Only Imports:** Required with `verbatimModuleSyntax: true`
-- **Component References:** Always use `refkey()` for component IDs
-- **Error Boundaries:** Proper error handling in all components
+### **🔥 ALWAYS DO THESE - ALLOY-JS REQUIREMENTS**
+- **✅ BUILD BEFORE TEST** - `just build` required before `just test`
+- **✅ TYPE-ONLY IMPORTS** - Required with `verbatimModuleSyntax: true`
+- **✅ COMPONENT REFK ONLY** - Always use `refkey()` for component IDs
+- **✅ ALLOY COMPONENTS ONLY** - Generate Go code exclusively with Alloy Go
+- **✅ ERROR BOUNDARIES** - Proper error handling in all components
+- **✅ COMPOSITION PATTERNS** - Use higher-order components for complexity
+- **✅ REFK SYSTEM** - Use `refkey()` for all TypeSpec object references
+- **✅ FOR COMPONENT** - Use `<For each={} to={}>` for all iteration
+
+### **🔥 ALLOY-JS VERIFICATION CHECKLIST**
+Before committing ANY changes, verify:
+- [ ] **No string-based code generation** anywhere in components
+- [ ] **All Go code uses Alloy Go components** only
+- [ ] **All components use refkey()** for TypeSpec objects
+- [ ] **All iteration uses <For> component** not Array.map()
+- [ ] **All imports follow order:** TypeSpec types → Alloy Core → Alloy Go
+- [ ] **All components are exported functions** with typed props
+- [ ] **No template literals for code generation** anywhere
+- [ ] **TypeScript compilation succeeds** with zero errors
 
 ---
 
-*This guide documents the current state and architectural patterns of the TypeSpec Go Emitter project. Follow these patterns for consistent, professional development.*
+## 🔥 ALLOY-JS ARCHITECTURE SUMMARY
+
+### **🚨 THIS IS OUR FOUNDATION - NO DEBATE - NO EXCEPTIONS**
+1. **ALLOY-JS CORE** - Component system, refkey, JSX, For loops
+2. **ALLOY-JS GO** - All Go code generation (imports, structs, interfaces)
+3. **ZERO STRINGS** - Absolutely no string-based code generation
+4. **COMPONENT COMPOSITION** - Higher-order components for complexity
+5. **TYPE SPEC INTEGRATION** - refkey system for TypeSpec object tracking
+6. **DECLARATIVE APPROACH** - Describe WHAT to generate, not HOW to generate
+
+### **🚨 SUCCESS METRICS**
+- **100% Component-Based:** All Go code generated through Alloy components
+- **Zero String Generation:** No template literals or string concatenation for code
+- **Type Safety:** Zero TypeScript compilation errors
+- **Test Success:** 100% test pass rate with component integration
+- **Performance:** Sub-millisecond generation maintained
+
+---
+
+**🚨 CRITICAL REMINDER: This guide documents the **ABSOLUTE ALLOY-JS FOUNDATION** of the TypeSpec Go Emitter project. Any deviation from these patterns is considered a critical architectural violation. Follow these patterns for consistent, professional development.**

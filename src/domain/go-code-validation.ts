@@ -5,7 +5,7 @@
  */
 
 import { z } from "zod";
-import { Logger } from "./structured-logging";
+import { Logger, LogContext } from "./structured-logging";
 
 /**
  * Go struct field validation schema
@@ -105,7 +105,7 @@ interface ValidationContext {
  * Comprehensive runtime validation for generated Go code
  */
 export class GoCodeValidator {
-  private logger = Logger.withContext({ component: "GoCodeValidator" });
+  private logger = Logger.withContext(LogContext.DOMAIN_VALIDATION);
 
   /**
    * Validate complete generation result

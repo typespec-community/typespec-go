@@ -6,7 +6,7 @@
 import { expect, test } from "vitest";
 import { render, Output, refkey } from "@alloy-js/core";
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
-import { GoPackageDirectory } from "../components/go/index.js";
+import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
 
 // Create a mock TypeSpec model for testing

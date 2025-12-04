@@ -80,7 +80,7 @@ export class StandaloneGoGenerator {
       for (const model of packageInfo.models) {
         const result = this.generateModel(model);
         if (result._tag === "success") {
-          result.data.forEach((code, filename) => {
+          result.data.forEach((code: string, filename: string) => {
             allFiles.set(filename, code);
             generatedFiles.push(filename);
           });
@@ -95,7 +95,7 @@ export class StandaloneGoGenerator {
         for (const union of packageInfo.unions) {
           const result = this.generateUnionType(union);
           if (result._tag === "success") {
-            result.data.forEach((code, filename) => {
+            result.data.forEach((code: string, filename: string) => {
               allFiles.set(filename, code);
               generatedFiles.push(filename);
             });

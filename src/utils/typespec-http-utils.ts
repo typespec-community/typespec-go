@@ -52,13 +52,13 @@ export function extractHttpMetadata(
   }
 
   // Extract HTTP method
-  const method = getOperationVerb(httpOp) || "POST";
+  const method = getOperationVerb(program, httpOp) || "POST";
 
   // Extract path
-  const path = getRoutePath(httpOp) || "/";
+  const path = getRoutePath(program, httpOp) || "/";
 
   // Extract parameters
-  const parameters = extractHttpParameters(httpOp, operation);
+  const parameters = extractHttpParameters(httpOp, operation, program);
 
   return {
     method: method.toUpperCase(),

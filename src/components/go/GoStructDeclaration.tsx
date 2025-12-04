@@ -71,7 +71,7 @@ export function GoStructDeclaration({
 						const shouldUsePointer =
 							prop.optional && usePointersForOptional && isNestedModelType(prop.type)
 						const finalType = shouldUsePointer ? (
-							<Reference refkey={typeRef} pointer/>
+							<>{"*"}<Reference refkey={typeRef}/></>
 						) : (
 							goTypeElement
 						)
