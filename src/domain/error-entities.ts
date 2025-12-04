@@ -248,13 +248,19 @@ export class EntityValidation {
   private static validateObjectInput(
     input: unknown,
     label: string,
-  ): { isValid: boolean; errors: string[]; typedInput: any } {
-    const errors: string[] = [];
-    if (!input || typeof input !== "object") {
-      errors.push(`${label} must be an object`);
-      return { isValid: false, errors, typedInput: null };
+  ): { isValid: boolean; errors: string[]; typedInput: Record<string, unknown> | null } {
+    const result: { isValid: boolean; errors: string[]; typedInput: Record<string, unknown> | null } = { 
+      isValid: true, 
+      errors: [], 
+      typedInput: null 
+    };
+    
+    if (!input || typeof input !== "object" || Array.isArray(input)) {
+      return { isValid: false, errors: [`${label} must be an object`], typedInput: null };
     }
-    return { isValid: true, errors: [], typedInput: input };
+    
+    result.typedInput = input as Record<string, unknown>;
+    return result;
   }
 
   /**

@@ -6,7 +6,7 @@
 import type { Program, Operation, ModelProperty, Type } from "@typespec/compiler";
 import { getHttpOperation } from "@typespec/http";
 import type { HttpOperation } from "@typespec/http";
-import { mapTypeSpecTypeToGo } from "../domain/clean-type-mapper.js";
+import { TypeExpression } from "../components/TypeExpression.js";
 
 /**
  * HTTP operation metadata extracted from TypeSpec decorators
@@ -122,7 +122,7 @@ function extractHttpParameter(
   httpOp: HttpOperation,
 ): HttpParameter | null {
   // Map TypeSpec type to Go type using unified type mapper
-  const goType = mapTypeSpecTypeToGo(prop.type, name).goType;
+  const goType = TypeExpression({ type: prop.type });
 
   // Determine parameter source from HTTP operation
   const source = determineParameterSource(name, prop, httpOp);

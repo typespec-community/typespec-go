@@ -5,7 +5,7 @@
  */
 
 import type { Operation, Program, Type } from "@typespec/compiler";
-import { mapTypeSpecTypeToGo } from "../domain/clean-type-mapper.js";
+import { TypeExpression } from "../components/TypeExpression.js";
 
 /**
  * Extract return type information from a TypeSpec operation
@@ -51,12 +51,13 @@ export function extractReturnType(operation: Operation, program: Program): GoRet
 /**
  * Extract tuple return type (multiple return values)
  */
-function extractTupleReturnType(tupleType: any, program: Program): GoReturnType {
-  const elements = tupleType.values || [];
-  const mainType = elements.find((el: any) => !isErrorType(el));
-  const errorType = elements.find((el: any) => isErrorType(el));
+function extractTupleReturnType(tupleType: Type): GoReturnType {
+  const tupleTypeSpec = tupleType as { values?: Type[] };
+  const elements = tupleTypeSpec.values || [];
+  const mainType = elements.find((el: Type) => !isErrorType(el));
+  const errorType = elements.find((el: Type) => isErrorType(el));
   
-  const mainGoType = mainType ? mapTypeSpecTypeToGo(mainType, program) : "";
+  const mainGoType = mainType ? TypeExpression({ type: mainType }) : "";
   const returnsError = !!errorType;
   
   const signature = returnsError ? `(${mainGoType}, error)` : mainGoType;
@@ -73,8 +74,10 @@ function extractTupleReturnType(tupleType: any, program: Program): GoReturnType 
 /**
  * Extract error union return type
  */
-function extractErrorReturnType(unionType: any, program: Program): GoReturnType {
-  const nonErrorTypes = unionType.options?.filter((opt: any) => !isErrorType(opt)) || [];
+function extractErrorReturnType(unionType: Type): GoReturnType {
+  const unionTypeSpec = unionType as { options?: Type[] };
+  const options = unionTypeSpec.options || [];
+  const nonErrorTypes = options.filter((opt: Type) => !isErrorType(opt));
   const mainType = nonErrorTypes[0];
   
   if (!mainType) {
@@ -86,7 +89,7 @@ function extractErrorReturnType(unionType: any, program: Program): GoReturnType 
     };
   }
   
-  const mainGoType = mapTypeSpecTypeToGo(mainType, program);
+  const mainGoType = TypeExpression({ type: mainType });
   const signature = `(${mainGoType}, error)`;
   const goType = `(${mainGoType}, error)`;
   
@@ -101,8 +104,8 @@ function extractErrorReturnType(unionType: any, program: Program): GoReturnType 
 /**
  * Extract simple return type (single value)
  */
-function extractSimpleReturnType(returnType: Type, program: Program): GoReturnType {
-  const mainGoType = mapTypeSpecTypeToGo(returnType, program);
+function extractSimpleReturnType(returnType: Type): GoReturnType {
+  const mainGoType = TypeExpression({ type: returnType });
   const signature = mainGoType;
   const goType = mainGoType;
   
@@ -117,21 +120,23 @@ function extractSimpleReturnType(returnType: Type, program: Program): GoReturnTy
 /**
  * Check if type is an error type
  */
-function isErrorType(type: any): boolean {
+function isErrorType(type: Type): boolean {
   if (!type) return false;
   
+  const typeSpec = type as { name?: string; kind?: string; decorators?: { name: string }[] };
+  
   // Common TypeSpec error type patterns
-  if (type.name && type.name.toLowerCase().includes('error')) {
+  if (typeSpec.name && typeSpec.name.toLowerCase().includes('error')) {
     return true;
   }
   
-  if (type.kind === "Model" && type.name === "Error") {
+  if (typeSpec.kind === "Model" && typeSpec.name === "Error") {
     return true;
   }
   
   // Check for @error decorator
-  if (type.decorators) {
-    return type.decorators.some((dec: any) => 
+  if (typeSpec.decorators) {
+    return typeSpec.decorators.some((dec: { name: string }) => 
       dec.name === "error" || dec.name === "$error"
     );
   }
@@ -142,7 +147,9 @@ function isErrorType(type: any): boolean {
 /**
  * Check if union is primarily an error union
  */
-function isErrorUnion(unionType: any): boolean {
-  if (!unionType.options) return false;
-  return unionType.options.some((opt: any) => isErrorType(opt));
+function isErrorUnion(unionType: Type): boolean {
+  const unionTypeSpec = unionType as { options?: Type[] };
+  const options = unionTypeSpec.options;
+  if (!options) return false;
+  return options.some((opt: Type) => isErrorType(opt));
 }

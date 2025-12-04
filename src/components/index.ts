@@ -5,9 +5,6 @@
  * Provides clean import paths for the complete code generation system
  */
 
-// Core Go component exports
-export * from "./go/index.js";
-
 // Utility exports
 export * from "../utils/strings.js";
 export * from "../utils/typespec-utils.js";

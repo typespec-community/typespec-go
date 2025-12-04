@@ -72,7 +72,7 @@ export function GoEnumDeclaration({
 
       {isStringEnum && (
         <FunctionDeclaration name="String" receiver={`e ${typeName}`} returns="string">
-          {`return string(e)`}
+          return string(e)
         </FunctionDeclaration>
       )}
 

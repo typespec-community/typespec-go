@@ -7,7 +7,7 @@
 import type { Operation, Model, Type, Program, Namespace } from "@typespec/compiler";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
-import { mapTypeSpecTypeToGo } from "../../domain/clean-type-mapper.js";
+import { TypeExpression } from "../TypeExpression.js";
 
 interface GoInterfaceDeclarationProps {
   /** Interface name */
@@ -89,7 +89,7 @@ function extractParameters(operation: Operation, program?: Program): GoParameter
     for (const [name, prop] of operation.parameters.properties) {
       params.push({
         name: toCamelCase(name),
-        type: mapTypeSpecTypeToGo(prop.type, program).goType,
+        type: TypeExpression({ type: prop.type }),
       });
     }
   }
@@ -105,7 +105,7 @@ function extractReturns(operation: Operation, program?: Program): GoReturnType[]
 
   // Map return type
   if (operation.returnType) {
-    returns.push({ type: mapTypeSpecTypeToGo(operation.returnType, program).goType });
+    returns.push({ type: TypeExpression({ type: operation.returnType }) });
   }
 
   // Always return error

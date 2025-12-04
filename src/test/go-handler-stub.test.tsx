@@ -1,12 +1,10 @@
 import { describe, test, expect } from "vitest";
 import { GoHandlerStub } from "../components/go/GoHandlerStub.js";
+import { MockFactory } from "../testing/mock-factory.js";
 
 describe("GoHandlerStub Component", () => {
   test("generates complete HTTP handler file", () => {
-    const mockOperation = {
-      name: "CreateUser",
-      kind: "Operation" as const,
-    };
+    const mockOperation = MockFactory.createOperation("CreateUser");
 
     const output = GoHandlerStub({
       operations: [mockOperation], 
@@ -24,10 +22,7 @@ describe("GoHandlerStub Component", () => {
   });
 
   test("generates handler methods with proper signatures", () => {
-    const mockOperation = {
-      name: "GetUser",
-      kind: "Operation" as const,
-    };
+    const mockOperation = MockFactory.createOperation("GetUser");
 
     const output = GoHandlerStub({
       operations: [mockOperation], 

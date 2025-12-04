@@ -1,21 +1,15 @@
 import { describe, test, expect } from "vitest";
 import { GoInterfaceDeclaration, collectOperations } from "../components/go/GoInterfaceDeclaration.js";
+import { MockFactory } from "../testing/mock-factory.js";
 
 describe("GoInterfaceDeclaration Component", () => {
   test("generates interface from operations", () => {
-    const mockOperation = {
-      name: "getUser",
-      kind: "Operation" as const,
+    const mockOperation = MockFactory.createOperation("getUser", {
+      returnType: MockFactory.createModel("User"),
       parameters: {
-        properties: new Map([
-          ["id", { name: "id", type: { kind: "Scalar", name: "string" }, optional: false }]
-        ])
-      },
-      returnType: {
-        kind: "Model",
-        name: "User"
+        id: MockFactory.createScalar("string")
       }
-    };
+    });
 
     const output = GoInterfaceDeclaration({
       name: "UserService",
@@ -24,19 +18,15 @@ describe("GoInterfaceDeclaration Component", () => {
     });
 
     expect(output).toContain("type UserService interface {");
-    expect(output).toContain("GetUser(ctx context.Context, id string) (interface{}, error)");
+    expect(output).toContain("GetUser(ctx context.Context, id string) (User, error)");
   });
 
   test("handles operations with no return type", () => {
-    const mockOperation = {
-      name: "deleteUser",
-      kind: "Operation" as const,
+    const mockOperation = MockFactory.createOperation("deleteUser", {
       parameters: {
-        properties: new Map([
-          ["id", { name: "id", type: { kind: "Scalar", name: "string" }, optional: false }]
-        ])
+        id: MockFactory.createScalar("string")
       }
-    };
+    });
 
     const output = GoInterfaceDeclaration({
       name: "UserService",
@@ -47,12 +37,12 @@ describe("GoInterfaceDeclaration Component", () => {
   });
 
   test("collects operations from namespace", () => {
-    const mockNamespace = {
-      operations: new Map([
-        ["getUser", { name: "getUser", kind: "Operation" as const }],
-        ["createUser", { name: "createUser", kind: "Operation" as const }]
-      ])
-    };
+    const mockNamespace = MockFactory.createNamespace("TestAPI", {
+      operations: {
+        getUser: MockFactory.createOperation("getUser"),
+        createUser: MockFactory.createOperation("createUser")
+      }
+    });
 
     const operations = collectOperations(mockNamespace);
 

@@ -3,16 +3,13 @@ import { render } from "@alloy-js/core";
 import { Output } from "@alloy-js/core";
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
+import { MockFactory } from "../testing/mock-factory.js";
 
 describe("GoPackageDirectory Component", () => {
   test("generates proper package structure", () => {
-    const mockModel = {
-      name: "User",
-      kind: "Model" as const,
-      properties: new Map([
-        ["id", { name: "id", type: { kind: "Scalar", name: "string" }, optional: false }],
-      ]),
-    };
+    const mockModel = MockFactory.createModel("User", {
+      id: MockFactory.createScalar("string")
+    });
 
     const output = render(
       <Output>
@@ -33,15 +30,13 @@ describe("GoPackageDirectory Component", () => {
   });
 
   test("handles operations with handlers", () => {
-    const mockOperation = {
-      name: "GetUser",
-      kind: "Operation" as const,
-    };
+    const mockOperation = MockFactory.createOperation("GetUser");
 
     const output = render(
       <Output>
         <GoPackageDirectory 
           operations={[mockOperation]}
+          models={[]}
           packageName="test"
         />
       </Output>
