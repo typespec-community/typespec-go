@@ -1,5 +1,5 @@
-import {HttpParameter} from "../../utils/typespec-http-utils"
-import {JSX} from "@alloy-js/core/jsx-runtime"
+import type {HttpParameter} from "../../utils/typespec-http-utils"
+import type {JSX} from "@alloy-js/core/jsx-runtime"
 import type {Operation} from "@typespec/compiler"
 
 export interface GoHandlerMethod {

@@ -1,6 +1,6 @@
 // REAL JSX INTEGRATION TEST - Pure TypeScript (No JSX Syntax)
 import { SourceFile, StructTypeDeclaration, StructMember } from "@alloy-js/go";
-import { render as coreRender, renderToString } from "@alloy-js/core";
+import { render as coreRender } from "@alloy-js/core";
 import { renderToString as testingRenderToString } from "@alloy-js/core/testing";
 
 console.log("🚀 REAL JSX INTEGRATION TEST - Pure TypeScript");
