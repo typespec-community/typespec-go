@@ -120,41 +120,10 @@ export class UnionGenerator {
 
 		// Generate variant structs
 		for (const variant of unionModel.variants) {
-			const variantName = UnionGenerator.getVariantName(variant)
-
-			lines.push(`// ${variantName} - ${unionModel.name} variant`)
-			lines.push(`type ${variantName} struct {`)
-
-			// For discriminated unions, always add discriminator field
-			if (unionModel.discriminator) {
-				lines.push(`\tType string \`json:"type"\``)
-
-				// Add optional success and error fields based on variant name
-				if (variant.name === "success") {
-					lines.push(`\tSuccess *SuccessResponse \`json:"success,omitempty"\``)
-				} else if (variant.name === "error") {
-					lines.push(`\tError *ErrorResponse \`json:"error,omitempty"\``)
-				}
-			} else {
-				// For non-discriminated unions, add potential properties based on variant type
-				if (this.isRecursiveVariant(variant, unionModel)) {
-					// Generate typical binary expression fields for recursive patterns
-					if (
-						variant.name.toLowerCase().includes("add") ||
-						variant.name.toLowerCase().includes("multiply")
-					) {
-						lines.push(`\tLeft *${unionModel.name} \`json:"left,omitempty"\``)
-						lines.push(`\tRight *${unionModel.name} \`json:"right,omitempty"\``)
-					} else {
-						lines.push(`\t*${unionModel.name} \`json:"${variant.name},omitempty"\``)
-					}
-				}
-			}
-
-			lines.push("}")
-			lines.push("")
+			this.generateVariantStruct(lines, variant, unionModel.name)
 
 			// Method to implement the interface
+			const variantName = UnionGenerator.getVariantName(variant)
 			lines.push(`func (e ${variantName}) is${unionModel.name}() {}`)
 			lines.push("")
 		}
@@ -181,23 +150,10 @@ export class UnionGenerator {
 
 		// Generate variant structs with discriminator field
 		for (const variant of unionModel.variants) {
-			const variantName = UnionGenerator.getVariantName(variant)
-
-			lines.push(`// ${variantName} - ${unionModel.name} variant`)
-			lines.push(`type ${variantName} struct {`)
-			lines.push(`\tType string \`json:"type"\``)
-
-			// Add optional success and error fields based on variant name
-			if (variant.name === "success") {
-				lines.push(`\tSuccess *SuccessResponse \`json:"success,omitempty"\``)
-			} else if (variant.name === "error") {
-				lines.push(`\tError *ErrorResponse \`json:"error,omitempty"\``)
-			}
-
-			lines.push("}")
-			lines.push("")
+			this.generateVariantStruct(lines, variant, unionModel.name, unionModel.discriminator)
 
 			// Method to implement the interface
+			const variantName = UnionGenerator.getVariantName(variant)
 			lines.push(`func (e ${variantName}) getType() string {`)
 			lines.push(`\treturn "${variant.discriminator || variant.name}"`)
 			lines.push("}")
@@ -227,6 +183,50 @@ export class UnionGenerator {
 		lines.push("")
 
 		return lines.join("\n")
+	}
+
+	/**
+	 * Generate variant struct definition
+	 * SINGLE SOURCE OF TRUTH: Centralized struct generation logic
+	 */
+	private generateVariantStruct(
+		lines: string[],
+		variant: { name: string; type: TypeSpecTypeNode; discriminator?: string },
+		unionName: string,
+		discriminator?: string,
+	): void {
+		const variantName = UnionGenerator.getVariantName(variant)
+
+		lines.push(`// ${variantName} - ${unionName} variant`)
+		lines.push(`type ${variantName} struct {`)
+
+		if (discriminator) {
+			lines.push(`\tType string \`json:"type"\``)
+
+			// Add optional success and error fields based on variant name
+			if (variant.name === "success") {
+				lines.push(`\tSuccess *SuccessResponse \`json:"success,omitempty"\``)
+			} else if (variant.name === "error") {
+				lines.push(`\tError *ErrorResponse \`json:"error,omitempty"\``)
+			}
+		} else {
+			// For non-discriminated unions, add potential properties based on variant type
+			if (this.isRecursiveVariant(variant, { name: unionName })) {
+				// Generate typical binary expression fields for recursive patterns
+				if (
+					variant.name.toLowerCase().includes("add") ||
+					variant.name.toLowerCase().includes("multiply")
+				) {
+					lines.push(`\tLeft *${unionName} \`json:"left,omitempty"\``)
+					lines.push(`\tRight *${unionName} \`json:"right,omitempty"\``)
+				} else {
+					lines.push(`\t*${unionName} \`json:"${variant.name},omitempty"\``)
+				}
+			}
+		}
+
+		lines.push("}")
+		lines.push("")
 	}
 
 	/**
