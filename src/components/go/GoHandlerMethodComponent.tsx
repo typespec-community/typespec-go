@@ -31,7 +31,6 @@ export function GoHandlerMethodComponent({
 					name: p.name,
 					type: p.goType,
 				}))}
-				returnType=""
 			>
 				{/* Handler implementation placeholder */}
 				{`\t// TODO: Implement ${handler.name} handler with business logic
