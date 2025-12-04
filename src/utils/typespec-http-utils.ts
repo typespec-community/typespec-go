@@ -4,7 +4,12 @@
  */
 
 import type {Program, Operation, ModelProperty} from "@typespec/compiler"
-import {getHttpOperation, getHttpPath, getHttpVerb, HttpOperation} from "@typespec/http"
+import { 
+	getHttpOperation, 
+	getRoutePath, 
+	getOperationVerb,
+	HttpOperation 
+} from "@typespec/http"
 
 /**
  * HTTP operation metadata extracted from TypeSpec decorators
@@ -49,10 +54,10 @@ export function extractHttpMetadata(operation: Operation, program: Program): Htt
 	}
 
 	// Extract HTTP method
-	const method = getHttpVerb(httpOp) || "POST"
+	const method = getOperationVerb(httpOp) || "POST"
 	
 	// Extract path
-	const path = getHttpPath(httpOp) || "/"
+	const path = getRoutePath(httpOp) || "/"
 	
 	// Extract parameters
 	const parameters = extractHttpParameters(httpOp, operation)

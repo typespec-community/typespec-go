@@ -1,5 +1,6 @@
 import {expect, test} from "vitest"
-import {render, Output, ModuleDirectory, SourceDirectory, SourceFile} from "@alloy-js/core"
+import {render, Output} from "@alloy-js/core"
+import {ModuleDirectory, SourceDirectory, SourceFile} from "@alloy-js/go"
 import {getEnumValues, GoEnumDeclaration} from "../components/go/GoEnumDeclaration.js"
 import {GoUnionDeclaration} from "../components/go/GoUnionDeclaration.js"
 import type {Enum, Union} from "@typespec/compiler"
@@ -7,7 +8,7 @@ import type {Enum, Union} from "@typespec/compiler"
 /**
  * Test enum generation integration
  */
-test("GoEnumDeclaration generates valid Go string enum", async () => {
+test("GoEnumDeclaration generates valid Go string enum", () => {
 	// Create mock enum matching TypeSpec Enum interface
 	const mockEnum: Enum = {
 		name: "Status",
@@ -19,16 +20,26 @@ test("GoEnumDeclaration generates valid Go string enum", async () => {
 		]),
 	}
 
-	const jsx = <GoEnumDeclaration enum={mockEnum}/>
-	const result = await renderAsync(jsx)
+	const result = render(
+		<Output>
+			<ModuleDirectory name="github.com/test/api">
+				<SourceDirectory path="api">
+					<SourceFile path="status.go">
+						<GoEnumDeclaration enum={mockEnum}/>
+					</SourceFile>
+				</SourceDirectory>
+			</ModuleDirectory>
+		</Output>,
+	)
 
 	// Verify Go code structure
-	expect(result).toContain("type Status string")
-	expect(result).toContain("StatusPending Status")
-	expect(result).toContain("StatusActive Status")
-	expect(result).toContain("StatusCompleted Status")
-	expect(result).toContain("func (e Status) String() string")
-	expect(result).toContain("func (e Status) IsValid() bool")
+	const goFile = result.contents[0].contents[0].contents[0].contents
+	expect(goFile).toContain("type Status string")
+	expect(goFile).toContain("StatusPending Status")
+	expect(goFile).toContain("StatusActive Status")
+	expect(goFile).toContain("StatusCompleted Status")
+	expect(goFile).toContain("func (e Status) String() string")
+	expect(goFile).toContain("func (e Status) IsValid() bool")
 })
 
 test("GoEnumDeclaration generates valid Go iota enum", async () => {

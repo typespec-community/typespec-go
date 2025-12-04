@@ -47,11 +47,48 @@ export function GoEnumDeclaration({
 	// Determine if this is a string enum or numeric enum
 	const isStringEnum = members.some((m) => typeof m.value === "string")
 
-	// Simple test version - just type declaration for now
 	return (
-		<TypeDeclaration name={typeName}>
-			{isStringEnum ? "string" : "int"}
-		</TypeDeclaration>
+		<>
+			<TypeDeclaration name={typeName}>
+				{isStringEnum ? "string" : "int"}
+			</TypeDeclaration>
+			
+			{!useIota && (
+				<VariableDeclarationGroup>
+					{members.map((member) => (
+						<VariableDeclaration 
+							name={`${typeName}${capitalize(member.name)}`} 
+							type={typeName}
+							value={isStringEnum ? `"${member.value}"` : member.value}
+						/>
+					))}
+				</VariableDeclarationGroup>
+			)}
+			
+			{useIota && (
+				<>
+					{members.map((member, index) => (
+						<VariableDeclaration 
+							name={`${typeName}${capitalize(member.name)}`} 
+							type={typeName}
+							value={index === 0 ? "iota" : undefined}
+						/>
+					))}
+				</>
+			)}
+			
+			{isStringEnum && (
+				<FunctionDeclaration name={`${typeName}String`}>
+					<FunctionReceiver receiver={`e ${typeName}`} />
+					string
+				</FunctionDeclaration>
+			)}
+			
+			<FunctionDeclaration name={`${typeName}IsValid`}>
+				<FunctionReceiver receiver={`e ${typeName}`} />
+				bool
+			</FunctionDeclaration>
+		</>
 	)
 }
 

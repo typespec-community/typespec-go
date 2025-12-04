@@ -6,7 +6,7 @@
 
 import type {ModelProperty, Operation, Program, Type} from "@typespec/compiler"
 import {For, refkey, StatementList, Switch, Match} from "@alloy-js/core"
-import {FunctionDeclaration, Reference} from "@alloy-js/go"
+import {FunctionDeclaration, ImportStatements, Reference} from "@alloy-js/go"
 import {capitalize} from "../../utils/strings.js"
 import {getDocumentation} from "../../utils/typespec-utils.js"
 import {extractHttpMetadata, HttpOperationMetadata, HttpParameter} from "../../utils/typespec-http-utils.js"
@@ -231,15 +231,12 @@ function GoHandlerContent({
 `}
 
 			{/* Imports */}
-			{`import (
-\t"${packageName}" // Generated models
-\t"context"
-\t"encoding/json" 
-\t"net/http"
-\t"time"
-)
-
-`}
+			<ImportStatements records={[
+				"context",
+				"encoding/json",
+				"net/http",
+				"time"
+			]}/>
 
 			{/* Service struct */}
 			{`// ${serviceName} provides HTTP handlers for API operations
@@ -306,7 +303,7 @@ function GoHandlerMethodComponent({
 
 `}
 
-				<Switch>
+				{`// Handler implementation:`}
 					<Match when={handler.httpMethod === "GET"}>
 						{`\t// Example implementation:
 \t// result, err := s.service.${handler.name.slice(0, -7)}(ctx)
@@ -343,7 +340,7 @@ function GoHandlerMethodComponent({
 \tjson.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})
 `}
 					</Match>
-				</Switch>
+				{`// End Switch replacement`}
 			</FunctionDeclaration>
 
 			{`
