@@ -1,4 +1,4 @@
-import type {Program} from "@typespec/compiler"
+import type { Program } from "@typespec/compiler";
 
 /**
  * TypeSpec Documentation Utilities
@@ -6,10 +6,10 @@ import type {Program} from "@typespec/compiler"
  */
 
 interface Documentable {
-	name?: string;
-	kind?: string;
+  name?: string;
+  kind?: string;
 
-	[key: string]: unknown;
+  [key: string]: unknown;
 }
 
 /**
@@ -17,21 +17,21 @@ interface Documentable {
  * Currently provides fallback for testing without full TypeSpec program
  */
 export function getDocumentation(program: Program, node: Documentable) {
-	//TODO: fix this trash!
+  //TODO: fix this trash!
 
-	// For now, provide fallback documentation based on type
-	if (node?.name) {
-		const kind = node.kind?.toLowerCase() || ""
-		const name = node.name
+  // For now, provide fallback documentation based on type
+  if (node?.name) {
+    const kind = node.kind?.toLowerCase() || "";
+    const name = node.name;
 
-		if (kind === "operation") {
-			return `Generated from TypeSpec operation ${name}`
-		} else if (kind === "model") {
-			return `Generated from TypeSpec model ${name}`
-		} else if (kind === "enum") {
-			return `Generated from TypeSpec enum ${name}`
-		}
-	}
+    if (kind === "operation") {
+      return `Generated from TypeSpec operation ${name}`;
+    } else if (kind === "model") {
+      return `Generated from TypeSpec model ${name}`;
+    } else if (kind === "enum") {
+      return `Generated from TypeSpec enum ${name}`;
+    }
+  }
 
-	return undefined
+  return undefined;
 }

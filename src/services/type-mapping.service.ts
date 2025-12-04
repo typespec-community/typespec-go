@@ -107,21 +107,13 @@ function mapArrayType(program: Program, type: Type): TypeMappingResult {
   // Handle Model with indexer (string[] syntax) - check indexer property
   if (type.kind === "Model" && "indexer" in type && (type as Model).indexer?.value) {
     const modelType = type as Model;
-    return handleArrayElementMapping(
-      program,
-      modelType.indexer!.value,
-      "invalid-array",
-    );
+    return handleArrayElementMapping(program, modelType.indexer!.value, "invalid-array");
   }
 
   // Handle potential Array type (check for elementType property)
   if ("elementType" in type) {
     const elementType = (type as unknown as ArrayType).elementType;
-    return handleArrayElementMapping(
-      program,
-      elementType,
-      "invalid-array",
-    );
+    return handleArrayElementMapping(program, elementType, "invalid-array");
   }
 
   // Not an array type

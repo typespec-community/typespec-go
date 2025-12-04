@@ -31,10 +31,12 @@ const GoImportSchema = z.object({
  * Go struct validation schema
  */
 const GoStructSchema = z.object({
-  name: z.string()
+  name: z
+    .string()
     .min(1, "Struct name cannot be empty")
     .regex(/^[A-Z][a-zA-Z0-9]*$/, "Struct name must be public (PascalCase)"),
-  packageName: z.string()
+  packageName: z
+    .string()
     .min(1, "Package name cannot be empty")
     .regex(/^[a-z][a-z0-9]*$/, "Package name must be lowercase"),
   fields: z.array(GoStructFieldSchema),
@@ -47,10 +49,12 @@ const GoStructSchema = z.object({
  * Generated Go file validation schema
  */
 const GeneratedGoFileSchema = z.object({
-  filename: z.string()
+  filename: z
+    .string()
     .min(1, "Filename cannot be empty")
     .regex(/^[A-Z][a-zA-Z0-9]*\.go$/, "Go filename must be PascalCase with .go extension"),
-  packageName: z.string()
+  packageName: z
+    .string()
     .min(1, "Package name cannot be empty")
     .regex(/^[a-z][a-z0-9]*$/, "Package name must be lowercase"),
   content: z.string().min(1, "Go file content cannot be empty"),
@@ -106,7 +110,11 @@ export class GoCodeValidator {
   /**
    * Validate complete generation result
    */
-  validateGenerationResult(result: unknown): { success: boolean; errors: string[]; warnings: string[] } {
+  validateGenerationResult(result: unknown): {
+    success: boolean;
+    errors: string[];
+    warnings: string[];
+  } {
     const ctx: ValidationContext = {
       operationId: crypto.randomUUID(),
       step: "generation-result",
@@ -116,33 +124,33 @@ export class GoCodeValidator {
     this.logger.debug("Validating generation result", { operationId: ctx.operationId });
 
     const parseResult = GenerationResultSchema.safeParse(result);
-    
+
     if (!parseResult.success) {
-      const errors = parseResult.error.issues.map(issue => 
-        `${issue.path.join('.')}: ${issue.message}`
+      const errors = parseResult.error.issues.map(
+        (issue) => `${issue.path.join(".")}: ${issue.message}`,
       );
-      
+
       this.logger.error("Generation result validation failed", {
         operationId: ctx.operationId,
         errors,
         duration: Date.now() - ctx.startTime,
       });
-      
+
       return { success: false, errors, warnings: [] };
     }
 
     const syntaxErrors = this.validateGoSyntax(parseResult.data);
     const semanticErrors = this.validateGoSemantics(parseResult.data);
-    
+
     const allErrors = [...syntaxErrors, ...semanticErrors];
-    
+
     if (allErrors.length > 0) {
       this.logger.error("Generated Go code validation failed", {
         operationId: ctx.operationId,
         errors: allErrors,
         duration: Date.now() - ctx.startTime,
       });
-      
+
       return { success: false, errors: allErrors, warnings: [] };
     }
 
@@ -171,7 +179,9 @@ export class GoCodeValidator {
       const openBraces = (file.content.match(/{/g) || []).length;
       const closeBraces = (file.content.match(/}/g) || []).length;
       if (openBraces !== closeBraces) {
-        errors.push(`File ${file.filename} has unbalanced braces: ${openBraces} open, ${closeBraces} close`);
+        errors.push(
+          `File ${file.filename} has unbalanced braces: ${openBraces} open, ${closeBraces} close`,
+        );
       }
 
       // Validate struct definitions
@@ -226,10 +236,10 @@ export class GoCodeValidator {
    */
   validateStruct(struct: unknown): { success: boolean; errors: string[] } {
     const parseResult = GoStructSchema.safeParse(struct);
-    
+
     if (!parseResult.success) {
-      const errors = parseResult.error.issues.map(issue => 
-        `${issue.path.join('.')}: ${issue.message}`
+      const errors = parseResult.error.issues.map(
+        (issue) => `${issue.path.join(".")}: ${issue.message}`,
       );
       return { success: false, errors };
     }
@@ -242,10 +252,10 @@ export class GoCodeValidator {
    */
   validateImport(import_: unknown): { success: boolean; errors: string[] } {
     const parseResult = GoImportSchema.safeParse(import_);
-    
+
     if (!parseResult.success) {
-      const errors = parseResult.error.issues.map(issue => 
-        `${issue.path.join('.')}: ${issue.message}`
+      const errors = parseResult.error.issues.map(
+        (issue) => `${issue.path.join(".")}: ${issue.message}`,
       );
       return { success: false, errors };
     }
@@ -267,27 +277,27 @@ export const GoValidation = {
    * Quick validation helper for common use cases
    */
   quickValidate: (result: unknown) => goCodeValidator.validateGenerationResult(result),
-  
+
   /**
    * Validate struct specifically
    */
   validateStruct: (struct: unknown) => goCodeValidator.validateStruct(struct),
-  
+
   /**
    * Validate import specifically
    */
   validateImport: (import_: unknown) => goCodeValidator.validateImport(import_),
-  
+
   /**
    * Check if string is valid Go identifier
    */
   isValidGoIdentifier: (name: string) => GO_SYNTAX_PATTERNS.validIdentifier.test(name),
-  
+
   /**
    * Check if string is valid Go package name
    */
   isValidGoPackageName: (name: string) => GO_SYNTAX_PATTERNS.validPackage.test(name),
-  
+
   /**
    * Check if string is valid Go struct name
    */

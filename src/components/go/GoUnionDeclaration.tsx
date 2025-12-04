@@ -4,20 +4,9 @@
  * Supports discriminated unions with type field
  */
 
-import type { Union, UnionVariant, Program, TemplateParameter } from "@typespec/compiler";
-import { For } from "@alloy-js/core";
-import { capitalize } from "../../utils/strings.js";
-import { 
-  TypeDeclaration, 
-  TypeParameter,
-  StructDeclaration, 
-  StructMember,
-  FunctionDeclaration,
-  FunctionReceiver,
-  SourceFile
-} from "@alloy-js/go";
+import type { Program, TemplateParameter, Union } from "@typespec/compiler";
+import { TypeDeclaration } from "@alloy-js/go";
 import { getDocumentation } from "../../utils/typespec-utils.js";
-import { TypeConstraint, extractTemplateParameters, extractTemplateConstraints } from "../TypeConstraint.js";
 
 interface GoUnionDeclarationProps {
   /** TypeSpec union to convert to Go interface */
@@ -52,22 +41,23 @@ export function GoUnionDeclaration({
   // Get documentation from @doc decorator
   const doc = program ? getDocumentation(program, union) : undefined;
   const docComment = doc ? doc + "" : "";
-  const interfaceDoc = "// " + typeName + " is a sealed interface " + docComment + "representing a union type";
+  const interfaceDoc =
+    "// " + typeName + " is a sealed interface " + docComment + "representing a union type";
 
   // Convert template constraints to TypeParameter format
   const typeParameters = templateParameters.map((param, index) => {
     const constraintInfo = templateConstraints[index];
     const constraint = constraintInfo?.constraints?.[0] || "any";
-    
+
     return {
       name: param.name || "T",
-      constraint: constraint.name || constraint || "any"
+      constraint: constraint.name || constraint || "any",
     };
   });
 
   return (
-    <TypeDeclaration 
-      name={typeName} 
+    <TypeDeclaration
+      name={typeName}
       doc={interfaceDoc}
       typeParameters={typeParameters.length > 0 ? typeParameters : undefined}
     >

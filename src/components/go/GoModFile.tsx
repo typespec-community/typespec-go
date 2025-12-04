@@ -31,9 +31,7 @@ export function GoModFile({
 go ${goVersion}`;
 
   if (requires.length > 0) {
-    const requireBlock = requires
-      .map(req => `\t${req.path} ${req.version}`)
-      .join('\n');
+    const requireBlock = requires.map((req) => `\t${req.path} ${req.version}`).join("\n");
     content += `
 
 require (
@@ -41,5 +39,5 @@ ${requireBlock}
 )`;
   }
 
-  return content + '\n';
+  return content + "\n";
 }

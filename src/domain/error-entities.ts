@@ -130,7 +130,7 @@ export class Entities {
    * Validate TypeSpec ID
    */
   static validateTypeSpecId(id: TypeSpecId): boolean {
-    return (id.value.length > 0 && id.name.length > 0);
+    return id.value.length > 0 && id.name.length > 0;
   }
 
   /**

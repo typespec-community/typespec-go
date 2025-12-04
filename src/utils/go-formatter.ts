@@ -3,7 +3,7 @@
  * Provides gofmt integration for formatting generated Go code
  */
 
-import {execSync} from "child_process"
+import { execSync } from "child_process";
 
 /**
  * Format Go source code using gofmt
@@ -13,11 +13,11 @@ import {execSync} from "child_process"
 export function formatGoCode(code: string): string {
   try {
     // Use gofmt -s for simplification and formatting
-	  return execSync("gofmt -s", {
-	    input: code,
-	    encoding: "utf-8",
-	    timeout: 5000, // 5 second timeout
-	    maxBuffer: 1024 * 1024, // 1MB buffer
+    return execSync("gofmt -s", {
+      input: code,
+      encoding: "utf-8",
+      timeout: 5000, // 5 second timeout
+      maxBuffer: 1024 * 1024, // 1MB buffer
     });
   } catch (error) {
     // If gofmt fails (syntax error, not available), return original code

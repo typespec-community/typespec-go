@@ -8,31 +8,31 @@
  */
 
 // Import all types first
-import type {GoEmitterResult, ValidationError} from "./error-types.js"
-import {ErrorFactory} from "./error-factory.js"
+import type { GoEmitterResult, ValidationError } from "./error-types.js";
+import { ErrorFactory } from "./error-factory.js";
 
 // Re-export ErrorFactory for test compatibility
-export {ErrorFactory}
+export { ErrorFactory };
 
 export type ModelValidationError = ValidationError & {
-	_tag: "validation_error";
+  _tag: "validation_error";
 };
 /**
  * Default error handler for legacy compatibility
  */
 export const defaultErrorHandler = (
-	error: unknown,
-	context?: Record<string, unknown>,
+  error: unknown,
+  context?: Record<string, unknown>,
 ): GoEmitterResult => {
-	if (error instanceof Error) {
-		return ErrorFactory.createSystemError(`Unexpected error: ${error.message}`, error, {
-			resolution: "Check system logs and restart if necessary",
-			...context,
-		})
-	}
+  if (error instanceof Error) {
+    return ErrorFactory.createSystemError(`Unexpected error: ${error.message}`, error, {
+      resolution: "Check system logs and restart if necessary",
+      ...context,
+    });
+  }
 
-	return ErrorFactory.createSystemError(`Unknown error: ${String(error)}`, undefined, {
-		resolution: "Check input data and system state",
-		...context,
-	})
-}
+  return ErrorFactory.createSystemError(`Unknown error: ${String(error)}`, undefined, {
+    resolution: "Check input data and system state",
+    ...context,
+  });
+};

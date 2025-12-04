@@ -23,7 +23,7 @@ test("GoStructDeclaration isolation test", () => {
       [
         "name",
         {
-          name: "name", 
+          name: "name",
           type: { kind: "Scalar", name: "string" },
           optional: false,
         },
@@ -31,14 +31,14 @@ test("GoStructDeclaration isolation test", () => {
     ]),
   };
 
-  const result = GoStructDeclaration({ 
+  const result = GoStructDeclaration({
     model: mockModel,
-    program: undefined 
+    program: undefined,
   });
-  
+
   console.log("✅ GoStructDeclaration render successful");
   console.log("Generated result:", result);
-  
+
   expect(result).toContain("type TestUser struct");
   expect(result).toContain('ID string `json:"id"`');
   expect(result).toContain('Name string `json:"name"`');

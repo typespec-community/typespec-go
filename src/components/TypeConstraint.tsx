@@ -67,7 +67,7 @@ interface TypeConstraintProps {
   /** Type constraints (types, interfaces, built-in constraints) */
   constraints: Type[];
   /** Whether this is for interface or struct constraint */
-  constraintType?: 'interface' | 'struct';
+  constraintType?: "interface" | "struct";
   /** Documentation for the constraint */
   documentation?: string;
   /** TypeSpec program for accessing @doc decorators */
@@ -94,15 +94,17 @@ function typeToConstraint(type: Type): string {
   // Handle Union types (string | number | boolean)
   if (isUnion(type)) {
     const variants = Array.from(type.variants?.values() || []);
-    const constraintVariants = variants.map((v) => {
-      // Skip null variants in constraints
-      if (isNullType(v.type)) return null;
-      return typeToConstraint(v.type);
-    }).filter(Boolean);
+    const constraintVariants = variants
+      .map((v) => {
+        // Skip null variants in constraints
+        if (isNullType(v.type)) return null;
+        return typeToConstraint(v.type);
+      })
+      .filter(Boolean);
 
     if (constraintVariants.length === 0) return "any";
     if (constraintVariants.length === 1) return constraintVariants[0]!;
-    
+
     // Go uses | for union type constraints
     return constraintVariants.join(" | ");
   }
@@ -123,7 +125,7 @@ function generateConstraintName(typeParameter: string, constraints: Type[]): str
   if (constraints.length === 0) return "any";
   if (constraints.length === 1) {
     const constraint = typeToConstraint(constraints[0]);
-    return `${capitalize(typeParameter)}${constraint.replace(/[^a-zA-Z0-9]/g, '')}Constraint`;
+    return `${capitalize(typeParameter)}${constraint.replace(/[^a-zA-Z0-9]/g, "")}Constraint`;
   }
   return `${capitalize(typeParameter)}Constraint`;
 }
@@ -135,7 +137,7 @@ function generateConstraintName(typeParameter: string, constraints: Type[]): str
 export function TypeConstraint({
   typeParameter,
   constraints,
-  constraintType = 'interface',
+  constraintType = "interface",
   documentation,
   program,
   packageName = "api",
@@ -146,20 +148,24 @@ export function TypeConstraint({
   }
 
   const constraintName = generateConstraintName(typeParameter, constraints);
-  
+
   // Get documentation
-  const doc = documentation || (program && program ? getDocumentation(program, { name: constraintName }) : undefined);
-  const docComment = doc ? `// ${doc}` : `// ${constraintName} defines type constraints for ${typeParameter}`;
+  const doc =
+    documentation ||
+    (program && program ? getDocumentation(program, { name: constraintName }) : undefined);
+  const docComment = doc
+    ? `// ${doc}`
+    : `// ${constraintName} defines type constraints for ${typeParameter}`;
 
   // Handle single built-in constraint (comparable, any)
   if (constraints.length === 1) {
     const singleConstraint = typeToConstraint(constraints[0]);
-    
+
     // Check for built-in constraints
     if (singleConstraint === "comparable" || singleConstraint === "any") {
       return singleConstraint;
     }
-    
+
     // For single interface constraint, we might not need a separate type
     if (isModel(constraints[0]) && !constraints[0].template) {
       return singleConstraint;
@@ -168,29 +174,29 @@ export function TypeConstraint({
 
   // Generate constraint types
   const constraintTypes = constraints.map(typeToConstraint);
-  const hasUnionTypes = constraintTypes.some(t => t.includes(" | "));
-  
+  const hasUnionTypes = constraintTypes.some((t) => t.includes(" | "));
+
   // Build the constraint definition
   const lines: string[] = [];
-  
+
   // Add documentation
   if (docComment) {
     lines.push(docComment);
   }
 
-  if (constraintType === 'interface') {
+  if (constraintType === "interface") {
     lines.push(`type ${constraintName} interface {`);
-    
+
     // Add built-in constraints first
     if (constraintTypes.includes("comparable")) {
       lines.push("\tcomparable");
     }
-    
+
     // Add custom constraints
     for (const constraint of constraintTypes) {
       // Skip built-in constraints already added
       if (constraint === "comparable" || constraint === "any") continue;
-      
+
       // Handle union types
       if (constraint.includes(" | ")) {
         lines.push(`\t${constraint}`);
@@ -198,7 +204,7 @@ export function TypeConstraint({
         lines.push(`\t${constraint}`);
       }
     }
-    
+
     lines.push("}");
   } else {
     // For struct constraints, use type alias
@@ -228,7 +234,7 @@ export function GenericParameter({
   }
 
   const constraintTypes = constraints.map(typeToConstraint);
-  
+
   // Handle built-in constraints directly
   if (constraintTypes.length === 1) {
     const constraint = constraintTypes[0];
@@ -247,7 +253,7 @@ export function GenericParameter({
  */
 export function extractTemplateParameters(model: Model): TemplateParameter[] {
   const params: TemplateParameter[] = [];
-  
+
   if (model.template) {
     for (const param of model.template.parameters) {
       if (isTemplateParameter(param)) {
@@ -255,31 +261,33 @@ export function extractTemplateParameters(model: Model): TemplateParameter[] {
       }
     }
   }
-  
+
   return params;
 }
 
 /**
  * Extract constraints from TypeSpec template arguments
  */
-export function extractTemplateConstraints(model: Model): { param: TemplateParameter; constraints: Type[] }[] {
+export function extractTemplateConstraints(
+  model: Model,
+): { param: TemplateParameter; constraints: Type[] }[] {
   const constraints: { param: TemplateParameter; constraints: Type[] }[] = [];
-  
+
   if (model.template) {
     for (const param of model.template.parameters) {
       if (isTemplateParameter(param)) {
         // Extract constraints from parameter if available
         const paramConstraints: Type[] = [];
-        
+
         // Check if parameter has explicit constraints
         if ((param as any).constraint) {
           paramConstraints.push((param as any).constraint);
         }
-        
+
         constraints.push({ param, constraints: paramConstraints });
       }
     }
   }
-  
+
   return constraints;
 }
