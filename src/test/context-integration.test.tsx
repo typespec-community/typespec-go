@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { GoPackageDirectory } from "../components/go/index.js";
+import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
 import { Output, refkey } from "@alloy-js/core";
 
 /**
@@ -23,7 +23,7 @@ test("Component Integration - Proper Context", async () => {
       render(
         <Output>
           <GoPackageDirectory
-            models={[mockModel]}
+            models={[mockModel as any]}
             packageName="test"
             packageDocumentation="Test package"
           />

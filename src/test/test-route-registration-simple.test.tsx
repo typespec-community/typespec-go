@@ -27,7 +27,7 @@ const mockHandlers = [
 
 test("GoRouteRegistrationComponent renders correctly", () => {
 	const result = GoRouteRegistrationComponent({
-		handlers: mockHandlers,
+		handlers: mockHandlers as any,
 		serviceName: "UserService",
 	})
 

@@ -17,8 +17,8 @@ test("GoEnumDeclaration generates valid Go string enum", () => {
       ["pending", { name: "pending", value: "pending" }],
       ["active", { name: "active", value: "active" }],
       ["completed", { name: "completed", value: "completed" }],
-    ]),
-  };
+    ]) as any,
+  } as any;
 
   const result = render(
     <Output>
@@ -33,7 +33,7 @@ test("GoEnumDeclaration generates valid Go string enum", () => {
   );
 
   // Verify Go code structure
-  const goFile = result.contents[0].contents[0].contents[0].contents;
+  const goFile = (result.contents[0] as any).contents[0].contents[0].contents;
   expect(goFile).toContain("type Status string");
   expect(goFile).toContain("StatusPending Status");
   expect(goFile).toContain("StatusActive Status");
@@ -51,8 +51,8 @@ test("GoEnumDeclaration generates valid Go iota enum", async () => {
       ["low", { name: "low", value: 0 }],
       ["medium", { name: "medium", value: 1 }],
       ["high", { name: "high", value: 2 }],
-    ]),
-  };
+    ]) as any,
+  } as any;
 
   const jsx = <GoEnumDeclaration enum={mockEnum} useIota={true} />;
   const result = await renderAsync(jsx);
@@ -69,7 +69,7 @@ test("getEnumValues extracts enum member information", () => {
     members: new Map([
       ["red", { name: "red", value: "RED" }],
       ["green", { name: "green", value: "GREEN" }],
-    ]),
+    ]) as any,
   };
 
   const values = getEnumValues(mockEnum as Enum);
@@ -90,8 +90,8 @@ test("GoUnionDeclaration generates sealed interface pattern", async () => {
     variants: new Map([
       ["card", { name: "card", type: { kind: "String" } }],
       ["bank", { name: "bank", type: { kind: "String" } }],
-    ]),
-  };
+    ]) as any,
+  } as any;
 
   const jsx = <GoUnionDeclaration union={mockUnion as Union} />;
   const result = await renderAsync(jsx);
@@ -112,7 +112,7 @@ test("GoUnionDeclaration generates discriminated union with unmarshaler", async 
     variants: new Map([
       ["created", { name: "created", type: { kind: "String" } }],
       ["deleted", { name: "deleted", type: { kind: "String" } }],
-    ]),
+    ]) as any,
   };
 
   const jsx = <GoUnionDeclaration union={mockUnion as Union} discriminator="type" />;
@@ -129,8 +129,8 @@ test("GoUnionDeclaration handles empty union gracefully", async () => {
   const emptyUnion: Union = {
     name: "EmptyUnion",
     kind: "Union",
-    variants: new Map(),
-  };
+    variants: new Map() as any,
+  } as any;
 
   const jsx = <GoUnionDeclaration union={emptyUnion} />;
   const result = await renderAsync(jsx);

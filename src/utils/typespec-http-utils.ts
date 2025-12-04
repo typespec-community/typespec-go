@@ -4,7 +4,8 @@
  */
 
 import type { Program, Operation, ModelProperty, Type } from "@typespec/compiler";
-import { getHttpOperation, getRoutePath, getOperationVerb, HttpOperation } from "@typespec/http";
+import { getHttpOperation } from "@typespec/http";
+import type { HttpOperation } from "@typespec/http";
 
 /**
  * HTTP operation metadata extracted from TypeSpec decorators
@@ -46,19 +47,20 @@ export function extractHttpMetadata(
   program: Program,
 ): HttpOperationMetadata | null {
   // Get HTTP operation using TypeSpec HTTP library
-  const httpOp = getHttpOperation(program, operation);
-  if (!httpOp) {
+  const httpOpResult = getHttpOperation(program, operation);
+  if (!httpOpResult) {
     return null;
   }
+  const [httpOp] = httpOpResult;
 
   // Extract HTTP method
-  const method = getOperationVerb(program, httpOp) || "POST";
+  const method = httpOp.verb || "POST";
 
   // Extract path
-  const path = getRoutePath(program, httpOp) || "/";
+  const path = httpOp.path || "/";
 
   // Extract parameters
-  const parameters = extractHttpParameters(httpOp, operation, program);
+  const parameters = extractHttpParameters(httpOp, operation);
 
   return {
     method: method.toUpperCase(),
@@ -72,7 +74,10 @@ export function extractHttpMetadata(
 /**
  * Extract HTTP parameters from TypeSpec HTTP operation
  */
-function extractHttpParameters(httpOp: HttpOperation, operation: Operation): HttpParameter[] {
+function extractHttpParameters(
+  httpOp: HttpOperation,
+  operation: Operation,
+): HttpParameter[] {
   const parameters: HttpParameter[] = [];
 
   // Add standard HTTP handler parameters (always present)
@@ -145,7 +150,7 @@ function determineParameterSource(
   const decorators = prop.decorators || [];
 
   for (const decorator of decorators) {
-    switch (decorator.name) {
+    switch (decorator.decorator.name) {
       case "path":
         return "path";
       case "query":
@@ -160,7 +165,7 @@ function determineParameterSource(
   }
 
   // Check if parameter name appears in the path template
-  const path = getRoutePath(httpOp) || "";
+  const path = httpOp.path || "";
   if (path.includes(`{${name}}`)) {
     return "path";
   }

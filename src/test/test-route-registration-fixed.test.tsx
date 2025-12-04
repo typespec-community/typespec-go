@@ -36,7 +36,7 @@ describe("GoRouteRegistrationComponent", () => {
 				<ModuleDirectory name="github.com/test/api">
 					<SourceDirectory path="routes">
 						<SourceFile path="registration.go">
-							<GoRouteRegistrationComponent handlers={mockHandlers} serviceName="UserService"/>
+							<GoRouteRegistrationComponent handlers={mockHandlers as any} serviceName="UserService"/>
 						</SourceFile>
 					</SourceDirectory>
 				</ModuleDirectory>

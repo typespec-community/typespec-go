@@ -40,7 +40,7 @@ describe("Extended Scalar Mappings", () => {
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="models.go">
-              <GoStructDeclaration model={model} packageName="api" />
+              <GoStructDeclaration model={model as any} packageName="api" />
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
@@ -75,7 +75,7 @@ describe("Extended Scalar Mappings", () => {
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="models.go">
-              <GoStructDeclaration model={model} packageName="api" />
+              <GoStructDeclaration model={model as any} packageName="api" />
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
@@ -102,7 +102,7 @@ describe("Extended Scalar Mappings", () => {
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="models.go">
-              <GoStructDeclaration model={model} packageName="api" />
+              <GoStructDeclaration model={model as any} packageName="api" />
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
@@ -137,7 +137,7 @@ describe("Extended Scalar Mappings", () => {
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="models.go">
-              <GoStructDeclaration model={model} packageName="api" />
+              <GoStructDeclaration model={model as any} packageName="api" />
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
@@ -166,7 +166,7 @@ describe("Extended Scalar Mappings", () => {
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="models.go">
-              <GoStructDeclaration model={model} packageName="api" />
+              <GoStructDeclaration model={model as any} packageName="api" />
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>

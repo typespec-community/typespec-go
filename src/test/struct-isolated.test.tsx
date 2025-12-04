@@ -30,7 +30,7 @@ test("GoStructDeclaration isolation test", () => {
 	}
 
 	const result = GoStructDeclaration({
-		model: mockModel,
+		model: mockModel as any,
 		program: undefined,
 	})
 
