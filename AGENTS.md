@@ -7,14 +7,37 @@
 
 ## 🎯 PROJECT IDENTITY
 
+### **🚨 ALL IN: ALLOY-JS FRAMEWORK COMMITMENT**
+**THIS IS AN ABSOLUTE, NON-NEGOTIABLE FOUNDATION DECISION:**
+
+**🔥 WE ARE 100% ALL IN ON ALLOY-JS (CORE + GO)**
+**🔥 ZERO EXCEPTIONS - ZERO COMPROMISES - ZERO ALTERNATIVES**
+
+**What This Means:**
+- **🚫 ABSOLUTELY NO STRING-BASED CODE GENERATION** - Forbidden forever
+- **✅ 100% COMPONENT-BASED ARCHITECTURE** - JSX components only
+- **✅ ALLOY-JS CORE** - For component system, refkey, JSX patterns
+- **✅ ALLOY-JS GO** - For all Go code generation (imports, structs, etc.)
+- **✅ DECLARATIVE APPROACH** - Describe WHAT to generate, not HOW
+- **✅ TYPE-SAFE GENERATION** - Component-level typing and error boundaries
+
+**Why This Is Non-Negotiable:**
+- **Modern Architecture:** Alloy is the professional standard for code generation
+- **Type Safety:** Components provide compile-time guarantees strings cannot
+- **Maintainability:** Component composition is infinitely more maintainable
+- **Composability:** Higher-order components enable complex patterns
+- **Performance:** Optimized generation pipeline with intelligent caching
+- **Future-Proof:** Alloy is actively developed and evolving
+
 ### **TypeSpec AssetEmitter for Go Code Generation**
-This is a **professional TypeSpec compiler plugin** that generates production-ready Go code from TypeSpec definitions using the official AssetEmitter framework.
+This is a **professional TypeSpec compiler plugin** that generates production-ready Go code from TypeSpec definitions using the official AssetEmitter framework and **100% Alloy-JS component architecture**.
 
 - **📍 TypeSpec Integration:** Native `createAssetEmitter` pattern
-- **🏗️ Modern Architecture:** Alloy-JS component-based code generation  
+- **🏗️ 🚨 ALLOY-JS EXCLUSIVE:** Modern component-based code generation - NO ALTERNATIVES  
 - **⚡ Performance:** Sub-millisecond generation at enterprise scale
 - **🔒 Type Safety:** Zero 'any' types with comprehensive coverage
 - **📦 Package Generation:** TypeSpec namespaces → Go packages
+- **🚫 ZERO STRING MANIPULATION:** All generation through components
 
 ---
 
@@ -80,11 +103,66 @@ export const $onEmit = createAssetEmitter(async (context: EmitContext) => {
 });
 ```
 
-### **Alloy-JS Component Architecture**
-- **Component-Based:** JSX syntax for Go code generation
-- **Type Safety:** Refkey system for dependency tracking
-- **Composition:** Higher-order components for complex patterns
-- **Modern Pattern:** Zero string manipulation for code generation
+### **🚨 ALLOY-JS CORE FRAMEWORK PATTERNS**
+
+#### **Alloy Core Fundamentals**
+```typescript
+// ALWAYS import from @alloy-js/core
+import { refkey, For, createRefkey } from "@alloy-js/core";
+
+// ALWAYS use refkey for component references
+const modelRefkey = refkey(model); // For TypeSpec objects
+const customRefkey = createRefkey("custom-name"); // For custom references
+
+// ALWAYS use For loops for iteration
+<For each={items} to={(item) => <Component item={item} />} />
+```
+
+#### **Alloy Go Components - THE ONLY WAY TO GENERATE GO CODE**
+```typescript
+// ALWAYS import from @alloy-js/go with destructuring
+import * as go from "@alloy-js/go";
+const { 
+  StructTypeDeclaration, 
+  StructMember, 
+  InterfaceDeclaration,
+  FunctionDeclaration,
+  Package,
+  Import
+} = go;
+
+// NEVER use string concatenation for Go code
+// NEVER use template literals for Go code
+// ALWAYS use Alloy Go components
+
+// CORRECT: Using Alloy Go components
+<StructTypeDeclaration name={model.name} refkey={modelRefkey}>
+  <StructMember name={field.name} type={fieldType} tag={jsonTag} />
+</StructTypeDeclaration>
+
+// FORBIDDEN: String-based generation
+// const goCode = `type ${model.name} struct { ... }`; // NEVER DO THIS
+```
+
+#### **Component Architecture - STRICT PATTERNS**
+```typescript
+// ALL components must follow this exact structure
+export function GoModel({ model, packageName, options }: GoModelProps) {
+  const modelRefkey = refkey(model);
+  
+  return (
+    <StructTypeDeclaration name={model.name} refkey={modelRefkey}>
+      {/* Component composition - NO STRINGS */}
+      <For each={model.properties} to={(prop) => (
+        <StructMember 
+          name={prop.name} 
+          type={TypeExpression({ type: prop.type })} 
+        />
+      )} />
+    </StructTypeDeclaration>
+  );
+}
+```
 
 ### **Directory Structure**
 ```
