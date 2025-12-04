@@ -1,5 +1,4 @@
-import * as go from "@alloy-js/go";
-const { FunctionDeclaration, Code } = go;
+import { FunctionDeclaration } from "@alloy-js/go";
 import { refkey } from "@alloy-js/core";
 import type { GoHandlerMethod } from "./GoHandlerMethod";
 
@@ -24,18 +23,13 @@ export function GoHandlerMethodComponent({
         type: p.goType,
       }))}
     >
-      {/* Handler documentation comment */}
-      <Code>{handler.name + " " + (handler.doc || `handles ${handler.httpMethod} ${handler.route}`)}</Code>
-      
       {/* Handler implementation */}
-      <Code>{`\t// TODO: Implement ${handler.name} handler with business logic
+      {`\t// ${handler.name} - ${handler.doc || `handles ${handler.httpMethod} ${handler.route}`}
+\t// TODO: Implement ${handler.name} handler with business logic
 \t// Route: ${handler.httpMethod} ${handler.route}
 
-`}</Code>
-
-      <Code>{`// Handler implementation:`}</Code>
-      
-      <Code>{handler.httpMethod === "GET"
+// Handler implementation:
+${handler.httpMethod === "GET"
         ? `\t// Example implementation:
 \t// result, err := s.service.${handler.name.slice(0, -7)}(ctx)
 \t// if err != nil {
@@ -64,9 +58,9 @@ export function GoHandlerMethodComponent({
           : `\t// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation
 \tw.WriteHeader(http.StatusNotImplemented)
 \tjson.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})
-`}</Code>
+`}
 
-      <Code>{`\n`}</Code>
+`}
     </FunctionDeclaration>
   );
 }
