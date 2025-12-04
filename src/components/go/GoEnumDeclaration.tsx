@@ -51,15 +51,15 @@ export function GoEnumDeclaration({
 	return (
 		<>
 			{/* Type declaration */}
-			{doc && <LineComment>{`${typeName} ${doc}`}</LineComment>}
+			{doc && <LineComment>{typeName + " " + doc}</LineComment>}
 			<TypeDeclaration name={typeName}>
-				{isStringEnum ? "string" : "int"}
+					{isStringEnum ? "string" : "int"}
 			</TypeDeclaration>
 
 			{/* Const block */}
 			<VariableDeclarationGroup const>
 				{members.map((member, index) => {
-					const memberName = `${typeName}${capitalize(member.name)}`
+					const memberName = typeName + capitalize(member.name)
 
 					if (isStringEnum) {
 						return <VariableDeclaration
@@ -105,13 +105,13 @@ export function GoEnumDeclaration({
 				{/*TODO: possibly improvable, may need a alloy/go update*/}
 				<Switch>
 					<For each={members}>
-						{(it) => <Match>
-							${typeName}${capitalize(it.name)}:
-							return true
-						</Match>}
+						{(member) => (
+							<Match when={"e === " + typeName + capitalize(member.name)}>
+								return true
+							</Match>
+						)}
 					</For>
-					<Match>
-						default:
+					<Match else>
 						return false
 					</Match>
 				</Switch>
