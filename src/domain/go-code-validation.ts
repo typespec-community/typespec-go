@@ -105,7 +105,7 @@ interface ValidationContext {
  * Comprehensive runtime validation for generated Go code
  */
 export class GoCodeValidator {
-  private logger = Logger.create().child({ component: "GoCodeValidator" });
+  private logger = Logger.withContext({ component: "GoCodeValidator" });
 
   /**
    * Validate complete generation result

@@ -8,14 +8,15 @@
  */
 
 import type {
-  GoCodeGenerationError,
-  GoEmitterResult,
-  Success,
-  SystemError,
-  TypeMappingError,
-  TypeSpecCompilerError,
-  ValidationError,
-} from "./error-types.js";
+	BaseError,
+	GoCodeGenerationError,
+	GoEmitterResult,
+	Success,
+	SystemError,
+	TypeMappingError,
+	TypeSpecCompilerError,
+	ValidationError,
+} from "./error-types.js"
 
 /**
  * Error Factory - Single source of truth for error creation
@@ -172,7 +173,7 @@ export class ErrorFactory {
   /**
    * Check if result is error
    */
-  static isError(result: GoEmitterResult): result is AnyError {
+  static isError(result: GoEmitterResult): result is BaseError {
     return result._tag === "error";
   }
 
