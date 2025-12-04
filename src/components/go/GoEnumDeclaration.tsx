@@ -19,7 +19,7 @@ import {AppendFile} from "@alloy-js/core"
 
 interface GoEnumDeclarationProps {
 	/** TypeSpec enum to convert to Go constants */
-	enum: Enum;
+	enumType: Enum;
 	/** Package name for documentation */
 	packageName?: string;
 	/** Whether to use iota for integer enums */
