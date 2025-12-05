@@ -4,7 +4,7 @@
  * Handles various return type patterns (single, tuple, error, etc.)
  */
 
-import type { Operation, Program, Type } from "@typespec/compiler";
+import type { Operation, Type } from "@typespec/compiler";
 import { TypeExpression } from "../components/TypeExpression.js";
 
 /**
@@ -24,7 +24,7 @@ export interface GoReturnType {
 /**
  * Extract return type from TypeSpec operation
  */
-export function extractReturnType(operation: Operation, program: Program): GoReturnType {
+export function extractReturnType(operation: Operation): GoReturnType {
   if (!operation.returnType) {
     return {
       type: "void",

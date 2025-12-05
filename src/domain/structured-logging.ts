@@ -337,31 +337,7 @@ export class Logger {
   static withContext(context: LogContext) {
     // Reuse the logic from StructuredLogger via a bound interface that points to Logger's static methods
     // This removes the duplication of the object creation logic
-    const loggerInterface = {
-      debug: (ctx: LogContext, msg: string, det?: Record<string, unknown>) =>
-        this.debug(ctx, msg, det),
-      info: (ctx: LogContext, msg: string, det?: Record<string, unknown>) =>
-        this.info(ctx, msg, det),
-      warn: (ctx: LogContext, msg: string, det?: Record<string, unknown>) =>
-        this.warn(ctx, msg, det),
-      error: (ctx: LogContext, msg: string, det?: Record<string, unknown>, errId?: string) =>
-        this.error(ctx, msg, det, errId),
-    };
-
-    // We can't access private methods of another class, so we duplicate the helper logic here?
-    // No, we can make the helper public or protected if we extend, but these are static.
-    // The cleanest way without changing visibility significantly is to just manually bind here
-    // OR expose the helper on StructuredLogger as public static.
-
-    // Let's use the duplicated code but wrapped in a way that JSCPD might accept,
-    // or better, actually call StructuredLogger.withContext if not in development?
-    // No, Logger delegates based on environment.
-
-    // Let's just create the object manually but cleaner to avoid JSCPD detection if exact match.
-    // JSCPD matches exact blocks.
-    // I'll rewrite this to call a shared internal helper if possible.
-    // Since I can't easily share private statics between classes without inheritance or making them public.
-    // I'll make createBoundContextLogger public in StructuredLogger.
+    // Using the createBoundContextLogger directly eliminates the need for the interface
 
     return StructuredLogger.createBoundContextLogger(context, this);
   }

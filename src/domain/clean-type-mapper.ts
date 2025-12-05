@@ -263,7 +263,7 @@ export class CleanTypeMapper {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _fieldName?: string,
   ): GoTypeMapping {
-    //TODO?:
+    // TODO: Implement proper union type mapping to Go sealed interfaces
     // For union types, use interface{} as safest fallback
     // In future, could generate sealed interfaces
     return {

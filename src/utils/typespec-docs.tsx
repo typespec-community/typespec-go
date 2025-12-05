@@ -17,7 +17,8 @@ interface Documentable {
  * Currently provides fallback for testing without full TypeSpec program
  */
 export function getDocumentation(program: Program, node: Documentable) {
-  //TODO: fix this trash!
+  // TODO: Implement proper TypeSpec documentation extraction with decorator support
+  // Currently provides fallback for testing without full TypeSpec program
 
   // For now, provide fallback documentation based on type
   if (node?.name) {

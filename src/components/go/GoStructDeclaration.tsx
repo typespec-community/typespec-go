@@ -230,7 +230,7 @@ function mapTypeSpecToGoType(type: Type): any {
       return <Reference refkey={unionRef} />;
 
     case "Tuple":
-      //TODO: this must be better typed
+      // TODO: Implement proper Go tuple type mapping with specific slice types
       // Go doesn't have tuples, use slice
       return "[]interface{}";
 

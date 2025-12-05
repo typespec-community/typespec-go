@@ -3,7 +3,7 @@
  * Extract HTTP metadata from TypeSpec operations and decorators
  */
 
-import type { Program, Operation, ModelProperty, Type } from "@typespec/compiler";
+import type { Program, Operation, ModelProperty } from "@typespec/compiler";
 import { getHttpOperation } from "@typespec/http";
 import type { HttpOperation } from "@typespec/http";
 import { TypeExpression } from "../components/TypeExpression.js";

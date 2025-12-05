@@ -6,11 +6,69 @@ import type {
   Scalar,
   Program,
   EmitContext,
+  ModelProperty,
 } from "@typespec/compiler";
 
 /**
+ * Mock ModelProperty interface for test purposes
+ */
+interface MockModelProperty {
+  name: string;
+  type: Type;
+  optional: boolean;
+  kind: string;
+  entityKind: string;
+  isFinished: boolean;
+  decorators: unknown[];
+}
+
+/**
+ * Type-safe property map interface for TypeSpec models
+ */
+interface MockPropertiesMap {
+  set(key: string, value: MockModelProperty): void;
+  has(key: string): boolean;
+  get(key: string): MockModelProperty | undefined;
+  rekey?: () => void;
+}
+
+/**
+ * Type-safe tracer interface for TypeSpec program
+ */
+interface MockTracer {
+  enabled: boolean;
+  track: (name: string, fn: () => void) => void;
+  span: (name: string) => { finish: () => void };
+}
+
+/**
+ * Type-safe compiler options interface
+ */
+interface MockCompilerOptions {
+  outputDir: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Type-safe state set interface
+ */
+interface MockStateSet {
+  get(key: string): unknown;
+  set(key: string, value: unknown): void;
+  has(key: string): boolean;
+}
+
+/**
+ * Type-safe resolved type interface
+ */
+interface MockResolvedType {
+  type: Type;
+  node: unknown;
+}
+
+/**
  * Factory for creating TypeSpec compiler mocks to test the emitter
- * without requiring the full compiler infrastructure.
+ * without requiring full compiler infrastructure.
  */
 export class MockFactory {
   /**
@@ -18,23 +76,23 @@ export class MockFactory {
    * ELIMINATES DUPLICATION: Shared logic for properties map creation
    */
   private static createPropertiesMap(properties: Record<string, Type>) {
-    const propsMap = new Map() as {
-      set(key: string, value: any): void;
-      has(key: string): boolean;
-      get(key: string): any;
-      rekey?: () => void;
-    };
+    const propsMap = new Map() as MockPropertiesMap;
 
     Object.entries(properties).forEach(([propName, propType]) => {
       propsMap.set(propName, {
         name: propName,
         type: propType,
         optional: false,
-      });
+        kind: "ModelProperty",
+        entityKind: "ModelProperty",
+        isFinished: true,
+        decorators: [],
+      } as MockModelProperty);
     });
 
     return propsMap;
   }
+
   /**
    * Create a mock Scalar type
    */
@@ -54,17 +112,17 @@ export class MockFactory {
     return {
       kind: "Model",
       name,
-      properties: propsMap as any,
+      properties: propsMap as unknown as Map<string, ModelProperty>,
       derivedModels: [],
       sourceModels: [],
-      entityKind: "Type" as any,
+      entityKind: "Type" as const,
       isFinished: true,
       decorators: [],
     } as unknown as Model;
   }
 
   /**
-   * Create a mock Program with minimal required interface for the emitter
+   * Create a mock Program with minimal required interface for emitter
    */
   static createProgram(models: Record<string, Model> = {}): Program {
     // Create models map
@@ -82,13 +140,13 @@ export class MockFactory {
     return {
       getGlobalNamespaceType: () => mockNamespace as unknown as Namespace,
       checker: {
-        getTypeName: (_type: Type) => "string",
+        getTypeName: () => "string",
         isString: (type: Type) => type.kind === "Scalar" && type.name === "string",
         isStdType: () => false,
       },
       sourceFiles: new Map(),
       jsSourceFiles: new Map(),
-      tracer: {} as any,
+      tracer: {} as MockTracer,
       trace: () => {},
       emitters: new Map(),
       hasError: () => false,
@@ -102,12 +160,12 @@ export class MockFactory {
         stat: async () => ({ isDirectory: () => false, isFile: () => true }),
         realpath: async (path: string) => path,
       },
-      compilerOptions: { outputDir: "./test-output" } as any,
-      stateSet: {} as any,
+      compilerOptions: { outputDir: "./test-output" } as MockCompilerOptions,
+      stateSet: {} as MockStateSet,
       stateMap: new Map(),
       reportDiagnostics: () => {},
-      resolveTypeReference: () => ({}) as any,
-      resolveType: () => ({}) as any,
+      resolveTypeReference: () => ({} as MockResolvedType),
+      resolveType: () => ({} as MockResolvedType),
     } as unknown as Program;
   }
 
@@ -127,17 +185,17 @@ export class MockFactory {
       name,
       kind: "Operation",
       parameters: {
-        properties: propsMap as any,
+        properties: propsMap as unknown as Map<string, ModelProperty>,
         kind: "Model",
         name: "parameters",
         derivedModels: [],
         sourceModels: [],
-        entityKind: "Type" as any,
+        entityKind: "Type" as const,
         isFinished: true,
         decorators: [],
       } as unknown as Model,
       returnType: options.returnType,
-      entityKind: "Type" as any,
+      entityKind: "Type" as const,
       isFinished: true,
       decorators: [],
     } as unknown as Operation;
@@ -180,7 +238,7 @@ export class MockFactory {
       strings: new Map(),
       templates: new Map(),
       decorators: [],
-      entityKind: "Type" as any, // Cast to satisfy Type compatibility
+      entityKind: "Type" as const, // Type-safe entity kind
       isFinished: true,
       namespaces: new Map(),
       decoratorDeclarations: new Map(),
