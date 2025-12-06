@@ -1,6 +1,7 @@
 import { describe, test, expect } from "vitest";
 import { GoHandlerStub } from "../components/go/GoHandlerStub.js";
 import { MockFactory } from "../testing/mock-factory.js";
+import { renderGoContent } from "../testing/test-utils.js";
 
 describe("GoHandlerStub Component", () => {
   test("generates complete HTTP handler file", () => {
