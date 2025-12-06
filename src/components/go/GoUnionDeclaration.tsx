@@ -8,7 +8,7 @@ import type { Program, TemplateParameter, Union } from "@typespec/compiler";
 import { TypeDeclaration, InterfaceDeclaration, FunctionDeclaration } from "@alloy-js/go";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import { capitalize } from "../../utils/strings.js";
-import { GoStringLiteral } from "./core/index.js";
+import { GoStringLiteral, GoReturn } from "./core/index.js";
 
 interface GoUnionDeclarationProps {
   /** TypeSpec union to convert to Go interface */
@@ -84,9 +84,9 @@ export function GoUnionDeclaration({
             <TypeDeclaration name={variantName}>
               {discriminator && (
                 <>
-                  struct {{"\n"}}
-                  {{"\t"}}Type string <GoStringLiteral value={`json:"${discriminator}`} />
-                  {{"\n"}}}
+                  struct {"\n"}
+                  {"\t"}Type string <GoStringLiteral value={"json:\"" + discriminator + "\""} />
+                  {"\n"}
                 </>
               )}
               {!discriminator && "struct {}\n"}

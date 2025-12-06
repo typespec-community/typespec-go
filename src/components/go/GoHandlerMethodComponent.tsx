@@ -23,10 +23,9 @@ export function GoHandlerMethodComponent({
       name={handler.name}
     >
       <FunctionReceiver name="s" type={`*${serviceName}`} />
-      {handler.parameters.map((p) => ({
-        name: p.name,
-        type: p.goType,
-      }))}
+      {handler.parameters.map((p: any) => (
+        <>{p.name} {p.goType}</>
+      ))}
       {implementation}
     </FunctionDeclaration>
   );

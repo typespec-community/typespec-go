@@ -1,4 +1,5 @@
-import { Children, Indent } from "@alloy-js/core";
+import type { Children } from "@alloy-js/core";
+import { Indent } from "@alloy-js/core";
 
 export interface GoBlockProps {
   /** Content inside the block */

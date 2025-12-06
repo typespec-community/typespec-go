@@ -21,8 +21,6 @@ export function GoRouteRegistrationComponent({
       doc="RegisterRoutes registers all handlers with given router"
     >
       <FunctionReceiver name="s" type={`*${serviceName}`} />
-      parameters={[{ name: "mux", type: "*http.ServeMux" }]}
-    >
       {handlers.map(
         (handler: GoHandlerMethod) => (
           <>

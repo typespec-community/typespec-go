@@ -1,6 +1,4 @@
-import { Children } from "@alloy-js/core";
-import * as go from "@alloy-js/go";
-const { Block } = go;
+import type { Children } from "@alloy-js/core";
 
 export interface GoSwitchCaseProps {
   /** The value or condition to match */
@@ -27,26 +25,14 @@ export interface GoSwitchProps {
 
 /**
  * GoSwitch - A Go switch statement component
- * 
- * Example:
- * ```tsx
- * <GoSwitch value="e">
- *   <GoSwitchCase when="User">
- *     <GoReturn value="true" />
- *   </GoSwitchCase>
- *   <GoSwitchCase default>
- *     <GoReturn value="false" />
- *   </GoSwitchCase>
- * </GoSwitch>
- * ```
  */
 export function GoSwitch(props: GoSwitchProps) {
   return (
-    <Block>
+    <>
       {"switch"} {props.value} {"{"}
       {props.children}
       {"}"}
-    </Block>
+    </>
   );
 }
 

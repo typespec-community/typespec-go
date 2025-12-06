@@ -1,6 +1,5 @@
-import { Children, Show } from "@alloy-js/core";
-import * as go from "@alloy-js/go";
-const { Block } = go;
+import type { Children } from "@alloy-js/core";
+import { Show } from "@alloy-js/core";
 
 export interface GoIfProps {
   /** The condition to test */
@@ -13,28 +12,16 @@ export interface GoIfProps {
 
 /**
  * GoIf - A Go if statement component
- * 
- * Example:
- * ```tsx
- * <GoIf condition="x > 0">
- *   <fmt.Printf>positive</fmt.Printf>
- * </GoIf>
- * 
- * <GoIf condition="x > 0">
- *   <fmt.Printf>positive</fmt.Printf>
- *   else={<fmt.Printf>negative</fmt.Printf>}
- * </GoIf>
- * ```
  */
 export function GoIf(props: GoIfProps) {
   return (
     <>
       {"if"} {props.condition} {"{"}
-      <Block>{props.children}</Block>
+      {props.children}
       {"}"}
       <Show when={!!props.else}>
         {" else {"}
-        <Block>{props.else}</Block>
+        {props.else}
         {"}"}
       </Show>
     </>
@@ -48,7 +35,7 @@ export function GoElseIf(props: { condition: string | Children; children: Childr
   return (
     <>
       {"else if"} {props.condition} {"{"}
-      <Block>{props.children}</Block>
+      {props.children}
       {"}"}
     </>
   );
