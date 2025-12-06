@@ -12,6 +12,10 @@ describe("GoHandlerStub Component", () => {
       packageName: "api",
     });
 
+    console.log("=== ACTUAL OUTPUT ===");
+    console.log(output);
+    console.log("=== END OUTPUT ===");
+
     // Check that it contains the essential parts
     expect(output).toContain("package api");
     expect(output).toContain("import");

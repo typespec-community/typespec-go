@@ -14,6 +14,7 @@ const {
   StructDeclaration, 
   StructMember, 
   FunctionDeclaration,
+  FunctionParameters,
   StructTypeDeclaration,
   VariableDeclaration,
   LineComment,
@@ -97,7 +98,7 @@ export function GoHandlerStub({
 
   // Generate Go file structure using 100% Alloy-JS components
   return (
-    <SourceFile path={packageName + "/handlers.go"} package={packageName}>
+    <SourceFile path={packageName + "/handlers.go"}>
         {/* Standard imports */}
         <SingleImportStatement path="context" />
         <SingleImportStatement path="encoding/json" />
@@ -122,15 +123,33 @@ export function GoHandlerStub({
         {/* Route registration method */}
         <FunctionDeclaration name="RegisterRoutes">
           <FunctionReceiver name="s" type={`*${serviceName}`} />
-          mux *http.ServeMux
+          <FunctionParameters 
+            parameters={[
+              { name: "mux", type: "*http.ServeMux" }
+            ]}
+          />
           <GoBlock>
             {handlers.map((handler) => (
-              <GoStringLiteral value="\tmux.HandleFunc(&quot;/route&quot;, s.handler)" />
+              <GoStringLiteral value={`\tmux.HandleFunc("${handler.route}", s.${handler.name})`} />
             ))}
           </GoBlock>
         </FunctionDeclaration>
         
-
+        {/* Service constructor */}
+        <FunctionDeclaration name={`New${serviceName}`} returns={`*${serviceName}`}>
+          <FunctionParameters 
+            parameters={[
+              { name: "logger", type: "*log.Logger" }
+            ]}
+          />
+          <GoBlock>
+            <GoStringLiteral value={`${serviceName.toLowerCase()} := &${serviceName}{`} />
+            <GoStringLiteral value={`	logger: logger,`} />
+            <GoStringLiteral value={`}`} />
+            <GoReturn value={serviceName.toLowerCase()} />
+          </GoBlock>
+        </FunctionDeclaration>
+    </SourceFile>
   );
 }
 

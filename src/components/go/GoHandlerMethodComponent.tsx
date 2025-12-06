@@ -1,4 +1,4 @@
-import { FunctionDeclaration, FunctionReceiver } from "@alloy-js/go";
+import { FunctionDeclaration, FunctionReceiver, FunctionParameters } from "@alloy-js/go";
 import { refkey, code } from "@alloy-js/core";
 import type { GoHandlerMethod } from "./GoHandlerMethod";
 import { GoStringLiteral, GoIf, GoSwitch, GoBlock, GoReturn, GoCase, GoDefault } from "./core/index.js";
@@ -20,10 +20,17 @@ export function GoHandlerMethodComponent({
   return (
     <FunctionDeclaration name={handler.name}>
       <FunctionReceiver name="s" type={`*${serviceName}`} />
-      {`ctx context.Context, w http.ResponseWriter, r *http.Request`}
-      {handler.parameters.map((p: any) => (
-        <GoStringLiteral value={`${p.name} ${p.goType}`} />
-      ))}
+      <FunctionParameters 
+        parameters={[
+          { name: "ctx", type: "context.Context" },
+          { name: "w", type: "http.ResponseWriter" },
+          { name: "r", type: "*http.Request" },
+          ...handler.parameters.map((p: any) => ({
+            name: p.name,
+            type: p.goType
+          }))
+        ]}
+      />
       <GoBlock>
         <GoStringLiteral value={`// ${handler.name} - ${handler.doc || `handles ${handler.httpMethod} ${handler.route}`}`} />
         <GoStringLiteral value={`// TODO: Implement ${handler.name} handler with business logic`} />
