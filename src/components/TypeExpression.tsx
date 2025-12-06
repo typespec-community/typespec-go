@@ -92,7 +92,7 @@ export function TypeExpression({ type }: { type: Type }): string {
     if (isArrayModel(type)) {
       const elementType = getArrayElementType(type);
       const elementGoType = TypeExpression({ type: elementType });
-      return `[]${elementGoType}`;
+      return "[]" + elementGoType;
     }
 
     return type.name || "interface{}";

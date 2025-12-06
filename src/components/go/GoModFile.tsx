@@ -26,17 +26,11 @@ export function GoModFile({
   goVersion = "1.21",
   requires = [],
 }: GoModFileProps): string {
-  let content = `module ${modulePath}
-
-go ${goVersion}`;
+  let content = "module " + modulePath + "\n\ngo " + goVersion;
 
   if (requires.length > 0) {
-    const requireBlock = requires.map((req) => `\t${req.path} ${req.version}`).join("\n");
-    content += `
-
-require (
-${requireBlock}
-)`;
+    const requireBlock = requires.map((req) => "\t" + req.path + " " + req.version).join("\n");
+    content += "\n\nrequire (\n" + requireBlock + "\n)";
   }
 
   return content + "\n";

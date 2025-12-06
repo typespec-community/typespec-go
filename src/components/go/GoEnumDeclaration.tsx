@@ -8,6 +8,7 @@ import type { Enum, Program } from "@typespec/compiler";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import * as go from "@alloy-js/go";
+import { GoSwitch, GoCase, GoDefault, GoReturn, GoStringLiteral } from "./core/index.js";
 const {
   FunctionDeclaration,
   FunctionReceiver,
@@ -53,35 +54,42 @@ export function GoEnumDeclaration({
       {!useIota && (
         <VariableDeclarationGroup>
           {members.map((member) => (
-            <VariableDeclaration name={`${typeName}${capitalize(member.name)}`} type={typeName}>
-              {isStringEnum ? `"${member.value}"` : member.value}
+            <VariableDeclaration name={typeName + capitalize(member.name)} type={typeName}>
+              {isStringEnum ? <GoStringLiteral value={String(member.value)} /> : String(member.value)}
             </VariableDeclaration>
           ))}
         </VariableDeclarationGroup>
       )}
 
       {useIota && (
-        <>
+        <VariableDeclarationGroup>
           {members.map((member, index) => (
-            <VariableDeclaration name={`${typeName}${capitalize(member.name)}`} type={typeName}>
+            <VariableDeclaration name={typeName + capitalize(member.name)} type={typeName}>
               {index === 0 ? "iota" : null}
             </VariableDeclaration>
           ))}
-        </>
+        </VariableDeclarationGroup>
       )}
 
       {isStringEnum && (
-        <FunctionDeclaration name="String" receiver={`e ${typeName}`} returns="string">
-          return string(e)
+        <FunctionDeclaration name="String" returns="string">
+          <FunctionReceiver name="e" type={typeName} />
+          <GoReturn value="string(e)" />
         </FunctionDeclaration>
       )}
 
-      <FunctionDeclaration name="IsValid" receiver={`e ${typeName}`} returns="bool">
-        {`switch e {
-${members.map((m) => `case ${typeName}${capitalize(m.name)}:\n\treturn true`).join("\n")}
-default:
-\treturn false
-}`}
+      <FunctionDeclaration name="IsValid" returns="bool">
+        <FunctionReceiver name="e" type={typeName} />
+        <GoSwitch value="e">
+          {members.map((member) => (
+            <GoCase value={typeName + capitalize(member.name)}>
+              <GoReturn value="true" />
+            </GoCase>
+          ))}
+          <GoDefault>
+            <GoReturn value="false" />
+          </GoDefault>
+        </GoSwitch>
       </FunctionDeclaration>
     </>
   );

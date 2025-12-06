@@ -57,7 +57,7 @@ export function GoHandlerStub({
         const returnTypeInfo = extractReturnType(operation);
         returnType = returnTypeInfo.type || "interface{}";
       } catch (error) {
-        console.warn(`Failed to extract return type for ${operation.name}:`, error);
+        console.warn("Failed to extract return type for " + operation.name + ":", error);
         returnType = "interface{}";
       }
     }
@@ -67,12 +67,12 @@ export function GoHandlerStub({
       const httpMetadata = extractHttpMetadata(operation, program);
       if (httpMetadata) {
         handlers.push({
-          name: `${operation.name}Handler`,
+          name: operation.name + "Handler",
           httpMethod: httpMetadata.method,
           route: httpMetadata.fullRoute,
           parameters: httpMetadata.parameters,
           returnType,
-          doc: `Handler for ${operation.name}`,
+          doc: "Handler for " + operation.name,
           operation,
         });
         continue;
@@ -81,12 +81,12 @@ export function GoHandlerStub({
 
     // Fallback to default handler
     handlers.push({
-      name: `${operation.name}Handler`,
+      name: operation.name + "Handler",
       httpMethod: "GET",
-      route: `/${operation.name.toLowerCase()}`,
+      route: "/" + operation.name.toLowerCase(),
       parameters: [],
       returnType,
-      doc: `Handler for ${operation.name}`,
+      doc: "Handler for " + operation.name,
       operation,
     });
   }
@@ -108,9 +108,7 @@ function generateGoFileString(packageName: string, serviceName: string, handlers
     'import "log"',
   ].join("\n");
 
-  const serviceStruct = `type ${serviceName} struct {
-	logger *log.Logger
-}`;
+  const serviceStruct = "type " + serviceName + " struct {\n\tlogger *log.Logger\n}";
 
   const handlerFunctions = handlers
     .map((handler) => {
@@ -118,15 +116,12 @@ function generateGoFileString(packageName: string, serviceName: string, handlers
         "ctx context.Context",
         "w http.ResponseWriter",
         "r *http.Request",
-        ...handler.parameters.map((p: any) => `${p.name} ${p.goType}`),
+        ...handler.parameters.map((p: any) => p.name + " " + p.goType),
       ].join(", ");
 
       const implementation = generateHandlerImplementationString(handler);
 
-      return `// ${handler.doc}
-func (s *${serviceName}) ${handler.name}(${parameterList}) {
-${implementation}
-}`;
+      return "// " + handler.doc + "\nfunc (s *" + serviceName + ") " + handler.name + "(" + parameterList + ") {\n" + implementation + "\n}";
     })
     .join("\n\n");
 

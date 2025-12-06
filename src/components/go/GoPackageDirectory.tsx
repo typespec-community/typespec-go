@@ -58,7 +58,7 @@ function getModulePath(packageName: string, modulePath?: string): string {
     return modulePath;
   }
 
-  return `github.com/yourcompany/${packageName}`;
+  return "github.com/yourcompany/" + packageName;
 }
 
 /**
@@ -142,7 +142,7 @@ export function GoPackageDirectory({
         {hasOperations && (
           <GoHandlerStub
             operations={operations}
-            serviceName={`${capitalize(packageName)}Service`}
+            serviceName={capitalize(packageName) + "Service"}
             packageName={packageName}
             program={program}
           />
@@ -153,7 +153,7 @@ export function GoPackageDirectory({
           <SourceFile path="interfaces.go">
             {/* Service interfaces generated from TypeSpec operations */}
             <GoInterfaceDeclaration
-              name={`${capitalize(packageName)}Service`}
+              name={capitalize(packageName) + "Service"}
               operations={operations}
               packageName={packageName}
               program={program}

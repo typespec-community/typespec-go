@@ -1,5 +1,6 @@
 import { FunctionDeclaration, FunctionParameter, FunctionReceiver } from "@alloy-js/go";
 import type { GoHandlerMethod } from "./GoHandlerMethod";
+import { GoStringLiteral } from "./core/index.js";
 
 type GoRouteRegistrationComponentProps = {
   handlers: GoHandlerMethod[];
@@ -18,11 +19,18 @@ export function GoRouteRegistrationComponent({
     <FunctionDeclaration
       name="RegisterRoutes"
       doc="RegisterRoutes registers all handlers with given router"
-      receiver={`s *${serviceName}`}
+    >
+      <FunctionReceiver name="s" type={`*${serviceName}`} />
       parameters={[{ name: "mux", type: "*http.ServeMux" }]}
     >
       {handlers.map(
-        (handler: GoHandlerMethod) => `mux.HandleFunc("${handler.route}", s.${handler.name})`,
+        (handler: GoHandlerMethod) => (
+          <>
+            mux.HandleFunc(
+            <GoStringLiteral value={handler.route} />
+            , s.{handler.name})
+          </>
+        ),
       )}
     </FunctionDeclaration>
   );

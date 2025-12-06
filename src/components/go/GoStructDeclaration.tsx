@@ -39,7 +39,7 @@ export function GoStructDeclaration({
   const modelDoc =
     documentation ||
     (program ? getDocumentation(program, model) : undefined) ||
-    `Generated from TypeSpec model ${model.name}`;
+    "Generated from TypeSpec model " + model.name;
 
   // Generate struct fields using Alloy-JS components with <For> iteration
   return (
@@ -80,7 +80,7 @@ export function GoStructDeclaration({
             );
 
             // Ensure proper JSON tag format: `json:"name"` or `json:"name,omitempty"`
-            const jsonTagValue = prop.optional ? `${prop.name},omitempty` : prop.name;
+            const jsonTagValue = prop.optional ? prop.name + ",omitempty" : prop.name;
             const jsonTag = { json: jsonTagValue };
 
             return <StructMember name={fieldName} type={finalType} tag={jsonTag} />;

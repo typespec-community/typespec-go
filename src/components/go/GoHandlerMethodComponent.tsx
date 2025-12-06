@@ -1,6 +1,7 @@
-import { FunctionDeclaration } from "@alloy-js/go";
+import { FunctionDeclaration, FunctionReceiver } from "@alloy-js/go";
 import { refkey } from "@alloy-js/core";
 import type { GoHandlerMethod } from "./GoHandlerMethod";
+import { GoStringLiteral, GoIf } from "./core/index.js";
 
 /**
  * Component for individual handler method generation using 100% Alloy-JS components
@@ -20,12 +21,12 @@ export function GoHandlerMethodComponent({
   return (
     <FunctionDeclaration
       name={handler.name}
-      receiver={`s *${serviceName}`}
-      parameters={handler.parameters.map((p) => ({
+    >
+      <FunctionReceiver name="s" type={`*${serviceName}`} />
+      {handler.parameters.map((p) => ({
         name: p.name,
         type: p.goType,
       }))}
-    >
       {implementation}
     </FunctionDeclaration>
   );

@@ -93,6 +93,12 @@ fix:
 	bun run lint:fix
 	@echo "✅ ESLint issues fixed"
 
+# Scan for template literal violations
+verify-arch:
+	@echo "🔍 Scanning for Alloy-JS violations..."
+	@bunx tsx scripts/scan-violations.ts
+	@echo "✅ Architecture verification complete"
+
 # Show project status
 status:
 	@echo "📊 Project Status:"

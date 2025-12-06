@@ -8,6 +8,7 @@ import type { Program, TemplateParameter, Union } from "@typespec/compiler";
 import { TypeDeclaration, InterfaceDeclaration, FunctionDeclaration } from "@alloy-js/go";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import { capitalize } from "../../utils/strings.js";
+import { GoStringLiteral } from "./core/index.js";
 
 interface GoUnionDeclarationProps {
   /** TypeSpec union to convert to Go interface */
@@ -56,10 +57,10 @@ export function GoUnionDeclaration({
     };
   });
 
-  const methodReceiverName = discriminator ? "GetType" : `is${typeName}`;
+  const methodReceiverName = discriminator ? "GetType" : "is" + typeName;
   const methodSignature = discriminator
-    ? `${methodReceiverName}() string`
-    : `${methodReceiverName}()`;
+    ? methodReceiverName + "() string"
+    : methodReceiverName + "()";
 
   return (
     <>
@@ -81,16 +82,23 @@ export function GoUnionDeclaration({
         return (
           <>
             <TypeDeclaration name={variantName}>
-              {discriminator
-                ? `struct {\n\tType string \`json:"${discriminator}"\`\n}`
-                : "struct {}\n"}
+              {discriminator && (
+                <>
+                  struct {{"\n"}}
+                  {{"\t"}}Type string <GoStringLiteral value={`json:"${discriminator}`} />
+                  {{"\n"}}}
+                </>
+              )}
+              {!discriminator && "struct {}\n"}
             </TypeDeclaration>
             <FunctionDeclaration
               name={methodReceiverName}
-              receiver={`${variantName}`}
+              receiver={variantName}
               returns={discriminator ? "string" : undefined}
             >
-              {discriminator ? `return "${String(variant.name)}"` : ""}
+              {discriminator && (
+                <GoReturn value={String(variant.name)} />
+              )}
             </FunctionDeclaration>
           </>
         );
@@ -98,14 +106,14 @@ export function GoUnionDeclaration({
 
       {discriminator && (
         <FunctionDeclaration
-          name={`Unmarshal${typeName}`}
+          name={"Unmarshal" + typeName}
           parameters={[{ name: "data", type: "[]byte" }]}
           returns="error"
         >
-          {`// Unmarshaler implementation
-// This would need to unmarshal into a temp struct to get the discriminator
-// and then unmarshal into the correct variant
-return nil`}
+          {/* Unmarshaler implementation */}
+          {/* This would need to unmarshal into a temp struct to get the discriminator */}
+          {/* and then unmarshal into the correct variant */}
+          <GoReturn value="nil" />
         </FunctionDeclaration>
       )}
     </>

@@ -60,7 +60,7 @@ export function GoInterfaceDeclaration({
   const methods = operations.map((op) => operationToMethod(op, program));
 
   // Build interface documentation
-  const interfaceDoc = `${name} defines the service interface`;
+  const interfaceDoc = name + " defines the service interface";
 
   return (
     <go.TypeDeclaration name={name} doc={interfaceDoc}>
@@ -87,7 +87,7 @@ function buildGoSignature(returns: GoReturnType[]): string {
     .filter((t) => t !== "")
     .join(", ");
   
-  return returns.length > 1 ? `(${returnTypes})` : returnTypes;
+  return returns.length > 1 ? "(" + returnTypes + ")" : returnTypes;
 }
 
 /**
