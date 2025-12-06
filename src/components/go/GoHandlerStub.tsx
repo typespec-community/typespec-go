@@ -97,7 +97,6 @@ export function GoHandlerStub({
 
   // Generate Go file structure using 100% Alloy-JS components
   return (
-    <SourceFile path={packageName + "/handlers.go"}>
       <Package name={packageName}>
         {/* Standard imports */}
         <SingleImportStatement path="context" />
@@ -112,39 +111,40 @@ export function GoHandlerStub({
         </StructTypeDeclaration>
         
         {/* Handler methods */}
-        <For each={handlers} to={(handler) => (
-          <GoHandlerMethodComponent 
-            handler={handler} 
-            serviceName={serviceName}
-            serviceRef={serviceRefkey}
-          />
-        )} />
+        <For each={handlers}>
+          {(handler) => (
+            <GoHandlerMethodComponent 
+              handler={handler} 
+              serviceName={serviceName}
+              serviceRef={serviceRefkey}
+            />
+          )}
+        </For>
         
         {/* Route registration method */}
         <FunctionDeclaration name="RegisterRoutes">
           <FunctionReceiver name="s" type={`*${serviceName}`} />
           {`mux *http.ServeMux`}
           <GoBlock>
-            <For each={handlers} to={(handler) => (
-              <GoStringLiteral 
-                value={`	mux.HandleFunc("${handler.route}", s.${handler.name})`}
-              />
-            )} />
+      <For each={handlers}>
+        {(handler) => (
+          <GoStringLiteral value={`\tmux.HandleFunc("${handler.route}", s.${handler.name})`} />
+        )}
+      </For>
           </GoBlock>
         </FunctionDeclaration>
         
         {/* Service constructor */}
         <FunctionDeclaration name={`New${serviceName}`}>
           {`logger *log.Logger`}
-          <GoReturn type={`*${serviceName}`} />
+          <GoReturn value={`*${serviceName}`} />
           <GoBlock>
-            <GoStringLiteral value={`	${serviceName.toLowerCase()} := &${serviceName}{`} />
-            <GoStringLiteral value={`		logger: logger,`} />
-            <GoStringLiteral value={`	}`} />
-            <GoStringLiteral value={`	return ${serviceName.toLowerCase()}`} />
+            <GoStringLiteral value={`\t${serviceName.toLowerCase()} := &${serviceName}{`} />
+            <GoStringLiteral value={`\t\tlogger: logger,`} />
+            <GoStringLiteral value={`\t}`} />
+            <GoStringLiteral value={`\treturn ${serviceName.toLowerCase()}`} />
           </GoBlock>
         </FunctionDeclaration>
-      </Package>
     </SourceFile>
   );
 }
