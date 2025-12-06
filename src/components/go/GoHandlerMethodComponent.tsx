@@ -1,7 +1,7 @@
 import { FunctionDeclaration, FunctionReceiver } from "@alloy-js/go";
-import { refkey } from "@alloy-js/core";
+import { refkey, code } from "@alloy-js/core";
 import type { GoHandlerMethod } from "./GoHandlerMethod";
-import { GoStringLiteral, GoIf } from "./core/index.js";
+import { GoStringLiteral, GoIf, GoSwitch, GoBlock, GoReturn, GoCase, GoDefault } from "./core/index.js";
 
 /**
  * Component for individual handler method generation using 100% Alloy-JS components
@@ -15,66 +15,66 @@ export function GoHandlerMethodComponent({
   serviceName: string;
   serviceRef: ReturnType<typeof refkey>;
 }) {
-  // Generate method-specific implementation using string templates (working pattern from GoEnumDeclaration)
-  const implementation = generateHandlerImplementation(handler);
-
+  const serviceInstance = `s.${serviceName.toLowerCase()}`;
+  
   return (
-    <FunctionDeclaration
-      name={handler.name}
-    >
+    <FunctionDeclaration name={handler.name}>
       <FunctionReceiver name="s" type={`*${serviceName}`} />
+      {`ctx context.Context, w http.ResponseWriter, r *http.Request`}
       {handler.parameters.map((p: any) => (
-        <>{p.name} {p.goType}</>
+        <GoStringLiteral value={`${p.name} ${p.goType}`} />
       ))}
-      {implementation}
+      <GoBlock>
+        <GoStringLiteral value={`// ${handler.name} - ${handler.doc || `handles ${handler.httpMethod} ${handler.route}`}`} />
+        <GoStringLiteral value={`// TODO: Implement ${handler.name} handler with business logic`} />
+        <GoStringLiteral value={`// Route: ${handler.httpMethod} ${handler.route}`} />
+        <GoStringLiteral value="" />
+        <GoStringLiteral value="// Handler implementation:" />
+        
+        <GoSwitch value={handler.httpMethod}>
+          <GoCase value="GET">
+            <GoBlock>
+              <GoStringLiteral value="		// Example implementation:" />
+              <GoStringLiteral value={`		// result, err := ${serviceInstance}.${handler.name.slice(0, -7)}(ctx)`} />
+              <GoStringLiteral value="		// if err != nil {" />
+              <GoStringLiteral value="		// 	http.Error(w, err.Error(), http.StatusInternalServerError)" />
+              <GoStringLiteral value="		// 	return" />
+              <GoStringLiteral value="		// }" />
+              <GoStringLiteral>{code`		// w.Header().Set("Content-Type", "application/json")`}</GoStringLiteral>
+              <GoStringLiteral value="		// json.NewEncoder(w).Encode(result)" />
+            </GoBlock>
+          </GoCase>
+          
+          <GoCase value="POST">
+            <GoBlock>
+              <GoStringLiteral value="		// Example implementation:" />
+              <GoStringLiteral value={`		// var input ${handler.returnType}`} />
+              <GoStringLiteral value="		// if err := json.NewDecoder(r.Body).Decode(&input); err != nil {" />
+              <GoStringLiteral>{code`		// 	http.Error(w, "Invalid JSON", http.StatusBadRequest)`}</GoStringLiteral>
+              <GoStringLiteral value="		// 	return" />
+              <GoStringLiteral value="		// }" />
+              <GoStringLiteral value={`		// result, err := ${serviceInstance}.Create${handler.returnType}(ctx, input)`} />
+              <GoStringLiteral value="		// if err != nil {" />
+              <GoStringLiteral value="		// 	http.Error(w, err.Error(), http.StatusInternalServerError)" />
+              <GoStringLiteral value="		// 	return" />
+              <GoStringLiteral value="		// }" />
+              <GoStringLiteral>{code`		// w.Header().Set("Content-Type", "application/json")`}</GoStringLiteral>
+              <GoStringLiteral value="		// w.WriteHeader(http.StatusCreated)" />
+              <GoStringLiteral value="		// json.NewEncoder(w).Encode(result)" />
+            </GoBlock>
+          </GoCase>
+          
+          <GoDefault>
+            <GoBlock>
+              <GoStringLiteral value={`		// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation`} />
+              <GoStringLiteral value="		w.WriteHeader(http.StatusNotImplemented)" />
+              <GoStringLiteral>{code`		json.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})`}</GoStringLiteral>
+            </GoBlock>
+          </GoDefault>
+        </GoSwitch>
+      </GoBlock>
     </FunctionDeclaration>
   );
 }
 
-/**
- * Generate handler implementation using working string template pattern
- * This follows the proven approach from GoEnumDeclaration
- */
-function generateHandlerImplementation(handler: GoHandlerMethod): string {
-  const header = `// ${handler.name} - ${handler.doc || `handles ${handler.httpMethod} ${handler.route}`}
-// TODO: Implement ${handler.name} handler with business logic
-// Route: ${handler.httpMethod} ${handler.route}
 
-// Handler implementation:`;
-
-  switch (handler.httpMethod) {
-    case "GET":
-      return `${header}
-		// Example implementation:
-		// result, err := s.service.${handler.name.slice(0, -7)}(ctx)
-		// if err != nil {
-		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-		// 	return
-		// }
-		// w.Header().Set("Content-Type", "application/json")
-		// json.NewEncoder(w).Encode(result)`;
-    
-    case "POST":
-      return `${header}
-		// Example implementation:
-		// var input ${handler.returnType}
-		// if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
-		// 	http.Error(w, "Invalid JSON", http.StatusBadRequest)
-		// 	return
-		// }
-		// result, err := s.service.Create${handler.returnType}(ctx, input)
-		// if err != nil {
-		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-		// 	return
-		// }
-		// w.Header().Set("Content-Type", "application/json")
-		// w.WriteHeader(http.StatusCreated)
-		// json.NewEncoder(w).Encode(result)`;
-    
-    default:
-      return `${header}
-		// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation
-		w.WriteHeader(http.StatusNotImplemented)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})`;
-  }
-}
