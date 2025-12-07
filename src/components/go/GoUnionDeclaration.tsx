@@ -85,7 +85,7 @@ export function GoUnionDeclaration({
               {discriminator && (
                 <>
                   struct {"\n"}
-                  {"\t"}Type string <GoStringLiteral value={"json:\"" + discriminator + "\""} />
+                  {"\t"}Type string <GoStringLiteral value={'json:"' + discriminator + '"'} />
                   {"\n"}
                 </>
               )}
@@ -96,9 +96,7 @@ export function GoUnionDeclaration({
               receiver={variantName}
               returns={discriminator ? "string" : undefined}
             >
-              {discriminator && (
-                <GoReturn value={String(variant.name)} />
-              )}
+              {discriminator && <GoReturn value={String(variant.name)} />}
             </FunctionDeclaration>
           </>
         );

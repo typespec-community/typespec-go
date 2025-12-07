@@ -42,7 +42,8 @@ export function GoSwitch(props: GoSwitchProps) {
 export function GoCase(props: { value: string | Children; children: Children }) {
   return (
     <>
-      {"case"} {props.value}{":"}
+      {"case"} {props.value}
+      {":"}
       {props.children}
     </>
   );

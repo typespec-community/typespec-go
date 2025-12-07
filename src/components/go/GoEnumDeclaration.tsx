@@ -55,7 +55,11 @@ export function GoEnumDeclaration({
         <VariableDeclarationGroup>
           {members.map((member) => (
             <VariableDeclaration name={typeName + capitalize(member.name)} type={typeName}>
-              {isStringEnum ? <GoStringLiteral value={String(member.value)} /> : String(member.value)}
+              {isStringEnum ? (
+                <GoStringLiteral value={String(member.value)} />
+              ) : (
+                String(member.value)
+              )}
             </VariableDeclaration>
           ))}
         </VariableDeclarationGroup>

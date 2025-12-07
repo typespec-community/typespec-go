@@ -1,7 +1,15 @@
-import { FunctionDeclaration, FunctionReceiver, FunctionParameters } from "@alloy-js/go";
+import { FunctionDeclaration, FunctionReceiver } from "@alloy-js/go";
 import { refkey, code } from "@alloy-js/core";
 import type { GoHandlerMethod } from "./GoHandlerMethod";
-import { GoStringLiteral, GoIf, GoSwitch, GoBlock, GoReturn, GoCase, GoDefault } from "./core/index.js";
+import {
+  GoStringLiteral,
+  GoIf,
+  GoSwitch,
+  GoBlock,
+  GoReturn,
+  GoCase,
+  GoDefault,
+} from "./core/index.js";
 
 /**
  * Component for individual handler method generation using 100% Alloy-JS components
@@ -16,33 +24,37 @@ export function GoHandlerMethodComponent({
   serviceRef: ReturnType<typeof refkey>;
 }) {
   const serviceInstance = `s.${serviceName.toLowerCase()}`;
-  
+
   return (
-    <FunctionDeclaration name={handler.name}>
-      <FunctionReceiver name="s" type={`*${serviceName}`} />
-      <FunctionParameters 
-        parameters={[
-          { name: "ctx", type: "context.Context" },
-          { name: "w", type: "http.ResponseWriter" },
-          { name: "r", type: "*http.Request" },
-          ...handler.parameters.map((p: any) => ({
-            name: p.name,
-            type: p.goType
-          }))
-        ]}
-      />
+    <FunctionDeclaration
+      name={handler.name}
+      receiver={<FunctionReceiver name="s" type={`*${serviceName}`} />}
+      parameters={[
+        { name: "ctx", type: "context.Context" },
+        { name: "w", type: "http.ResponseWriter" },
+        { name: "r", type: "*http.Request" },
+        ...handler.parameters.map((p: any) => ({
+          name: p.name,
+          type: p.goType,
+        })),
+      ]}
+    >
       <GoBlock>
-        <GoStringLiteral value={`// ${handler.name} - ${handler.doc || `handles ${handler.httpMethod} ${handler.route}`}`} />
+        <GoStringLiteral
+          value={`// ${handler.name} - ${handler.doc || `handles ${handler.httpMethod} ${handler.route}`}`}
+        />
         <GoStringLiteral value={`// TODO: Implement ${handler.name} handler with business logic`} />
         <GoStringLiteral value={`// Route: ${handler.httpMethod} ${handler.route}`} />
         <GoStringLiteral value="" />
         <GoStringLiteral value="// Handler implementation:" />
-        
+
         <GoSwitch value={handler.httpMethod}>
           <GoCase value="GET">
             <GoBlock>
               <GoStringLiteral value="		// Example implementation:" />
-              <GoStringLiteral value={`		// result, err := ${serviceInstance}.${handler.name.slice(0, -7)}(ctx)`} />
+              <GoStringLiteral
+                value={`		// result, err := ${serviceInstance}.${handler.name.slice(0, -7)}(ctx)`}
+              />
               <GoStringLiteral value="		// if err != nil {" />
               <GoStringLiteral value="		// 	http.Error(w, err.Error(), http.StatusInternalServerError)" />
               <GoStringLiteral value="		// 	return" />
@@ -51,7 +63,7 @@ export function GoHandlerMethodComponent({
               <GoStringLiteral value="		// json.NewEncoder(w).Encode(result)" />
             </GoBlock>
           </GoCase>
-          
+
           <GoCase value="POST">
             <GoBlock>
               <GoStringLiteral value="		// Example implementation:" />
@@ -60,7 +72,9 @@ export function GoHandlerMethodComponent({
               <GoStringLiteral>{code`		// 	http.Error(w, "Invalid JSON", http.StatusBadRequest)`}</GoStringLiteral>
               <GoStringLiteral value="		// 	return" />
               <GoStringLiteral value="		// }" />
-              <GoStringLiteral value={`		// result, err := ${serviceInstance}.Create${handler.returnType}(ctx, input)`} />
+              <GoStringLiteral
+                value={`		// result, err := ${serviceInstance}.Create${handler.returnType}(ctx, input)`}
+              />
               <GoStringLiteral value="		// if err != nil {" />
               <GoStringLiteral value="		// 	http.Error(w, err.Error(), http.StatusInternalServerError)" />
               <GoStringLiteral value="		// 	return" />
@@ -70,10 +84,12 @@ export function GoHandlerMethodComponent({
               <GoStringLiteral value="		// json.NewEncoder(w).Encode(result)" />
             </GoBlock>
           </GoCase>
-          
+
           <GoDefault>
             <GoBlock>
-              <GoStringLiteral value={`		// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation`} />
+              <GoStringLiteral
+                value={`		// TODO: Add ${handler.httpMethod} request implementation with body parsing and validation`}
+              />
               <GoStringLiteral value="		w.WriteHeader(http.StatusNotImplemented)" />
               <GoStringLiteral>{code`		json.NewEncoder(w).Encode(map[string]string{"message": "Not implemented"})`}</GoStringLiteral>
             </GoBlock>
@@ -83,5 +99,3 @@ export function GoHandlerMethodComponent({
     </FunctionDeclaration>
   );
 }
-
-

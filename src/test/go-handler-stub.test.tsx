@@ -7,11 +7,10 @@ describe("GoHandlerStub Component", () => {
   test("generates complete HTTP handler file", () => {
     const mockOperation = MockFactory.createOperation("CreateUser");
 
-    const output = GoHandlerStub({
-      operations: [mockOperation],
-      serviceName: "UserService",
-      packageName: "api",
-    });
+    const output = renderGoContent(
+      <GoHandlerStub operations={[mockOperation]} serviceName="UserService" packageName="api" />,
+      "handlers.go",
+    );
 
     console.log("=== ACTUAL OUTPUT ===");
     console.log(output);
@@ -29,11 +28,10 @@ describe("GoHandlerStub Component", () => {
   test("generates handler methods with proper signatures", () => {
     const mockOperation = MockFactory.createOperation("GetUser");
 
-    const output = GoHandlerStub({
-      operations: [mockOperation],
-      serviceName: "UserService",
-      packageName: "api",
-    });
+    const output = renderGoContent(
+      <GoHandlerStub operations={[mockOperation]} serviceName="UserService" packageName="api" />,
+      "handlers.go",
+    );
 
     // Check for handler method signature
     expect(output).toContain("func (s *UserService) GetUserHandler");

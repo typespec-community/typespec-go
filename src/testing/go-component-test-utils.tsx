@@ -47,16 +47,20 @@ export function extractGoCode(output: any, filename: string = "test/test.go") {
  * Test helper that combines context creation and code extraction
  * Simplifies component testing to one line
  */
-export function testComponent(component: any, expectedContent: string[], filename: string = "test.go") {
+export function testComponent(
+  component: any,
+  expectedContent: string[],
+  filename: string = "test.go",
+) {
   const output = createGoTestContext(component, filename);
   const code = extractGoCode(output, filename);
-  
-  expectedContent.forEach(expected => {
+
+  expectedContent.forEach((expected) => {
     if (!code.includes(expected)) {
       console.log("Generated code:", code);
       throw new Error(`Expected content not found: ${expected}`);
     }
   });
-  
+
   return code;
 }

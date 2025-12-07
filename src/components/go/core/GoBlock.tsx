@@ -10,14 +10,14 @@ export interface GoBlockProps {
 
 /**
  * GoBlock - A Go code block with braces
- * 
+ *
  * Example:
  * ```tsx
  * <GoBlock>
  *   <fmt.Printf>Hello</fmt.Printf>
  *   <return>42</return>
  * </GoBlock>
- * 
+ *
  * // Renders as:
  * // {
  * //     fmt.Printf("Hello")
@@ -33,9 +33,7 @@ export function GoBlock(props: GoBlockProps) {
   return (
     <>
       {"{"}
-      <Indent>
-        {props.children}
-      </Indent>
+      <Indent>{props.children}</Indent>
       {"}"}
     </>
   );

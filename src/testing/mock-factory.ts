@@ -164,8 +164,8 @@ export class MockFactory {
       stateSet: {} as MockStateSet,
       stateMap: new Map(),
       reportDiagnostics: () => {},
-      resolveTypeReference: () => ({} as MockResolvedType),
-      resolveType: () => ({} as MockResolvedType),
+      resolveTypeReference: () => ({}) as MockResolvedType,
+      resolveType: () => ({}) as MockResolvedType,
     } as unknown as Program;
   }
 

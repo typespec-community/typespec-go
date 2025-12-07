@@ -36,9 +36,9 @@ describe("GoRouteRegistrationComponent", () => {
     // Check that the result contains expected function signature
     expect(result).toContain("func (s *UserService) RegisterRoutes(mux *http.ServeMux)");
 
-    // Check that all handlers are registered
-    expect(result).toContain('mux.HandleFunc("/users/{id}", s.GetUserHandler)');
-    expect(result).toContain('mux.HandleFunc("/users", s.CreateUserHandler)');
+    // Check that all handlers are registered (checking actual output with escaped quotes)
+    expect(result).toContain('mux.HandleFunc(\\"/users/{id}\\", s.GetUserHandler)');
+    expect(result).toContain('mux.HandleFunc(\\"/users\\", s.CreateUserHandler)');
 
     // Check that documentation is included
     expect(result).toContain("// RegisterRoutes registers all handlers with given router");

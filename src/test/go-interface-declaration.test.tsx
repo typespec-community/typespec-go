@@ -2,7 +2,10 @@ import { describe, test, expect } from "vitest";
 import { render, Output } from "@alloy-js/core";
 import { ModuleDirectory, SourceFile, SourceDirectory } from "@alloy-js/go";
 import { testComponent } from "../testing/go-component-test-utils.js";
-import { GoInterfaceDeclaration, collectOperations } from "../components/go/GoInterfaceDeclaration.js";
+import {
+  GoInterfaceDeclaration,
+  collectOperations,
+} from "../components/go/GoInterfaceDeclaration.js";
 import { MockFactory } from "../testing/mock-factory.js";
 
 describe("GoInterfaceDeclaration Component", () => {
@@ -15,13 +18,9 @@ describe("GoInterfaceDeclaration Component", () => {
     });
 
     const code = testComponent(
-      <GoInterfaceDeclaration
-        name="TestService"
-        operations={[mockOperation]}
-        packageName="test"
-      />,
+      <GoInterfaceDeclaration name="TestService" operations={[mockOperation]} packageName="test" />,
       ["type TestService interface", "GetUser(ctx context.Context, id string) (User, error)"],
-      "interfaces.go"
+      "interfaces.go",
     );
 
     expect(code).toContain("package test");
@@ -35,13 +34,9 @@ describe("GoInterfaceDeclaration Component", () => {
     });
 
     const code = testComponent(
-      <GoInterfaceDeclaration
-        name="UserService"
-        operations={[mockOperation]}
-        packageName="test"
-      />,
+      <GoInterfaceDeclaration name="UserService" operations={[mockOperation]} packageName="test" />,
       ["type UserService interface", "DeleteUser(ctx context.Context, id string) error"],
-      "interfaces.go"
+      "interfaces.go",
     );
 
     expect(code).toContain("package test");

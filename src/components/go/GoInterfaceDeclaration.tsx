@@ -66,7 +66,7 @@ export function GoInterfaceDeclaration({
     <go.TypeDeclaration name={name} doc={interfaceDoc}>
       <InterfaceDeclaration>
         {methods.map((method) => (
-          <InterfaceFunction 
+          <InterfaceFunction
             name={method.name}
             parameters={method.parameters}
             returns={buildGoSignature(method.returns)}
@@ -86,7 +86,7 @@ function buildGoSignature(returns: GoReturnType[]): string {
     .map((r) => r.type)
     .filter((t) => t !== "")
     .join(", ");
-  
+
   return returns.length > 1 ? "(" + returnTypes + ")" : returnTypes;
 }
 

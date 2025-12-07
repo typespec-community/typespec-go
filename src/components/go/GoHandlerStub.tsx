@@ -7,19 +7,18 @@
 import type { Operation, Program } from "@typespec/compiler";
 import { For, refkey } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
-const { 
-  ModuleDirectory, 
-  SourceDirectory, 
+const {
+  ModuleDirectory,
+  SourceDirectory,
   SourceFile,
-  StructDeclaration, 
-  StructMember, 
+  StructDeclaration,
+  StructMember,
   FunctionDeclaration,
-  FunctionParameters,
   StructTypeDeclaration,
   VariableDeclaration,
   LineComment,
   FunctionReceiver,
-  SingleImportStatement
+  SingleImportStatement,
 } = go;
 import { extractHttpMetadata } from "../../utils/typespec-http-utils.js";
 import type { GoHandlerMethod } from "./GoHandlerMethod.js";
@@ -49,7 +48,7 @@ export function GoHandlerStub({
   program,
 }: GoHandlerStubProps) {
   const serviceRefkey = refkey(serviceName);
-  
+
   // Convert TypeSpec operations to handler methods
   const handlers: GoHandlerMethod[] = [];
 
@@ -99,58 +98,54 @@ export function GoHandlerStub({
   // Generate Go file structure using 100% Alloy-JS components
   return (
     <SourceFile path={packageName + "/handlers.go"}>
-        {/* Standard imports */}
-        <SingleImportStatement path="context" />
-        <SingleImportStatement path="encoding/json" />
-        <SingleImportStatement path="net/http" />
-        <SingleImportStatement path="log" />
-        
-        {/* Service struct declaration */}
-        <LineComment>{serviceName + " provides HTTP handlers for API operations"}</LineComment>
-        <StructTypeDeclaration name={serviceName} refkey={serviceRefkey}>
-          <StructMember name="logger" type="*log.Logger" />
-        </StructTypeDeclaration>
-        
-        {/* Handler methods */}
-        {handlers.map((handler) => (
-          <GoHandlerMethodComponent 
-            handler={handler} 
-            serviceName={serviceName}
-            serviceRef={serviceRefkey}
-          />
-        ))}
-        
-        {/* Route registration method */}
-        <FunctionDeclaration name="RegisterRoutes">
-          <FunctionReceiver name="s" type={`*${serviceName}`} />
-          <FunctionParameters 
-            parameters={[
-              { name: "mux", type: "*http.ServeMux" }
-            ]}
-          />
-          <GoBlock>
-            {handlers.map((handler) => (
-              <GoStringLiteral value={`\tmux.HandleFunc("${handler.route}", s.${handler.name})`} />
-            ))}
-          </GoBlock>
-        </FunctionDeclaration>
-        
-        {/* Service constructor */}
-        <FunctionDeclaration name={`New${serviceName}`} returns={`*${serviceName}`}>
-          <FunctionParameters 
-            parameters={[
-              { name: "logger", type: "*log.Logger" }
-            ]}
-          />
-          <GoBlock>
-            <GoStringLiteral value={`${serviceName.toLowerCase()} := &${serviceName}{`} />
-            <GoStringLiteral value={`	logger: logger,`} />
-            <GoStringLiteral value={`}`} />
-            <GoReturn value={serviceName.toLowerCase()} />
-          </GoBlock>
-        </FunctionDeclaration>
+      {/* Standard imports */}
+      <SingleImportStatement path="context" />
+      <SingleImportStatement path="encoding/json" />
+      <SingleImportStatement path="net/http" />
+      <SingleImportStatement path="log" />
+
+      {/* Service struct declaration */}
+      <LineComment>{serviceName + " provides HTTP handlers for API operations"}</LineComment>
+      <StructTypeDeclaration name={serviceName} refkey={serviceRefkey}>
+        <StructMember name="logger" type="*log.Logger" />
+      </StructTypeDeclaration>
+
+      {/* Handler methods */}
+      {handlers.map((handler) => (
+        <GoHandlerMethodComponent
+          handler={handler}
+          serviceName={serviceName}
+          serviceRef={serviceRefkey}
+        />
+      ))}
+
+      {/* Route registration method */}
+      <FunctionDeclaration
+        name="RegisterRoutes"
+        receiver={<FunctionReceiver name="s" type={`*${serviceName}`} />}
+        doc="RegisterRoutes registers all handlers with given router"
+        parameters={[{ name: "mux", type: "*http.ServeMux" }]}
+      >
+        <GoBlock>
+          {handlers.map((handler) => (
+            <GoStringLiteral value={`\tmux.HandleFunc("${handler.route}", s.${handler.name})`} />
+          ))}
+        </GoBlock>
+      </FunctionDeclaration>
+
+      {/* Service constructor */}
+      <FunctionDeclaration
+        name={`New${serviceName}`}
+        returns={`*${serviceName}`}
+        parameters={[{ name: "logger", type: "*log.Logger" }]}
+      >
+        <GoBlock>
+          <GoStringLiteral value={`${serviceName.toLowerCase()} := &${serviceName}{`} />
+          <GoStringLiteral value={`	logger: logger,`} />
+          <GoStringLiteral value={`}`} />
+          <GoReturn value={serviceName.toLowerCase()} />
+        </GoBlock>
+      </FunctionDeclaration>
     </SourceFile>
   );
 }
-
-
