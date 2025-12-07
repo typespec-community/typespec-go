@@ -32,7 +32,7 @@ export function GoStringLiteral(props: GoStringLiteralProps) {
       <>
         {"`"}
         {content}
-        {`"`}
+        {"`"}
       </>
     );
   }
