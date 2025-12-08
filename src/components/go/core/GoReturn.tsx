@@ -1,3 +1,4 @@
+import { stc } from "@alloy-js/core";
 import type { Children } from "@alloy-js/core";
 
 export interface GoReturnProps {
@@ -16,3 +17,6 @@ export function GoReturn(props: GoReturnProps) {
     </>
   );
 }
+
+// STC-wrapped version for JSX compatibility
+export const GoReturnSTC = stc(GoReturn);

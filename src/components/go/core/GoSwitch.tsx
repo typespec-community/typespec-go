@@ -1,74 +1,50 @@
-import type { Children } from "@alloy-js/core";
+import * as go from "@alloy-js/go";
+const { StringExpression } = go;
 
 export interface GoSwitchCaseProps {
   /** The value or condition to match */
-  when?: string | Children;
-  /** Whether this is the default case */
+  when?: string | any;
+  /** Whether this is a default case */
   default?: boolean;
   /** The code to render for this case */
-  children: Children;
+  children: any;
 }
 
 /**
- * GoSwitchCase - Represents a case in a Go switch statement
+ * GoSwitchCase - Represents a case in a Go switch statement using Alloy-JS Go components
  */
 export function GoSwitchCase(props: GoSwitchCaseProps) {
-  return props.children;
+  return <>{props.children || ""}</>;
 }
 
 export interface GoSwitchProps {
   /** The expression to switch on */
-  value: string | Children;
+  value: string | any;
   /** The cases - should be GoSwitchCase components */
-  children: Children;
+  children: any;
 }
 
 /**
- * GoSwitch - A Go switch statement component
+ * GoSwitch - A Go switch statement component using Alloy-JS Go components
  */
 export function GoSwitch(props: GoSwitchProps) {
-  return (
-    <>
-      {"switch"} {props.value} {"{"}
-      {props.children}
-      {"}"}
-    </>
-  );
+  return <StringExpression value={`switch ${props.value} {
+${props.children}
+}`} />;
 }
 
 /**
- * GoCase - A case clause in a switch statement
+ * GoCase - A case clause in a switch statement using Alloy-JS Go components
  */
-export function GoCase(props: { value: string | Children; children: Children }) {
-  return (
-    <>
-      {"case"} {props.value}
-      {":"}
-      {props.children}
-    </>
-  );
+export function GoCase(props: { value: string | any; children: any }) {
+  return <StringExpression value={`case ${props.value}:
+${props.children}`} />;
 }
 
 /**
- * GoDefault - The default clause in a switch statement
+ * GoDefault - The default clause in a switch statement using Alloy-JS Go components
  */
-export function GoDefault(props: { children: Children }) {
-  return (
-    <>
-      {"default:"}
-      {props.children}
-    </>
-  );
-}
-
-/**
- * GoReturn - A return statement
- */
-export function GoReturn(props: { value?: string | Children }) {
-  return (
-    <>
-      {"return"}
-      {props.value && <> {props.value}</>}
-    </>
-  );
+export function GoDefault(props: { children: any }) {
+  return <StringExpression value={`default:
+${props.children}`} />;
 }

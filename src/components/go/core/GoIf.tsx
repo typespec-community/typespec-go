@@ -1,42 +1,36 @@
-import type { Children } from "@alloy-js/core";
-import { Show } from "@alloy-js/core";
+import * as go from "@alloy-js/go";
+const { StringExpression } = go;
 
 export interface GoIfProps {
   /** The condition to test */
-  condition: string | Children;
+  condition: string | any;
   /** The code to render when condition is true */
-  children: Children;
+  children: any;
   /** Optional else clause */
-  else?: Children;
+  else?: any;
 }
 
 /**
- * GoIf - A Go if statement component
+ * GoIf - A Go if statement component using Alloy-JS Go components
  */
 export function GoIf(props: GoIfProps) {
-  return (
-    <>
-      {"if"} {props.condition} {"{"}
-      {props.children}
-      {"}"}
-      <Show when={!!props.else}>
-        {" else {"}
-        {props.else}
-        {"}"}
-      </Show>
-    </>
-  );
+  const content = props.else 
+    ? `if ${props.condition} {
+${props.children}
+} else {
+${props.else}
+}`
+    : `if ${props.condition} {
+${props.children}
+}`;
+  return <StringExpression value={content} />;
 }
 
 /**
  * GoElseIf - An else-if clause
  */
-export function GoElseIf(props: { condition: string | Children; children: Children }) {
-  return (
-    <>
-      {"else if"} {props.condition} {"{"}
-      {props.children}
-      {"}"}
-    </>
-  );
+export function GoElseIf(props: { condition: string | any; children: any }) {
+  return <StringExpression value={`else if ${props.condition} {
+${props.children}
+}`} />;
 }

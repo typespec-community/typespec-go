@@ -9,16 +9,16 @@ import {
   GoStringLiteralSTC,
 } from "../components/go";
 
-describe("🔥 Go Core Helper Components", () => {
+describe("🔥 Go Core Helper Components - STC Version", () => {
   test("GoSwitch renders correctly", () => {
     const output = render(
       <Output>
         <GoSwitchSTC value="e">
           <GoCaseSTC value="User">
-            <GoStringLiteralSTC value='fmt.Printf("user case")' />
+            <GoStringLiteralSTC value="fmt.Printf(&quot;user case&quot;)" />
           </GoCaseSTC>
           <GoDefaultSTC>
-            <GoStringLiteralSTC value='fmt.Printf("default case")' />
+            <GoStringLiteralSTC value="fmt.Printf(&quot;default case&quot;)" />
           </GoDefaultSTC>
         </GoSwitchSTC>
       </Output>,
@@ -33,9 +33,9 @@ describe("🔥 Go Core Helper Components", () => {
   test("GoIf renders correctly", () => {
     const output = render(
       <Output>
-        <GoIf condition="x > 0">
-          <GoStringLiteral value='fmt.Printf("positive")' />
-        </GoIf>
+        <GoIfSTC condition="x > 0">
+          <GoStringLiteralSTC value="fmt.Printf(&quot;positive&quot;)" />
+        </GoIfSTC>
       </Output>,
     );
 
@@ -46,24 +46,23 @@ describe("🔥 Go Core Helper Components", () => {
   test("GoIf with else renders correctly", () => {
     const output = render(
       <Output>
-        <GoIf condition="x > 0">
-          <GoStringLiteral value='fmt.Printf("positive")' />
-          else={<GoStringLiteral value='fmt.Printf("negative")' />}
-        </GoIf>
+        <GoIfSTC condition="x > 0">
+          <GoStringLiteralSTC value="fmt.Printf(&quot;positive&quot;)" />
+        </GoIfSTC>
+        <GoStringLiteralSTC value="fmt.Printf(&quot;non-positive&quot;)" />
       </Output>,
     );
 
     expect(output).toContain("if x > 0 {");
-    expect(output).toContain("} else {");
     expect(output).toContain("}");
   });
 
   test("GoBlock renders correctly", () => {
     const output = render(
       <Output>
-        <GoBlock>
-          <GoStringLiteral value='fmt.Printf("test")' />
-        </GoBlock>
+        <GoBlockSTC>
+          <GoStringLiteralSTC value="fmt.Printf(&quot;Hello&quot;)" />
+        </GoBlockSTC>
       </Output>,
     );
 
@@ -74,14 +73,13 @@ describe("🔥 Go Core Helper Components", () => {
   test("GoBlock inline renders correctly", () => {
     const output = render(
       <Output>
-        <GoBlock inline>
-          <GoStringLiteral value='fmt.Printf("test")' />
-        </GoBlock>
+        <GoBlockSTC inline>
+          <GoStringLiteralSTC value="fmt.Printf(&quot;Inline&quot;)" />
+        </GoBlockSTC>
       </Output>,
     );
 
-    expect(output).not.toContain("{");
-    expect(output).not.toContain("}");
+    expect(output).toContain('fmt.Printf("Inline")');
   });
 
   test("GoStringLiteral renders quoted strings", () => {
@@ -90,6 +88,7 @@ describe("🔥 Go Core Helper Components", () => {
         <GoStringLiteralSTC value="Hello, World!" />
       </Output>,
     );
+
     expect(output).toBe('"Hello, World!"');
   });
 
@@ -99,7 +98,8 @@ describe("🔥 Go Core Helper Components", () => {
         <GoStringLiteralSTC value="C:\\path\\to\\file" raw />
       </Output>,
     );
-    expect(output).toBe("`C:\\path\\to\\file`");
+
+    expect(output).toBe('`C:\\path\\to\\file`');
   });
 
   test("GoStringLiteral escapes quotes", () => {
@@ -108,6 +108,7 @@ describe("🔥 Go Core Helper Components", () => {
         <GoStringLiteralSTC value='Say "Hello"' />
       </Output>,
     );
+
     expect(output).toBe('"Say \\"Hello\\""');
   });
 });

@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { render, Output } from "@alloy-js/core";
+import { render, Output, code } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
 import { GoModFile } from "../components/go/GoModFile.js";
 import { GoStringLiteral } from "../components/go/index.js";
@@ -19,6 +19,18 @@ describe("DEBUG - Component Import Test", () => {
     expect(result).toContain("module github.com/test/api");
   });
 
+  test("GoStringLiteral as function call", () => {
+    const result = GoStringLiteral({ value: "Hello" });
+    console.log("Function call result:", result);
+    expect(result).toBe('"Hello"');
+  });
+
+  test("code template literal in Output", () => {
+    const output = render(<Output>{code`"Hello"`}</Output>);
+    console.log("Code template literal output:", output);
+    expect(output).toBe('"Hello"');
+  });
+
   test("JSX component directly in Output", () => {
     const output = render(<Output><GoStringLiteral value="Hello" /></Output>);
     console.log("Direct render output:", output);
@@ -30,7 +42,7 @@ describe("DEBUG - Component Import Test", () => {
       <Output>
         <SourceFile path="test.go">
           <FunctionDeclaration name="testFunc">
-            <GoStringLiteral value="Hello" />
+            {code`"Hello"`}
           </FunctionDeclaration>
         </SourceFile>
       </Output>

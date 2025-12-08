@@ -1,26 +1,26 @@
-import type { Children } from "@alloy-js/core";
-import { Indent } from "@alloy-js/core";
+import * as go from "@alloy-js/go";
+const { Block } = go;
 
 export interface GoBlockProps {
-  /** Content inside the block */
-  children: Children;
+  /** Content inside of block */
+  children: any;
   /** Whether to render inline (no braces) - for single statements */
   inline?: boolean;
 }
 
 /**
- * GoBlock - A Go code block with braces
+ * GoBlock - A Go code block with braces using Alloy-JS Go components
  *
  * Example:
  * ```tsx
  * <GoBlock>
- *   <fmt.Printf>Hello</fmt.Printf>
- *   <return>42</return>
+ *   <GoStringLiteral>Hello</GoStringLiteral>
+ *   <GoReturn value="42" />
  * </GoBlock>
  *
  * // Renders as:
  * // {
- * //     fmt.Printf("Hello")
+ * //     "Hello"
  * //     return 42
  * // }
  * ```
@@ -30,11 +30,5 @@ export function GoBlock(props: GoBlockProps) {
     return <>{props.children}</>;
   }
 
-  return (
-    <>
-      {"{"}
-      <Indent>{props.children}</Indent>
-      {"}"}
-    </>
-  );
+  return <Block>{props.children}</Block>;
 }
