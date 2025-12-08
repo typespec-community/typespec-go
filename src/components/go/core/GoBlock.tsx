@@ -1,8 +1,8 @@
-import { code, stc } from "@alloy-js/core";
+import { code, stc, Children } from "@alloy-js/core";
 
 export interface GoBlockProps {
   /** Content inside of block */
-  children: any;
+  children: Children;
   /** Whether to render inline (no braces) - for single statements */
   inline?: boolean;
 }

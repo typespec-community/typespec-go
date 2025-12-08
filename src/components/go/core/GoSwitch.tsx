@@ -1,12 +1,12 @@
-import { code, stc } from "@alloy-js/core";
+import { code, stc, Children } from "@alloy-js/core";
 
 export interface GoSwitchCaseProps {
   /** The value or condition to match */
-  when?: string | any;
+  when?: string | Children;
   /** Whether this is a default case */
   default?: boolean;
   /** The code to render for this case */
-  children: any;
+  children: Children;
 }
 
 /**
@@ -18,9 +18,9 @@ export function GoSwitchCase(props: GoSwitchCaseProps) {
 
 export interface GoSwitchProps {
   /** The expression to switch on */
-  value: string | any;
+  value: string | Children;
   /** The cases - should be GoSwitchCase components */
-  children: any;
+  children: Children;
 }
 
 /**
@@ -32,18 +32,30 @@ ${props.children}
 }`;
 }
 
+export interface GoCaseProps {
+  /** The value to match */
+  value: string | Children;
+  /** The code to render for this case */
+  children: Children;
+}
+
 /**
  * GoCase - A case clause in a switch statement using Alloy-JS code template literals
  */
-export function GoCase(props: { value: string | any; children: any }) {
+export function GoCase(props: GoCaseProps) {
   return code`case ${props.value}:
 ${props.children}`;
+}
+
+export interface GoDefaultProps {
+  /** The code to render for default case */
+  children: Children;
 }
 
 /**
  * GoDefault - The default clause in a switch statement using Alloy-JS code template literals
  */
-export function GoDefault(props: { children: any }) {
+export function GoDefault(props: GoDefaultProps) {
   return code`default:
 ${props.children}`;
 }

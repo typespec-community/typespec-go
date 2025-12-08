@@ -1,12 +1,12 @@
-import { code, stc } from "@alloy-js/core";
+import { code, stc, Children } from "@alloy-js/core";
 
 export interface GoIfProps {
   /** The condition to test */
-  condition: string | any;
+  condition: string | Children;
   /** The code to render when condition is true */
-  children: any;
+  children: Children;
   /** Optional else clause */
-  else?: any;
+  else?: Children;
 }
 
 /**
@@ -26,10 +26,17 @@ ${props.children}
 }`;
 }
 
+export interface GoElseIfProps {
+  /** The condition to test */
+  condition: string | Children;
+  /** The code to render when condition is true */
+  children: Children;
+}
+
 /**
  * GoElseIf - An else-if clause
  */
-export function GoElseIf(props: { condition: string | any; children: any }) {
+export function GoElseIf(props: GoElseIfProps) {
   return code`else if ${props.condition} {
 ${props.children}
 }`;

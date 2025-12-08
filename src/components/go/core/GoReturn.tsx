@@ -1,21 +1,19 @@
-import { stc } from "@alloy-js/core";
-import type { Children } from "@alloy-js/core";
+import { code, stc, Children } from "@alloy-js/core";
 
 export interface GoReturnProps {
   /** The value to return */
-  value?: string | Children;
+  value?: Children;
 }
 
 /**
  * GoReturn - A return statement component
  */
 export function GoReturn(props: GoReturnProps) {
-  return (
-    <>
-      {"return"}
-      {props.value && <>{props.value}</>}
-    </>
-  );
+  if (props.value) {
+    return code`return ${props.value}`;
+  }
+  
+  return code`return`;
 }
 
 // STC-wrapped version for JSX compatibility
