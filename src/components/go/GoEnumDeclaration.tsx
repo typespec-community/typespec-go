@@ -76,24 +76,30 @@ export function GoEnumDeclaration({
       )}
 
       {isStringEnum && (
-        <FunctionDeclaration name="String" returns="string">
-          <FunctionReceiver name="e" type={typeName} />
-          <GoReturn value="string(e)" />
+        <FunctionDeclaration 
+          name="String" 
+          returns="string"
+          receiver={<FunctionReceiver name="e" type={typeName} />}
+        >
+          {"\n  return string(e)"}
         </FunctionDeclaration>
       )}
 
-      <FunctionDeclaration name="IsValid" returns="bool">
-        <FunctionReceiver name="e" type={typeName} />
-        <GoSwitch value="e">
-          {members.map((member) => (
-            <GoCase value={typeName + capitalize(member.name)}>
-              <GoReturn value="true" />
-            </GoCase>
-          ))}
-          <GoDefault>
-            <GoReturn value="false" />
-          </GoDefault>
-        </GoSwitch>
+      <FunctionDeclaration 
+        name="IsValid" 
+        returns="bool"
+        receiver={<FunctionReceiver name="e" type={typeName} />}
+      >
+        {"\n  switch e {"}
+        {members.map((member) => (
+          <>
+            {"\n    case " + typeName + capitalize(member.name) + ":"}
+            {"\n      return true"}
+          </>
+        ))}
+        {"\n    default:"}
+        {"\n      return false"}
+        {"\n  }"}
       </FunctionDeclaration>
     </>
   );
