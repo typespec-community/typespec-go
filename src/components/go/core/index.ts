@@ -11,8 +11,7 @@ export {
   GoSwitchCaseSTC,
   GoSwitchSTC,
   GoCaseSTC,
-  GoDefaultSTC,
-  GoReturnSTC as GoSwitchReturnSTC
+  GoDefaultSTC
 } from "./GoSwitch";
 export {
   GoIfSTC,

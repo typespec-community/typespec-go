@@ -1,4 +1,5 @@
-import { code, stc, Children } from "@alloy-js/core";
+import { code, stc } from "@alloy-js/core";
+import type { Children } from "@alloy-js/core";
 
 export interface GoBlockProps {
   /** Content inside of block */
