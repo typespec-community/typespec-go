@@ -85,7 +85,7 @@ export function GoUnionDeclaration({
               {discriminator && (
                 <>
                   struct {"\n"}
-                  {"\t"}Type string <GoStringLiteral value={'json:"' + discriminator + '"'} />
+                  {"\t"}Type string <GoStringLiteral raw value={`json:"${discriminator}"`} />
                   {"\n"}
                 </>
               )}
@@ -108,9 +108,9 @@ export function GoUnionDeclaration({
           parameters={[{ name: "data", type: "[]byte" }]}
           returns="error"
         >
-          {/* Unmarshaler implementation */}
-          {/* This would need to unmarshal into a temp struct to get the discriminator */}
-          {/* and then unmarshal into the correct variant */}
+          {"// Unmarshaler implementation"}
+          {"// This would need to unmarshal into a temp struct to get the discriminator"}
+          {"// and then unmarshal into the correct variant"}
           <GoReturn value="nil" />
         </FunctionDeclaration>
       )}

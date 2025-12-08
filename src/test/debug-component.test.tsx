@@ -4,7 +4,7 @@ import * as go from "@alloy-js/go";
 import { GoModFile } from "../components/go/GoModFile.js";
 import { GoStringLiteral } from "../components/go/index.js";
 
-const { FunctionDeclaration } = go;
+const { FunctionDeclaration, SourceFile } = go;
 
 console.log("GoModFile component:", GoModFile);
 console.log("GoStringLiteral component:", GoStringLiteral);
@@ -25,15 +25,17 @@ describe("DEBUG - Component Import Test", () => {
     expect(output).toBe('"Hello"');
   });
 
-  test("JSX component inside proper Alloy component", () => {
+  test("JSX component inside SourceFile", () => {
     const output = render(
       <Output>
-        <FunctionDeclaration name="testFunc">
-          <GoStringLiteral value="Hello" />
-        </FunctionDeclaration>
+        <SourceFile path="test.go">
+          <FunctionDeclaration name="testFunc">
+            <GoStringLiteral value="Hello" />
+          </FunctionDeclaration>
+        </SourceFile>
       </Output>
     );
-    console.log("Alloy component render output:", output);
+    console.log("SourceFile render output:", output);
     expect(output).toContain("Hello");
   });
 });
