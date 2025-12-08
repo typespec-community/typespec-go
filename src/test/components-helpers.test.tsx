@@ -1,5 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { render, Output } from "@alloy-js/core";
+import { renderGoContent } from "../testing/test-utils.js";
 import {
   GoSwitchSTC,
   GoCaseSTC,
@@ -11,19 +12,18 @@ import {
 
 describe("🔥 Go Core Helper Components", () => {
   test("GoSwitch renders correctly", () => {
-    const output = render(
-      <Output>
-        <GoSwitchSTC value="e">
-          <GoCaseSTC value="User">
-            <GoStringLiteralSTC value='fmt.Printf("user case")' />
-          </GoCaseSTC>
-          <GoDefaultSTC>
-            <GoStringLiteralSTC value='fmt.Printf("default case")' />
-          </GoDefaultSTC>
-        </GoSwitchSTC>
-      </Output>,
+    const output = renderGoContent(
+      <GoSwitchSTC value="e">
+        <GoCaseSTC value="User">
+          <GoStringLiteralSTC value='fmt.Printf("user case")' />
+        </GoCaseSTC>
+        <GoDefaultSTC>
+          <GoStringLiteralSTC value='fmt.Printf("default case")' />
+        </GoDefaultSTC>
+      </GoSwitchSTC>
     );
 
+    expect(output).toContain("package api");
     expect(output).toContain("switch e {");
     expect(output).toContain("case User:");
     expect(output).toContain("default:");
@@ -31,83 +31,80 @@ describe("🔥 Go Core Helper Components", () => {
   });
 
   test("GoIf renders correctly", () => {
-    const output = render(
-      <Output>
-        <GoIf condition="x > 0">
-          <GoStringLiteral value='fmt.Printf("positive")' />
-        </GoIf>
-      </Output>,
+    const output = renderGoContent(
+      <GoIfSTC condition="x > 0">
+        <GoStringLiteralSTC value='fmt.Printf("positive")' />
+      </GoIfSTC>
     );
 
+    expect(output).toContain("package api");
     expect(output).toContain("if x > 0 {");
+    expect(output).toContain('"fmt.Printf(\\"positive\\")"');
     expect(output).toContain("}");
   });
 
   test("GoIf with else renders correctly", () => {
-    const output = render(
-      <Output>
-        <GoIf condition="x > 0">
-          <GoStringLiteral value='fmt.Printf("positive")' />
-          else={<GoStringLiteral value='fmt.Printf("negative")' />}
-        </GoIf>
-      </Output>,
+    const output = renderGoContent(
+      <GoIfSTC condition="x > 0" else={<GoStringLiteralSTC value='fmt.Printf("negative")' />}>
+        <GoStringLiteralSTC value='fmt.Printf("positive")' />
+      </GoIfSTC>
     );
 
+    expect(output).toContain("package api");
     expect(output).toContain("if x > 0 {");
+    expect(output).toContain('"fmt.Printf(\\"positive\\")"');
     expect(output).toContain("} else {");
+    expect(output).toContain('"fmt.Printf(\\"negative\\")"');
     expect(output).toContain("}");
   });
 
   test("GoBlock renders correctly", () => {
-    const output = render(
-      <Output>
-        <GoBlock>
-          <GoStringLiteral value='fmt.Printf("test")' />
-        </GoBlock>
-      </Output>,
+    const output = renderGoContent(
+      <GoBlockSTC>
+        <GoStringLiteralSTC value='fmt.Printf("test")' />
+      </GoBlockSTC>
     );
 
+    expect(output).toContain("package api");
     expect(output).toContain("{");
+    expect(output).toContain('"fmt.Printf(\\"test\\")"');
     expect(output).toContain("}");
   });
 
   test("GoBlock inline renders correctly", () => {
-    const output = render(
-      <Output>
-        <GoBlock inline>
-          <GoStringLiteral value='fmt.Printf("test")' />
-        </GoBlock>
-      </Output>,
+    const output = renderGoContent(
+      <GoBlockSTC inline>
+        <GoStringLiteralSTC value='fmt.Printf("test")' />
+      </GoBlockSTC>
     );
 
+    expect(output).toContain("package api");
     expect(output).not.toContain("{");
     expect(output).not.toContain("}");
+    expect(output).toContain('"fmt.Printf(\\"test\\")"');
   });
 
   test("GoStringLiteral renders quoted strings", () => {
-    const output = render(
-      <Output>
-        <GoStringLiteralSTC value="Hello, World!" />
-      </Output>,
+    const output = renderGoContent(
+      <GoStringLiteralSTC value="Hello, World!" />
     );
-    expect(output).toBe('"Hello, World!"');
+    expect(output).toContain("package api");
+    expect(output).toContain('"Hello, World!"');
   });
 
   test("GoStringLiteral renders raw strings", () => {
-    const output = render(
-      <Output>
-        <GoStringLiteralSTC value="C:\\path\\to\\file" raw />
-      </Output>,
+    const output = renderGoContent(
+      <GoStringLiteralSTC value="C:\\path\\to\\file" raw />
     );
-    expect(output).toBe("`C:\\path\\to\\file`");
+    expect(output).toContain("package api");
+    expect(output).toContain('`C:\\\\path\\\\to\\\\file`');
   });
 
   test("GoStringLiteral escapes quotes", () => {
-    const output = render(
-      <Output>
-        <GoStringLiteralSTC value='Say "Hello"' />
-      </Output>,
+    const output = renderGoContent(
+      <GoStringLiteralSTC value='Say "Hello"' />
     );
-    expect(output).toBe('"Say \\"Hello\\""');
+    expect(output).toContain("package api");
+    expect(output).toContain('"Say \\"Hello\\""');
   });
 });

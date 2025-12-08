@@ -1,4 +1,4 @@
-import { StringExpression } from "@alloy-js/go";
+import { code, stc } from "@alloy-js/core";
 
 export interface GoStringLiteralProps {
   /** The string value (will be properly quoted) */
@@ -10,7 +10,7 @@ export interface GoStringLiteralProps {
 }
 
 /**
- * GoStringLiteral - A Go string literal component using Alloy-JS Go components
+ * GoStringLiteral - A Go string literal component using Alloy-JS code template literals
  *
  * Properly escapes and quotes strings for Go
  *
@@ -33,7 +33,7 @@ export function GoStringLiteral(props: GoStringLiteralProps) {
     const finalContent = content.startsWith("`") && content.endsWith("`") 
       ? content 
       : `\`${content}\``;
-    return <StringExpression value={finalContent} />;
+    return code`${finalContent}`;
   }
 
   // Escape double quotes in string
@@ -41,5 +41,8 @@ export function GoStringLiteral(props: GoStringLiteralProps) {
   const finalContent = escaped.startsWith('"') && escaped.endsWith('"') 
     ? escaped 
     : `"${escaped}"`;
-  return <StringExpression value={finalContent} />;
+  return code`${finalContent}`;
 }
+
+// STC-wrapped version for JSX compatibility
+export const GoStringLiteralSTC = stc(GoStringLiteral);

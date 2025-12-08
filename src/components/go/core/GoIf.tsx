@@ -1,5 +1,4 @@
-import * as go from "@alloy-js/go";
-const { StringExpression } = go;
+import { code, stc } from "@alloy-js/core";
 
 export interface GoIfProps {
   /** The condition to test */
@@ -11,26 +10,31 @@ export interface GoIfProps {
 }
 
 /**
- * GoIf - A Go if statement component using Alloy-JS Go components
+ * GoIf - A Go if statement component using Alloy-JS code template literals
  */
 export function GoIf(props: GoIfProps) {
-  const content = props.else 
-    ? `if ${props.condition} {
+  if (props.else) {
+    return code`if ${props.condition} {
 ${props.children}
 } else {
 ${props.else}
-}`
-    : `if ${props.condition} {
+}`;
+  }
+
+  return code`if ${props.condition} {
 ${props.children}
 }`;
-  return <StringExpression value={content} />;
 }
 
 /**
  * GoElseIf - An else-if clause
  */
 export function GoElseIf(props: { condition: string | any; children: any }) {
-  return <StringExpression value={`else if ${props.condition} {
+  return code`else if ${props.condition} {
 ${props.children}
-}`} />;
+}`;
 }
+
+// STC-wrapped versions for JSX compatibility
+export const GoIfSTC = stc(GoIf);
+export const GoElseIfSTC = stc(GoElseIf);

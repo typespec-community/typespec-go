@@ -1,5 +1,4 @@
-import * as go from "@alloy-js/go";
-const { Block } = go;
+import { code, stc } from "@alloy-js/core";
 
 export interface GoBlockProps {
   /** Content inside of block */
@@ -9,7 +8,7 @@ export interface GoBlockProps {
 }
 
 /**
- * GoBlock - A Go code block with braces using Alloy-JS Go components
+ * GoBlock - A Go code block with braces using Alloy-JS code template literals
  *
  * Example:
  * ```tsx
@@ -27,8 +26,13 @@ export interface GoBlockProps {
  */
 export function GoBlock(props: GoBlockProps) {
   if (props.inline) {
-    return <>{props.children}</>;
+    return code`${props.children}`;
   }
 
-  return <Block>{props.children}</Block>;
+  return code`{
+${props.children}
+}`;
 }
+
+// STC-wrapped version for JSX compatibility
+export const GoBlockSTC = stc(GoBlock);

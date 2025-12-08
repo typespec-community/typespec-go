@@ -1,5 +1,4 @@
-import * as go from "@alloy-js/go";
-const { StringExpression } = go;
+import { code, stc } from "@alloy-js/core";
 
 export interface GoSwitchCaseProps {
   /** The value or condition to match */
@@ -25,26 +24,32 @@ export interface GoSwitchProps {
 }
 
 /**
- * GoSwitch - A Go switch statement component using Alloy-JS Go components
+ * GoSwitch - A Go switch statement component using Alloy-JS code template literals
  */
 export function GoSwitch(props: GoSwitchProps) {
-  return <StringExpression value={`switch ${props.value} {
+  return code`switch ${props.value} {
 ${props.children}
-}`} />;
+}`;
 }
 
 /**
- * GoCase - A case clause in a switch statement using Alloy-JS Go components
+ * GoCase - A case clause in a switch statement using Alloy-JS code template literals
  */
 export function GoCase(props: { value: string | any; children: any }) {
-  return <StringExpression value={`case ${props.value}:
-${props.children}`} />;
+  return code`case ${props.value}:
+${props.children}`;
 }
 
 /**
- * GoDefault - The default clause in a switch statement using Alloy-JS Go components
+ * GoDefault - The default clause in a switch statement using Alloy-JS code template literals
  */
 export function GoDefault(props: { children: any }) {
-  return <StringExpression value={`default:
-${props.children}`} />;
+  return code`default:
+${props.children}`;
 }
+
+// STC-wrapped versions for JSX compatibility
+export const GoSwitchSTC = stc(GoSwitch);
+export const GoCaseSTC = stc(GoCase);
+export const GoDefaultSTC = stc(GoDefault);
+export const GoSwitchCaseSTC = stc(GoSwitchCase);
