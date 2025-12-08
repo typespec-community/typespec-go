@@ -1,3 +1,5 @@
+import { code } from "@alloy-js/core";
+
 export interface GoStringLiteralProps {
   /** The string value (will be properly quoted) */
   value?: string;
@@ -28,22 +30,14 @@ export function GoStringLiteral(props: GoStringLiteralProps) {
   const content = children !== undefined ? String(children) : value || "";
 
   if (raw) {
-    return (
-      <>
-        {"`"}
-        {content}
-        {"`"}
-      </>
-    );
+    return content.startsWith("`") && content.endsWith("`") 
+      ? content 
+      : code`\`${content}\``;
   }
 
   // Escape double quotes in the string
   const escaped = content.replace(/"/g, '\\"');
-  return (
-    <>
-      {'"'}
-      {escaped}
-      {'"'}
-    </>
-  );
+  return escaped.startsWith('"') && escaped.endsWith('"') 
+    ? escaped 
+    : code`"${escaped}"`;
 }
