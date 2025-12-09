@@ -11,34 +11,34 @@ The critical build failure in the Alloy-JS component layer has been successfully
 ## ✅ Completed Work
 
 1.  **Build Recovery**:
-    *   **Action**: Fixed TypeScript errors in `src/components/go/GoUnionDeclaration.tsx` by adding proper string casting for `variant.name`.
-    *   **Status**: `just build` now passes successfully.
+    - **Action**: Fixed TypeScript errors in `src/components/go/GoUnionDeclaration.tsx` by adding proper string casting for `variant.name`.
+    - **Status**: `just build` now passes successfully.
 
 2.  **Shared Domain Types**:
-    *   **Action**: Extracted `GeneratorModel` interface to `src/types/typespec-domain.ts`.
-    *   **Impact**: Unified model definitions used by both `StructGenerator` and `StandaloneGoGenerator`.
+    - **Action**: Extracted `GeneratorModel` interface to `src/types/typespec-domain.ts`.
+    - **Impact**: Unified model definitions used by both `StructGenerator` and `StandaloneGoGenerator`.
 
 3.  **Struct Generation Refactor**:
-    *   **Action**: Updated `StructGenerator` to use the shared `GeneratorModel`.
-    *   **Impact**: Reduced type definition duplication.
+    - **Action**: Updated `StructGenerator` to use the shared `GeneratorModel`.
+    - **Impact**: Reduced type definition duplication.
 
 4.  **Standalone Generator Refactor**:
-    *   **Action**: Refactored `StandaloneGoGenerator` to delegate validation and generation to `StructGenerator` using the shared type.
-    *   **Impact**: Removed duplicate method signatures and validation logic.
+    - **Action**: Refactored `StandaloneGoGenerator` to delegate validation and generation to `StructGenerator` using the shared type.
+    - **Impact**: Removed duplicate method signatures and validation logic.
 
 5.  **Error Entities Refactor**:
-    *   **Action**: Implemented `validateObjectInput` helper in `src/domain/error-entities.ts`.
-    *   **Impact**: Eliminated repeated object validation boilerplate across multiple validation methods.
+    - **Action**: Implemented `validateObjectInput` helper in `src/domain/error-entities.ts`.
+    - **Impact**: Eliminated repeated object validation boilerplate across multiple validation methods.
 
 6.  **Structured Logging Refactor**:
-    *   **Action**: Implemented `createBoundContextLogger` in `src/domain/structured-logging.ts`.
-    *   **Impact**: Eliminated duplicated logger binding logic.
+    - **Action**: Implemented `createBoundContextLogger` in `src/domain/structured-logging.ts`.
+    - **Impact**: Eliminated duplicated logger binding logic.
 
 ## 🚧 Work in Progress
 
 1.  **Union Generator Refactor**:
-    *   **Goal**: Extract `generateVariantFields` method in `src/domain/union-generator.ts` to remove duplication between standard and discriminated union generation logic.
-    *   **Status**: Ready to retry. Previous attempt failed due to context mismatch, but fresh file content has been retrieved.
+    - **Goal**: Extract `generateVariantFields` method in `src/domain/union-generator.ts` to remove duplication between standard and discriminated union generation logic.
+    - **Status**: Ready to retry. Previous attempt failed due to context mismatch, but fresh file content has been retrieved.
 
 ## 📋 Next Steps (Immediate)
 

@@ -3,6 +3,7 @@
 ## ✅ WORKING PATTERNS (Verified 2025-12-04)
 
 ### **Component Context Hierarchy:**
+
 ```
 <Output>
   <ModuleDirectory name="github.com/test/test">
@@ -16,20 +17,23 @@
 ```
 
 ### **Key Context Requirements:**
+
 1. **ModuleDirectory:** Provides module scope and Go context
-2. **SourceDirectory:** Provides package directory structure  
+2. **SourceDirectory:** Provides package directory structure
 3. **SourceFile:** Provides package scope for Go components
 4. **Package Prop:** Required for SourceFile (`package="test"`)
 
 ### **Required Imports:**
+
 ```typescript
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 ```
 
 ### **Output Structure Navigation:**
+
 ```typescript
 const moduleDir = output.contents[0];           // ModuleDirectory
-const sourceDir = moduleDir.contents[0];       // SourceDirectory  
+const sourceDir = moduleDir.contents[0];       // SourceDirectory
 const sourceFile = sourceDir.contents[0];       // SourceFile
 const fileContent = sourceFile.contents;       // Generated Go code
 ```
@@ -51,7 +55,8 @@ This pattern has been verified with 137/137 passing tests.
 ModuleDirectory → GoModuleScope → SourceDirectory → SourceFile → GoPackageScope → Component
 
 ## ✅ VERIFIED COMPONENTS:
+
 - GoInterfaceDeclarationMinimal ✅
-- GoPackageDirectory ✅  
+- GoPackageDirectory ✅
 - All GoEnum/GoUnion/GoModel ✅
 - 137/137 tests passing ✅

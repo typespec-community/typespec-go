@@ -14,7 +14,7 @@ describe("GoHandlerStub - Return Type Extraction", () => {
         operations={[mockOperationWithReturn]}
         serviceName="UserService"
         packageName="api"
-      />
+      />,
     );
 
     expect(output).toContain("package api");
@@ -30,7 +30,7 @@ describe("GoHandlerStub - Return Type Extraction", () => {
         operations={[mockOperationNoReturn]}
         serviceName="UserService"
         packageName="api"
-      />
+      />,
     );
 
     expect(output).toContain("func (s *UserService) DeleteUserHandler");
@@ -50,11 +50,7 @@ describe("GoHandlerStub - Return Type Extraction", () => {
     ];
 
     const output = renderGoContent(
-      <GoHandlerStub
-        operations={mockOperations}
-        serviceName="UserService"
-        packageName="api"
-      />
+      <GoHandlerStub operations={mockOperations} serviceName="UserService" packageName="api" />,
     );
 
     expect(output).toContain("GetUserHandler");

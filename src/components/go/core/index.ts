@@ -7,22 +7,8 @@ export { GoReturn } from "./GoReturn";
 export type { GoReturnProps } from "./GoReturn";
 
 // STC-wrapped versions for JSX compatibility
-export {
-  GoSwitchCaseSTC,
-  GoSwitchSTC,
-  GoCaseSTC,
-  GoDefaultSTC
-} from "./GoSwitch";
-export {
-  GoIfSTC,
-  GoElseIfSTC
-} from "./GoIf";
-export {
-  GoBlockSTC
-} from "./GoBlock";
-export {
-  GoStringLiteralSTC
-} from "./GoStringLiteral";
-export {
-  GoReturnSTC
-} from "./GoReturn";
+export { GoSwitchCaseSTC, GoSwitchSTC, GoCaseSTC, GoDefaultSTC } from "./GoSwitch";
+export { GoIfSTC, GoElseIfSTC } from "./GoIf";
+export { GoBlockSTC } from "./GoBlock";
+export { GoStringLiteralSTC } from "./GoStringLiteral";
+export { GoReturnSTC } from "./GoReturn";

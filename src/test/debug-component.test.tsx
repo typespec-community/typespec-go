@@ -32,7 +32,7 @@ describe("DEBUG - Component Import Test", () => {
     const output = renderGoContent(code`"Hello"`);
     console.log("Code template literal output:", output);
     // Should render as a complete Go file with package and content
-    expect(output).toContain('package api');
+    expect(output).toContain("package api");
     expect(output).toContain('"Hello"');
   });
 
@@ -40,7 +40,7 @@ describe("DEBUG - Component Import Test", () => {
     const output = renderGoContent(<GoStringLiteral value="Hello" />);
     console.log("Direct render output:", output);
     // Should render as a complete Go file with package and content
-    expect(output).toContain('package api');
+    expect(output).toContain("package api");
     expect(output).toContain('"Hello"');
   });
 
@@ -48,7 +48,7 @@ describe("DEBUG - Component Import Test", () => {
     const output = renderGoContent(<GoStringLiteral value="Hello, World!" />);
     console.log("Context render output:", output);
     // Should render as a complete Go file with package and content
-    expect(output).toContain('package api');
+    expect(output).toContain("package api");
     expect(output).toContain('"Hello, World!"');
   });
 });

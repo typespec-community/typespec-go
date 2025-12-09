@@ -3,6 +3,7 @@
 ## EXECUTION PRIORITY MATRIX
 
 ### 🔥 CRITICAL PATH (High Impact, Low Work) - Do First
+
 1. **Fix GoHandlerStub Test Failures** (2 hours)
    - Fix tests to use JSX rendering instead of function calls
    - Expected impact: 100% test pass rate
@@ -15,6 +16,7 @@
    - Work required: Minor formatting adjustments
 
 ### 🚀 HIGH IMPACT (High Impact, Medium Work) - Do Second
+
 3. **Enhance Type Expression System** (4 hours)
    - Add support for more TypeSpec scalar types
    - Improve union type handling
@@ -28,6 +30,7 @@
    - Work required: Medium complexity
 
 ### ⚡ OPTIMIZATION PATH (Medium Impact, Low Work) - Do Third
+
 5. **Performance Optimization** (2 hours)
    - Profile large TypeSpec file generation
    - Optimize component rendering pipeline
@@ -41,6 +44,7 @@
    - Work required: Low complexity
 
 ### 🏗️ ENHANCEMENT PATH (Medium Impact, High Work) - Do Later
+
 7. **Advanced Go Patterns** (6 hours)
    - Go idiomatic improvements
    - Custom template patterns
@@ -57,48 +61,56 @@
 ## DETAILED EXECUTION STEPS
 
 ### STEP 1: Fix GoHandlerStub Test Failures (CRITICAL)
+
 **Problem**: Tests calling `GoHandlerStub()` as function instead of JSX component
 **Solution**: Update tests to use `renderGoContent(<GoHandlerStub />)`
 **Files**: `src/test/go-handler-return-types.test.tsx`
 **Verification**: All tests should pass (157/157)
 
 ### STEP 2: Improve Go Handler Formatting (CRITICAL)
+
 **Problem**: Duplicate package declarations, missing newlines in generated handlers
 **Solution**: Fix GoHandlerStub component output formatting
 **Files**: `src/components/go/GoHandlerStub.tsx`
 **Verification**: Generated Go code should be properly formatted
 
 ### STEP 3: Enhance Type Expression System (HIGH)
+
 **Problem**: Limited TypeSpec scalar type support
 **Solution**: Expand SCALAR_MAPPINGS in TypeExpression.tsx
 **Files**: `src/components/TypeExpression.tsx`
 **Verification**: More TypeSpec types should generate correct Go types
 
 ### STEP 4: Complete Interface Generation (HIGH)
+
 **Problem**: Interface component may need enhancements
 **Solution**: Review and improve GoInterfaceDeclaration component
 **Files**: `src/components/go/GoInterfaceDeclaration.tsx`
 **Verification**: Interface generation should work for complex cases
 
 ### STEP 5: Performance Optimization (MEDIUM)
+
 **Problem**: May have performance issues with large TypeSpec files
 **Solution**: Profile and optimize component rendering
 **Files**: Performance testing and component optimization
 **Verification**: Large files should generate quickly
 
 ### STEP 6: Error Handling Improvements (MEDIUM)
+
 **Problem**: Error messages could be more helpful
 **Solution**: Enhance error handling throughout the system
 **Files**: Multiple files for error handling improvements
 **Verification**: Better error messages and graceful degradation
 
 ### STEP 7: Advanced Go Patterns (LOW)
+
 **Problem**: Generated code could be more idiomatic
 **Solution**: Add Go-specific patterns and best practices
 **Files**: Various component files
 **Verification**: Generated code should follow Go best practices
 
 ### STEP 8: CLI Tool Integration (LOW)
+
 **Problem**: No direct CLI interface
 **Solution**: Create CLI tool for TypeSpec compilation
 **Files**: New CLI files
@@ -107,6 +119,7 @@
 ## SUCCESS METRICS
 
 ### Completion Criteria:
+
 - [ ] 157/157 tests passing (100% success rate)
 - [ ] Clean, properly formatted Go code generation
 - [ ] Enhanced TypeSpec type coverage
@@ -116,6 +129,7 @@
 - [ ] CLI tool working
 
 ### Quality Gates:
+
 - [ ] TypeScript compilation with zero errors
 - [ ] ESLint with zero warnings
 - [ ] All components following established patterns
@@ -125,6 +139,7 @@
 ## LIBRARIES TO CONSIDER
 
 ### Already Using (Excellent):
+
 - **@alloy-js/core** - Component system
 - **@alloy-js/go** - Go-specific components
 - **@typespec/compiler** - TypeSpec compilation
@@ -132,6 +147,7 @@
 - **bun** - Runtime and package manager
 
 ### Could Consider:
+
 - **@effect/schema** - Enhanced type validation
 - **zod** - Runtime type checking
 - **prettier** - Code formatting
@@ -140,11 +156,13 @@
 ## TYPE MODEL IMPROVEMENTS
 
 ### Current Strengths:
+
 - Strong TypeScript interfaces
 - Proper type guards
 - Good separation of concerns
 
 ### Potential Improvements:
+
 - Enhanced TypeSpec type coverage
 - Better union type handling
 - Template instantiation support
@@ -153,12 +171,14 @@
 ## EXECUTION APPROACH
 
 ### Methodology:
+
 1. **Fix Critical Issues First** - Get to 100% test pass rate
 2. **Enhance Core Functionality** - Improve type system and generation
 3. **Optimize and Polish** - Performance and error handling
 4. **Advanced Features** - CLI and advanced patterns
 
 ### Verification Strategy:
+
 - After each step: Run tests to verify no regressions
 - After each major change: Update documentation
 - After completion: Full integration testing

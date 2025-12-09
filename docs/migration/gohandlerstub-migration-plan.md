@@ -1,6 +1,7 @@
 # 🎯 ALLOY-JS MIGRATION PLAN: GoHandlerStub.tsx
 
 ## Current Issues
+
 - Using string templates instead of Alloy components
 - Manual import generation instead of ImportStatement
 - Non-existent component imports causing errors
@@ -9,6 +10,7 @@
 ## Migration Steps
 
 ### Step 1: Fix Import Statements
+
 ```typescript
 // ❌ CURRENT - Broken imports
 import { Package, Import, VarDeclaration } from "@alloy-js/go";
@@ -28,6 +30,7 @@ import {
 ```
 
 ### Step 2: Replace String Imports with ImportStatement
+
 ```typescript
 // ❌ CURRENT - String template imports
 `import (
@@ -47,6 +50,7 @@ import {
 ```
 
 ### Step 3: Replace Struct Generation
+
 ```typescript
 // ❌ CURRENT - String template struct
 `type ${serviceName} struct {
@@ -60,6 +64,7 @@ import {
 ```
 
 ### Step 4: Replace Handler Functions
+
 ```typescript
 // ❌ CURRENT - String template function
 `func (s *${serviceName}) ${handler.name}(...) {
@@ -67,7 +72,7 @@ import {
 }`
 
 // ✅ FIXED - Component-based function
-<FunctionDeclaration 
+<FunctionDeclaration
   name={handler.name}
   receiver={<FunctionReceiver name="s" type="*Service" />}
 >
@@ -76,6 +81,7 @@ import {
 ```
 
 ### Step 5: Replace Constructor Function
+
 ```typescript
 // ❌ CURRENT - String template
 `func New${serviceName}(logger *log.Logger) *${serviceName} {
@@ -86,7 +92,7 @@ import {
 }`
 
 // ✅ FIXED - Component-based
-<FunctionDeclaration 
+<FunctionDeclaration
   name={`New${serviceName}`}
   parameters={[
     { name: "logger", type: "*log.Logger" }
@@ -103,7 +109,7 @@ import {
 
 1. **Fix imports** - Use correct component names
 2. **Replace package declaration** - Remove manual package line
-3. **Replace import block** - Use ImportStatement components  
+3. **Replace import block** - Use ImportStatement components
 4. **Replace service struct** - Use StructTypeDeclaration
 5. **Replace handler methods** - Use FunctionDeclaration with receivers
 6. **Replace constructor** - Use FunctionDeclaration with proper parameters

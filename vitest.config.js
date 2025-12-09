@@ -8,8 +8,16 @@ export default defineConfig({
     environment: "node",
   },
   esbuild: {
-    jsx: "preserve",
+    jsx: "transform",
+    jsxFactory: "jsx",
+    jsxFragment: "Fragment",
+    jsxInject: `import { jsx, Fragment } from "@alloy-js/core/jsx-runtime"`,
     sourcemap: "both",
+  },
+  resolve: {
+    alias: {
+      "@alloy-js/core/jsx-dev-runtime": "@alloy-js/core/jsx-runtime",
+    },
   },
   plugins: [alloyPlugin()],
 });

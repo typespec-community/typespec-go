@@ -11,11 +11,13 @@ The project has reached a critical stability milestone. The build system is clea
 ## ✅ Completed (Fully Done)
 
 ### 1. Stability & Testing
+
 - **100% Test Pass Rate**: All 126 tests are passing across unit, component, and integration suites.
 - **Integration Mock Fixed**: Resolved the `undefined is not an object` runtime error in `typespec-emitter-integration.test.ts`.
 - **Mock Infrastructure**: Created `src/testing/mock-factory.ts` to provide strongly-typed mock objects (Program, Host, Context) for testing, replacing `as any` casting.
 
 ### 2. Component Architecture
+
 - **Handler Stub Integration**: Re-enabled `GoHandlerStub` in `GoPackageDirectory.tsx`.
 - **Alloy Migration (Phase 1)**: Converted `GoHandlerStub` to use the `<SourceFile>` Alloy component, ensuring proper file generation within the module structure.
 - **Zero Build Errors**: TypeScript compilation is clean (`just build` passes).
@@ -23,10 +25,12 @@ The project has reached a critical stability milestone. The build system is clea
 ## 🚧 In Progress (Partially Done)
 
 ### 1. Handler Generation Logic
+
 - **Current State**: The `GoHandlerStub` wraps a template string inside an Alloy `<SourceFile>`.
 - **Next Step**: Refactor internal logic to use `<FunctionDeclaration>` and `<StructDeclaration>` Alloy components instead of strings.
 
 ### 2. HTTP Metadata Extraction
+
 - **Current State**: `extractHttpMetadata` is a placeholder returning static data.
 - **Next Step**: Implement real extraction of `@route`, `@get`, `@post`, `@body`, and `@param` decorators from the TypeSpec compiler.
 
@@ -40,7 +44,7 @@ The project has reached a critical stability milestone. The build system is clea
 
 ## 🛑 Blockers / Critical Issues
 
-*None.* The codebase is stable.
+_None._ The codebase is stable.
 
 ## 🔮 Future Improvements (Top 5)
 

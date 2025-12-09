@@ -13,7 +13,7 @@ export function GoReturn(props: GoReturnProps) {
   if (props.value) {
     return code`return ${props.value}`;
   }
-  
+
   return code`return`;
 }
 

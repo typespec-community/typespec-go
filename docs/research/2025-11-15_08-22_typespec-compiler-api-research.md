@@ -19,12 +19,12 @@ navigateProgram(program, {
     // Direct access to TypeSpec models without file parsing
     const modelName = model.name;
     const properties = model.properties;
-    
+
     // Process each property with full type information
     for (const [propName, prop] of properties) {
       const propType = prop.type;
       const isOptional = prop.optional;
-      
+
       // Generate Go field...
     }
   }
@@ -38,7 +38,7 @@ navigateProgram(program, {
 export function $onEmit(context: EmitContext) {
   const program = context.program;
   const outputDir = context.emitterOutputDir;
-  
+
   // Process models directly
   navigateProgram(program, { model: handleModel });
 }
@@ -71,7 +71,7 @@ interface ModelProperty {
   type: Type;
   optional: boolean;
   doc?: string;
-  
+
   // Rich HTTP-specific metadata
   getHttpPathOptions(): PathParameterOptions | undefined;
   getHttpQueryParam(): QueryParameterOptions | undefined;
@@ -86,17 +86,20 @@ interface ModelProperty {
 ### **THE SOLUTION: Hybrid Architecture**
 
 **Phase 1: Integrate TypeSpec Program API**
+
 - Replace mock TypeSpec types with real compiler types
 - Use `navigateProgram` for direct model iteration
 - Maintain our working generator architecture
 - **ZERO FILE I/O** - direct in-memory processing
 
 **Phase 2: Enhance Type Safety**
+
 - Use `program.checker` for compile-time validation
 - Replace our manual type mapping with compiler types
 - Add support for complex TypeSpec features (unions, templates, etc.)
 
 **Phase 3: Full TypeSpec Compliance**
+
 - Implement proper namespace handling
 - Add support for TypeSpec decorators
 - Integrate with TypeSpec's emitter framework
@@ -109,7 +112,7 @@ interface ModelProperty {
 ### **✅ Benefits Discovered:**
 
 1. **Performance**: Direct in-memory model access
-2. **Type Safety**: Full TypeSpec type system integration  
+2. **Type Safety**: Full TypeSpec type system integration
 3. **Features**: Auto-inherit all TypeSpec improvements
 4. **Maintenance**: Official APIs reduce maintenance burden
 5. **Standards**: Full TypeSpec ecosystem compatibility
@@ -154,13 +157,15 @@ interface ModelProperty {
 ## **🎉 CRITICAL QUESTION ANSWWERED!**
 
 ### **Original Question:**
-> *"How can we integrate with the actual TypeSpec compiler API to parse real TypeSpec files programmatically without reinventing the entire TypeSpec parsing logic?"*
+
+> _"How can we integrate with the actual TypeSpec compiler API to parse real TypeSpec files programmatically without reinventing the entire TypeSpec parsing logic?"_
 
 ### **✅ ANSWER DISCOVERED:**
 
 **Use `navigateProgram(program, { model: callback })` for direct in-memory model access. TypeSpec provides comprehensive programmatic APIs with zero file I/O required.**
 
 **Integration Strategy:**
+
 - Replace mock types with real `@typespec/compiler` types
 - Use `navigateProgram` for model iteration
 - Maintain our zero-'any' type architecture
@@ -172,7 +177,7 @@ interface ModelProperty {
 
 - ✅ **Direct API Access**: `navigateProgram` provides model iteration
 - ✅ **No File I/O**: In-memory model processing
-- ✅ **Type Safety**: Full compiler type system integration  
+- ✅ **Type Safety**: Full compiler type system integration
 - ✅ **Future-Proof**: Inherits all TypeSpec improvements
 - ✅ **Production Ready**: Enterprise-grade integration possible
 

@@ -23,7 +23,7 @@ const mockModel = {
 test("GoPackageDirectory renders without errors", async () => {
   // Must wrap in Output to provide Alloy-JS binder context
   const result = render(
-    <Output>
+    <Output basePath="./">
       <GoPackageDirectory
         models={[mockModel as any]}
         packageName="test"
@@ -40,7 +40,7 @@ test("GoStructDeclaration renders without errors", async () => {
   // GoStructDeclaration uses @alloy-js/go components which require Go scope context
   // Must wrap in Output + Go module structure to provide proper scope
   const result = render(
-    <Output>
+    <Output basePath="./">
       <ModuleDirectory name="github.com/test/api">
         <SourceDirectory path="api">
           <SourceFile path="models.go">

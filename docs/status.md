@@ -3,12 +3,14 @@
 ## ✅ What's Now Working (1% → 25% Complete)
 
 ### ✅ Core Foundation (DONE)
+
 - [x] Test infrastructure working and reliable
-- [x] Alloy.js + @alloy-js/go integration functional  
+- [x] Alloy.js + @alloy-js/go integration functional
 - [x] Real TypeSpec program processing (not hardcoded)
 - [x] Go file generation with proper package structure
 
 ### ✅ Real Model Generation (DONE)
+
 - [x] **TypeSpec → Go type mapping** (string→string, int32→int32, etc.)
 - [x] **Model discovery** from TypeSpec namespaces
 - [x] **Property iteration** with correct field generation
@@ -16,14 +18,16 @@
 - [x] **JSON struct tags** (json:"name") for proper serialization
 
 ### ✅ Test Coverage (DONE)
+
 - [x] Single model with single property
-- [x] Multiple models in same namespace  
+- [x] Multiple models in same namespace
 - [x] Multiple properties with different types
 - [x] Go package declaration and proper formatting
 
 ## 🚀 Current Working Features
 
 The emitter can now take this TypeSpec:
+
 ```tsp
 model User {
   id: int32;
@@ -34,6 +38,7 @@ model User {
 ```
 
 And generate this Go:
+
 ```go
 package api
 
@@ -49,6 +54,7 @@ type User struct {
 ## 🏗️ Architecture Improvements
 
 The emitter now has proper **separation of concerns**:
+
 - **Type mapping**: `mapTypeSpecTypeToGo()` handles scalar types
 - **Model generation**: `generateModel()` creates Go structs
 - **Property generation**: `generateProperty()` handles individual fields
@@ -57,6 +63,7 @@ The emitter now has proper **separation of concerns**:
 ## 📊 Next Steps (25% → 50% Goal)
 
 ### 🚀 High-Impact Next Steps
+
 1. **Optional properties** → pointer types (`name?: string` → `Name *string`)
 2. **Model relationships** → struct embedding (`extends` → embedded struct)
 3. **Enum generation** → string constants + methods
@@ -64,6 +71,7 @@ The emitter now has proper **separation of concerns**:
 5. **Namespace mapping** → real Go package structure
 
 ### 🏗️ Medium-Term Architecture
+
 - [ ] Split into modules: `generators/`, `decorators/`, `utils/`
 - [ ] Add `@go.*` decorator support
 - [ ] Implement proper error handling and diagnostics

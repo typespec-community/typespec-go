@@ -76,8 +76,8 @@ export function GoEnumDeclaration({
       )}
 
       {isStringEnum && (
-        <FunctionDeclaration 
-          name="String" 
+        <FunctionDeclaration
+          name="String"
           returns="string"
           receiver={<FunctionReceiver name="e" type={typeName} />}
         >
@@ -85,8 +85,8 @@ export function GoEnumDeclaration({
         </FunctionDeclaration>
       )}
 
-      <FunctionDeclaration 
-        name="IsValid" 
+      <FunctionDeclaration
+        name="IsValid"
         returns="bool"
         receiver={<FunctionReceiver name="e" type={typeName} />}
       >

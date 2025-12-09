@@ -20,7 +20,7 @@ describe("🔥 Go Core Helper Components", () => {
         <GoDefaultSTC>
           <GoStringLiteralSTC value='fmt.Printf("default case")' />
         </GoDefaultSTC>
-      </GoSwitchSTC>
+      </GoSwitchSTC>,
     );
 
     expect(output).toContain("package api");
@@ -34,7 +34,7 @@ describe("🔥 Go Core Helper Components", () => {
     const output = renderGoContent(
       <GoIfSTC condition="x > 0">
         <GoStringLiteralSTC value='fmt.Printf("positive")' />
-      </GoIfSTC>
+      </GoIfSTC>,
     );
 
     expect(output).toContain("package api");
@@ -47,7 +47,7 @@ describe("🔥 Go Core Helper Components", () => {
     const output = renderGoContent(
       <GoIfSTC condition="x > 0" else={<GoStringLiteralSTC value='fmt.Printf("negative")' />}>
         <GoStringLiteralSTC value='fmt.Printf("positive")' />
-      </GoIfSTC>
+      </GoIfSTC>,
     );
 
     expect(output).toContain("package api");
@@ -62,7 +62,7 @@ describe("🔥 Go Core Helper Components", () => {
     const output = renderGoContent(
       <GoBlockSTC>
         <GoStringLiteralSTC value='fmt.Printf("test")' />
-      </GoBlockSTC>
+      </GoBlockSTC>,
     );
 
     expect(output).toContain("package api");
@@ -75,7 +75,7 @@ describe("🔥 Go Core Helper Components", () => {
     const output = renderGoContent(
       <GoBlockSTC inline>
         <GoStringLiteralSTC value='fmt.Printf("test")' />
-      </GoBlockSTC>
+      </GoBlockSTC>,
     );
 
     expect(output).toContain("package api");
@@ -85,25 +85,19 @@ describe("🔥 Go Core Helper Components", () => {
   });
 
   test("GoStringLiteral renders quoted strings", () => {
-    const output = renderGoContent(
-      <GoStringLiteralSTC value="Hello, World!" />
-    );
+    const output = renderGoContent(<GoStringLiteralSTC value="Hello, World!" />);
     expect(output).toContain("package api");
     expect(output).toContain('"Hello, World!"');
   });
 
   test("GoStringLiteral renders raw strings", () => {
-    const output = renderGoContent(
-      <GoStringLiteralSTC value="C:\\path\\to\\file" raw />
-    );
+    const output = renderGoContent(<GoStringLiteralSTC value="C:\\path\\to\\file" raw />);
     expect(output).toContain("package api");
-    expect(output).toContain('`C:\\\\path\\\\to\\\\file`');
+    expect(output).toContain("`C:\\\\path\\\\to\\\\file`");
   });
 
   test("GoStringLiteral escapes quotes", () => {
-    const output = renderGoContent(
-      <GoStringLiteralSTC value='Say "Hello"' />
-    );
+    const output = renderGoContent(<GoStringLiteralSTC value='Say "Hello"' />);
     expect(output).toContain("package api");
     expect(output).toContain('"Say \\"Hello\\""');
   });

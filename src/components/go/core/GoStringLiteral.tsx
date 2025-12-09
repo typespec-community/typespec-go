@@ -30,17 +30,14 @@ export function GoStringLiteral(props: GoStringLiteralProps) {
   const content = children !== undefined ? String(children) : value || "";
 
   if (raw) {
-    const finalContent = content.startsWith("`") && content.endsWith("`") 
-      ? content 
-      : `\`${content}\``;
+    const finalContent =
+      content.startsWith("`") && content.endsWith("`") ? content : `\`${content}\``;
     return code`${finalContent}`;
   }
 
   // Escape double quotes in string
   const escaped = content.replace(/"/g, '\\"');
-  const finalContent = escaped.startsWith('"') && escaped.endsWith('"') 
-    ? escaped 
-    : `"${escaped}"`;
+  const finalContent = escaped.startsWith('"') && escaped.endsWith('"') ? escaped : `"${escaped}"`;
   return code`${finalContent}`;
 }
 

@@ -15,10 +15,7 @@
     "jsxImportSource": "@alloy-js/core",
     "strict": true,
     "skipLibCheck": true,
-    "lib": [
-      "ES2022",
-      "DOM"
-    ],
+    "lib": ["ES2022", "DOM"],
     "downlevelIteration": true,
     "declaration": true,
     "outDir": "./dist",
@@ -27,15 +24,8 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "alwaysStrict": true
+    "alwaysStrict": true,
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
 }

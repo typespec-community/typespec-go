@@ -11,6 +11,7 @@
 ### **📊 OVERALL HEALTH SCORE: 35%** (Down from 98% - Critical Issue Found)
 
 ### **CRITICAL FINDING: SPLIT BRAIN ARCHITECTURE**
+
 **We have created two co-existing systems that violate architectural principles:**
 
 1. **String-Based Generators** (82/83 tests passing) - ✅ Working but obsolete
@@ -18,14 +19,14 @@
 
 ### **ARCHITECTURAL VIOLATIONS IDENTIFIED**
 
-| Violation | Severity | Description |
-|-----------|-----------|-------------|
-| **Split Brain** | 🔴 Critical | Two incompatible systems co-existing |
-| **Type Safety Lie** | 🔴 Critical | Claiming JSX but using TypeScript objects |
-| **Domain Model Violation** | 🔴 Critical | Procedural utilities, not DDD |
-| **No End-to-End** | 🔴 Critical | Can't generate actual Go code |
-| **Interface Segregation** | 🟡 Medium | Components mixing concerns |
-| **Single Responsibility** | 🟡 Medium | Migration utilities doing too much |
+| Violation                  | Severity    | Description                               |
+| -------------------------- | ----------- | ----------------------------------------- |
+| **Split Brain**            | 🔴 Critical | Two incompatible systems co-existing      |
+| **Type Safety Lie**        | 🔴 Critical | Claiming JSX but using TypeScript objects |
+| **Domain Model Violation** | 🔴 Critical | Procedural utilities, not DDD             |
+| **No End-to-End**          | 🔴 Critical | Can't generate actual Go code             |
+| **Interface Segregation**  | 🟡 Medium   | Components mixing concerns                |
+| **Single Responsibility**  | 🟡 Medium   | Migration utilities doing too much        |
 
 ---
 
@@ -38,14 +39,16 @@
 ## ⚠️ **PARTIALLY DONE: 7/25 items**
 
 ### **Dependencies & Setup (3/10)**
+
 - ✅ **Alloy.js Dependencies**: Installed but not working
 - ✅ **JSX Runtime Config**: Configured but runtime errors
 - ✅ **Basic Test Created**: Test written but doesn't run
 - ⚠️ **API Research**: Documentation reviewed but integration unclear
 
 ### **Type Safety & Utilities (4/15)**
+
 - ✅ **JSX Type Safety Layer**: Created but FAKE JSX (TypeScript objects)
-- ✅ **Testing Infrastructure**: Created but tests fake components  
+- ✅ **Testing Infrastructure**: Created but tests fake components
 - ✅ **Migration Utilities**: Created but bridge to nowhere
 - ⚠️ **Component Wrappers**: Wrappers exist but don't use real JSX
 
@@ -56,6 +59,7 @@
 ## ❌ **NOT STARTED: 18/25 items**
 
 ### **Core JSX Integration (0/8)**
+
 - ❌ **Real JSX Component Creation**: Need actual <go.StructTypeDeclaration> usage
 - ❌ **Alloy.js Runtime Integration**: JSX → Go code conversion unknown
 - ❌ **End-to-End Generation**: Can't generate real Go code yet
@@ -66,6 +70,7 @@
 - ❌ **Error Handling Integration**: JSX error patterns unknown
 
 ### **Domain Architecture (0/6)**
+
 - ❌ **TypeSpec Domain Model**: Real DDD model needed
 - ❌ **JSX Type Mapper**: Proper TypeSpec → JSX mapping
 - ❌ **Component Library**: Reusable JSX components
@@ -74,6 +79,7 @@
 - ❌ **Repository Pattern**: Component storage/retrieval
 
 ### **Testing & Quality (0/4)**
+
 - ❌ **BDD Tests**: Behavior-driven testing needed
 - ❌ **Integration Tests**: Real TypeSpec → JSX → Go pipeline
 - ❌ **Performance Tests**: Benchmark vs string generation
@@ -84,6 +90,7 @@
 ## 🔴 **TOTALLY FUCKED UP: Architecture**
 
 ### **THE CORE PROBLEM**
+
 **We built a "JSX system" that doesn't actually use JSX.**
 
 ```typescript
@@ -102,6 +109,7 @@ export const GoStruct = ({name, fields}: GoStructProps) => (
 ```
 
 ### **ARCHITECTURAL DEBT**
+
 1. **False Claims**: Claiming JSX type safety but using strings
 2. **Wasted Effort**: 7 tasks "complete" but fundamentally wrong
 3. **Migration Complexity**: Now need to migrate from fake to real JSX
@@ -166,6 +174,7 @@ export const GoStruct = ({name, fields}: GoStructProps) => (
 5. **Handle Runtime Errors**: What error patterns occur when JSX rendering fails?
 
 **What I need to research:**
+
 - Does `@alloy-js/core` provide `renderToString()` or similar?
 - Does `@alloy-js/go` have special rendering functions?
 - What's the proper pattern for JSX → Go file conversion?
@@ -173,6 +182,7 @@ export const GoStruct = ({name, fields}: GoStructProps) => (
 - What are the performance characteristics of JSX rendering?
 
 **Investigation required:**
+
 ```typescript
 // PSEUDOCODE - What I need to figure out:
 const jsxComponent = <go.StructTypeDeclaration name="User">
@@ -188,16 +198,19 @@ const goCode = "type User struct {\n  ID string `json:\"id\"`\n}";
 ## 🚀 **IMMEDIATE EXECUTION PLAN**
 
 ### **RIGHT NOW (Next 30 minutes)**
+
 1. **RESEARCH ALLOY.JS RENDERING** - Figure out JSX → Go conversion
 2. **CREATE WORKING JSX EXAMPLE** - Prove we can generate Go code
 3. **DELETE FAKE JSX INFRASTRUCTURE** - Eliminate split brain
 
 ### **TONIGHT (Next 3 hours)**
+
 4. **BUILD REAL JSX GENERATORS** - Replace string-based approach
 5. **CREATE TYPESPEC JSX DOMAIN** - Proper DDD architecture
 6. **IMPLEMENT END-TO-END VALIDATION** - Real testing pipeline
 
 ### **TOMORROW (Next 9 hours)**
+
 7. **COMPLETE TYPE COVERAGE** - All TypeSpec types with JSX
 8. **FULL TEST SUITE** - BDD, integration, performance
 9. **PRODUCTION READINESS** - Error handling, optimization
@@ -209,18 +222,21 @@ const goCode = "type User struct {\n  ID string `json:\"id\"`\n}";
 **Previous metrics were based on fake JSX. New targets:**
 
 ### **IMMEDIATE SUCCESS (Tonight)**
+
 - [ ] Real JSX component that generates Go code
 - [ ] End-to-end TypeSpec → JSX → Go generation
 - [ ] All current string generators replaced with JSX
 - [ ] Real test suite validating JSX output
 
 ### **MVP SUCCESS (Tomorrow)**
+
 - [ ] Complete TypeSpec type support with JSX
 - [ ] Performance equal to or better than string generation
 - [ ] Full BDD test coverage
 - [ ] Production-ready error handling
 
 ### **PRODUCTION SUCCESS (Week)**
+
 - [ ] Enterprise-grade JSX generation system
 - [ ] Advanced TypeSpec features (operations, templates)
 - [ ] Comprehensive documentation and examples
@@ -231,16 +247,19 @@ const goCode = "type User struct {\n  ID string `json:\"id\"`\n}";
 ## 🎯 **CUSTOMER VALUE IMPACT**
 
 ### **Immediate Value**
+
 - **Modern Architecture**: Industry-standard JSX-based generation
 - **Maintainability**: Component-based, reusable architecture
 - **Type Safety**: Real TypeScript + JSX type safety (not fake)
 
 ### **Long-term Value**
+
 - **Extensibility**: Easy to add new TypeSpec features
 - **Performance**: Optimized JSX rendering vs string concatenation
 - **Developer Experience**: Modern, intuitive API design
 
 ### **Risk Mitigation**
+
 - **Technical Debt**: Eliminating split-brain architecture
 - **Future-Proofing**: JSX-based system aligns with industry trends
 - **Quality**: Professional error handling and testing
@@ -250,7 +269,7 @@ const goCode = "type User struct {\n  ID string `json:\"id\"`\n}";
 ## 📝 **IMMEDIATE ACTIONS**
 
 1. **SPLIT BRAIN ELIMINATION** - Remove fake JSX system entirely
-2. **REAL JSX RESEARCH** - Figure out Alloy.js rendering patterns  
+2. **REAL JSX RESEARCH** - Figure out Alloy.js rendering patterns
 3. **WORKING PROTOTYPE** - Create minimal JSX → Go example
 4. **ARCHITECTURE REBUILD** - Build proper domain model
 5. **COMPLETE MIGRATION** - Replace all string generators

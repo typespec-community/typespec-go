@@ -34,7 +34,7 @@ typespec-go benchmark --iterations 1000
 ### Supported TypeSpec Types
 
 | TypeSpec   | Go Type     | Notes            |
-|------------|-------------|------------------|
+| ---------- | ----------- | ---------------- |
 | `string`   | `string`    | -                |
 | `int8`     | `int8`      | -                |
 | `int16`    | `int16`     | -                |
@@ -178,6 +178,7 @@ typespec-go generate <input.tsp> [options]
 ```
 
 **Options:**
+
 - `-o, --output <dir>`: Output directory (default: `./generated`)
 - `-p, --package <name>`: Go package name (default: `api`)
 - `-v, --verbose`: Enable verbose logging
@@ -220,12 +221,14 @@ typespec-go benchmark --iterations 1000
 ### Common Errors
 
 1. **Invalid TypeSpec Types**
+
    ```
    Error: Unsupported TypeSpec type: customType
    Resolution: Use supported TypeSpec types: string, int8-64, uint8-64, float32/64, bool, arrays
    ```
 
 2. **Empty Models**
+
    ```
    Error: Invalid model: must have at least one property
    Resolution: Add at least one property to the model
@@ -250,11 +253,13 @@ typespec-go benchmark --iterations 1000
 ### Build Issues
 
 **"go build" fails with "undefined types"**
+
 - Verify all model references are valid
 - Check for circular dependencies
 - Ensure template parameters are correctly specified
 
 **Missing fields in generated code**
+
 - Verify TypeSpec model definitions
 - Check spread operator syntax
 - Ensure extends relationships are correct
@@ -262,6 +267,7 @@ typespec-go benchmark --iterations 1000
 ### Performance Issues
 
 **Slow generation times**
+
 - Check for complex inheritance chains
 - Verify template instantiation is correct
 - Run performance benchmarks to identify bottlenecks
@@ -271,31 +277,34 @@ typespec-go benchmark --iterations 1000
 ### With Go Projects
 
 1. Generate code to your project directory:
+
    ```bash
    typespec-go generate models.tsp --output ./internal/models
    ```
 
 2. Add to your Go build:
+
    ```bash
    go build ./internal/models/...
    ```
 
 3. Import and use:
+
    ```go
    package main
-   
+
    import (
      "encoding/json"
      "yourproject/internal/models"
    )
-   
+
    func main() {
      user := models.User{
        ID:       "123",
        Username:  "john",
        Email:     StringPtr("john@example.com"),
      }
-     
+
      data, _ := json.Marshal(user)
      fmt.Println(string(data))
    }

@@ -7,11 +7,9 @@ import type { Children } from "@alloy-js/core";
  */
 export function renderGoFragment(children: Children, fileName = "test.go") {
   return render(
-    <Output>
+    <Output basePath="./">
       <ModuleDirectory name="github.com/test/api">
-        <SourceDirectory path="api">
-          <SourceFile path={fileName}>{children}</SourceFile>
-        </SourceDirectory>
+        <SourceDirectory path="api">{children}</SourceDirectory>
       </ModuleDirectory>
     </Output>,
   );

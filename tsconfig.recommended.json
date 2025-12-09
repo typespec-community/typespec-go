@@ -35,30 +35,15 @@
     // Line endings for consistency
     "newLine": "LF",
     // Type libraries
-    "types": [
-      "node"
-    ],
-    "lib": [
-      "es2024",
-      "DOM"
-    ],
+    "types": ["node"],
+    "lib": ["es2024", "DOM"],
     // Performance optimizations
     "skipLibCheck": true,
     // Build output
     "outDir": "dist",
     "rootDir": ".",
-    "tsBuildInfoFile": "temp/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "temp/tsconfig.tsbuildinfo",
   },
-  "include": [
-    "src/**/*",
-    "test/**/*.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    "coverage"
-  ]
+  "include": ["src/**/*", "test/**/*.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "dist", "build", "coverage"],
 }

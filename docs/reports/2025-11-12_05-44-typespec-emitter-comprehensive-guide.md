@@ -1,4 +1,5 @@
 # Comprehensive Guide to TypeSpec Emitters
+
 **Generated**: 2025-11-12 05:44:44 CET  
 **Based on**: TypeSpec Official Documentation vLatest
 
@@ -17,24 +18,28 @@ This document provides a comprehensive analysis of TypeSpec emitter architecture
 TypeSpec emitter architecture consists of four interconnected layers:
 
 #### 1. **Alloy Framework** (Foundation)
+
 - **Purpose**: React-like functional component model for code generation
 - **Features**: Symbol management, source text rendering, formatting
 - **Scope**: Language-agnostic, reusable across any code generation task
 - **Key Pattern**: JSX-like declarative syntax for code structure
 
 #### 2. **Alloy Language Components** (Abstraction Layer)
+
 - **Purpose**: Language-specific component libraries
 - **Examples**: TypeScript interfaces, Go structs, JSON schemas
 - **Features**: Automatic import management, dependency resolution
 - **Pattern**: Declarative components that handle language-specific complexity
 
 #### 3. **Typekits** (Type System API)
+
 - **Purpose**: Convenient TypeSpec type graph introspection
 - **Features**: Type relationship analysis, decorator metadata extraction
 - **Extensibility**: Libraries can provide custom typekits
 - **Core Coverage**: array, builtin, enum, model, operation, scalar, union, etc.
 
 #### 4. **Emitter Framework** (TypeSpec Integration)
+
 - **Purpose**: TypeSpec-aware components and utilities
 - **Features**: Direct TypeSpec→Target language conversion
 - **Pattern**: Accepts TypeSpec types, emits language-specific structures
@@ -46,6 +51,7 @@ TypeSpec emitter architecture consists of four interconnected layers:
 ### 🎯 Emitter Declaration Pattern
 
 **Core Structure**:
+
 ```typescript
 export const $emitter = createEmitterEmitter("typespec-go", {
   // Core emitter configuration
@@ -67,6 +73,7 @@ export const $onEmit = async (context: EmitContext) => {
 ### 📦 Component Architecture Pattern
 
 **Hierarchical Structure**:
+
 ```
 Output (Alloy Core)
 ├── SourceDirectory (Directory Management)
@@ -80,6 +87,7 @@ Output (Alloy Core)
 ```
 
 **Component Implementation Pattern**:
+
 ```typescript
 // Go Struct Component
 export function GoStructDeclaration({ model }: { model: Model }) {
@@ -94,15 +102,15 @@ export function GoStructDeclaration({ model }: { model: Model }) {
 export function GoStructProperty({ property }: { property: ModelProperty }) {
   const metadataInfo = useMetadataInfo();
   const visibility = useRequestVisibility();
-  
+
   if (!metadataInfo.isPayloadProperty(property, visibility)) {
     return null; // Skip metadata properties (@header, @path, etc.)
   }
-  
+
   const goType = mapTypeSpecTypeToGo(property.type);
   const isOptional = metadataInfo.isOptional(property, visibility);
-  
-  return <go.StructField 
+
+  return <go.StructField
     name={toPascalCase(property.name)}
     type={isOptional ? goPointerType(goType) : goType}
     tags={`json:"${property.name}${isOptional ? ',omitempty' : ''}"`}
@@ -134,33 +142,35 @@ const TYPE_MAPPING: Record<TypeKind, (type: Type) => GoType> = {
 ### Advanced Type Handling Patterns
 
 **Optionals with Visibility Context**:
+
 ```typescript
 function mapPropertyWithVisibility(property: ModelProperty, visibility: Visibility): GoType {
   const metadataInfo = useMetadataInfo();
   const baseType = mapTypeSpecTypeToGo(property.type);
-  
+
   // Handle optionality based on visibility context
   if (metadataInfo.isOptional(property, visibility)) {
     return { kind: "pointer", baseType };
   }
-  
+
   // Handle array types with proper slice syntax
   if (property.type.kind === "Array") {
-    return { 
-      kind: "slice", 
-      elementType: mapTypeSpecTypeToGo((property.type as ArrayType).elementType) 
+    return {
+      kind: "slice",
+      elementType: mapTypeSpecTypeToGo((property.type as ArrayType).elementType)
     };
   }
-  
+
   return baseType;
 }
 ```
 
 **Model Relationship Handling**:
+
 ```typescript
 function mapModelToStruct(model: Model): GoStruct {
   const baseModels = model.baseModels;
-  
+
   return {
     kind: "struct",
     name: model.name,
@@ -185,6 +195,7 @@ function mapModelToStruct(model: Model): GoStruct {
 ### Diagnostic Declaration Pattern
 
 **Comprehensive Error System**:
+
 ```typescript
 export const $lib = createTypeSpecLibrary({
   name: "@typespec-go/emitter",
@@ -196,7 +207,7 @@ export const $lib = createTypeSpecLibrary({
       },
     },
     "invalid-enum-member": {
-      severity: "error", 
+      severity: "error",
       messages: {
         default: paramMessage`Enum member '${"memberName"}' has invalid value '${"value"}'. Only string and numeric values are supported.`,
       },
@@ -214,10 +225,11 @@ export const $lib = createTypeSpecLibrary({
 ### Error Reporting Strategies
 
 **Context-Aware Reporting**:
+
 ```typescript
 function validateTypeForGo(type: Type, context: EmitContext): readonly Diagnostic[] {
   const diagnostics = [];
-  
+
   switch (type.kind) {
     case "Model":
       // Validate model properties
@@ -225,7 +237,7 @@ function validateTypeForGo(type: Type, context: EmitContext): readonly Diagnosti
         diagnostics.push(...validatePropertyForGo(prop, context));
       }
       break;
-      
+
     case "Union":
       // Validate union types (Go doesn't have direct union support)
       if (!isValidGoUnion(type)) {
@@ -237,7 +249,7 @@ function validateTypeForGo(type: Type, context: EmitContext): readonly Diagnosti
       }
       break;
   }
-  
+
   return diagnostics;
 }
 ```
@@ -249,6 +261,7 @@ function validateTypeForGo(type: Type, context: EmitContext): readonly Diagnosti
 ### Emitter Testing Architecture
 
 **Test Setup Pattern**:
+
 ```typescript
 import { createTester } from "@typespec/compiler/testing";
 import { $lib } from "../src/emitter.js";
@@ -271,6 +284,7 @@ export const createGoTest = GoEmitterTester
 ```
 
 **Comprehensive Test Cases**:
+
 ```typescript
 describe("Go Emitter", () => {
   describe("Model Generation", () => {
@@ -281,7 +295,7 @@ describe("Go Emitter", () => {
           age: int32;
         }
       `);
-      
+
       // Verify emitted Go code
       const goCode = await emitGoCode(User);
       expect(goCode).toContain(`type User struct {`);
@@ -296,7 +310,7 @@ describe("Go Emitter", () => {
           email?: string;
         }
       `);
-      
+
       const goCode = await emitGoCode(User);
       expect(goCode).toContain(`Email *string \`json:"email,omitempty"\``);
     });
@@ -306,12 +320,12 @@ describe("Go Emitter", () => {
         model ${t.model("Person")} {
           name: string;
         }
-        
+
         model ${t.model("Employee")} extends Person {
           salary: decimal128;
         }
       `);
-      
+
       const employeeCode = await emitGoCode(Employee);
       expect(employeeCode).toContain(`Person`); // Embedded struct
       expect(employeeCode).toContain(`Salary float64 \`json:"salary"\``);
@@ -327,7 +341,7 @@ describe("Go Emitter", () => {
           Pending
         }
       `);
-      
+
       const goCode = await emitGoCode(Status);
       expect(goCode).toContain(`type Status string`);
       expect(goCode).toContain(`const (`);
@@ -344,7 +358,7 @@ describe("Go Emitter", () => {
           data: unknown;
         }
       `);
-      
+
       expectDiagnostics(diagnostics, {
         code: "unsupported-type",
         message: /Type 'Complex' \(Model\) is not yet supported/,
@@ -361,6 +375,7 @@ describe("Go Emitter", () => {
 ### Custom Go-Specific Decorators
 
 **@goName Decorator**:
+
 ```typescript
 // Declaration
 extern dec goName(target: unknown, name: valueof string);
@@ -378,6 +393,7 @@ model User {
 ```
 
 **@goTag Decorator**:
+
 ```typescript
 // Declaration
 extern dec goTag(target: ModelProperty, tag: valueof string, value?: valueof string);
@@ -393,8 +409,8 @@ export function $goTag(context: DecoratorContext, target: ModelProperty, tag: st
 model User {
   @goTag("db", "primary_key") @goTag("validate", "required")
   id: string;
-  
-  @goTag("json", "email_address") 
+
+  @goTag("json", "email_address")
   email: string;
 }
 ```
@@ -402,28 +418,29 @@ model User {
 ### Metadata Processing Pipeline
 
 **Metadata-Aware Emission**:
+
 ```typescript
 function GoStructField({ property }: { property: ModelProperty }) {
   const metadataInfo = useMetadataInfo();
   const goName = useGoName(property);
   const goTags = useGoTags(property);
-  
+
   // Skip HTTP metadata properties
   if (!metadataInfo.isPayloadProperty(property, visibility)) {
     return null;
   }
-  
+
   // Generate field name with decorator override
   const fieldName = goName || toPascalCase(property.name);
-  
+
   // Generate tags combining JSON and custom tags
   const jsonTag = `"${property.name}${property.optional ? ',omitempty' : ''}"`;
   const customTags = Object.entries(goTags)
     .map(([tag, value]) => `"${tag}:${value}"`)
     .join(" ");
-  
+
   const allTags = `json:${jsonTag}${customTags ? " " + customTags : ""}`;
-  
+
   return <go.StructField name={fieldName} type={mapType(property)} tags={allTags} />;
 }
 ```
@@ -435,32 +452,33 @@ function GoStructField({ property }: { property: ModelProperty }) {
 ### Visibility-Aware Emission Pattern
 
 **Request/Response Type Differentiation**:
+
 ```typescript
 function generateOperationTypes(operation: Operation) {
   const metadataInfo = useMetadataInfo();
-  
+
   // Determine request visibility
   const requestVisibility = resolveRequestVisibility(
-    context.program, 
-    operation, 
+    context.program,
+    operation,
     operation.verb
   );
-  
+
   // Determine response visibility (always Read)
   const responseVisibility = Visibility.Read;
-  
+
   // Generate request type
   const requestType = metadataInfo.getEffectivePayloadType(
     operation.parameters?.body?.type,
     requestVisibility
   );
-  
+
   // Generate response type
   const responseType = metadataInfo.getEffectivePayloadType(
     operation.returnType,
     responseVisibility
   );
-  
+
   return {
     request: generateGoType(requestType, requestVisibility),
     response: generateGoType(responseType, responseVisibility),
@@ -469,16 +487,17 @@ function generateOperationTypes(operation: Operation) {
 ```
 
 **Type Transformation Optimization**:
+
 ```typescript
 function emitTypeWithOptimization(type: Type, visibility: Visibility) {
   const metadataInfo = useMetadataInfo();
-  
+
   // Check if type changes with visibility
   if (!metadataInfo.isTransformed(type, visibility)) {
     // No transformation needed - use direct mapping
     return mapTypeSpecTypeToGo(type);
   }
-  
+
   // Type changes - generate transformed version
   const effectiveType = metadataInfo.getEffectivePayloadType(type, visibility);
   return generateTransformedGoType(effectiveType);
@@ -490,6 +509,7 @@ function emitTypeWithOptimization(type: Type, visibility: Visibility) {
 ## 🚀 IMPLEMENTATION ROADMAP
 
 ### Phase 1: Foundation Architecture
+
 - [x] Alloy-based emitter structure
 - [x] Basic TypeSpec→Go type mapping
 - [x] Error handling and diagnostics system
@@ -497,6 +517,7 @@ function emitTypeWithOptimization(type: Type, visibility: Visibility) {
 - [ ] **Next**: Complete struct field generation with metadata
 
 ### Phase 2: Core Type System
+
 - [ ] Model inheritance via embedded structs
 - [ ] Enum generation (string + iota variants)
 - [ ] Array/slice type handling
@@ -504,6 +525,7 @@ function emitTypeWithOptimization(type: Type, visibility: Visibility) {
 - [ ] Optional property pointer types
 
 ### Phase 3: Advanced Features
+
 - [ ] Operation method generation
 - [ ] HTTP metadata processing (@header, @query, @path)
 - [ ] Custom Go decorators (@goName, @goTag)
@@ -511,6 +533,7 @@ function emitTypeWithOptimization(type: Type, visibility: Visibility) {
 - [ ] Integration with Go project structure
 
 ### Phase 4: Production Readiness
+
 - [ ] Performance optimization
 - [ ] Comprehensive test coverage
 - [ ] Documentation and examples
@@ -522,26 +545,31 @@ function emitTypeWithOptimization(type: Type, visibility: Visibility) {
 ## 🎯 CRITICAL SUCCESS FACTORS
 
 ### 1. **Type Safety First**
+
 - Zero `any` usage in emitter code
 - Comprehensive TypeScript interfaces
 - Compile-time validation wherever possible
 
 ### 2. **Alloy Framework Adoption**
+
 - Leverage React-like component patterns
 - Use built-in import management
 - Follow declarative structure patterns
 
 ### 3. **Metadata-Aware Design**
+
 - Process HTTP metadata correctly
 - Handle visibility transformations
 - Support TypeSpec's single logical model concept
 
 ### 4. **Comprehensive Testing**
+
 - Test every TypeSpec→Go mapping scenario
 - Include negative testing (error cases)
 - Performance testing for large specifications
 
 ### 5. **Developer Experience**
+
 - Clear, actionable error messages
 - Predictable Go code generation
 - Comprehensive documentation

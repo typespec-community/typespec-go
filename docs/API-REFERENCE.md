@@ -13,7 +13,7 @@ The main class for generating Go code from TypeSpec models.
 ```typescript
 class StandaloneGoGenerator {
   constructor(options?: GoEmitterOptions): StandaloneGoGenerator
-  
+
   generateModel(model: TypeSpecModel): GoEmitterResult
 }
 ```
@@ -27,12 +27,15 @@ constructor(options?: GoEmitterOptions): StandaloneGoGenerator
 Creates a new instance of the Go generator.
 
 **Parameters:**
+
 - `options` (optional): Configuration options for the generator
 
 **Returns:**
+
 - `StandaloneGoGenerator`: New generator instance
 
 **Example:**
+
 ```typescript
 const generator = new StandaloneGoGenerator();
 // With options (future extensibility)
@@ -50,12 +53,15 @@ generateModel(model: TypeSpecModel): GoEmitterResult
 Generates Go code from a TypeSpec model.
 
 **Parameters:**
+
 - `model`: The TypeSpec model to convert to Go
 
 **Returns:**
+
 - `GoEmitterResult`: Discriminated union containing either success or error
 
 **Example:**
+
 ```typescript
 const model = {
   name: "User",
@@ -78,6 +84,7 @@ type GoEmitterResult = GoEmitterSuccess | GoEmitterError
 ```
 
 **Usage Pattern:**
+
 ```typescript
 const result = generator.generateModel(model);
 
@@ -106,12 +113,14 @@ interface GoEmitterSuccess {
 ```
 
 **Properties:**
+
 - `_tag` (readonly): Discriminant set to `"Success"`
 - `data` (readonly): Map of generated filenames to Go code content
 - `generatedFiles` (readonly): Array of generated file names
 - `typeSpecProgram` (readonly): TypeSpec program reference
 
 **Example:**
+
 ```typescript
 if (result._tag === "Success") {
   console.log(`Generated ${result.generatedFiles.length} files:`);
@@ -127,7 +136,7 @@ if (result._tag === "Success") {
 A discriminated union type representing different error categories.
 
 ```typescript
-type GoEmitterError = 
+type GoEmitterError =
   | ModelValidationError
   | GoCodeGenerationError
   | TypeSpecCompilerError
@@ -151,6 +160,7 @@ interface ModelValidationError {
 ```
 
 **InvalidModelReason Values:**
+
 - `"empty-name"`: Model name is empty or invalid
 - `"no-properties"`: Model has no properties
 
@@ -228,6 +238,7 @@ interface TypeSpecModel {
 ```
 
 **Properties:**
+
 - `name`: The model name (used for Go struct name and filename)
 - `properties`: Map of property names to property definitions
 
@@ -245,6 +256,7 @@ interface TypeSpecPropertyNode {
 ```
 
 **Properties:**
+
 - `name`: Property name
 - `type`: Type specification
 - `optional`: Whether property is optional
@@ -267,11 +279,11 @@ interface TypeSpecTypeNode {
 | Category | TypeSpec | Go Type | Description |
 |----------|------------|-----------|-------------|
 | Strings | `"String"` | `string` | UTF-8 text |
-| Signed Integers | `"Int8" | `"Int16" | `"Int32" | `"Int64"` | `int8` | `int16` | `int32` | `int64` | Signed integers |
-| Unsigned Integers | `"Uint8" | `"Uint16" | `"Uint32" | `"Uint64"` | `uint8` | `uint16` | `uint32` | `uint64` | Unsigned integers |
-| Floating Point | `"Float32" | `"Float64"` | `float32` | `float64` | Floating point numbers |
-| Boolean | `"Boolean"` | `bool` | Boolean values |
-| Arrays | `{ kind: "Array", element: T }` | `[]T` | Slices/arrays |
+| Signed Integers | `"Int8" | `"Int16" | `"Int32" | `"Int64"`|`int8`|`int16`|`int32`|`int64`| Signed integers |
+| Unsigned Integers |`"Uint8" | `"Uint16" | `"Uint32" | `"Uint64"` | `uint8` | `uint16` | `uint32` | `uint64` | Unsigned integers |
+| Floating Point | `"Float32" | `"Float64"`|`float32`|`float64`| Floating point numbers |
+| Boolean |`"Boolean"`|`bool`| Boolean values |
+| Arrays |`{ kind: "Array", element: T }`|`[]T` | Slices/arrays |
 
 ### GoEmitterOptions
 
@@ -317,27 +329,27 @@ const handleResult = (result: GoEmitterResult) => {
     case "Success":
       console.log(`Generated ${result.generatedFiles.length} files`);
       return result.data;
-      
+
     case "ModelValidationError":
       console.error(`Model validation failed: ${result.reason}`);
       return null;
-      
+
     case "GoCodeGenerationError":
       console.error(`Code generation failed: ${result.fileName}`);
       return null;
-      
+
     case "TypeSpecCompilerError":
       console.error(`TypeSpec error: ${result.message}`);
       return null;
-      
+
     case "TypeSafetyError":
       console.error(`Type safety violation: ${result.violation}`);
       return null;
-      
+
     case "SystemError":
       console.error(`System error: ${result.message}`);
       return null;
-      
+
     default:
       // TypeScript ensures this is exhaustive
       const _exhaustive: never = result;
@@ -353,7 +365,7 @@ For use in async contexts.
 ```typescript
 async function generateAndSave(model: TypeSpecModel): Promise<void> {
   const result = generator.generateModel(model);
-  
+
   if (result._tag === "Success") {
     for (const [fileName, goCode] of result.data.entries()) {
       await fs.writeFile(fileName, goCode);
@@ -433,12 +445,14 @@ const results = await Promise.all(
 Previous versions that returned `string` directly have been updated to use `GoEmitterResult`.
 
 **Old API:**
+
 ```typescript
 const goCode = generator.generateModel(model); // Returned string
 console.log(goCode);
 ```
 
 **New API:**
+
 ```typescript
 const result = generator.generateModel(model); // Returns GoEmitterResult
 if (result._tag === "Success") {

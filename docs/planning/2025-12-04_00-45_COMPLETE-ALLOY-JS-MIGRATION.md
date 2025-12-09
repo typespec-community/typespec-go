@@ -45,45 +45,49 @@ graph TD
 ## 📊 PHASE BREAKDOWN
 
 ### Phase 1: Foundation (2-3 hours) - CRITICAL
+
 **Objective:** Establish solid technical foundation before migration
 
-| Task | Impact | Effort | Priority |
-|------|--------|--------|----------|
-| Research Alloy.js Go enum components | HIGH | LOW | URGENT |
-| Audit all string-based generation | HIGH | MEDIUM | URGENT |
-| Test JSX syntax with Go components | HIGH | LOW | URGENT |
-| Verify refkey import system | HIGH | MEDIUM | URGENT |
+| Task                                 | Impact | Effort | Priority |
+| ------------------------------------ | ------ | ------ | -------- |
+| Research Alloy.js Go enum components | HIGH   | LOW    | URGENT   |
+| Audit all string-based generation    | HIGH   | MEDIUM | URGENT   |
+| Test JSX syntax with Go components   | HIGH   | LOW    | URGENT   |
+| Verify refkey import system          | HIGH   | MEDIUM | URGENT   |
 
 ### Phase 2: Component Migration (4-6 hours) - HIGH IMPACT
+
 **Objective:** Migrate each component to 100% Alloy.js
 
-| Component | Current State | Target | Impact | Effort |
-|-----------|---------------|--------|--------|--------|
-| GoEnumDeclaration | String-based | Alloy.js components | HIGH | MEDIUM |
-| GoUnionDeclaration | Mixed approach | Pure Alloy.js | HIGH | MEDIUM |
-| GoPackageDirectory | Partial migration | Complete Alloy.js | HIGH | LOW |
-| GoInterfaceDeclaration | Unknown status | Full audit needed | MEDIUM | MEDIUM |
-| GoHandlerStub | Unknown status | Full audit needed | MEDIUM | MEDIUM |
+| Component              | Current State     | Target              | Impact | Effort |
+| ---------------------- | ----------------- | ------------------- | ------ | ------ |
+| GoEnumDeclaration      | String-based      | Alloy.js components | HIGH   | MEDIUM |
+| GoUnionDeclaration     | Mixed approach    | Pure Alloy.js       | HIGH   | MEDIUM |
+| GoPackageDirectory     | Partial migration | Complete Alloy.js   | HIGH   | LOW    |
+| GoInterfaceDeclaration | Unknown status    | Full audit needed   | MEDIUM | MEDIUM |
+| GoHandlerStub          | Unknown status    | Full audit needed   | MEDIUM | MEDIUM |
 
 ### Phase 3: Integration (2-3 hours) - VALIDATION
+
 **Objective:** Ensure all components work together seamlessly
 
-| Task | Impact | Effort | Priority |
-|------|--------|--------|----------|
-| Import system end-to-end testing | CRITICAL | MEDIUM | URGENT |
-| Real TypeSpec schema validation | HIGH | MEDIUM | HIGH |
-| Performance benchmarking | HIGH | LOW | MEDIUM |
-| Component interaction testing | CRITICAL | MEDIUM | URGENT |
+| Task                             | Impact   | Effort | Priority |
+| -------------------------------- | -------- | ------ | -------- |
+| Import system end-to-end testing | CRITICAL | MEDIUM | URGENT   |
+| Real TypeSpec schema validation  | HIGH     | MEDIUM | HIGH     |
+| Performance benchmarking         | HIGH     | LOW    | MEDIUM   |
+| Component interaction testing    | CRITICAL | MEDIUM | URGENT   |
 
 ### Phase 4: Production Ready (1-2 hours) - POLISH
+
 **Objective:** Production-grade quality and documentation
 
-| Task | Impact | Effort | Priority |
-|------|--------|--------|----------|
-| Comprehensive test suite | CRITICAL | MEDIUM | URGENT |
-| Architecture documentation | HIGH | LOW | MEDIUM |
-| Performance optimization | MEDIUM | LOW | LOW |
-| Examples and patterns | MEDIUM | LOW | LOW |
+| Task                       | Impact   | Effort | Priority |
+| -------------------------- | -------- | ------ | -------- |
+| Comprehensive test suite   | CRITICAL | MEDIUM | URGENT   |
+| Architecture documentation | HIGH     | LOW    | MEDIUM   |
+| Performance optimization   | MEDIUM   | LOW    | LOW      |
+| Examples and patterns      | MEDIUM   | LOW    | LOW      |
 
 ---
 
@@ -159,17 +163,20 @@ graph TD
 ## 🚨 CRITICAL SUCCESS CRITERIA
 
 ### MUST HAVE (Non-negotiable)
+
 - [ ] **Zero string-based generation** - All components use 100% Alloy.js
 - [ ] **Automatic import management** - refkey system working end-to-end
 - [ ] **All 120+ tests passing** - No regressions in functionality
 - [ ] **Real TypeSpec schemas work** - Production-ready input handling
 
 ### SHOULD HAVE (High priority)
+
 - [ ] **Performance maintained** - No degradation from current baseline
 - [ ] **Clear documentation** - Patterns and examples for new approach
 - [ ] **TypeScript strict compliance** - Zero `any` types, proper interfaces
 
 ### COULD HAVE (Nice to have)
+
 - [ ] **Performance improvements** - Faster generation through better components
 - [ ] **Enhanced error messages** - Better debugging capabilities
 - [ ] **Additional validation** - More comprehensive input checking
@@ -179,12 +186,14 @@ graph TD
 ## 🎯 CUSTOMER VALUE DELIVERY
 
 ### Direct Value
+
 1. **Elimination of architectural debt** - Cleaner, maintainable codebase
 2. **Improved developer experience** - Consistent patterns across components
 3. **Better type safety** - Alloy.js provides stronger guarantees than strings
 4. **Automatic import management** - Manual error-prone tracking eliminated
 
 ### Indirect Value
+
 1. **Future-proof architecture** - Component-based approach scales better
 2. **Easier contribution** - Consistent patterns lower barrier to entry
 3. **Better debugging** - Component-based errors more traceable
@@ -195,11 +204,13 @@ graph TD
 ## 📋 RISK MITIGATION
 
 ### High-Risk Areas
+
 1. **JSX syntax compatibility** - Unknown if Go components fully support JSX
 2. **Performance regression** - Component overhead vs string generation
 3. **Import system complexity** - refkey learning curve and edge cases
 
 ### Mitigation Strategies
+
 1. **Incremental migration** - One component at a time with testing
 2. **Rollback capability** - Git commits after each successful migration
 3. **Comprehensive testing** - Real TypeSpec schemas for validation
@@ -210,12 +221,14 @@ graph TD
 ## 🏁 SUCCESS METRICS
 
 ### Quantitative
+
 - **Migration completion:** 6/6 components migrated (100%)
 - **Test success rate:** 120+/120 tests passing (100%)
 - **TypeScript compliance:** Zero `any` types, zero compilation errors
 - **Performance:** <1ms generation time for simple models
 
 ### Qualitative
+
 - **Code clarity:** All components use consistent Alloy.js patterns
 - **Maintainability:** Clear separation of concerns, no mixed approaches
 - **Documentation:** Complete pattern examples and architectural guide

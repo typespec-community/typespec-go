@@ -7,12 +7,14 @@ This report documents the implementation of TypeSpec's native `@error` decorator
 ## ✅ Current Implementation Status
 
 ### **1. @error Model Detection**
+
 - ✅ **Function Added**: `hasErrorDecorator()` in `typespec-type-guards.ts`
 - ✅ **TypeSpec Compiler API**: Uses `@error` decorator detection
 - ✅ **Type Safety**: Proper type guards without `as any` casts
 - ⚠️ **Known Issue**: TypeScript compiler warnings about type.kind comparisons (non-critical)
 
 ### **2. Go Native Error Generation**
+
 - ✅ **Error Interface Compliance**: Generated types implement `error` interface
 - ✅ **Constructor Functions**: `NewXxxError()` functions for each error type
 - ✅ **Error() Methods**: Custom `Error()` string methods with proper formatting
@@ -20,11 +22,13 @@ This report documents the implementation of TypeSpec's native `@error` decorator
 - ✅ **Nil Safety**: Proper nil checks in Error() methods
 
 ### **3. Code Organization**
+
 - ✅ **Separation**: Error models separated from regular models
 - ✅ **Comments**: Clear documentation of @error decorator source
 - ✅ **Imports**: Proper `fmt` package imports for error formatting
 
 ### **4. Complete Working Example**
+
 - ✅ **TypeSpec Source**: `test-error-complete.tsp` with various error models
 - ✅ **Generated Go Code**: `error-example-fixed.go` with native errors
 - ✅ **Test Execution**: Successfully runs and demonstrates error handling
@@ -75,9 +79,10 @@ func NewValidationError(code string, message string, details []string) *Validati
 ```
 
 ### **Key Features:**
+
 - ✅ Implements Go `error` interface
 - ✅ Proper JSON serialization
-- ✅ Nil-safe Error() methods  
+- ✅ Nil-safe Error() methods
 - ✅ Constructor functions for easy creation
 - ✅ Optional fields handled with omitempty
 - ✅ Descriptive error strings
@@ -85,16 +90,19 @@ func NewValidationError(code string, message string, details []string) *Validati
 ## 🚨 Issues & Limitations
 
 ### **Critical Issues:**
+
 - ❌ **TypeScript Compilation**: Still has compiler warnings about type.kind comparisons
 - ❌ **Production Build**: Not passing full `--strict` TypeScript compilation
 
 ### **Current Limitations:**
+
 - ⚠️ **No Centralized Package**: Errors generated in same package as models
 - ⚠️ **No Error Wrapping**: No support for error chaining/wrapping
 - ⚠️ **No Error Detection**: No automatic error pattern detection
 - ⚠️ **Limited Options**: No configuration options for error generation
 
 ### **Missing Features (for full support):**
+
 - ❌ **Centralized Package**: Option to generate errors in `/pkg/errors/`
 - ❌ **Custom Error Interface**: Option to implement custom error interfaces
 - ❌ **Error Wrapping**: Support for Go error wrapping (errors.Wrap, errors.Is)
@@ -104,6 +112,7 @@ func NewValidationError(code string, message string, details []string) *Validati
 ## 📊 Test Results
 
 ### **Working Examples:**
+
 - ✅ **Basic Error Types**: ApiError, ValidationError, NotFoundError
 - ✅ **Error Constructors**: NewXxxError() functions working
 - ✅ **Error Interface**: Error() methods returning proper strings
@@ -112,6 +121,7 @@ func NewValidationError(code string, message string, details []string) *Validati
 - ✅ **Nil Safety**: Error() methods handling nil correctly
 
 ### **Successful Test Output:**
+
 ```
 Success: {User:{ID:1 Name:John Doe Email:john@example.com}}
 Expected Error: NotFoundError[code=NOT_FOUND, message=User not found]
@@ -123,6 +133,7 @@ Validation failed with 1 details
 ## 🎯 Requirements Analysis
 
 ### **✅ Requirements Met:**
+
 1. **Golang Native Errors**: ✅ Types implement `error` interface
 2. **@error Decorator Respect**: ✅ Detects and processes @error models
 3. **Separation from Regular Models**: ✅ Proper code organization
@@ -130,11 +141,13 @@ Validation failed with 1 details
 5. **JSON Compatibility**: ✅ Proper JSON serialization
 
 ### **⚠️ Partially Met:**
+
 1. **Centralized Package**: ⚠️ Currently in same package (needs option)
 2. **Error Wrapping**: ⚠️ Not implemented yet
 3. **Production Ready**: ⚠️ TypeScript warnings need fixing
 
 ### **❌ Not Yet Implemented:**
+
 1. **Custom Error Options**: ❌ No configuration options
 2. **Error Detection**: ❌ No automatic pattern detection
 3. **Advanced Error Features**: ❌ No error chaining, categories, etc.
@@ -142,16 +155,19 @@ Validation failed with 1 details
 ## 🛠️ Next Steps (Action Items)
 
 ### **Priority 1: Critical Issues**
+
 1. **Fix TypeScript Compilation**: Resolve type.kind comparison warnings
 2. **Production Build**: Ensure clean `--strict` compilation
 3. **Error Detection**: Fix `hasErrorDecorator()` function
 
 ### **Priority 2: Core Features**
+
 1. **Centralized Package Option**: Add option to generate errors in `/pkg/errors/`
 2. **Error Wrapping Support**: Add Go error wrapping capabilities
 3. **Configuration Options**: Add emitter options for error generation
 
 ### **Priority 3: Advanced Features**
+
 1. **Error Categories**: Automatic error categorization
 2. **Custom Error Interface**: Option to implement custom interfaces
 3. **Validation Helpers**: Helper functions for common validations
@@ -159,6 +175,7 @@ Validation failed with 1 details
 ## 📈 Success Metrics
 
 ### **Current Implementation:**
+
 - **Error Type Detection**: 80% (working but needs refinement)
 - **Go Error Interface Compliance**: 100% (fully compliant)
 - **Code Generation**: 90% (good, needs options)
@@ -166,6 +183,7 @@ Validation failed with 1 details
 - **Production Readiness**: 70% (works but needs polish)
 
 ### **Goal Metrics:**
+
 - **Error Type Detection**: 100% (robust detection)
 - **Go Error Interface Compliance**: 100% (maintained)
 - **Code Generation**: 100% (full feature set)
@@ -183,6 +201,7 @@ The TypeSpec `@error` decorator implementation is **functional and working** for
 - ✅ Provide descriptive error messages
 
 The main areas for improvement are:
+
 1. **TypeScript compilation fixes**
 2. **Advanced error features**
 3. **Configuration options**
