@@ -5,7 +5,6 @@ import {
   ModuleDirectory,
   SourceDirectory,
   VariableDeclaration,
-  Package,
 } from "@alloy-js/go";
 
 describe("Debug Basic Rendering", () => {
@@ -15,11 +14,9 @@ describe("Debug Basic Rendering", () => {
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="test.go">
-              <Package name="api">
-                <VariableDeclaration name="testVar" type="string">
-                  "Hello, World!"
-                </VariableDeclaration>
-              </Package>
+              <VariableDeclaration name="testVar" type="string">
+                "Hello, World!"
+              </VariableDeclaration>
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>

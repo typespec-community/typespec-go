@@ -13,3 +13,4 @@ export * from "./GoModFile";
 export * from "./GoHandlerMethodComponent";
 export * from "./GoRouteRegistrationComponent";
 export * from "./GoHandlerStub";
+export * from "./GoPackage";
