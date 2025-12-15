@@ -9,7 +9,7 @@ export interface GoPackageProps {
 
 /**
  * GoPackage - A simple Go package declaration component
- * 
+ *
  * Creates proper Go package declaration without requiring complex Go scope
  */
 export function GoPackage(props: GoPackageProps) {

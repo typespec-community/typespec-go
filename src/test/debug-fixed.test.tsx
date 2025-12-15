@@ -24,11 +24,11 @@ func main() {
     );
 
     console.log("🔍 Fixed result:", JSON.stringify(result, null, 2));
-    
+
     // Should have proper directory structure
     expect(result).toBeDefined();
     expect(result.kind).toBe("directory");
-    
+
     if (result && result.contents && result.contents.length > 0) {
       console.log("✅ SUCCESS: Generated content structure");
       const moduleDir = result.contents[0];
@@ -56,7 +56,7 @@ func main() {
     );
 
     console.log("🔍 Simple package result:", JSON.stringify(result, null, 2));
-    
+
     // Should have proper directory structure
     expect(result).toBeDefined();
     expect(result.kind).toBe("directory");

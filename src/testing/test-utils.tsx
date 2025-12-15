@@ -32,9 +32,14 @@ export function renderGoContent(children: Children, fileName = "test.go"): strin
 
   // Debug: Log the actual structure we're getting
   console.log("🔍 renderGoContent - Raw result:", JSON.stringify(result, null, 2));
-  
+
   // Check if result has the expected structure
-  if (!result || !result.contents || !Array.isArray(result.contents) || result.contents.length === 0) {
+  if (
+    !result ||
+    !result.contents ||
+    !Array.isArray(result.contents) ||
+    result.contents.length === 0
+  ) {
     console.error("❌ Invalid result structure - missing contents array");
     throw new Error("Failed to extract rendered Go content - empty result");
   }
@@ -43,29 +48,42 @@ export function renderGoContent(children: Children, fileName = "test.go"): strin
   try {
     const moduleDir = result.contents[0];
     console.log("🔍 Module directory:", moduleDir);
-    
-    if (!moduleDir || moduleDir.kind !== "directory" || !Array.isArray(moduleDir.contents) || moduleDir.contents.length === 0) {
+
+    if (
+      !moduleDir ||
+      moduleDir.kind !== "directory" ||
+      !Array.isArray(moduleDir.contents) ||
+      moduleDir.contents.length === 0
+    ) {
       console.error("❌ Invalid module directory structure");
       throw new Error("Failed to extract rendered Go content - empty module directory");
     }
-    
+
     const sourceDir = moduleDir.contents[0];
     console.log("🔍 Source directory:", sourceDir);
-    
-    if (!sourceDir || sourceDir.kind !== "directory" || !Array.isArray(sourceDir.contents) || sourceDir.contents.length === 0) {
+
+    if (
+      !sourceDir ||
+      sourceDir.kind !== "directory" ||
+      !Array.isArray(sourceDir.contents) ||
+      sourceDir.contents.length === 0
+    ) {
       console.error("❌ Invalid source directory structure");
       throw new Error("Failed to extract rendered Go content - empty source directory");
     }
-    
+
     const sourceFile = sourceDir.contents[0];
     console.log("🔍 Source file:", sourceFile);
-    
+
     if (!sourceFile || sourceFile.kind !== "file" || !isContentOutputFile(sourceFile)) {
       console.error("❌ Invalid source file contents");
       throw new Error("Failed to extract rendered Go content - invalid file contents");
     }
-    
-    console.log("✅ Successfully extracted Go content:", sourceFile.contents.substring(0, 100) + "...");
+
+    console.log(
+      "✅ Successfully extracted Go content:",
+      sourceFile.contents.substring(0, 100) + "...",
+    );
     return sourceFile.contents;
   } catch (e) {
     console.error("Failed to extract content from render result:", JSON.stringify(result, null, 2));

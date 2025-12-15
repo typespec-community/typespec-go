@@ -17,7 +17,7 @@ func main() {
     );
 
     console.log("🔍 Minimal result:", JSON.stringify(result, null, 2));
-    
+
     // Should have proper directory structure
     expect(result).toBeDefined();
     if (result && result.contents) {
@@ -31,17 +31,13 @@ func main() {
     const result = render(
       <Output basePath="./test-output">
         <SourceFile path="test.go">
-          package main
-
-func main() {
-    fmt.Println("Hello, World!")
-}
+          package main func main() {fmt.Println("Hello, World!")}
         </SourceFile>
       </Output>,
     );
 
     console.log("🔍 Plain string result:", JSON.stringify(result, null, 2));
-    
+
     // Should have proper directory structure
     expect(result).toBeDefined();
   });

@@ -23,11 +23,11 @@ func main() {
     );
 
     console.log("🔍 Working result:", JSON.stringify(result, null, 2));
-    
+
     // Should have proper directory structure
     expect(result).toBeDefined();
     expect(result.kind).toBe("directory");
-    
+
     if (result && result.contents && result.contents.length > 0) {
       console.log("✅ SUCCESS: Generated content structure");
     } else {

@@ -40,7 +40,7 @@ type TestAPIService struct {
 type TestAPIServiceInterface interface {
 	GetUser(ctx context.Context, id string) (User, error)
 	CreateUser(ctx context.Context, user CreateUserRequest) (User, error)
-	ListUsers(ctx context.Context, limit *int32, offset *int32) (UserList, error)
+	ListUsers(ctx context.Context, limit, offset *int32) (UserList, error)
 	UpdateUser(ctx context.Context, id string, user User) (User, error)
 	DeleteUser(ctx context.Context, id string) error
 }

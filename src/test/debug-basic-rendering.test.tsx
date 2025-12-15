@@ -1,11 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { render, Output } from "@alloy-js/core";
-import {
-  SourceFile,
-  ModuleDirectory,
-  SourceDirectory,
-  VariableDeclaration,
-} from "@alloy-js/go";
+import { SourceFile, ModuleDirectory, SourceDirectory, VariableDeclaration } from "@alloy-js/go";
 
 describe("Debug Basic Rendering", () => {
   test("render simple Go component", () => {

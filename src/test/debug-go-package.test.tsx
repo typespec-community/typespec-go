@@ -17,7 +17,7 @@ describe("DEBUG - Go Package Context Test", () => {
     );
 
     console.log("🔍 Go package result:", JSON.stringify(result, null, 2));
-    
+
     // Should have proper directory structure
     expect(result).toBeDefined();
     if (result && result.contents) {
@@ -30,18 +30,12 @@ describe("DEBUG - Go Package Context Test", () => {
   test("Package without SourceFile", () => {
     const result = render(
       <Output basePath="./test-output">
-        <Package name="main">
-          package main
-
-func main() {
-    fmt.Println("Hello, World!")
-}
-        </Package>
+        <Package name="main">package main func main() {fmt.Println("Hello, World!")}</Package>
       </Output>,
     );
 
     console.log("🔍 Package-only result:", JSON.stringify(result, null, 2));
-    
+
     // Should have proper directory structure
     expect(result).toBeDefined();
   });

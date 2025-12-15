@@ -21,7 +21,7 @@ func main() {
     );
 
     console.log("🔍 SourceFile result:", JSON.stringify(result, null, 2));
-    
+
     // Should have proper directory structure
     expect(result).toBeDefined();
     expect(result.kind).toBe("directory");
@@ -45,7 +45,7 @@ func main() {
     );
 
     console.log("🔍 Simple string result:", JSON.stringify(result, null, 2));
-    
+
     // Should have proper directory structure
     expect(result).toBeDefined();
     expect(result.kind).toBe("directory");

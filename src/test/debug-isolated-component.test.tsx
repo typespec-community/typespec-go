@@ -7,7 +7,7 @@ describe("DEBUG - Isolated Component Test", () => {
     // Test component directly, not wrapped in Output structure
     const result = render(<GoStringLiteral value="Hello, World!" />);
     console.log("🔍 Direct render result:", JSON.stringify(result, null, 2));
-    
+
     // Should render as a code template literal
     expect(result).toBeDefined();
   });
@@ -16,7 +16,7 @@ describe("DEBUG - Isolated Component Test", () => {
     // Test basic code template literal
     const result = render`"Hello, World!"`;
     console.log("🔍 Code template result:", JSON.stringify(result, null, 2));
-    
+
     // Should render as a code template literal
     expect(result).toBeDefined();
   });

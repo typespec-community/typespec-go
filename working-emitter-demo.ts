@@ -31,7 +31,7 @@ export async function $onEmit(context: any) {
   for (const model of models) {
     if (model.name && model.properties) {
       console.log(`  🔧 Generating model: ${model.name}`);
-      
+
       // Convert TypeSpec model to our generator format
       const generatorModel = {
         name: model.name,

@@ -50,6 +50,7 @@
 - **Issue**: No end-to-end TypeSpec integration
 - **Solution**: Implemented proper `$onEmit` following official patterns
 - **Implementation**:
+
   ```typescript
   export async function $onEmit(context: EmitContext): Promise<void> {
     const program = context.program;
@@ -67,6 +68,7 @@
     );
   }
   ```
+
 - **Result**: Full TypeSpec v1.7.0 AssetEmitter compliance
 
 #### **4. End-to-End Verification - ✅ COMPLETE**

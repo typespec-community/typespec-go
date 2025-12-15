@@ -42,8 +42,8 @@
     // Build output
     "outDir": "dist",
     "rootDir": ".",
-    "tsBuildInfoFile": "temp/tsconfig.tsbuildinfo",
+    "tsBuildInfoFile": "temp/tsconfig.tsbuildinfo"
   },
   "include": ["src/**/*", "test/**/*.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "dist", "build", "coverage"],
+  "exclude": ["node_modules", "dist", "build", "coverage"]
 }
