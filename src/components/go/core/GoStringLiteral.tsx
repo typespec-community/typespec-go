@@ -1,4 +1,4 @@
-import { code, stc } from "@alloy-js/core";
+import { code, stc, type Children } from "@alloy-js/core";
 
 export interface GoStringLiteralProps {
   /** The string value (will be properly quoted) */
@@ -6,7 +6,7 @@ export interface GoStringLiteralProps {
   /** Whether to use backticks (raw string) instead of double quotes */
   raw?: boolean;
   /** Children content as alternative to value */
-  children?: any;
+  children?: Children;
 }
 
 /**

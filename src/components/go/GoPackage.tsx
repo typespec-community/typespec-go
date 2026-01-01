@@ -1,10 +1,10 @@
-import { code, stc } from "@alloy-js/core";
+import { code, stc, type Children } from "@alloy-js/core";
 
 export interface GoPackageProps {
   /** Package name for generated Go code */
   name?: string;
   /** Children content */
-  children?: any;
+  children?: Children;
 }
 
 /**
