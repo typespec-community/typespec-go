@@ -5,6 +5,7 @@ export default defineConfig({
   test: {
     include: ["src/test/**/*.test.ts", "src/test/**/*.test.tsx"],
     exclude: ["src/test/**/*.d.ts"],
+    setupFiles: ["./src/test/vitest.setup.ts"],
     environment: "node",
   },
   esbuild: {
