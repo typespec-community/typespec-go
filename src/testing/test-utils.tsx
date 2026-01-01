@@ -10,7 +10,9 @@ export function renderGoFragment(children: Children, fileName = "test.go") {
   return render(
     <Output basePath="./">
       <ModuleDirectory name="github.com/test/api">
-        <SourceDirectory path="api">{children}</SourceDirectory>
+        <SourceDirectory path="api">
+          <SourceFile path={fileName}>{children}</SourceFile>
+        </SourceDirectory>
       </ModuleDirectory>
     </Output>,
   );
