@@ -6,6 +6,7 @@
 
 import type { Type, Model, Scalar, Union } from "@typespec/compiler";
 import { isNullType } from "@typespec/compiler";
+import { CleanTypeMapper } from "../domain/clean-type-mapper.js";
 
 /**
  * Type guard for Scalar types
@@ -50,40 +51,17 @@ function getArrayElementType(model: Model & { indexer: { key: Scalar; value: Typ
 }
 
 /**
- * Maps TypeSpec scalar types to Go types
- * Comprehensive scalar mapping following guide examples
- */
-const SCALAR_MAPPINGS: Record<string, string> = {
-  string: "string",
-  boolean: "bool",
-  int8: "int8",
-  int16: "int16",
-  int32: "int32",
-  int64: "int64",
-  uint8: "uint8",
-  uint16: "uint16",
-  uint32: "uint32",
-  uint64: "uint64",
-  float32: "float32",
-  float64: "float64",
-  bytes: "[]byte",
-  plaindate: "time.Time",
-  plainTime: "time.Time",
-  duration: "time.Duration",
-  utcDateTime: "time.Time",
-  offsetDateTime: "time.Time",
-} as const;
-
-/**
  * Type Expression Component
  * Converts TypeSpec types to proper Go type strings
+ * Uses domain layer (CleanTypeMapper) for type mappings
  * Uses proper type guards, NO 'as' casts
  */
 export function TypeExpression({ type }: { type: Type }): string {
   // Handle Scalar types (string, int32, bool, etc.)
   if (isScalar(type)) {
-    const scalarName = type.name?.toLowerCase() || "";
-    return SCALAR_MAPPINGS[scalarName] || "interface{}";
+    // Use domain layer for type mapping
+    const mapping = CleanTypeMapper.mapTypeSpecType(type);
+    return mapping.goType || "interface{}";
   }
 
   // Handle Model types (user-defined structs)

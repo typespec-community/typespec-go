@@ -7,7 +7,7 @@ describe("DEBUG - Core Components Only", () => {
     const result = render(
       <Output basePath="./test-output">
         <CoreSourceDirectory path="main">
-          <CoreSourceFile path="test.go">
+          <CoreSourceFile path="test.go" filetype="go">
             {code`func main() {
     fmt.Println("Hello, World!")
 }`}
