@@ -1,6 +1,7 @@
 import { FunctionDeclaration, FunctionReceiver } from "@alloy-js/go";
 import { refkey, code } from "@alloy-js/core";
 import type { GoHandlerMethod } from "./GoHandlerMethod";
+import type { HttpParameter } from "../../utils/typespec-http-utils";
 import {
   GoStringLiteral,
   GoIf,
@@ -33,7 +34,7 @@ export function GoHandlerMethodComponent({
         { name: "ctx", type: "context.Context" },
         { name: "w", type: "http.ResponseWriter" },
         { name: "r", type: "*http.Request" },
-        ...handler.parameters.map((p: any) => ({
+        ...handler.parameters.map((p: HttpParameter) => ({
           name: p.name,
           type: p.goType,
         })),

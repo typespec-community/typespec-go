@@ -5,6 +5,7 @@
  */
 
 import type { Model, ModelProperty, Program, Type } from "@typespec/compiler";
+import type { JSX } from "@alloy-js/core/jsx-runtime";
 import { Reference, StructDeclaration, StructMember, TypeDeclaration } from "@alloy-js/go";
 import { For, refkey } from "@alloy-js/core";
 import { capitalize } from "../../utils/strings.js";
@@ -51,7 +52,7 @@ export function GoStructDeclaration({
             const typeRef = refkey(prop.type);
 
             // 100% ALLOY.JS - Use Reference system for automatic imports
-            let goTypeElement: any;
+            let goTypeElement: string | JSX.Element;
 
             if (prop.type.kind === "Model") {
               // Model type - Reference for automatic import
@@ -126,7 +127,7 @@ function getTypeFromTemplateArg(arg: unknown): Type | undefined {
  * Uses Alloy.js Reference system for automatic import management
  * Maps TypeSpec scalar types to native Go types
  */
-function mapTypeSpecToGoType(type: Type): any {
+function mapTypeSpecToGoType(type: Type): string | JSX.Element {
   switch (type.kind) {
     case "String":
       return "string";
