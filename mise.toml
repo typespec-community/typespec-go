@@ -21,5 +21,7 @@ depends = ["dev:main"]
 
 [tasks."dev:main"]
 hide = true
-run = ["mise watch --watch=./src --watch=./lib --stop-signal=SIGKILL --stop-timeout=0 --restart build"]
+run = [
+  "mise watch --watch=./src --watch=./lib --stop-signal=SIGKILL --stop-timeout=0 --restart build",
+]
 

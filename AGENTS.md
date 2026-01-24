@@ -554,7 +554,7 @@ export class TypeMappingService {
 ```typescript
 // 🚫 NEVER DO THIS - STRING GENERATION
 const goCode = `type ${model.name} struct {
-  ${fields.map(f => `${f.name} ${f.type} \`json:"${f.name}"\``).join('\n')}
+  ${fields.map((f) => `${f.name} ${f.type} \`json:"${f.name}"\``).join("\n")}
 }`;
 
 // 🚫 NEVER DO THIS - TEMPLATE LITERALS
@@ -565,7 +565,7 @@ const goStruct = `type User struct {
 
 // 🚫 NEVER DO THIS - STRING CONCATENATION
 let goFile = "package api\n\n";
-goFile += "import \"encoding/json\"\n\n";
+goFile += 'import "encoding/json"\n\n';
 goFile += generateStruct(model);
 ```
 
@@ -578,7 +578,7 @@ function buildGoStruct(model) {
   for (const prop of model.properties) {
     result += `  ${prop.name} ${mapType(prop.type)}\n`;
   }
-  result += '}';
+  result += "}";
   return result;
 }
 

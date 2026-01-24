@@ -11,7 +11,7 @@
 
 ### ✅ Major Achievements
 
-1. **TypeSpec Compiler Integration Working** 
+1. **TypeSpec Compiler Integration Working**
    - Can now compile REAL .tsp files using `@typespec/compiler/testing`
    - Integration tests passing (5/5 tests)
    - Successfully navigate program structure and find types
@@ -56,17 +56,18 @@
 
 **Tests (5/5 passing):**
 
-| Test | Description | Status |
-|-------|-------------|--------|
-| Compile simple TypeSpec model | Basic model compilation | ✅ PASS |
-| Compile TypeSpec enum | Enum type compilation | ✅ PASS |
-| Compile TypeSpec with array types | Array field types | ✅ PASS |
+| Test                                  | Description             | Status  |
+| ------------------------------------- | ----------------------- | ------- |
+| Compile simple TypeSpec model         | Basic model compilation | ✅ PASS |
+| Compile TypeSpec enum                 | Enum type compilation   | ✅ PASS |
+| Compile TypeSpec with array types     | Array field types       | ✅ PASS |
 | Compile TypeSpec with optional fields | Optional field handling | ✅ PASS |
-| Handle TypeSpec compilation errors | Error detection | ✅ PASS |
+| Handle TypeSpec compilation errors    | Error detection         | ✅ PASS |
 
 **Key Discoveries:**
 
 1. **createTester API Pattern:**
+
    ```typescript
    const Tester = createTester(undefined, { libraries: [] });
    const runner = await Tester.createInstance();
@@ -110,6 +111,7 @@ expect(result.program).toBeDefined();
 **Status:** COMPLETE ✅
 
 **Summary:**
+
 - **Total Tests:** 167
 - **Passing:** 167 (100%)
 - **Failing:** 0
@@ -119,13 +121,13 @@ expect(result.program).toBeDefined();
 
 **Test Categories:**
 
-| Category | Tests | Status |
-|-----------|--------|--------|
-| Component Isolation | 160 | ✅ 100% |
-| TypeSpec Basic Integration | 5 | ✅ 100% |
-| Model Composition | 11 | ✅ 100% |
-| String Utils | 13 | ✅ 100% |
-| Go Handler Stub | 2 | ✅ 100% |
+| Category                   | Tests | Status  |
+| -------------------------- | ----- | ------- |
+| Component Isolation        | 160   | ✅ 100% |
+| TypeSpec Basic Integration | 5     | ✅ 100% |
+| Model Composition          | 11    | ✅ 100% |
+| String Utils               | 13    | ✅ 100% |
+| Go Handler Stub            | 2     | ✅ 100% |
 
 ---
 
@@ -185,15 +187,15 @@ Checkout → Setup Bun → Install Dependencies → Build → Test → Lint → 
 
 **Stage Details:**
 
-| Stage | Command | Status |
-|-------|----------|--------|
-| Checkout | actions/checkout | ✅ |
-| Setup Bun | actions/setup-node | ✅ |
-| Install | bun install | ✅ |
-| Build | just build | ✅ |
-| Test | just test | ✅ |
-| Lint | just lint | ✅ |
-| Type Check | just build:check | ✅ |
+| Stage      | Command            | Status |
+| ---------- | ------------------ | ------ |
+| Checkout   | actions/checkout   | ✅     |
+| Setup Bun  | actions/setup-node | ✅     |
+| Install    | bun install        | ✅     |
+| Build      | just build         | ✅     |
+| Test       | just test          | ✅     |
+| Lint       | just lint          | ✅     |
+| Type Check | just build:check   | ✅     |
 
 **Local Validation:** All commands tested and passing
 
@@ -206,20 +208,23 @@ Checkout → Setup Bun → Install Dependencies → Build → Test → Lint → 
 **What Works:**
 
 1. ✅ Compile TypeSpec → Program
+
    ```typescript
    const runner = await Tester.createInstance();
    const result = await runner.compile(tspCode);
    ```
 
 2. ✅ Navigate program structure
+
    ```typescript
    const globalNamespace = result.program.getGlobalNamespaceType();
    const models = Array.from(globalNamespace.models.values());
    ```
 
 3. ✅ Extract types by name
+
    ```typescript
-   const userModel = models.find(m => m.name === "User");
+   const userModel = models.find((m) => m.name === "User");
    ```
 
 4. ✅ Call `writeOutput()` function
@@ -275,10 +280,12 @@ Checkout → Setup Bun → Install Dependencies → Build → Test → Lint → 
 **Errors:**
 
 1. ❌ **JSX Runtime Import Error (CRITICAL)**
+
    ```
    error js-error: Failed to load dist/main.js due to:
    Cannot find module '@alloy-js/core/jsx-dev-runtime'
    ```
+
    - **Location:** `dist/emitter/typespec-go-emitter.js:1`
    - **Import:** `import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime"`
    - **Real Module:** `@alloy-js/core/jsx-runtime` (without "dev")
@@ -289,11 +296,13 @@ Checkout → Setup Bun → Install Dependencies → Build → Test → Lint → 
    examples/basic/main.tsp:8:2 - error invalid-ref: Unknown decorator @pkg
    examples/basic/main.tsp:5:16 - error invalid-ref: Namespace TypeSpec doesn't have member Go
    ```
+
    - These are custom decorators we haven't implemented yet
 
 **Root Cause Analysis:**
 
 **Source File (`src/emitter/typespec-go-emitter.tsx`):**
+
 ```tsx
 // Has NO JSX imports - uses JSX syntax directly
 import type { EmitContext, ... } from "@typespec/compiler";
@@ -302,6 +311,7 @@ import { Output } from "@alloy-js/core";
 ```
 
 **Built File (`dist/emitter/typespec-go-emitter.js`):**
+
 ```javascript
 // Suddenly imports jsx-dev-runtime that doesn't exist
 import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime";
@@ -325,6 +335,7 @@ import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime";
 
 **Symptom:** Built emitter imports non-existent module  
 **Evidence:**
+
 - Source: `src/emitter/typespec-go-emitter.tsx` - NO JSX imports
 - Built: `dist/emitter/typespec-go-emitter.js` - Imports `jsx-dev-runtime`
 - Reality: Only `@alloy-js/core/jsx-runtime` exists
@@ -357,6 +368,7 @@ import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime";
 
 **Symptom:** Function succeeds but no files created  
 **Evidence:**
+
 - Function called: ✅
 - No errors: ✅
 - Output directory exists: ✅
@@ -435,48 +447,48 @@ import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime";
 
 ### 🥇 CRITICAL PRIORITY (Must Fix for E2E)
 
-| # | Step | Work | Impact | Blocker |
-|---|-------|--------|----------|
-| 1 | Fix JSX runtime import in built emitter | 20 min | CRITICAL | 🔴 YES |
-| 2 | Debug why `writeOutput()` doesn't write files | 30 min | CRITICAL | 🔴 YES |
-| 3 | Filter built-in TypeSpec types from models | 15 min | HIGH | 🔴 YES |
-| 4 | Test CLI with simple .tsp file | 10 min | HIGH | 🔴 YES |
-| 5 | Create minimal E2E test with working emitter | 20 min | HIGH | 🔴 YES |
+| #   | Step                                          | Work   | Impact   | Blocker |
+| --- | --------------------------------------------- | ------ | -------- | ------- |
+| 1   | Fix JSX runtime import in built emitter       | 20 min | CRITICAL | 🔴 YES  |
+| 2   | Debug why `writeOutput()` doesn't write files | 30 min | CRITICAL | 🔴 YES  |
+| 3   | Filter built-in TypeSpec types from models    | 15 min | HIGH     | 🔴 YES  |
+| 4   | Test CLI with simple .tsp file                | 10 min | HIGH     | 🔴 YES  |
+| 5   | Create minimal E2E test with working emitter  | 20 min | HIGH     | 🔴 YES  |
 
 ### 🥈 HIGH PRIORITY (Enables Full Workflow)
 
-| # | Step | Work | Impact | Notes |
-|---|-------|--------|--------|
-| 6 | Find Alloy-JS production build mode | 15 min | MEDIUM | Research |
-| 7 | Study `writeOutput()` implementation | 20 min | MEDIUM | Debugging |
-| 8 | Create proper test utilities file | 30 min | MEDIUM | Architecture |
-| 9 | Add HTTP library support to tests | 20 min | MEDIUM | Decorators |
-| 10 | Test decorator extraction (@route, @get) | 25 min | MEDIUM | HTTP |
+| #   | Step                                     | Work   | Impact | Notes        |
+| --- | ---------------------------------------- | ------ | ------ | ------------ |
+| 6   | Find Alloy-JS production build mode      | 15 min | MEDIUM | Research     |
+| 7   | Study `writeOutput()` implementation     | 20 min | MEDIUM | Debugging    |
+| 8   | Create proper test utilities file        | 30 min | MEDIUM | Architecture |
+| 9   | Add HTTP library support to tests        | 20 min | MEDIUM | Decorators   |
+| 10  | Test decorator extraction (@route, @get) | 25 min | MEDIUM | HTTP         |
 
 ### 🥉 MEDIUM PRIORITY (Quality & Coverage)
 
-| # | Step | Work | Impact | Notes |
-|---|-------|--------|--------|
-| 11 | Add comprehensive E2E test suite | 60 min | MEDIUM | Coverage |
-| 12 | Document test architecture patterns | 30 min | LOW | Docs |
-| 13 | Create examples with CLI workflow | 30 min | LOW | Examples |
-| 14 | Add test for complex models | 30 min | LOW | Models |
-| 15 | Add test for union types | 30 min | LOW | Types |
+| #   | Step                                | Work   | Impact | Notes    |
+| --- | ----------------------------------- | ------ | ------ | -------- |
+| 11  | Add comprehensive E2E test suite    | 60 min | MEDIUM | Coverage |
+| 12  | Document test architecture patterns | 30 min | LOW    | Docs     |
+| 13  | Create examples with CLI workflow   | 30 min | LOW    | Examples |
+| 14  | Add test for complex models         | 30 min | LOW    | Models   |
+| 15  | Add test for union types            | 30 min | LOW    | Types    |
 
 ### 🏅 LOWER PRIORITY (Enhancement)
 
-| # | Step | Work | Impact | Notes |
-|---|-------|--------|--------|
-| 16 | Test TypeSpec visibility system | 30 min | LOW | Decorators |
-| 17 | Test TypeSpec template types | 30 min | LOW | Generics |
-| 18 | Add performance benchmarks | 30 min | LOW | Performance |
-| 19 | Validate Go code generation correctness | 30 min | LOW | Quality |
-| 20 | Create TypeSpec → Go migration guide | 30 min | LOW | Docs |
-| 21 | Add test for error models | 30 min | LOW | Error handling |
-| 22 | Test TypeSpec cross-file references | 30 min | LOW | Imports |
-| 23 | Validate HTTP metadata extraction | 30 min | LOW | HTTP |
-| 24 | Test TypeSpec services | 30 min | LOW | Services |
-| 25 | Create TypeSpec → Go example project | 30 min | LOW | Examples |
+| #   | Step                                    | Work   | Impact | Notes          |
+| --- | --------------------------------------- | ------ | ------ | -------------- |
+| 16  | Test TypeSpec visibility system         | 30 min | LOW    | Decorators     |
+| 17  | Test TypeSpec template types            | 30 min | LOW    | Generics       |
+| 18  | Add performance benchmarks              | 30 min | LOW    | Performance    |
+| 19  | Validate Go code generation correctness | 30 min | LOW    | Quality        |
+| 20  | Create TypeSpec → Go migration guide    | 30 min | LOW    | Docs           |
+| 21  | Add test for error models               | 30 min | LOW    | Error handling |
+| 22  | Test TypeSpec cross-file references     | 30 min | LOW    | Imports        |
+| 23  | Validate HTTP metadata extraction       | 30 min | LOW    | HTTP           |
+| 24  | Test TypeSpec services                  | 30 min | LOW    | Services       |
+| 25  | Create TypeSpec → Go example project    | 30 min | LOW    | Examples       |
 
 ---
 
@@ -487,6 +499,7 @@ import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime";
 **"How do I fix the JSX runtime import in the built emitter? It imports `@alloy-js/core/jsx-dev-runtime` which doesn't exist. Should only import `@alloy-js/core/jsx-runtime` (without 'dev')."**
 
 **Context:**
+
 - **Source:** `src/emitter/typespec-go-emitter.tsx` - NO JSX imports
 - **Built:** `dist/emitter/typespec-go-emitter.js` - Imports wrong module
 - **Error:** `Cannot find module '@alloy-js/core/jsx-dev-runtime'`
@@ -494,12 +507,14 @@ import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime";
 - **tsconfig.json:** Has `"jsx": "preserve"` but being overridden
 
 **What I Need to Understand:**
+
 1. How does `alloy build` decide which JSX runtime to use?
 2. How to build in production mode (not dev mode)?
 3. Should I use `tsc` directly instead of `alloy build`?
 4. Is there a build flag I'm missing?
 
 **Investigation Needed:**
+
 - Check Alloy-JS GitHub for build examples
 - Search for "jsx-dev-runtime" in Alloy-JS codebase
 - Look for `alloy build` CLI documentation
@@ -512,18 +527,21 @@ import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime";
 **"Why doesn't `writeOutput()` write any files to disk? Function is called successfully with no errors, but output directory is empty."**
 
 **Context:**
+
 - **Function:** `writeOutput(program, <Output><GoPackageDirectory /></Output>, outputDir)`
 - **Result:** No errors, but no files created
 - **Output Directory:** Exists, is empty
 - **Possibility:** Passing 28 models (including built-ins) might cause issues
 
 **What I Need to Understand:**
+
 1. Does `writeOutput()` require specific component structure?
 2. Why are all models (including built-ins) being passed?
 3. Do I need to call something after `writeOutput()`?
 4. Is the output directory path correct?
 
 **Investigation Needed:**
+
 - Add console.log to trace execution
 - Filter models to only user-defined ones
 - Check GoPackageDirectory implementation
@@ -534,6 +552,7 @@ import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime";
 ## 📊 Session Metrics
 
 ### Time Investment
+
 - **Total Session Time:** ~2 hours
 - **TypeSpec Integration:** 45 minutes
 - **Test Development:** 30 minutes
@@ -542,18 +561,21 @@ import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime";
 - **Debugging & Research:** 15 minutes
 
 ### Code Produced
+
 - **Files Added:** 3
 - **Lines Added:** ~150
 - **Tests Added:** 5
 - **Documentation Added:** 1 comprehensive file
 
 ### Test Results
+
 - **Tests Passing:** 167/167 (100%)
 - **Test Files:** 37/37 (100%)
 - **Execution Time:** ~7 seconds
 - **Test Categories:** 5 (all passing)
 
 ### Git History
+
 - **Commits:** 3
 - **Branch:** `lars/lets-rock`
 - **Pushed:** Yes, to GitHub
@@ -681,6 +703,7 @@ import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime";
 ### Key Technical Discoveries
 
 1. **TypeSpec Program Hierarchy:**
+
    ```
    Global Namespace
    ├── TypeSpec (built-in types)
@@ -694,6 +717,7 @@ import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime";
    ```
 
 2. **Testing API Pattern:**
+
    ```typescript
    // ✅ WORKING - Real TypeSpec compilation
    const Tester = createTester(undefined, { libraries: [] });
@@ -755,6 +779,7 @@ import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime";
 **Overall Status:** 🟡 **70% COMPLETE**
 
 ### Strengths ✅
+
 - TypeSpec compiler integration working
 - Test suite excellent (100% pass)
 - Documentation comprehensive
@@ -762,17 +787,20 @@ import { jsxDEV as _jsxDEV } from "@alloy-js/core/jsx-dev-runtime";
 - Clear path forward
 
 ### Weaknesses ⚠️
+
 - JSX runtime import blocking CLI
 - `writeOutput()` behavior unclear
 - Full E2E workflow not validated
 - Build configuration needs understanding
 
 ### Next Critical Steps 🔴
+
 1. Fix JSX runtime import (1 hour)
 2. Debug `writeOutput()` file writing (1 hour)
 3. Create working E2E test (30 minutes)
 
 ### Success Criteria 🎯
+
 - [ ] Compile real .tsp file with CLI
 - [ ] Generate Go code files
 - [ ] Validate generated Go correctness

@@ -72,7 +72,7 @@ class GoTypeEmitter extends TypeEmitter<string> {
     // Convert TypeSpec model to expected format
     const modelData = {
       name: model.name,
-      properties: model.properties
+      properties: model.properties,
     };
     const result = generator.generateModel(modelData);
     return result._tag === "success" ? result.data.get("model.go") || "" : "";

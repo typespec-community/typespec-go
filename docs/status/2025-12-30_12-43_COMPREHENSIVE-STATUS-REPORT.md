@@ -17,16 +17,16 @@ The TypeSpec Go Emitter project has **excellent domain layer code** but is **fun
 
 ### Key Metrics
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| Tests Passing | 114/169 (67.5% passing) | 🔴 Poor |
-| TypeScript Build | ❌ 38+ compilation errors | 🔴 Failing |
-| Component Rendering | ❌ Empty contents arrays | 🔴 Broken |
-| JSX Runtime | ❌ Resolution errors | 🔴 Broken |
-| Domain Layer Code | ✅ 1,102 lines working | 🟢 Excellent |
-| E2E Integration | ✅ 2/2 tests passing | 🟢 Working |
-| Basic Type Generation | ✅ 18/18 tests passing | 🟢 Working |
-| Time to Production | 2-3 weeks (if fixed) | 🔴 Significant work needed |
+| Metric                | Value                     | Status                     |
+| --------------------- | ------------------------- | -------------------------- |
+| Tests Passing         | 114/169 (67.5% passing)   | 🔴 Poor                    |
+| TypeScript Build      | ❌ 38+ compilation errors | 🔴 Failing                 |
+| Component Rendering   | ❌ Empty contents arrays  | 🔴 Broken                  |
+| JSX Runtime           | ❌ Resolution errors      | 🔴 Broken                  |
+| Domain Layer Code     | ✅ 1,102 lines working    | 🟢 Excellent               |
+| E2E Integration       | ✅ 2/2 tests passing      | 🟢 Working                 |
+| Basic Type Generation | ✅ 18/18 tests passing    | 🟢 Working                 |
+| Time to Production    | 2-3 weeks (if fixed)      | 🔴 Significant work needed |
 
 ### Production Readiness Assessment
 
@@ -83,6 +83,7 @@ tsp compile .
 **Problem:** All Alloy-JS component rendering returns empty results
 
 **Error Pattern:**
+
 ```javascript
 {
   kind: "directory",
@@ -91,12 +92,14 @@ tsp compile .
 ```
 
 **Error Messages:**
+
 ```
 Cannot find module '@alloy-js/core/jsx-dev-runtime'
 "null is not an object (evaluating 'props.basePath')"
 ```
 
 **Impact:**
+
 - ❌ 40+ component tests failing
 - ❌ Cannot generate Go packages
 - ❌ Cannot generate multiple files
@@ -104,6 +107,7 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 - ❌ 90% of component system non-functional
 
 **Files Affected:**
+
 - All `.tsx` component files in `src/components/go/`
 - All test files using JSX rendering
 - `src/emitter/typespec-go-emitter.tsx` (main emitter)
@@ -117,43 +121,52 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 **Categories of Errors:**
 
 **a) JSX Runtime Resolution (Primary Issue)**
+
 ```
 error TS2307: Cannot find module '@alloy-js/core/jsx-dev-runtime'
 error TS2875: This JSX tag requires the module path '@alloy-js/core/jsx-runtime'
 ```
+
 - **Files Affected:** All `.tsx` files
 - **Root Cause:** Vitest config alias not working correctly
 - **Status:** UNRESOLVED
 
 **b) Missing Module Exports**
+
 ```
 error TS2307: Module '"@alloy-js/go"' has no exported member 'Package'
 error TS2307: Cannot find module '@typespec/compiler' or its corresponding type declarations
 ```
+
 - **Files Affected:** `GoPackageDirectory.tsx`, test files
 - **Root Cause:** Version mismatch or incorrect imports
 - **Status:** UNRESOLVED
 
 **c) Type Errors**
+
 ```
 error TS18046: 'm' is of type 'unknown'
 error TS7006: Parameter 'model' implicitly has an 'any' type
 error TS2339: Property 'contents' does not exist on type 'OutputDirectory | OutputFile'
 ```
+
 - **Files Affected:** `GoEnumDeclaration.tsx`, `GoUnionDeclaration.tsx`, test files
 - **Root Cause:** Missing type annotations, incorrect type definitions
 - **Status:** FIXABLE with type annotations
 
 **d) Missing Imports**
+
 ```
 error TS2580: Cannot find name 'process'
 error TS2304: Cannot find name 'fmt'
 ```
+
 - **Files Affected:** Test files, Go code literals
 - **Root Cause:** Missing type imports, incorrect Go code in JSX
 - **Status:** FIXABLE with proper imports
 
 **Impact:**
+
 - ❌ Build command fails: `bun run build`
 - ❌ Cannot develop with TypeScript checking enabled
 - ❌ IDE autocomplete and error checking broken
@@ -164,6 +177,7 @@ error TS2304: Cannot find name 'fmt'
 ### 3. Test Suite Failures (🚨 67.5% FAILURE RATE)
 
 **Test Statistics:**
+
 - Total Tests: 169
 - Passing: 114 (67.5%)
 - Failing: 55 (32.5%)
@@ -171,19 +185,20 @@ error TS2304: Cannot find name 'fmt'
 
 **Failing Test Categories:**
 
-| Category | Tests Failing | Root Cause |
-|----------|---------------|-------------|
-| Component Rendering | 40+ | Empty contents array |
-| Enum Generation | 5 | Component rendering broken |
-| Union Generation | 4 | Component rendering broken |
-| Interface Declaration | 2 | Component rendering broken |
-| Go Package Directory | 2 | Component rendering broken |
-| HTTP Handler Components | 5 | Component rendering broken |
-| Extended Scalar Types | 5 | Component rendering broken |
-| Pointer Types | 3 | Component rendering broken |
-| Doc Decorator Support | 4 | Component rendering broken |
+| Category                | Tests Failing | Root Cause                 |
+| ----------------------- | ------------- | -------------------------- |
+| Component Rendering     | 40+           | Empty contents array       |
+| Enum Generation         | 5             | Component rendering broken |
+| Union Generation        | 4             | Component rendering broken |
+| Interface Declaration   | 2             | Component rendering broken |
+| Go Package Directory    | 2             | Component rendering broken |
+| HTTP Handler Components | 5             | Component rendering broken |
+| Extended Scalar Types   | 5             | Component rendering broken |
+| Pointer Types           | 3             | Component rendering broken |
+| Doc Decorator Support   | 4             | Component rendering broken |
 
 **Passing Test Categories:**
+
 - ✅ E2E Integration (2/2) - Full TypeSpec to Go workflow
 - ✅ Basic Type Generation (18/18) - Map, Array, Record types
 - ✅ Model Composition (11/11) - Embedded structs
@@ -191,6 +206,7 @@ error TS2304: Cannot find name 'fmt'
 - ✅ Component Isolation (6/6) - Simple component tests
 
 **Impact:**
+
 - ❌ Cannot verify advanced features work
 - ❌ No confidence in type generation beyond basics
 - ❌ Cannot release with broken features documented
@@ -203,24 +219,28 @@ error TS2304: Cannot find name 'fmt'
 ### 1. Domain Layer: 🟢 EXCELLENT (Complete & Production-Ready)
 
 **CleanTypeMapper** - 615 lines ✅
+
 - Comprehensive TypeSpec → Go type mapping
 - Scalar types, complex types, templates
 - Time types, network types, extended scalars
 - **Status:** Ready for production use
 
 **ErrorFactory** - 214 lines ✅
+
 - Discriminated union error types
 - Go-specific error patterns
 - Structured error generation
 - **Status:** Ready for production use
 
 **TypeMappingService** - 273 lines ✅
+
 - Service layer for type mapping
 - Configuration-driven approach
 - Extensible architecture
 - **Status:** Ready for production use
 
 **UnionGenerator, StructGenerator** ✅
+
 - Specialized generators for complex types
 - Pattern-based generation
 - **Status:** Ready for production use
@@ -232,6 +252,7 @@ error TS2304: Cannot find name 'fmt'
 ### 2. Basic Type Generation: 🟢 WORKING (18/18 tests)
 
 **Supported TypeSpec Types:**
+
 - ✅ `string` → `string`
 - ✅ `boolean` → `bool`
 - ✅ `int8`, `int16`, `int32`, `int64`
@@ -244,6 +265,7 @@ error TS2304: Cannot find name 'fmt'
 - ✅ Optional fields: `name?: string` → `*string`
 
 **Test Results:**
+
 - ✅ Map/Record type generation tests
 - ✅ Array type generation tests
 - ✅ Array type integration tests
@@ -254,12 +276,14 @@ error TS2304: Cannot find name 'fmt'
 ### 3. E2E Integration: 🟢 WORKING (2/2 tests)
 
 **Complete TypeSpec to Go Workflow:**
+
 - ✅ Basic model generation with valid Go output
 - ✅ Complex TypeSpec with HTTP decorators workflow
 - ✅ Performance: Sub-millisecond generation
 - ✅ AssetEmitter framework integration (partial)
 
 **Evidence:**
+
 ```
 ✅ GoModFile test passed
 ✅ Simple component test
@@ -273,6 +297,7 @@ error TS2304: Cannot find name 'fmt'
 **Framework:** Vitest with TypeScript/JSX support
 
 **Features:**
+
 - ✅ Component isolation testing
 - ✅ TypeSpec integration testing
 - ✅ Mock factories for testing
@@ -280,6 +305,7 @@ error TS2304: Cannot find name 'fmt'
 - ✅ Test utilities and helpers
 
 **Build System:**
+
 - ✅ Bun package manager
 - ✅ TypeScript compilation (when no errors)
 - ✅ Alloy-JS component building (conceptually)
@@ -331,11 +357,13 @@ error TS2304: Cannot find name 'fmt'
 ### The Integration Gap: 🚨 CRITICAL
 
 **Documented Architecture:**
+
 ```
 Domain Logic → Components → Go Code
 ```
 
 **Actual Architecture:**
+
 ```
 Domain Logic      →     (UNUSED)
 Components        →     (BROKEN - Empty output)
@@ -354,18 +382,18 @@ Component layer has its own broken logic instead of delegating to domain.
 
 ### ✅ FULLY FUNCTIONAL (15% - Core Works)
 
-| Feature | Status | Tests | Notes |
-|---------|--------|-------|-------|
-| Basic Model Generation | ✅ Working | 18/18 | Core Go struct generation |
-| Scalar Type Mapping | ✅ Working | 18/18 | String, bool, ints, floats |
-| Array Types | ✅ Working | 6/6 | Slice generation |
-| Map/Record Types | ✅ Working | 4/4 | Map generation |
-| Time/Duration Types | ✅ Working | 5/5 | time.Time, time.Duration |
-| Optional Properties | ✅ Working | 4/4 | Pointer types with omitempty |
-| JSON Tag Generation | ✅ Working | 8/8 | Automatic struct tags |
-| E2E Integration | ✅ Working | 2/2 | Full TypeSpec workflow |
-| Test Infrastructure | ✅ Working | 33/33 | Utilities, mocks, formatters |
-| Build System | ✅ Working | - | Bun, TypeScript, ESLint |
+| Feature                | Status     | Tests | Notes                        |
+| ---------------------- | ---------- | ----- | ---------------------------- |
+| Basic Model Generation | ✅ Working | 18/18 | Core Go struct generation    |
+| Scalar Type Mapping    | ✅ Working | 18/18 | String, bool, ints, floats   |
+| Array Types            | ✅ Working | 6/6   | Slice generation             |
+| Map/Record Types       | ✅ Working | 4/4   | Map generation               |
+| Time/Duration Types    | ✅ Working | 5/5   | time.Time, time.Duration     |
+| Optional Properties    | ✅ Working | 4/4   | Pointer types with omitempty |
+| JSON Tag Generation    | ✅ Working | 8/8   | Automatic struct tags        |
+| E2E Integration        | ✅ Working | 2/2   | Full TypeSpec workflow       |
+| Test Infrastructure    | ✅ Working | 33/33 | Utilities, mocks, formatters |
+| Build System           | ✅ Working | -     | Bun, TypeScript, ESLint      |
 
 **Subtotal:** 10/33 features working (30%)
 
@@ -373,13 +401,13 @@ Component layer has its own broken logic instead of delegating to domain.
 
 ### 🟡 PARTIALLY FUNCTIONAL (20% - Exists but Broken)
 
-| Feature | Status | Tests | Blocker |
-|---------|--------|-------|---------|
-| Enum Generation | 🟡 Exists | 1/6 passing | Component rendering |
-| Union Generation | 🟡 Exists | 0/4 passing | Component rendering |
-| Interface Declaration | 🟡 Exists | 1/3 passing | Component rendering |
-| @doc Decorator Support | 🟡 Exists | 0/4 passing | Component rendering |
-| Extended Scalar Mapping | 🟡 Exists | 0/5 passing | Not integrated |
+| Feature                 | Status    | Tests       | Blocker             |
+| ----------------------- | --------- | ----------- | ------------------- |
+| Enum Generation         | 🟡 Exists | 1/6 passing | Component rendering |
+| Union Generation        | 🟡 Exists | 0/4 passing | Component rendering |
+| Interface Declaration   | 🟡 Exists | 1/3 passing | Component rendering |
+| @doc Decorator Support  | 🟡 Exists | 0/4 passing | Component rendering |
+| Extended Scalar Mapping | 🟡 Exists | 0/5 passing | Not integrated      |
 
 **Subtotal:** 5/33 features partial (15%)
 
@@ -387,17 +415,17 @@ Component layer has its own broken logic instead of delegating to domain.
 
 ### ❌ BROKEN (50% - Implemented but Non-Functional)
 
-| Feature | Status | Tests | Root Cause |
-|---------|--------|-------|-----------|
-| Go Package Directory | ❌ Broken | 0/2 | Component rendering |
-| Go Module Generation | ❌ Broken | 0/3 | Component rendering |
-| File Splitting | ❌ Broken | - | Component rendering |
-| HTTP Operation Support | ❌ Broken | 0/5 | Component rendering |
-| Handler Stub Generation | ❌ Broken | 0/3 | Component rendering |
-| Route Registration | ❌ Broken | 0/2 | Component rendering |
-| Component Helper Functions | ❌ Broken | 0/16 | Component rendering |
-| Pointer Type Generation | ❌ Broken | 0/3 | Test framework |
-| TypeSpec Emitter Integration | ❌ Broken | 0/1 | basePath errors |
+| Feature                      | Status    | Tests | Root Cause          |
+| ---------------------------- | --------- | ----- | ------------------- |
+| Go Package Directory         | ❌ Broken | 0/2   | Component rendering |
+| Go Module Generation         | ❌ Broken | 0/3   | Component rendering |
+| File Splitting               | ❌ Broken | -     | Component rendering |
+| HTTP Operation Support       | ❌ Broken | 0/5   | Component rendering |
+| Handler Stub Generation      | ❌ Broken | 0/3   | Component rendering |
+| Route Registration           | ❌ Broken | 0/2   | Component rendering |
+| Component Helper Functions   | ❌ Broken | 0/16  | Component rendering |
+| Pointer Type Generation      | ❌ Broken | 0/3   | Test framework      |
+| TypeSpec Emitter Integration | ❌ Broken | 0/1   | basePath errors     |
 
 **Subtotal:** 9/33 features broken (27%)
 
@@ -405,13 +433,13 @@ Component layer has its own broken logic instead of delegating to domain.
 
 ### 📋 PLANNED BUT NOT STARTED (15%)
 
-| Feature | Priority | Est. Effort | Dependencies |
-|---------|----------|--------------|--------------|
-| Go Decorators (@go.name, @go.type, @go.tag) | High | 1-2 weeks | Component rendering |
-| Template Models with Generics | Medium | 1 week | Type mapping |
-| Discriminated Union Error Handling | High | 3-4 days | Union generation |
-| CLI Tool (optional) | Low | 1 week | N/A |
-| Performance Optimization | Low | 2-3 days | Working baseline |
+| Feature                                     | Priority | Est. Effort | Dependencies        |
+| ------------------------------------------- | -------- | ----------- | ------------------- |
+| Go Decorators (@go.name, @go.type, @go.tag) | High     | 1-2 weeks   | Component rendering |
+| Template Models with Generics               | Medium   | 1 week      | Type mapping        |
+| Discriminated Union Error Handling          | High     | 3-4 days    | Union generation    |
+| CLI Tool (optional)                         | Low      | 1 week      | N/A                 |
+| Performance Optimization                    | Low      | 2-3 days    | Working baseline    |
 
 **Subtotal:** 5/33 features planned (15%)
 
@@ -426,6 +454,7 @@ Component layer has its own broken logic instead of delegating to domain.
 **Required Actions:**
 
 **Phase 1: JSX Runtime & Compilation (3-5 days)**
+
 1. Research Alloy-JS documentation and examples
 2. Fix JSX runtime resolution in Vitest config
 3. Resolve all TypeScript compilation errors
@@ -433,6 +462,7 @@ Component layer has its own broken logic instead of delegating to domain.
 5. Get build passing successfully
 
 **Phase 2: Component Rendering System (5-7 days)**
+
 1. Debug empty contents array issue
 2. Fix basePath context errors
 3. Test component rendering with simple examples
@@ -440,6 +470,7 @@ Component layer has its own broken logic instead of delegating to domain.
 5. Restore all 40+ failing component tests
 
 **Phase 3: Domain-Component Integration (3-4 days)**
+
 1. Remove duplicate logic from GoStructDeclaration (lines 129-234)
 2. Connect CleanTypeMapper to all components
 3. Integrate ErrorFactory for error handling
@@ -447,6 +478,7 @@ Component layer has its own broken logic instead of delegating to domain.
 5. Test integration thoroughly
 
 **Phase 4: Feature Implementation (7-10 days)**
+
 1. Fix enum generation (5 tests)
 2. Fix union generation (4 tests)
 3. Fix interface declaration (2 tests)
@@ -454,12 +486,14 @@ Component layer has its own broken logic instead of delegating to domain.
 5. Fix Go package directory (2 tests)
 
 **Phase 5: Production Hardening (3-4 days)**
+
 1. Add comprehensive error handling
 2. Performance optimization and testing
 3. Documentation and examples
 4. Release notes and CHANGELOG
 
 **Success Criteria:**
+
 - ✅ Build passes with zero errors
 - ✅ All 169 tests passing
 - ✅ Component rendering generates correct Go code
@@ -467,6 +501,7 @@ Component layer has its own broken logic instead of delegating to domain.
 - ✅ Performance: <1ms per type generation
 
 **Risks:**
+
 - 🔴 High: May not be able to fix Alloy-JS rendering
 - 🟡 Medium: 2-3 weeks is optimistic, may take longer
 - 🟢 Low: If successful, excellent architecture
@@ -482,12 +517,14 @@ Component layer has its own broken logic instead of delegating to domain.
 **Required Actions:**
 
 **Phase 1: Fix Build System (1-2 days)**
+
 1. Remove/bypass JSX runtime resolution issues
 2. Fix TypeScript compilation errors
 3. Switch to working import patterns
 4. Get build passing
 
 **Phase 2: Simplify Component Layer (2-3 days)**
+
 1. Use CleanTypeMapper for all type mapping (works)
 2. Use string generation for simple patterns (works)
 3. Add helper functions for common patterns (works)
@@ -495,6 +532,7 @@ Component layer has its own broken logic instead of delegating to domain.
 5. Keep basic components that render correctly
 
 **Phase 3: Feature Implementation (3-4 days)**
+
 1. Add enum generation using string templates
 2. Add union generation using string templates
 3. Add interface generation using string templates
@@ -502,12 +540,14 @@ Component layer has its own broken logic instead of delegating to domain.
 5. Test all features end-to-end
 
 **Phase 4: Integration & Hardening (2 days)**
+
 1. Connect domain layer to simplified components
 2. Add error handling
 3. Add documentation
 4. Prepare v1.0 release
 
 **Success Criteria:**
+
 - ✅ Build passes with zero errors
 - ✅ All core features working (basic + enums + unions + HTTP)
 - ✅ Clean code generation using domain layer
@@ -515,6 +555,7 @@ Component layer has its own broken logic instead of delegating to domain.
 - ✅ Production-ready Go output
 
 **Risks:**
+
 - 🟢 Low: Approach proven to work
 - 🟢 Low: 1 week timeline realistic
 - 🟡 Medium: Some advanced features may need v1.1
@@ -540,16 +581,19 @@ Component layer has its own broken logic instead of delegating to domain.
    - Common pitfalls
 
 **Decision Points After Expert Help:**
+
 - If fix is clear and easy → **Option A**
 - If fix is complex → **Option B**
 - If no fix available → **Option B**
 
 **Benefits:**
+
 - 🟢 Low time investment (1-2 days)
 - 🟢 High potential for clear guidance
 - 🟢 Informed decision on direction
 
 **Risks:**
+
 - 🟡 Medium: May not get timely response
 - 🟢 Low: Even if no help, wasted time is minimal
 
@@ -582,6 +626,7 @@ Component layer has its own broken logic instead of delegating to domain.
 ### Alternative: **Direct to Option B**
 
 **If you want faster results:**
+
 - Skip expert help (1-2 days saved)
 - Go directly to pragmatic pivot
 - Ship v1.0 in 1 week
@@ -702,6 +747,7 @@ Component layer has its own broken logic instead of delegating to domain.
 ### JSX Runtime Resolution Issue
 
 **Current Vitest Config:**
+
 ```javascript
 esbuild: {
   jsx: "transform",
@@ -717,17 +763,20 @@ resolve: {
 ```
 
 **Error:**
+
 ```
 Cannot find module '@alloy-js/core/jsx-dev-runtime'
 ```
 
 **Analysis:**
+
 - Vitest's esbuild doesn't respect resolve.alias for JSX runtime
 - Alloy-JS rollup plugin injects `@alloy-js/core/jsx-dev-runtime` imports
 - Module doesn't exist (should use `jsx-runtime`)
 - Alias not working due to plugin loading order
 
 **Potential Fixes:**
+
 1. Disable esbuild JSX transformation (use alloy plugin only)
 2. Update rollup plugin to use correct import
 3. Create shim file for jsx-dev-runtime
@@ -738,15 +787,15 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 ### Component Rendering Empty Contents
 
 **Current Pattern:**
+
 ```tsx
 <Output basePath="./output">
-  <SourceFile path="test.go">
-    {code`package main`}
-  </SourceFile>
+  <SourceFile path="test.go">{code`package main`}</SourceFile>
 </Output>
 ```
 
 **Expected Result:**
+
 ```javascript
 {
   kind: "directory",
@@ -757,6 +806,7 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 ```
 
 **Actual Result:**
+
 ```javascript
 {
   kind: "directory",
@@ -765,12 +815,14 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 ```
 
 **Analysis:**
+
 - Components are being created but not rendered
 - Possibly missing reactive system integration
 - May need to use `render()` function correctly
 - Output component may require different props or context
 
 **Potential Fixes:**
+
 1. Check Alloy-JS docs for correct Output usage
 2. Use `render()` with proper parameters
 3. Add missing context providers
@@ -831,6 +883,7 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 ### Current State: 🔴 NOT PRODUCTION READY
 
 **Strengths:**
+
 - ✅ Excellent domain layer (1,102 lines)
 - ✅ Basic type generation works
 - ✅ E2E workflow works
@@ -838,6 +891,7 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 - ✅ Comprehensive documentation
 
 **Weaknesses:**
+
 - ❌ Component rendering system completely broken
 - ❌ TypeScript compilation fails (38+ errors)
 - ❌ 67.5% of tests failing
@@ -845,6 +899,7 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 - ❌ 500+ lines duplicate code
 
 **Critical Blockers:**
+
 1. JSX runtime resolution
 2. Component rendering (empty contents)
 3. TypeScript compilation
@@ -853,16 +908,19 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 ### Path Forward: Choose One of Three
 
 **Option A: Fix Alloy-JS** (2-3 weeks, 50% success)
+
 - Best long-term architecture
 - High risk, high reward
 - May not be fixable
 
 **Option B: Pragmatic Pivot** (1 week, 95% success)
+
 - Ship working v1.0 quickly
 - Use proven patterns
 - Can iterate later
 
 **Option C: Expert Help First** (1-2 days, then decide)
+
 - Get clear guidance
 - Informed decision
 - Low time investment

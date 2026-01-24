@@ -7,23 +7,23 @@
 ```typescript
 // CORRECT imports - these actually exist
 import {
-  SourceFile,                    // ✅ File container
-  ImportStatement,               // ✅ Import management
-  SingleImportStatement,         // ✅ Single import
-  FunctionDeclaration,           // ✅ Function/method generation
-  FunctionReceiver,              // ✅ Method receivers
-  TypeDeclaration,               // ✅ Named type declarations
-  StructDeclaration,             // ✅ Anonymous structs
-  StructTypeDeclaration,         // ✅ Named structs
-  StructMember,                  // ✅ Struct fields
-  StructEmbed,                   // ✅ Struct embedding
-  VariableDeclaration,           // ✅ Variable declarations
-  VariableDeclarationGroup,      // ✅ Variable groups
-  InterfaceDeclaration,          // ✅ Interface types
-  ModuleDirectory,               // ✅ Directory structure
-  SourceDirectory,               // ✅ Source directory
-  Name,                         // ✅ Name resolution
-  Reference                     // ✅ Type references
+  SourceFile, // ✅ File container
+  ImportStatement, // ✅ Import management
+  SingleImportStatement, // ✅ Single import
+  FunctionDeclaration, // ✅ Function/method generation
+  FunctionReceiver, // ✅ Method receivers
+  TypeDeclaration, // ✅ Named type declarations
+  StructDeclaration, // ✅ Anonymous structs
+  StructTypeDeclaration, // ✅ Named structs
+  StructMember, // ✅ Struct fields
+  StructEmbed, // ✅ Struct embedding
+  VariableDeclaration, // ✅ Variable declarations
+  VariableDeclarationGroup, // ✅ Variable groups
+  InterfaceDeclaration, // ✅ Interface types
+  ModuleDirectory, // ✅ Directory structure
+  SourceDirectory, // ✅ Source directory
+  Name, // ✅ Name resolution
+  Reference, // ✅ Type references
 } from "@alloy-js/go";
 ```
 
@@ -32,9 +32,9 @@ import {
 ```typescript
 // ❌ These components DON'T exist - causes import errors
 import {
-  Package,        // ❌ Use ModuleDirectory instead
-  Import,         // ❌ Use ImportStatement instead
-  VarDeclaration   // ❌ Use VariableDeclaration instead
+  Package, // ❌ Use ModuleDirectory instead
+  Import, // ❌ Use ImportStatement instead
+  VarDeclaration, // ❌ Use VariableDeclaration instead
 } from "@alloy-js/go";
 ```
 

@@ -137,9 +137,11 @@ function TypeExpression({ type }: { type: Type }) {
   if (type.kind === "Model" && (type as Model).indexer) {
     const model = type as Model;
     if (model.indexer) {
-      return <go.ArrayType>
-        <TypeExpression type={model.indexer.value} />
-      </go.ArrayType>;
+      return (
+        <go.ArrayType>
+          <TypeExpression type={model.indexer.value} />
+        </go.ArrayType>
+      );
     }
   }
 
@@ -158,18 +160,18 @@ function GoEmitterOutput({ program }: { program: Program }) {
   navigateProgram(program, {
     model: (model: Model) => {
       models.set(model.name || "unnamed", model);
-    }
+    },
   });
 
   return (
     <Output program={program}>
-        <go.SourceFile path="models.go">
-          <go.Package name="api" />
+      <go.SourceFile path="models.go">
+        <go.Package name="api" />
 
-          {Array.from(models.values()).map((model) => (
-            <GoModelStruct model={model} />
-          ))}
-        </go.SourceFile>
+        {Array.from(models.values()).map((model) => (
+          <GoModelStruct model={model} />
+        ))}
+      </go.SourceFile>
     </Output>
   );
 }

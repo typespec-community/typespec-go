@@ -42,9 +42,9 @@ timestamps: utcDateTime[] // → []time.Time (with imports)
 
 ```typescript
 // TypeSpec patterns now supported
-metadata: Record<string, string>  // → map[string]string
-settings: Map<string, any>       // → map[string]interface{}
-config: Map<int, bool>          // → map[int]bool (comparable keys)
+metadata: Record<string, string>; // → map[string]string
+settings: Map<string, any>; // → map[string]interface{}
+config: Map<int, bool>; // → map[int]bool (comparable keys)
 ```
 
 ### **Advanced Features**

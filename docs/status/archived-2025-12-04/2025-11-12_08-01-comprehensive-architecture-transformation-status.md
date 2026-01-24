@@ -131,7 +131,7 @@ The emitter compiles fine, TypeSpec finds it, but fails at runtime loading due t
 
 ```typescript
 // Current: Loose typing
-function collectTypeImports(mappedType: any, imports: Set<string>): void
+function collectTypeImports(mappedType: any, imports: Set<string>): void;
 
 // Proposed: Strict typing
 interface GoTypeComponent {

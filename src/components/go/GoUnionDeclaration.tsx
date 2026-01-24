@@ -4,11 +4,7 @@
  * Supports discriminated unions with type field
  */
 
-import type {
-  Program,
-  Union,
-  Type,
-} from "@typespec/compiler";
+import type { Program, Union, Type } from "@typespec/compiler";
 import { TypeDeclaration, InterfaceDeclaration, FunctionDeclaration } from "@alloy-js/go";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import { capitalize } from "../../utils/strings.js";

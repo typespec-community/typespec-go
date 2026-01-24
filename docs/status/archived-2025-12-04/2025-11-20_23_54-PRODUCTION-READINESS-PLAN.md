@@ -265,9 +265,9 @@ typespec-go version
 ```typescript
 // PROPER ERROR DOMAIN:
 type GoEmitterResult =
-  | Success & { _tag: "success" }
-  | GoCodeGenerationError & { _tag: "go_code_generation_error" }
-  | SystemError & { _tag: "system_error" };
+  | (Success & { _tag: "success" })
+  | (GoCodeGenerationError & { _tag: "go_code_generation_error" })
+  | (SystemError & { _tag: "system_error" });
 
 // FACTORY PATTERN:
 ErrorFactory.createSuccess(generatedFiles, metadata);

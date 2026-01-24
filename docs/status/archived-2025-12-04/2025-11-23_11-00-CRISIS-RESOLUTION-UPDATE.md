@@ -58,7 +58,7 @@ export const isStringType = (type: Type): type is String => isString(type);
 ```typescript
 // BEFORE - Manual decorator parsing (FRAGILE)
 const args = decorator.args || [];
-return args.some(arg => this.isValidLifecyclePhase(arg));
+return args.some((arg) => this.isValidLifecyclePhase(arg));
 
 // AFTER - Native TypeSpec visibility API (ROBUST)
 const visibility = getVisibilityForClass(program, property, visibilityClass);

@@ -50,7 +50,15 @@
 **Issue:** Just modified GoHandlerMethodComponent.tsx with potentially non-existent imports:
 
 ```typescript
-import { FunctionDeclaration, Comment, Statement, Expression, VarDeclaration, If, Return } from "@alloy-js/go";
+import {
+  FunctionDeclaration,
+  Comment,
+  Statement,
+  Expression,
+  VarDeclaration,
+  If,
+  Return,
+} from "@alloy-js/go";
 ```
 
 **Immediate Impact:**

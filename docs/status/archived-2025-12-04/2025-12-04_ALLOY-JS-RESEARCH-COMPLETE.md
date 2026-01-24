@@ -11,14 +11,14 @@
 ```typescript
 // ✅ WORKING imports
 import {
-  SourceFile,                    // ✅ File container
-  SingleImportStatement,          // ✅ Single imports
-  FunctionDeclaration,           // ✅ Functions/methods
-  FunctionReceiver,              // ✅ Method receivers
-  VariableDeclaration,           // ✅ Variable declarations
-  StructTypeDeclaration,         // ✅ Named structs
-  StructMember,                  // ✅ Struct fields
-  Reference                      // ✅ Type references
+  SourceFile, // ✅ File container
+  SingleImportStatement, // ✅ Single imports
+  FunctionDeclaration, // ✅ Functions/methods
+  FunctionReceiver, // ✅ Method receivers
+  VariableDeclaration, // ✅ Variable declarations
+  StructTypeDeclaration, // ✅ Named structs
+  StructMember, // ✅ Struct fields
+  Reference, // ✅ Type references
 } from "@alloy-js/go";
 ```
 

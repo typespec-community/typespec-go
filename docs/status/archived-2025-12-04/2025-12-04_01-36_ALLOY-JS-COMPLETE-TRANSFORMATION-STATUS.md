@@ -138,9 +138,9 @@ TypeError: undefined is not an object (evaluating 'C.tag')
 ```typescript
 // Legacy approach - Manual string concatenation
 function generateGoFile(model: Model): string {
-  return `package api\n\ntype ${model.name} struct {\n${
-    fields.map(f => `  ${f.name} ${f.type} \`${f.jsonTag}\``).join('\n')
-  }}`;
+  return `package api\n\ntype ${model.name} struct {\n${fields
+    .map((f) => `  ${f.name} ${f.type} \`${f.jsonTag}\``)
+    .join("\n")}}`;
 }
 ```
 

@@ -75,12 +75,23 @@
 
    ```typescript
    // BROKEN in type-mapping.service.ts:
-   interface ArrayType extends Type { elementType?: Type; }
+   interface ArrayType extends Type {
+     elementType?: Type;
+   }
 
    // FIX 3 LINES:
-   interface ArrayType { kind: "Array"; elementType: Type; }
-   interface UnionType { kind: "Union"; variants: readonly UnionVariant[]; }
-   interface NamedType { kind: "Model" | "Scalar"; name: string; }
+   interface ArrayType {
+     kind: "Array";
+     elementType: Type;
+   }
+   interface UnionType {
+     kind: "Union";
+     variants: readonly UnionVariant[];
+   }
+   interface NamedType {
+     kind: "Model" | "Scalar";
+     name: string;
+   }
    ```
 
 2. **GoPrimitiveType Import Fix** (2 minutes - 6% impact)

@@ -27,10 +27,8 @@
 
 ```typescript
 // EVERYWHERE IN CODEBASE - VIOLATIONS
-(type as any).kind
-(type as any).variants
-(type as any).template
-return "interface{}"  // WORST PRACTICE
+(type as any).kind(type as any).variants(type as any).template;
+return "interface{}"; // WORST PRACTICE
 ```
 
 **REALITY:** We have any types everywhere, defeating TypeScript purpose!
@@ -75,16 +73,13 @@ return "interface{}"  // WORST PRACTICE
 ```typescript
 // CURRENT STATE - TYPE NIGHTMARE
 if ((type as any).kind === "union") {
-  const unionVariants = (type as any).variants?.map((variant: any) =>
-    this.mapTypeSpecType(variant.type)
-  ) || [];
+  const unionVariants =
+    (type as any).variants?.map((variant: any) => this.mapTypeSpecType(variant.type)) || [];
 }
 
 // REQUIRED STATE - TYPE SAFE
 if (isUnionType(type)) {
-  const unionVariants = type.variants.map(variant =>
-    this.mapTypeSpecType(variant.type)
-  );
+  const unionVariants = type.variants.map((variant) => this.mapTypeSpecType(variant.type));
 }
 ```
 

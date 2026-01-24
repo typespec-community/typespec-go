@@ -88,17 +88,17 @@ kind: "model", // '"model"' is not assignable to allowed kinds
 
 ```typescript
 // ❌ Static method doesn't exist
-GoTypeStringGenerator.generate(type) // Property 'generate' does not exist
+GoTypeStringGenerator.generate(type); // Property 'generate' does not exist
 
 // ❌ Missing property access
-type.template // Property 'template' does not exist on type 'BasicGoType'
+type.template; // Property 'template' does not exist on type 'BasicGoType'
 ```
 
 **3. Error Factory Method Issues**
 
 ```typescript
 // ❌ Using method as property instead of calling it
-ErrorFactory.goCodeGenerationError("message")
+ErrorFactory.goCodeGenerationError("message");
 // Should be: ErrorFactory.createGoCodeGenerationError("message")
 ```
 
@@ -122,8 +122,8 @@ ErrorFactory.goCodeGenerationError("message")
 
 ```typescript
 // ❌ INCONSISTENT
-import { describe, it, expect } from "bun:test";    // Some files
-import { describe, it, expect } from "vitest";     // Other files
+import { describe, it, expect } from "bun:test"; // Some files
+import { describe, it, expect } from "vitest"; // Other files
 ```
 
 **2. Missing Vitest Configuration**
@@ -162,11 +162,11 @@ import alloyPlugin from "@alloy-js/rollup-plugin";
 export default defineConfig({
   test: {
     include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
-    exclude: ["src/**/*.d.ts"]
+    exclude: ["src/**/*.d.ts"],
   },
   esbuild: {
     jsx: "preserve",
-    sourcemap: "both"
+    sourcemap: "both",
   },
   plugins: [alloyPlugin()],
 });

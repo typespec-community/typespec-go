@@ -260,9 +260,9 @@ test("TypeSpec Integration - Basic Model Generation", async () => {
     name: "User",
     properties: new Map([
       ["id", { name: "id", type: { kind: "String" }, optional: false }],
-      ["age", { name: "age", type: { kind: "Uint8" }, optional: true }]
+      ["age", { name: "age", type: { kind: "Uint8" }, optional: true }],
     ]),
-    isErrorModel: false
+    isErrorModel: false,
   });
 
   expect(result._tag).toBe("success");

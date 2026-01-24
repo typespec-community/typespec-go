@@ -83,10 +83,15 @@
 
    ```typescript
    // BROKEN:
-   interface ArrayType extends Type { elementType?: Type; }
+   interface ArrayType extends Type {
+     elementType?: Type;
+   }
 
    // FIX NEEDED:
-   interface ArrayType { kind: "Array"; elementType: Type; }
+   interface ArrayType {
+     kind: "Array";
+     elementType: Type;
+   }
    ```
 
 2. **Alloy.js Component API Mismatch** (15+ errors)

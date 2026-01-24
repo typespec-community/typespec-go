@@ -80,7 +80,10 @@ export function formatGoCode(code: string): string {
 **Utility**: `src/utils/typespec-utils.ts` (enhanced)
 
 ```typescript
-export function getDocumentation(program: Program, type: Model | Enum | Union | ModelProperty): string | undefined {
+export function getDocumentation(
+  program: Program,
+  type: Model | Enum | Union | ModelProperty,
+): string | undefined {
   // Try @doc first
   const doc = getDoc(program, type);
   if (doc) return doc;
@@ -297,7 +300,8 @@ try {
 ### Documentation Hierarchy
 
 ```typescript
-const doc = documentation ||
+const doc =
+  documentation ||
   (program ? getDocumentation(program, model) : undefined) ||
   `Generated from TypeSpec model ${model.name}`;
 ```

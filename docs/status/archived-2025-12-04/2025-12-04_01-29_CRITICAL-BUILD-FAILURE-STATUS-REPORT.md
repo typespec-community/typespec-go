@@ -64,9 +64,15 @@ Failing: 265 (76%)
 
 ```typescript
 // PROBLEM: Multiple conflicting type systems
-interface TypeSpecTypeNode { /* Custom implementation */ }
-interface Model { /* TypeSpec native */ }
-interface Type { /* Alloy component */ }
+interface TypeSpecTypeNode {
+  /* Custom implementation */
+}
+interface Model {
+  /* TypeSpec native */
+}
+interface Type {
+  /* Alloy component */
+}
 ```
 
 ### 2. Component Integration Failures

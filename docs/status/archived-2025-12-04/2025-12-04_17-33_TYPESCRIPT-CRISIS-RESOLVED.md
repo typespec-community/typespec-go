@@ -31,11 +31,11 @@
 ```typescript
 // BEFORE: Mixed type systems causing conflicts
 import { mapTypeSpecTypeToGo } from "../domain/clean-type-mapper.js";
-type: mapTypeSpecTypeToGo(prop.type, program).goType
+type: mapTypeSpecTypeToGo(prop.type, program).goType;
 
 // AFTER: Unified type system through TypeExpression
 import { TypeExpression } from "../components/TypeExpression.js";
-type: TypeExpression({ type: prop.type })
+type: TypeExpression({ type: prop.type });
 ```
 
 **Impact:**

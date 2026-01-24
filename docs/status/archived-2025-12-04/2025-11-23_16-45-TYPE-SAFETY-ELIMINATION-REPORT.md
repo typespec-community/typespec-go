@@ -119,15 +119,15 @@ debug: (context: string, message: string, data?: LoggerData) => {
 ```typescript
 // Add comprehensive type guards
 const isTypeSpecType = (type: unknown): type is Type => {
-  return type && typeof type === 'object' && 'kind' in type;
+  return type && typeof type === "object" && "kind" in type;
 };
 
 const isUniversalType = (type: unknown): type is UniversalType => {
-  return type && typeof type === 'object' && 'kind' in type;
+  return type && typeof type === "object" && "kind" in type;
 };
 
 const isValidLoggerData = (data: unknown): data is Record<string, unknown> => {
-  return typeof data === 'object' && data !== null && !Array.isArray(data);
+  return typeof data === "object" && data !== null && !Array.isArray(data);
 };
 ```
 

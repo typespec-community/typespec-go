@@ -102,8 +102,8 @@ GoErrorManager.handleGenerationError(...)  // System 2: Ghost (573 lines!)
 
 ```typescript
 // SPLIT BRAIN: Go types defined in multiple places
-src/types/go-types.ts                    // System 1: Clean
-src/utils/property-transformer.ts          // System 2: Duplicate
+src / types / go - types.ts; // System 1: Clean
+src / utils / property - transformer.ts; // System 2: Duplicate
 ```
 
 #### **3. Generator Split Brain**
@@ -304,8 +304,12 @@ enhanced-generator.ts (unused)
 
 ```typescript
 // SPLIT BRAIN: Two type systems
-interface GoTypeMapping { /* System 1 */ }
-interface GoPropertyMapping { /* System 2 */ }
+interface GoTypeMapping {
+  /* System 1 */
+}
+interface GoPropertyMapping {
+  /* System 2 */
+}
 ```
 
 #### **After (Consolidated)**

@@ -149,7 +149,9 @@ function generateGoFileContent(model: Model, packageName: string): string {
   <SourceFile path="models.go">
     <PackageDeclaration name="api">
       <SingleImportStatement path="time" />
-      {models.map(model => <GoStructDeclaration model={model} />)}
+      {models.map((model) => (
+        <GoStructDeclaration model={model} />
+      ))}
     </PackageDeclaration>
   </SourceFile>
 </SourceDirectory>

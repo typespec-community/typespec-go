@@ -210,10 +210,10 @@ options:
     initialisms: ["API", "HTTP", "ID", "JSON", "URL", "UI"]
 
     # Optional: Default strategy for optional properties
-    default-nullable-strategy: "pointer"  # "pointer" | "zeroValue" | "nullable"
+    default-nullable-strategy: "pointer" # "pointer" | "zeroValue" | "nullable"
 
     # Optional: Default enum generation strategy
-    default-enum-strategy: "string"  # "string" | "iota"
+    default-enum-strategy: "string" # "string" | "iota"
 ```
 
 ### **Basic Usage**

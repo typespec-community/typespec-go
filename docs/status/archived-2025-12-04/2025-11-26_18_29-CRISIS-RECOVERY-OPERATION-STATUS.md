@@ -376,7 +376,7 @@ I need to create proper TypeSpec compiler `Type` objects but only have `kind` st
 // BROKEN - Creates invalid type object
 properties.set(key, {
   name: key,
-  type: { kind: "String" },  // ❌ TypeSpec expects Type object
+  type: { kind: "String" }, // ❌ TypeSpec expects Type object
   optional: property.optional || false,
 });
 ```

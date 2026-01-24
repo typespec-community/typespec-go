@@ -103,11 +103,13 @@ debug: (context: string, message: string, data?: LoggerData) => {
 ```typescript
 // Comprehensive type guards eliminate 'as any' casts
 const isTypeWithKind = (type: unknown): type is TypeWithKind => {
-  return type && typeof type === 'object' && 'kind' in type && typeof type.kind === 'string';
+  return type && typeof type === "object" && "kind" in type && typeof type.kind === "string";
 };
 
-const isArrayType = (type: TypeWithKind): type is TypeWithKind & { readonly elementType: unknown } => {
-  return type.kind === 'Array' || type.kind === 'array';
+const isArrayType = (
+  type: TypeWithKind,
+): type is TypeWithKind & { readonly elementType: unknown } => {
+  return type.kind === "Array" || type.kind === "array";
 };
 ```
 

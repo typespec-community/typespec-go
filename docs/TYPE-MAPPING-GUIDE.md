@@ -459,9 +459,9 @@ type User struct {
 {
   "type": "object",
   "properties": {
-    "name": {"type": "string"},
-    "age": {"type": "integer"},
-    "active": {"type": "boolean"}
+    "name": { "type": "string" },
+    "age": { "type": "integer" },
+    "active": { "type": "boolean" }
   },
   "required": ["name", "active"]
 }

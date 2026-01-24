@@ -49,7 +49,7 @@ export default defineConfig({
     jsx: "transform",
     jsxFactory: "React.createElement",
     jsxFragment: "React.Fragment",
-    sourcemap: "both"
+    sourcemap: "both",
   },
 });
 ```

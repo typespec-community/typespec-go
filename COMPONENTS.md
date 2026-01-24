@@ -22,28 +22,28 @@ The TypeSpec Go Emitter uses **100% Alloy-JS component-based architecture**. All
 
 ### Primary Components (12)
 
-| Component | Purpose | Status |
-|-----------|---------|--------|
-| `GoModel` | Basic model to struct conversion | ✅ Production Ready |
-| `GoStructDeclaration` | Advanced struct with documentation | ✅ Production Ready |
-| `GoEnumDeclaration` | String and iota enum generation | ✅ Production Ready |
-| `GoUnionDeclaration` | Sealed interface pattern | ✅ Production Ready |
-| `GoInterfaceDeclaration` | Service interface generation | ✅ Production Ready |
-| `GoModFile` | Go module file generation | ✅ Production Ready |
-| `GoPackageDirectory` | Package organization | ✅ Production Ready |
-| `GoHandlerStub` | HTTP handler generation | ✅ Production Ready |
-| `GoHandlerMethodComponent` | Handler method logic | ✅ Production Ready |
-| `GoRouteRegistrationComponent` | Route registration | ✅ Production Ready |
+| Component                      | Purpose                            | Status              |
+| ------------------------------ | ---------------------------------- | ------------------- |
+| `GoModel`                      | Basic model to struct conversion   | ✅ Production Ready |
+| `GoStructDeclaration`          | Advanced struct with documentation | ✅ Production Ready |
+| `GoEnumDeclaration`            | String and iota enum generation    | ✅ Production Ready |
+| `GoUnionDeclaration`           | Sealed interface pattern           | ✅ Production Ready |
+| `GoInterfaceDeclaration`       | Service interface generation       | ✅ Production Ready |
+| `GoModFile`                    | Go module file generation          | ✅ Production Ready |
+| `GoPackageDirectory`           | Package organization               | ✅ Production Ready |
+| `GoHandlerStub`                | HTTP handler generation            | ✅ Production Ready |
+| `GoHandlerMethodComponent`     | Handler method logic               | ✅ Production Ready |
+| `GoRouteRegistrationComponent` | Route registration                 | ✅ Production Ready |
 
 ### Core Helper Components (5)
 
-| Component | Purpose | Status |
-|-----------|---------|--------|
-| `GoBlock` | Code block rendering | ✅ Production Ready |
-| `GoIf` | Conditional logic | ✅ Production Ready |
-| `GoReturn` | Return statements | ✅ Production Ready |
-| `GoStringLiteral` | String literals | ✅ Production Ready |
-| `GoSwitch` | Switch statements | ✅ Production Ready |
+| Component         | Purpose              | Status              |
+| ----------------- | -------------------- | ------------------- |
+| `GoBlock`         | Code block rendering | ✅ Production Ready |
+| `GoIf`            | Conditional logic    | ✅ Production Ready |
+| `GoReturn`        | Return statements    | ✅ Production Ready |
+| `GoStringLiteral` | String literals      | ✅ Production Ready |
+| `GoSwitch`        | Switch statements    | ✅ Production Ready |
 
 ---
 
@@ -105,11 +105,11 @@ type User struct {
 
 ```typescript
 interface GoStructDeclarationProps {
-  model: Model;              // TypeSpec model
-  documentation?: string;     // Override @doc decorator
-  packageName?: string;       // Package name (default: "api")
+  model: Model; // TypeSpec model
+  documentation?: string; // Override @doc decorator
+  packageName?: string; // Package name (default: "api")
   usePointersForOptional?: boolean; // Pointer for optional (default: true)
-  program?: Program;         // Access @doc decorators
+  program?: Program; // Access @doc decorators
 }
 ```
 
@@ -156,10 +156,10 @@ type User struct {
 
 ```typescript
 interface GoEnumDeclarationProps {
-  enum: Enum;              // TypeSpec enum
-  packageName?: string;     // Package name (default: "api")
-  useIota?: boolean;       // Use iota for integer enums (default: false)
-  program?: Program;       // Access @doc decorators
+  enum: Enum; // TypeSpec enum
+  packageName?: string; // Package name (default: "api")
+  useIota?: boolean; // Use iota for integer enums (default: false)
+  program?: Program; // Access @doc decorators
 }
 ```
 
@@ -271,11 +271,11 @@ func (e Priority) IsValid() bool {
 
 ```typescript
 interface GoUnionDeclarationProps {
-  union: Union;               // TypeSpec union
-  packageName?: string;       // Package name (default: "api")
-  discriminator?: string;      // Discriminator field for tagged unions
-  program?: Program;         // Access @doc decorators
-  templateParameters?: string[];  // Generic type parameters (e.g., ["T"])
+  union: Union; // TypeSpec union
+  packageName?: string; // Package name (default: "api")
+  discriminator?: string; // Discriminator field for tagged unions
+  program?: Program; // Access @doc decorators
+  templateParameters?: string[]; // Generic type parameters (e.g., ["T"])
   templateConstraints?: Array<{ param: string; constraint: string | Type }>;
 }
 ```
@@ -390,10 +390,10 @@ func UnmarshalEvent(data []byte) error {
 
 ```typescript
 interface GoInterfaceDeclarationProps {
-  name: string;               // Interface name
-  operations: Operation[];     // TypeSpec operations
-  packageName?: string;       // Package name (default: "api")
-  program?: Program;         // Access @doc decorators
+  name: string; // Interface name
+  operations: Operation[]; // TypeSpec operations
+  packageName?: string; // Package name (default: "api")
+  program?: Program; // Access @doc decorators
 }
 ```
 
@@ -444,7 +444,7 @@ type UserService interface {
 
 ```typescript
 interface GoModFileProps {
-  modulePath: string;  // Module path (e.g., github.com/yourcompany/api)
+  modulePath: string; // Module path (e.g., github.com/yourcompany/api)
   goVersion?: string; // Go version (default: "1.21")
   requires?: Array<{ path: string; version: string }>;
 }
@@ -495,16 +495,16 @@ require (
 
 ```typescript
 interface GoPackageDirectoryProps {
-  models: Model[];           // Models to include
-  enums?: Enum[];           // Enums to include
-  unions?: Union[];         // Unions to include
-  operations?: Operation[];  // Operations to include
-  packageName?: string;      // Package name (default: "api")
+  models: Model[]; // Models to include
+  enums?: Enum[]; // Enums to include
+  unions?: Union[]; // Unions to include
+  operations?: Operation[]; // Operations to include
+  packageName?: string; // Package name (default: "api")
   packageDocumentation?: string; // Additional package docs
-  modulePath?: string;       // Module path for go.mod
-  generateGoMod?: boolean;  // Generate go.mod (default: false)
-  goVersion?: string;       // Go version (default: "1.21")
-  program?: Program;        // Access @doc decorators
+  modulePath?: string; // Module path for go.mod
+  generateGoMod?: boolean; // Generate go.mod (default: false)
+  goVersion?: string; // Go version (default: "1.21")
+  program?: Program; // Access @doc decorators
 }
 ```
 
@@ -557,10 +557,10 @@ const output = render(
 
 ```typescript
 interface GoHandlerStubProps {
-  operations: Operation[];   // TypeSpec operations
-  serviceName?: string;     // Service name (default: "Service")
-  packageName?: string;     // Package name (default: "api")
-  program?: Program;       // Access @doc decorators
+  operations: Operation[]; // TypeSpec operations
+  serviceName?: string; // Service name (default: "Service")
+  packageName?: string; // Package name (default: "api")
+  program?: Program; // Access @doc decorators
 }
 ```
 
@@ -617,8 +617,8 @@ func (s *UserService) CreateUserHandler(w http.ResponseWriter, r *http.Request) 
 
 ```typescript
 interface GoHandlerMethodProps {
-  method: GoHandlerMethod;  // Handler method metadata
-  packageName?: string;      // Package name (default: "api")
+  method: GoHandlerMethod; // Handler method metadata
+  packageName?: string; // Package name (default: "api")
 }
 ```
 
@@ -659,7 +659,7 @@ const output = render(
 ```typescript
 type GoRouteRegistrationComponentProps = {
   handlers: GoHandlerMethod[]; // Handler methods to register
-  serviceName: string;          // Service name for receiver
+  serviceName: string; // Service name for receiver
 };
 ```
 

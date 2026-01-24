@@ -194,7 +194,7 @@ sealed class GenerationError extends Error {
 enum GenerationMode {
   Production = "production",
   Development = "development",
-  Testing = "testing"
+  Testing = "testing",
 }
 
 enum GoTypeCategory {
@@ -202,7 +202,7 @@ enum GoTypeCategory {
   Struct = "struct",
   Interface = "interface",
   Pointer = "pointer",
-  Array = "array"
+  Array = "array",
 }
 ```
 

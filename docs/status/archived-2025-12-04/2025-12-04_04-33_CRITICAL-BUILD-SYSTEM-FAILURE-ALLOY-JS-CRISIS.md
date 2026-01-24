@@ -37,15 +37,13 @@ null is not an object (evaluating 'result.tagName')
 // BROKEN CODE (Lines 105-116):
 <Switch>
   <For each={members}>
-    {(it) => <Match>
-      ${typeName}${capitalize(it.name)}:
-      return true
-    </Match>}
+    {(it) => (
+      <Match>
+        ${typeName}${capitalize(it.name)}: return true
+      </Match>
+    )}
   </For>
-  <Match>
-    default:
-    return false
-  </Match>
+  <Match>default: return false</Match>
 </Switch>
 ```
 
@@ -145,10 +143,7 @@ null is not an object (evaluating 'result.tagName')
       return true`}
     </Match>
   ))}
-  <Match>
-    default:
-    return false
-  </Match>
+  <Match>default: return false</Match>
 </Switch>
 ```
 

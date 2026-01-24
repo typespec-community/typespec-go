@@ -53,13 +53,19 @@
 
 ```typescript
 // CURRENTLY USING (MAY NOT EXIST):
-import { TypeDeclaration, VariableDeclarationGroup, VariableDeclaration, FunctionDeclaration, FunctionReceiver } from "@alloy-js/go";
+import {
+  TypeDeclaration,
+  VariableDeclarationGroup,
+  VariableDeclaration,
+  FunctionDeclaration,
+  FunctionReceiver,
+} from "@alloy-js/go";
 
 // SPECIFIC COMPONENTS IN QUESTION:
-- VariableDeclarationGroup  // For const (...) blocks
-- FunctionDeclaration     // For Go methods with receivers
-- FunctionReceiver        // For method receivers (e Type) syntax
-- LineComment           // For Go comments
+-VariableDeclarationGroup - // For const (...) blocks
+  FunctionDeclaration - // For Go methods with receivers
+  FunctionReceiver - // For method receivers (e Type) syntax
+  LineComment; // For Go comments
 ```
 
 ### **#2 BLOCKER: JSX Syntax Validation**

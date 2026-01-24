@@ -63,14 +63,12 @@
 
 ```tsx
 // BEFORE (React pattern with key errors)
-{models.map((model) => (
-  <GoStructDeclaration key={refkey(model)} model={model} />
-))}
+{
+  models.map((model) => <GoStructDeclaration key={refkey(model)} model={model} />);
+}
 
 // AFTER (Alloy-JS pattern)
-<For each={models}>
-  {(model) => <GoStructDeclaration model={model} />}
-</For>
+<For each={models}>{(model) => <GoStructDeclaration model={model} />}</For>;
 ```
 
 #### 2. Component Props Structure

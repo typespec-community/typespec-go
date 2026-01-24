@@ -82,7 +82,9 @@ tsp compile src/test/integration-basic.tsp --emit go
 
 ```markdown
 # Update README.md with working approach
+
 # Add installation and usage examples
+
 # Document current limitations
 ```
 
@@ -171,14 +173,11 @@ test("GoPackage creates proper scope", () => {
 
 ```typescript
 // src/components/go/GoStructWorking.tsx
-export function GoStructDeclarationWorking(props: {
-  model: Model;
-  packageName: string;
-}) {
+export function GoStructDeclarationWorking(props: { model: Model; packageName: string }) {
   const { model, packageName } = props;
 
   // Generate struct fields directly (no complex component dependencies)
-  const fields = Array.from(model.properties.values()).map(prop => {
+  const fields = Array.from(model.properties.values()).map((prop) => {
     const goType = mapTypeToGo(prop.type);
     const jsonTag = prop.name;
     const pointer = prop.optional ? "*" : "";
@@ -190,7 +189,7 @@ export function GoStructDeclarationWorking(props: {
 
 // ${model.name} - TypeSpec generated model
 type ${model.name} struct {
-  ${fields.join('\n  ')}
+  ${fields.join("\n  ")}
 }`;
 }
 ```
@@ -199,9 +198,15 @@ type ${model.name} struct {
 
 ```typescript
 // Test with various model types
-test("GoStruct generates basic model", () => { /* ... */ });
-test("GoStruct handles optional fields", () => { /* ... */ });
-test("GoStruct handles complex types", () => { /* ... */ });
+test("GoStruct generates basic model", () => {
+  /* ... */
+});
+test("GoStruct handles optional fields", () => {
+  /* ... */
+});
+test("GoStruct handles complex types", () => {
+  /* ... */
+});
 ```
 
 ### **Step 7: Fix GoUnionDeclaration Component** (4 hours)
@@ -210,10 +215,7 @@ test("GoStruct handles complex types", () => { /* ... */ });
 
 ```typescript
 // src/components/go/GoUnionWorking.tsx
-export function GoUnionDeclarationWorking(props: {
-  union: Union;
-  packageName: string;
-}) {
+export function GoUnionDeclarationWorking(props: { union: Union; packageName: string }) {
   const { union, packageName } = props;
 
   // Generate sealed interface
@@ -224,14 +226,15 @@ type ${union.name} interface {
 }`;
 
   // Generate variant types
-  const variantTypes = union.variants.map(variant =>
-    code`type ${variant.name} struct {}
-func (e ${variant.name}) is${union.name}() {}`
+  const variantTypes = union.variants.map(
+    (variant) =>
+      code`type ${variant.name} struct {}
+func (e ${variant.name}) is${union.name}() {}`,
   );
 
   return code`${interfaceCode}
 
-${variantTypes.join('\n')}`;
+${variantTypes.join("\n")}`;
 }
 ```
 
@@ -331,7 +334,9 @@ export async function $onEmit(context: any) {
 
 ```markdown
 # Update all examples to use new approach
+
 # Document migration path for users
+
 # Add troubleshooting guide
 ```
 

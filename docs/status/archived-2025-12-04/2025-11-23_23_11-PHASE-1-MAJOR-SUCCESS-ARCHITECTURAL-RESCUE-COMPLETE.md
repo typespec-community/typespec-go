@@ -38,9 +38,15 @@
 
 ```typescript
 // ARCHITECTURAL DISASTER - Cannot extend native TypeSpec interfaces
-interface ArrayType extends Type { elementType?: Type; }
-interface UnionType extends Type { variants?: Array<{ type: Type }>; }
-interface NamedType extends Type { name?: string; }
+interface ArrayType extends Type {
+  elementType?: Type;
+}
+interface UnionType extends Type {
+  variants?: Array<{ type: Type }>;
+}
+interface NamedType extends Type {
+  name?: string;
+}
 
 // IMPORT ERROR - Mixed type vs value imports
 import type { GoPrimitiveType } from "../types/emitter.types.js";
@@ -50,9 +56,18 @@ import type { GoPrimitiveType } from "../types/emitter.types.js";
 
 ```typescript
 // PROPER ARCHITECTURE - Standalone interfaces with explicit kinds
-interface ArrayType { kind: "Array"; elementType: Type; }
-interface UnionType { kind: "Union"; variants: readonly UnionVariant[]; }
-interface NamedType { kind: "Model" | "Scalar"; name: string; }
+interface ArrayType {
+  kind: "Array";
+  elementType: Type;
+}
+interface UnionType {
+  kind: "Union";
+  variants: readonly UnionVariant[];
+}
+interface NamedType {
+  kind: "Model" | "Scalar";
+  name: string;
+}
 
 // CORRECT IMPORTS - Value imports for enum usage
 import { GoPrimitiveType } from "../types/emitter.types.js";
@@ -335,9 +350,15 @@ GENERATORS (13 files):
 // Available components but unclear usage:
 export declare function ImportStatements(props: ImportStatementsProps): Children;
 export declare function LineComment(props: LineCommentProps): Children;
-interface ImportStatementsProps { records: ImportRecords; }
-interface LineCommentProps { children: Children; }
-interface OutputProps { /* no 'program' property */ }
+interface ImportStatementsProps {
+  records: ImportRecords;
+}
+interface LineCommentProps {
+  children: Children;
+}
+interface OutputProps {
+  /* no 'program' property */
+}
 ```
 
 **MY CRITICAL QUESTIONS:**

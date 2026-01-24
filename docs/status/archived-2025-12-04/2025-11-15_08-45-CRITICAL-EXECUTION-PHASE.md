@@ -227,7 +227,7 @@ export function $onEmit(context: EmitContext) {
 
       // 🎯 MAINTAIN ZERO-'ANY' TYPES
       // 🎯 PRESERVE WORKING GENERATOR LOGIC
-    }
+    },
   });
 }
 ```

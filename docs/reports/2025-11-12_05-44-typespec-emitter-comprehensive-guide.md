@@ -126,16 +126,16 @@ export function GoStructProperty({ property }: { property: ModelProperty }) {
 
 ```typescript
 const TYPE_MAPPING: Record<TypeKind, (type: Type) => GoType> = {
-  "String": () => ({ kind: "basic", name: "string" }),
-  "Boolean": () => ({ kind: "basic", name: "bool" }),
-  "Int32": () => ({ kind: "basic", name: "int32" }),
-  "Int64": () => ({ kind: "basic", name: "int64" }),
-  "Float32": () => ({ kind: "basic", name: "float32" }),
-  "Float64": () => ({ kind: "basic", name: "float64" }),
-  "Model": (type) => mapModelToStruct(type),
-  "Enum": (type) => mapEnumToGoEnum(type),
-  "Union": (type) => mapUnionToGoInterface(type),
-  "Array": (type) => mapArrayToGoSlice(type),
+  String: () => ({ kind: "basic", name: "string" }),
+  Boolean: () => ({ kind: "basic", name: "bool" }),
+  Int32: () => ({ kind: "basic", name: "int32" }),
+  Int64: () => ({ kind: "basic", name: "int64" }),
+  Float32: () => ({ kind: "basic", name: "float32" }),
+  Float64: () => ({ kind: "basic", name: "float64" }),
+  Model: (type) => mapModelToStruct(type),
+  Enum: (type) => mapEnumToGoEnum(type),
+  Union: (type) => mapUnionToGoInterface(type),
+  Array: (type) => mapArrayToGoSlice(type),
 };
 ```
 
@@ -157,7 +157,7 @@ function mapPropertyWithVisibility(property: ModelProperty, visibility: Visibili
   if (property.type.kind === "Array") {
     return {
       kind: "slice",
-      elementType: mapTypeSpecTypeToGo((property.type as ArrayType).elementType)
+      elementType: mapTypeSpecTypeToGo((property.type as ArrayType).elementType),
     };
   }
 
@@ -176,13 +176,13 @@ function mapModelToStruct(model: Model): GoStruct {
     name: model.name,
     fields: [
       // Handle inheritance via embedded structs
-      ...baseModels.map(base => ({
+      ...baseModels.map((base) => ({
         name: base.name,
         type: { kind: "struct", name: base.name },
         isEmbedded: true,
       })),
       // Add current model properties
-      ...model.properties.values().map(prop => mapProperty(prop)),
+      ...model.properties.values().map((prop) => mapProperty(prop)),
     ],
   };
 }
@@ -241,11 +241,13 @@ function validateTypeForGo(type: Type, context: EmitContext): readonly Diagnosti
     case "Union":
       // Validate union types (Go doesn't have direct union support)
       if (!isValidGoUnion(type)) {
-        diagnostics.push(reportDiagnostic(context.program, {
-          code: "unsupported-type",
-          target: type,
-          format: { typeName: type.name, kind: "Union" },
-        }));
+        diagnostics.push(
+          reportDiagnostic(context.program, {
+            code: "unsupported-type",
+            target: type,
+            format: { typeName: type.name, kind: "Union" },
+          }),
+        );
       }
       break;
   }
@@ -271,16 +273,14 @@ export const GoEmitterTester = createTester({
 });
 
 // Builder pattern for test configurations
-export const createGoTest = GoEmitterTester
-  .files({
-    "helpers.tsp": `
+export const createGoTest = GoEmitterTester.files({
+  "helpers.tsp": `
       model Response<T> {
         data: T;
         status: string;
       }
     `,
-  })
-  .using("TypeSpec.Go");
+}).using("TypeSpec.Go");
 ```
 
 **Comprehensive Test Cases**:
@@ -458,11 +458,7 @@ function generateOperationTypes(operation: Operation) {
   const metadataInfo = useMetadataInfo();
 
   // Determine request visibility
-  const requestVisibility = resolveRequestVisibility(
-    context.program,
-    operation,
-    operation.verb
-  );
+  const requestVisibility = resolveRequestVisibility(context.program, operation, operation.verb);
 
   // Determine response visibility (always Read)
   const responseVisibility = Visibility.Read;
@@ -470,13 +466,13 @@ function generateOperationTypes(operation: Operation) {
   // Generate request type
   const requestType = metadataInfo.getEffectivePayloadType(
     operation.parameters?.body?.type,
-    requestVisibility
+    requestVisibility,
   );
 
   // Generate response type
   const responseType = metadataInfo.getEffectivePayloadType(
     operation.returnType,
-    responseVisibility
+    responseVisibility,
   );
 
   return {

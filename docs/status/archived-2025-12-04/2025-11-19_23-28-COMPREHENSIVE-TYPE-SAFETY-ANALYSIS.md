@@ -329,9 +329,9 @@ ErrorFactory.create<T extends ErrorType>(
 // PROFESSIONAL PATTERN (what I need):
 class GenericErrorFactory {
   static create<T extends GoEmitterError>(
-    type: T['_tag'],
+    type: T["_tag"],
     message: string,
-    options?: ComplexNestedOptions<T>
+    options?: ComplexNestedOptions<T>,
   ): T {
     return {
       _tag: type,

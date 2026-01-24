@@ -148,7 +148,7 @@
 
 ```tsx
 // Use HTML entities instead of raw quotes
-<GoStringLiteral value="w.Header().Set(&quot;Content-Type&quot;, &quot;application/json&quot;)" />
+<GoStringLiteral value='w.Header().Set("Content-Type", "application/json")' />
 ```
 
 **Pros:** JSX compatible, existing components can decode  
@@ -169,7 +169,8 @@
 ```tsx
 // Build strings with child components instead of attributes
 <GoStringLiteral>
-  w.Header().Set(<GoDoubleQuote>Content-Type</GoDoubleQuote>, <GoDoubleQuote>application/json</GoDoubleQuote>)
+  w.Header().Set(<GoDoubleQuote>Content-Type</GoDoubleQuote>,{" "}
+  <GoDoubleQuote>application/json</GoDoubleQuote>)
 </GoStringLiteral>
 ```
 

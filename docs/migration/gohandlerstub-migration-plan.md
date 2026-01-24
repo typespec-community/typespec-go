@@ -25,7 +25,7 @@ import {
   VariableDeclarationGroup,
   StructTypeDeclaration,
   StructMember,
-  Reference
+  Reference,
 } from "@alloy-js/go";
 ```
 

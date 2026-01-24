@@ -130,7 +130,7 @@ mindmap
 type VisibilityExtractionError =
   | { _tag: "invalid_decorator"; decorator: string }
   | { _tag: "unknown_lifecycle"; phase: string }
-  | { _tag: "contradictory_visibility"; phases: string[] }
+  | { _tag: "contradictory_visibility"; phases: string[] };
 ```
 
 ## Integration Points

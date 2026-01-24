@@ -83,7 +83,7 @@
 ```typescript
 // Current Issue: CLI argument parsing failure
 // Target: Robust argument handling
-executeCommand("typespec-go", ["generate", "input.tsp"], tempDir)
+executeCommand("typespec-go", ["generate", "input.tsp"], tempDir);
 // Should work correctly with proper argument validation
 ```
 

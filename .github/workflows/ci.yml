@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, lars/lets-rock ]
+    branches: [main, lars/lets-rock]
   pull_request:
-    branches: [ main, lars/lets-rock ]
+    branches: [main, lars/lets-rock]
 
 jobs:
   build-and-test:

@@ -1,6 +1,9 @@
 import { describe, test, expect } from "vitest";
 import { render, Output, code } from "@alloy-js/core";
-import { SourceDirectory as CoreSourceDirectory, SourceFile as CoreSourceFile } from "@alloy-js/core";
+import {
+  SourceDirectory as CoreSourceDirectory,
+  SourceFile as CoreSourceFile,
+} from "@alloy-js/core";
 
 describe("DEBUG - Core Components Only", () => {
   test("Using core SourceDirectory and SourceFile", () => {

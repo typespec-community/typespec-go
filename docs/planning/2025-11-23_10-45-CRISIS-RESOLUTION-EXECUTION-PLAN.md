@@ -92,7 +92,7 @@ function isScalar(type: Type): type is Scalar {
 const mappedElement = this.mapType(elementType as any);
 
 // PROFESSIONAL
-if (!elementType || typeof elementType !== 'object') {
+if (!elementType || typeof elementType !== "object") {
   return ErrorFactory.createInvalidTypeError(fieldName);
 }
 const mappedElement = this.mapType(elementType);
@@ -132,7 +132,7 @@ if (this.isVisibilityDecorator(decorator)) {
 // BROKEN - Missing required properties
 const mockType = {
   kind: "string",
-  name: "string"
+  name: "string",
 };
 
 // PROFESSIONAL - Full TypeSpec compliance

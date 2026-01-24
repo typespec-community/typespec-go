@@ -122,10 +122,14 @@ Type string `json:"type"`
 
 ```jsx
 // BROKEN JSX comments (don't render):
-{/* Unmarshaler implementation */}
+{
+  /* Unmarshaler implementation */
+}
 
 // FIXED Go comments:
-{"// Unmarshaler implementation"}
+{
+  ("// Unmarshaler implementation");
+}
 ```
 
 **Solution Implemented:**
@@ -158,14 +162,22 @@ Type string `json:"type"`
 3. **JSX to Go Comment Conversion:**
 
    ```jsx
-   {/* JSX comment - doesn't render */}
-   {"// Go comment - renders correctly"}
+   {
+     /* JSX comment - doesn't render */
+   }
+   {
+     ("// Go comment - renders correctly");
+   }
    ```
 
 4. **Proper Line Break Handling:**
    ```jsx
-   {"\n  switch e {"}  // Explicit newlines and indentation
-   {"\n    case " + caseName + ":"}
+   {
+     ("\n  switch e {");
+   } // Explicit newlines and indentation
+   {
+     "\n    case " + caseName + ":";
+   }
    ```
 
 ### **Component Architecture Insights:**

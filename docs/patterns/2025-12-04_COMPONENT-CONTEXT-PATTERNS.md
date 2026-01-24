@@ -32,10 +32,10 @@ import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 ### **Output Structure Navigation:**
 
 ```typescript
-const moduleDir = output.contents[0];           // ModuleDirectory
-const sourceDir = moduleDir.contents[0];       // SourceDirectory
-const sourceFile = sourceDir.contents[0];       // SourceFile
-const fileContent = sourceFile.contents;       // Generated Go code
+const moduleDir = output.contents[0]; // ModuleDirectory
+const sourceDir = moduleDir.contents[0]; // SourceDirectory
+const sourceFile = sourceDir.contents[0]; // SourceFile
+const fileContent = sourceFile.contents; // Generated Go code
 ```
 
 ## ❌ COMMON MISTAKES TO AVOID:

@@ -74,7 +74,9 @@ return {
   _tag: "TypeSpecCompilerError",
   message,
   modelName: options?.modelName ? Entities.createModelName(options.modelName) : undefined, // ✅ Clean omission
-  propertyName: options?.propertyName ? Entities.createPropertyName(options.propertyName) : undefined, // ✅ Clean omission
+  propertyName: options?.propertyName
+    ? Entities.createPropertyName(options.propertyName)
+    : undefined, // ✅ Clean omission
   resolution: options?.resolution || "Check TypeSpec model syntax",
   errorId: this.createErrorId(),
 }; // ✅ Professional, readable, type-safe

@@ -74,7 +74,7 @@ just qa
 ```json
 {
   "compilerOptions": {
-    "jsx": "preserve"  // REQUIRED for Alloy-JS component rendering
+    "jsx": "preserve" // REQUIRED for Alloy-JS component rendering
   }
 }
 ```
@@ -116,7 +116,7 @@ export function GoModel({ model }: { model: Model }) {
 ```typescript
 // NEVER DO THIS!
 const goCode = `type ${model.name} struct {
-  ${fields.map(f => `${f.name} ${f.type}`).join('\n')}
+  ${fields.map((f) => `${f.name} ${f.type}`).join("\n")}
 }`;
 
 // NEVER DO THIS!
@@ -127,14 +127,16 @@ code += "type User struct {\n";
 #### Component Architecture
 
 1. **Import Order:** TypeSpec types → Alloy Core → Alloy Go
+
 ```typescript
-import type { Model } from "@typespec/compiler";      // 1. TypeSpec types
-import { refkey, For } from "@alloy-js/core";   // 2. Alloy Core
-import * as go from "@alloy-js/go";               // 3. Alloy Go (destructure)
-const { StructDeclaration } = go;                  // 4. Destructure immediately
+import type { Model } from "@typespec/compiler"; // 1. TypeSpec types
+import { refkey, For } from "@alloy-js/core"; // 2. Alloy Core
+import * as go from "@alloy-js/go"; // 3. Alloy Go (destructure)
+const { StructDeclaration } = go; // 4. Destructure immediately
 ```
 
 2. **Component Structure:**
+
 ```typescript
 // 1. Interface definition (ALWAYS)
 interface ComponentProps {
@@ -155,6 +157,7 @@ export function Component({ model, options }: ComponentProps) {
 ```
 
 3. **Iteration Pattern:**
+
 ```typescript
 // ✅ CORRECT - Use <For> component
 <For each={items} to={(item) => <Component item={item} />} />
@@ -175,9 +178,9 @@ import { GoModel } from "../go/GoModel.js";
 describe("🔥 GoModel Component", () => {
   test("renders struct correctly", async () => {
     const mockModel = createMockModel();
-    
+
     const output = render(<GoModel model={mockModel} />);
-    
+
     expect(output).toContain("type User struct");
     expect(output).toContain('ID string `json:"id"`');
   });
@@ -187,7 +190,7 @@ describe("🔥 GoModel Component", () => {
 #### Test Categories
 
 1. **Component Tests** - Direct component rendering
-2. **Integration Tests** - End-to-end TypeSpec workflows  
+2. **Integration Tests** - End-to-end TypeSpec workflows
 3. **Type Mapping Tests** - TypeSpec → Go type conversion
 4. **Performance Tests** - Sub-millisecond generation validation
 
@@ -254,27 +257,31 @@ git commit -m "type(scope): brief description
 ### ABSOLUTELY FORBIDDEN (ZERO TOLERANCE)
 
 1. **String-Based Code Generation**
+
    ```typescript
    // 🚫 NEVER
    const goCode = `type ${name} struct { ... }`;
    ```
 
 2. **Any Type Casts**
+
    ```typescript
    // 🚫 NEVER
    const model = unknownModel as any;
    ```
 
 3. **Manual JSX Building**
+
    ```typescript
    // 🚫 NEVER
    const jsx = <div>{code}</div>;
    ```
 
 4. **Template Literals for Code**
+
    ```typescript
    // 🚫 NEVER
-   return `${structName} struct { ${fields.join('\n')} }`;
+   return `${structName} struct { ${fields.join("\n")} }`;
    ```
 
 5. **CLI Development**
@@ -327,20 +334,24 @@ src/
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation
 
 ## Testing
+
 - [ ] All tests pass (160/160)
 - [ ] New tests added for changes
 - [ ] Manual testing completed
 
 ## Checklist
+
 - [ ] Code follows project style guidelines
 - [ ] No 'any' types introduced
 - [ ] All components use Alloy-JS

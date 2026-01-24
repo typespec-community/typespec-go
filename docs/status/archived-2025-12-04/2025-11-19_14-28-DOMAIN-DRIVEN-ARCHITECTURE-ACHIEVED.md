@@ -31,7 +31,7 @@ type Result = { success: boolean; error: string | null }; // ❌ Invalid states!
 // AFTER (DISCRIMINATED):
 type GeneratorResult =
   | { _type: "success"; readonly data: Map<string, string> } // ✅ Success only!
-  | { _type: "error"; readonly error: GenerationError };      // ✅ Error only!
+  | { _type: "error"; readonly error: GenerationError }; // ✅ Error only!
 ```
 
 #### **SMART TYPE INTELLIGENCE**

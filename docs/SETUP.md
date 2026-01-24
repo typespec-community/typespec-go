@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js 18+  
+- Node.js 18+
 - Bun (recommended) or npm/yarn
 - TypeScript 5+
 
@@ -24,7 +24,7 @@ import alloyPlugin from "@alloy-js/rollup-plugin";
 
 export default defineConfig({
   esbuild: {
-    jsx: "preserve",  // ⚠️ CRITICAL: Must be "preserve", NOT "transform"
+    jsx: "preserve", // ⚠️ CRITICAL: Must be "preserve", NOT "transform"
     sourcemap: "both",
   },
   resolve: {
@@ -32,7 +32,7 @@ export default defineConfig({
       "@alloy-js/core/jsx-dev-runtime": "@alloy-js/core/jsx-runtime",
     },
   },
-  plugins: [alloyPlugin()],  // Required for Alloy-JS JSX transformation
+  plugins: [alloyPlugin()], // Required for Alloy-JS JSX transformation
 });
 ```
 
@@ -40,7 +40,7 @@ export default defineConfig({
 
 The Alloy-JS framework requires Babel plugin transformation for JSX:
 
-1. **`jsx: "transform"` (WRONG)**: 
+1. **`jsx: "transform"` (WRONG)**:
    - Esbuild tries to transform JSX directly
    - Conflicts with Babel plugin
    - Results in empty contents array
@@ -95,9 +95,7 @@ bunx tsc --noEmit  # Type check only
 <Output basePath="./test-output">
   <ModuleDirectory name="github.com/test/api">
     <SourceDirectory path="api">
-      <SourceFile path="test.go">
-        {/* content */}
-      </SourceFile>
+      <SourceFile path="test.go">{/* content */}</SourceFile>
     </SourceDirectory>
   </ModuleDirectory>
 </Output>

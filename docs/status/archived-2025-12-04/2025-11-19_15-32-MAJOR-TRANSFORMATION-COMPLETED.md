@@ -87,9 +87,15 @@ static adaptTypeSpecCompilerError(
 
 ```typescript
 // BEFORE: Split brain (3 separate systems)
-type GeneratorError = { /* system 1 */ };
-type GoGenerationError = { /* system 2 */ };
-type TypeSpecGenerationError = { /* system 3 */ };
+type GeneratorError = {
+  /* system 1 */
+};
+type GoGenerationError = {
+  /* system 2 */
+};
+type TypeSpecGenerationError = {
+  /* system 3 */
+};
 
 // AFTER: Single discriminated union
 export type GoEmitterError =

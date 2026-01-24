@@ -124,7 +124,7 @@ const comprehensiveTest = {
 
   // Integration (20% weight)
   buildSuccess: ["TypeScript compilation", "Build system", "Import success"],
-  goCompilation: ["Valid syntax", "Package structure", "Type correctness"]
+  goCompilation: ["Valid syntax", "Package structure", "Type correctness"],
 };
 ```
 

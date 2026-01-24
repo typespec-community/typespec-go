@@ -152,7 +152,7 @@ default:
 
 // src/components/index.ts
 // Core Go component exports
-export * from "./go/index.js";  // CONFLICT! Empty file!
+export * from "./go/index.js"; // CONFLICT! Empty file!
 ```
 
 ### **CRISIS #2: String Template Proliferation**
@@ -295,13 +295,22 @@ export * from "./go/index.js";  // CONFLICT! Empty file!
 
 ```typescript
 // ✅ WORKING: GoHandlerStub.tsx - 100% Components
-import { SourceFile, SingleImportStatement, FunctionDeclaration, FunctionReceiver, VariableDeclaration, StructTypeDeclaration, StructMember, Reference } from "@alloy-js/go";
+import {
+  SourceFile,
+  SingleImportStatement,
+  FunctionDeclaration,
+  FunctionReceiver,
+  VariableDeclaration,
+  StructTypeDeclaration,
+  StructMember,
+  Reference,
+} from "@alloy-js/go";
 
 // ✅ WORKING: GoModel.tsx - Proper Alloy-JS Patterns
 import { StructTypeDeclaration, StructMember } from "@alloy-js/go";
 
 // ❌ BROKEN: Mixed imports and patterns
-import { Package, Import, VarDeclaration } from "@alloy-js/go";  // These don't exist!
+import { Package, Import, VarDeclaration } from "@alloy-js/go"; // These don't exist!
 ```
 
 #### **String Template Detection**

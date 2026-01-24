@@ -27,7 +27,7 @@ navigateProgram(program, {
 
       // Generate Go field...
     }
-  }
+  },
 });
 ```
 

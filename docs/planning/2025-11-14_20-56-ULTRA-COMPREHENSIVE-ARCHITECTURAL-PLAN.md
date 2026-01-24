@@ -32,7 +32,7 @@ class OptionalFieldPolicy {
   generateField(property: Property): GoField {
     return {
       type: this.resolveType(property),
-      jsonTag: this.resolveJsonTag(property)
+      jsonTag: this.resolveJsonTag(property),
     };
   }
 }
@@ -67,7 +67,15 @@ const typeMappings = {
 type GoIntegerType = "int8" | "int16" | "int32" | "int64";
 
 // ✅ COMPREHENSIVE: Full Go integer support
-type GoIntegerType = "int8" | "int16" | "int32" | "int64" | "uint8" | "uint16" | "uint32" | "uint64";
+type GoIntegerType =
+  | "int8"
+  | "int16"
+  | "int32"
+  | "int64"
+  | "uint8"
+  | "uint16"
+  | "uint32"
+  | "uint64";
 ```
 
 ---
@@ -195,16 +203,16 @@ describe("TypeSpec Go Emitter - Behavior", () => {
 // ✅ FULL GO INTEGER COVERAGE
 export const GO_INTEGER_MAPPINGS: Record<string, GoTypeMapping> = {
   // Signed integers
-  "int8": { goType: "int8", usePointer: true },
-  "int16": { goType: "int16", usePointer: true },
-  "int32": { goType: "int32", usePointer: true },
-  "int64": { goType: "int64", usePointer: true },
+  int8: { goType: "int8", usePointer: true },
+  int16: { goType: "int16", usePointer: true },
+  int32: { goType: "int32", usePointer: true },
+  int64: { goType: "int64", usePointer: true },
 
   // Unsigned integers (MISSING CURRENTLY)
-  "uint8": { goType: "uint8", usePointer: true },
-  "uint16": { goType: "uint16", usePointer: true },
-  "uint32": { goType: "uint32", usePointer: true },
-  "uint64": { goType: "uint64", usePointer: true },
+  uint8: { goType: "uint8", usePointer: true },
+  uint16: { goType: "uint16", usePointer: true },
+  uint32: { goType: "uint32", usePointer: true },
+  uint64: { goType: "uint64", usePointer: true },
 } as const;
 ```
 

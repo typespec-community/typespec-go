@@ -12,9 +12,9 @@ The main class for generating Go code from TypeSpec models.
 
 ```typescript
 class StandaloneGoGenerator {
-  constructor(options?: GoEmitterOptions): StandaloneGoGenerator
+  constructor(options?: GoEmitterOptions): StandaloneGoGenerator;
 
-  generateModel(model: TypeSpecModel): GoEmitterResult
+  generateModel(model: TypeSpecModel): GoEmitterResult;
 }
 ```
 
@@ -65,9 +65,7 @@ Generates Go code from a TypeSpec model.
 ```typescript
 const model = {
   name: "User",
-  properties: new Map([
-    ["id", { name: "id", type: { kind: "String" }, optional: false }]
-  ])
+  properties: new Map([["id", { name: "id", type: { kind: "String" }, optional: false }]]),
 };
 
 const result = generator.generateModel(model);
@@ -80,7 +78,7 @@ const result = generator.generateModel(model);
 A discriminated union type representing either successful generation or error.
 
 ```typescript
-type GoEmitterResult = GoEmitterSuccess | GoEmitterError
+type GoEmitterResult = GoEmitterSuccess | GoEmitterError;
 ```
 
 **Usage Pattern:**
@@ -141,7 +139,7 @@ type GoEmitterError =
   | GoCodeGenerationError
   | TypeSpecCompilerError
   | TypeSafetyError
-  | SystemError
+  | SystemError;
 ```
 
 #### ModelValidationError
@@ -268,10 +266,21 @@ Represents a TypeSpec type definition.
 
 ```typescript
 interface TypeSpecTypeNode {
-  kind: "String" | "Int8" | "Int16" | "Int32" | "Int64" |
-         "Uint8" | "Uint16" | "Uint32" | "Uint64" |
-         "Float32" | "Float64" | "Boolean" |
-         "Array" | { kind: "Array", element: TypeSpecTypeNode }
+  kind:
+    | "String"
+    | "Int8"
+    | "Int16"
+    | "Int32"
+    | "Int64"
+    | "Uint8"
+    | "Uint16"
+    | "Uint32"
+    | "Uint64"
+    | "Float32"
+    | "Float64"
+    | "Boolean"
+    | "Array"
+    | { kind: "Array"; element: TypeSpecTypeNode };
 }
 ```
 
@@ -303,7 +312,7 @@ interface GoEmitterOptions {
 Using functional programming for error flow.
 
 ```typescript
-import { pipe } from 'effect/Function';
+import { pipe } from "effect/Function";
 
 const processResult = (result: GoEmitterResult) => {
   if (result._tag === "Success") {
@@ -313,10 +322,7 @@ const processResult = (result: GoEmitterResult) => {
   }
 };
 
-const goFiles = pipe(
-  generator.generateModel(model),
-  processResult
-);
+const goFiles = pipe(generator.generateModel(model), processResult);
 ```
 
 ### Switch Statement Pattern
@@ -407,7 +413,7 @@ const success: GoEmitterSuccess = {
   _tag: "Success",
   data: new Map(),
   generatedFiles: ["User.go"],
-  typeSpecProgram: null
+  typeSpecProgram: null,
 };
 ```
 
@@ -434,7 +440,7 @@ Generator instances are independent and can be used concurrently.
 // Parallel generation with multiple generator instances
 const models = [model1, model2, model3];
 const results = await Promise.all(
-  models.map(model => new StandaloneGoGenerator().generateModel(model))
+  models.map((model) => new StandaloneGoGenerator().generateModel(model)),
 );
 ```
 

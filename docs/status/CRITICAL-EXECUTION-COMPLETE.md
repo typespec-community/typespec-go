@@ -113,11 +113,7 @@ interface GoGenerationError {
 
 ```typescript
 // ✅ STRUCTURED ERROR MANAGEMENT
-throw new GoGenerationError(
-  "Unsupported TypeSpec type",
-  "UNSUPPORTED_TYPE",
-  { kind: type.kind }
-);
+throw new GoGenerationError("Unsupported TypeSpec type", "UNSUPPORTED_TYPE", { kind: type.kind });
 ```
 
 ---
@@ -149,7 +145,7 @@ export function $onEmit(context: EmitContext) {
       const goCode = generator.generateModel(model);
 
       // Output generation...
-    }
+    },
   });
 }
 ```

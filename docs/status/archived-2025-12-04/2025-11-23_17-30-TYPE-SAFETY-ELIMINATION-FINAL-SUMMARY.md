@@ -124,7 +124,7 @@ debug: (context: string, message: string, data?: LoggerData) => {
 ```typescript
 // Professional type guards eliminate all 'as any' casts
 const isTypeWithKind = (type: unknown): type is TypeWithKind => {
-  return type && typeof type === 'object' && 'kind' in type && typeof type.kind === 'string';
+  return type && typeof type === "object" && "kind" in type && typeof type.kind === "string";
 };
 ```
 

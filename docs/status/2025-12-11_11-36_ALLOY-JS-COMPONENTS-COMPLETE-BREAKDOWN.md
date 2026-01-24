@@ -24,24 +24,24 @@
 
 ```javascript
 // ACTUAL EXPORTS from node_modules/@alloy-js/go/dist/src/components/index.js
-export * from "./doc/comment.js";           // ✅ EXISTS
-export * from "./function/function.js";       // ✅ EXISTS
-export * from "./ImportStatement.js";         // ✅ EXISTS
-export * from "./interface/declaration.js";   // ✅ EXISTS
-export * from "./ModuleDirectory.js";         // ✅ EXISTS
-export * from "./Name.js";                   // ✅ EXISTS
-export * from "./parameters/parameters.js";    // ✅ EXISTS
+export * from "./doc/comment.js"; // ✅ EXISTS
+export * from "./function/function.js"; // ✅ EXISTS
+export * from "./ImportStatement.js"; // ✅ EXISTS
+export * from "./interface/declaration.js"; // ✅ EXISTS
+export * from "./ModuleDirectory.js"; // ✅ EXISTS
+export * from "./Name.js"; // ✅ EXISTS
+export * from "./parameters/parameters.js"; // ✅ EXISTS
 export * from "./parameters/typeparameters.js"; // ✅ EXISTS
-export * from "./pointer/pointer.js";         // ✅ EXISTS
-export * from "./Reference.js";              // ✅ EXISTS
-export * from "./SourceDirectory.js";        // ✅ EXISTS
-export * from "./SourceFile.js";             // ✅ EXISTS
-export * from "./struct/declaration.js";      // ✅ EXISTS
-export * from "./type/declaration.js";       // ✅ EXISTS
-export * from "./var/declaration.js";        // ✅ EXISTS
+export * from "./pointer/pointer.js"; // ✅ EXISTS
+export * from "./Reference.js"; // ✅ EXISTS
+export * from "./SourceDirectory.js"; // ✅ EXISTS
+export * from "./SourceFile.js"; // ✅ EXISTS
+export * from "./struct/declaration.js"; // ✅ EXISTS
+export * from "./type/declaration.js"; // ✅ EXISTS
+export * from "./var/declaration.js"; // ✅ EXISTS
 
 // ❌ MISSING - What the project tries to import:
-export { Package }                           // ❌ DOES NOT EXIST
+export { Package }; // ❌ DOES NOT EXIST
 ```
 
 ### **🔧 Go Package System Architecture:**
@@ -88,10 +88,10 @@ GoModuleScope → GoPackageScope → GoSourceFileScope
 
 ```typescript
 // PROJECT CODE (BROKEN):
-import { SourceFile, Package } from "@alloy-js/go";  // ❌ Package doesn't exist
+import { SourceFile, Package } from "@alloy-js/go"; // ❌ Package doesn't exist
 
 // ACTUAL @alloy-js/go EXPORTS:
-export { SourceFile } from "./SourceFile.js";           // ✅ EXISTS
+export { SourceFile } from "./SourceFile.js"; // ✅ EXISTS
 // export { Package } from "./Package.js";               // ❌ DOES NOT EXIST
 ```
 
@@ -100,7 +100,7 @@ export { SourceFile } from "./SourceFile.js";           // ✅ EXISTS
 ```typescript
 // SourceFile.js IMPLEMENTATION (from @alloy-js/go):
 export function SourceFile(props) {
-  const pkg = usePackage();  // ❌ THROWS: "A package is not in scope"
+  const pkg = usePackage(); // ❌ THROWS: "A package is not in scope"
   // ... rest of component never executes
 }
 
@@ -111,7 +111,7 @@ export function usePackage() {
     if (scope instanceof GoPackageScope) return scope;
     scope = scope.parent;
   }
-  throw new Error("A package is not in scope");  // ❌ ALWAYS THROWS
+  throw new Error("A package is not in scope"); // ❌ ALWAYS THROWS
 }
 ```
 
@@ -181,14 +181,14 @@ generator.generatePackage(package)                  // ✅ Complete packages
 ```typescript
 // WORKING ASSET EMITTER:
 export async function $onEmit(context: any) {
-  const generator = new StandaloneGoGenerator();  // ✅ PROVEN
+  const generator = new StandaloneGoGenerator(); // ✅ PROVEN
   const program = context.program;
 
   for (const model of program.globalNamespace.models.values()) {
-    const result = generator.generateModel(model);  // ✅ 100% WORKING
+    const result = generator.generateModel(model); // ✅ 100% WORKING
     if (result._tag === "success") {
       result.data.forEach((code, filename) => {
-        writeOutput(program, { path: filename, content: code });  // ✅ WRITES FILES
+        writeOutput(program, { path: filename, content: code }); // ✅ WRITES FILES
       });
     }
   }

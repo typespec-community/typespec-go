@@ -104,9 +104,15 @@
 
 ```typescript
 // BEFORE: 3 separate systems (split brain)
-type GeneratorError = { /* system 1 */ };
-type GoGenerationError = { /* system 2 */ };
-type TypeSpecGenerationError = { /* system 3 */ };
+type GeneratorError = {
+  /* system 1 */
+};
+type GoGenerationError = {
+  /* system 2 */
+};
+type TypeSpecGenerationError = {
+  /* system 3 */
+};
 
 // AFTER: Single discriminated union (DDD)
 export type GoEmitterResult =
@@ -138,9 +144,13 @@ static adaptTypeSpecCompilerError(
 ```typescript
 // BEFORE: Duplicate definitions (split brain)
 // File: standalone-generator.ts
-interface TypeSpecTypeNode { /* duplicate */ }
+interface TypeSpecTypeNode {
+  /* duplicate */
+}
 // File: typespec-domain.ts
-interface TypeSpecTypeNode { /* duplicate */ }
+interface TypeSpecTypeNode {
+  /* duplicate */
+}
 
 // AFTER: Single source of truth
 // File: src/domain/nodes.ts (DDD bounded context)

@@ -13,15 +13,15 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 
 ## 📊 Feature Status Overview
 
-| Category | Features | Fully Functional | Partially Working | Broken | Planned |
-|----------|----------|------------------|-------------------|---------|---------|
-| **Core Type System** | 8 | 6 | 1 | 1 | 0 |
-| **Code Organization** | 6 | 3 | 0 | 3 | 0 |
-| **HTTP & APIs** | 5 | 0 | 0 | 5 | 0 |
-| **Advanced Patterns** | 7 | 0 | 2 | 5 | 0 |
-| **Documentation** | 3 | 2 | 0 | 1 | 0 |
-| **Tooling & CI** | 4 | 4 | 0 | 0 | 0 |
-| **TOTALS** | **33** | **15** | **3** | **16** | **0** |
+| Category              | Features | Fully Functional | Partially Working | Broken | Planned |
+| --------------------- | -------- | ---------------- | ----------------- | ------ | ------- |
+| **Core Type System**  | 8        | 6                | 1                 | 1      | 0       |
+| **Code Organization** | 6        | 3                | 0                 | 3      | 0       |
+| **HTTP & APIs**       | 5        | 0                | 0                 | 5      | 0       |
+| **Advanced Patterns** | 7        | 0                | 2                 | 5      | 0       |
+| **Documentation**     | 3        | 2                | 0                 | 1      | 0       |
+| **Tooling & CI**      | 4        | 4                | 0                 | 0      | 0       |
+| **TOTALS**            | **33**   | **15**           | **3**             | **16** | **0**   |
 
 ---
 
@@ -30,6 +30,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 ### 🏗️ Core Type System
 
 #### **Basic Model Generation** ✅
+
 - **Status:** WORKING RELIABLY
 - **Description:** Converts TypeSpec models to Go structs with proper type mapping
 - **TypeSpec Support:**
@@ -53,6 +54,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 - **Test Coverage:** ✅ Comprehensive test suite passing
 
 #### **Scalar Type Mapping** ✅
+
 - **Status:** WORKING RELIABLY
 - **Supported Types:**
   - `string` → `string`
@@ -63,6 +65,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 - **Test Coverage:** ✅ All scalar types tested and working
 
 #### **Optional Properties** ✅
+
 - **Status:** WORKING RELIABLY
 - **Description:** Optional TypeSpec fields generate Go pointer types
 - **TypeSpec Support:**
@@ -82,6 +85,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 - **Test Coverage:** ✅ Properly tested
 
 #### **JSON Tag Generation** ✅
+
 - **Status:** WORKING RELIABLY
 - **Description:** Automatically generates JSON struct tags with omitempty for optional fields
 - **Features:**
@@ -90,6 +94,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 - **Test Coverage:** ✅ Working
 
 #### **Array/Slice Types** ✅
+
 - **Status:** WORKING RELIABLY
 - **TypeSpec Support:**
   ```tsp
@@ -108,6 +113,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 - **Test Coverage:** ✅ Comprehensive array handling tests
 
 #### **Map/Record Types** ✅
+
 - **Status:** WORKING RELIABLY
 - **TypeSpec Support:**
   ```tsp
@@ -126,6 +132,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 - **Test Coverage:** ✅ Map type generation tested
 
 #### **Time/Duration Types** ✅
+
 - **Status:** WORKING RELIABLY
 - **Supported TypeSpec time types:**
   - `plainDate` → `time.Time`
@@ -139,6 +146,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 ### 🛠️ Tooling & CI
 
 #### **Test Infrastructure** ✅
+
 - **Status:** WORKING RELIABLY
 - **Framework:** Vitest with TypeScript/JSX support
 - **Features:**
@@ -149,6 +157,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 - **Test Count:** 169 tests (114 passing, 55 failing due to component issues)
 
 #### **Build System** ✅
+
 - **Status:** WORKING RELIABLY
 - **Tools:**
   - Bun package manager
@@ -158,6 +167,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 - **Commands:** `just build`, `just test`, `just lint`, `just check`
 
 #### **Type Safety** ✅
+
 - **Status:** WORKING RELIABLY
 - **Features:**
   - Strict TypeScript mode enabled
@@ -166,6 +176,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
   - Comprehensive ESLint rules
 
 #### **Project Organization** ✅
+
 - **Status:** WORKING RELIABLY
 - **Structure:** Well-organized monorepo with clear separation of concerns
 - **Directories:** Proper component, domain, service, and test organization
@@ -177,6 +188,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 ### 🏗️ Core Type System
 
 #### **Enum Generation** 🟡
+
 - **Status:** PARTIALLY IMPLEMENTED
 - **Description:** Code exists but failing due to Alloy-JS rendering issues
 - **Planned Features:**
@@ -189,6 +201,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 ### 📚 Documentation
 
 #### **@doc Decorator Support** 🟡
+
 - **Status:** PARTIALLY IMPLEMENTED
 - **Description:** Infrastructure exists but integration not working
 - **Features:**
@@ -203,6 +216,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 ### 🏗️ Code Organization
 
 #### **Go Module Generation** ❌
+
 - **Status:** BROKEN
 - **Component:** `GoModFile.tsx`
 - **Planned Features:**
@@ -212,6 +226,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 - **Issue:** Component exists but tests failing
 
 #### **Package Directory Structure** ❌
+
 - **Status:** BROKEN
 - **Component:** `GoPackageDirectory.tsx`
 - **Planned Features:**
@@ -221,6 +236,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 - **Issue:** Core directory generation failing due to Output component issues
 
 #### **File Splitting** ❌
+
 - **Status:** BROKEN
 - **Description:** Unable to split generated code into multiple files
 - **Issue:** Alloy-JS Output component not working properly
@@ -228,6 +244,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 ### 🌐 HTTP & APIs
 
 #### **HTTP Operation Support** ❌
+
 - **Status:** BROKEN
 - **Description:** TypeSpec HTTP operations not generating Go handlers
 - **Components:** `GoHandlerStub.tsx`, `GoRouteRegistrationComponent.tsx`
@@ -238,21 +255,25 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
   - Request body handling (@body)
 
 #### **Interface Generation** ❌
+
 - **Status:** BROKEN
 - **Component:** `GoInterfaceDeclaration.tsx`
 - **Issue:** Component exists but failing to render
 
 #### **Route Registration** ❌
+
 - **Status:** BROKEN
 - **Component:** `GoRouteRegistrationComponent.tsx`
 - **Issue:** Tests failing, empty output
 
 #### **Handler Stub Generation** ❌
+
 - **Status:** BROKEN
 - **Component:** `GoHandlerStub.tsx`
 - **Issue:** Component exists but not rendering
 
 #### **Return Type Extraction** ❌
+
 - **Status:** BROKEN
 - **Service:** `go-return-type-extractor.ts`
 - **Issue:** Not working with current component system
@@ -260,6 +281,7 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 ### 🎨 Advanced Patterns
 
 #### **Union Type Generation** ❌
+
 - **Status:** BROKEN
 - **Component:** `GoUnionDeclaration.tsx`
 - **Planned Features:**
@@ -269,16 +291,19 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 - **Issue:** Component exists but tests failing
 
 #### **Template/Generic Support** ❌
+
 - **Status:** BROKEN
 - **Description:** TypeSpec template parameters not supported
 - **Issue:** No implementation
 
 #### **Model Composition/Extends** ❌
+
 - **Status:** BROKEN
 - **Description:** TypeSpec `extends` keyword not supported
 - **Issue:** No struct embedding generation
 
-#### **Custom Decorators (@go.*)** ❌
+#### **Custom Decorators (@go.\*)** ❌
+
 - **Status:** BROKEN
 - **Planned Decorators:**
   - `@go.name` - Custom Go field name
@@ -288,11 +313,13 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 - **Issue:** No decorator processing implementation
 
 #### **Error Model Handling** ❌
+
 - **Status:** BROKEN
 - **Description:** TypeSpec `@error` decorator not supported
 - **Issue:** No error model processing
 
 #### **Visibility Decorators** ❌
+
 - **Status:** BROKEN
 - **Description:** TypeSpec `@visibility` decorators ignored
 - **Issue:** No visibility processing
@@ -302,17 +329,20 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 ## 🚧 TECHNICAL ISSUES
 
 ### **Critical: Alloy-JS Output Component** 🚨
+
 - **Issue:** Most component tests failing with "Invalid result structure - missing contents array"
 - **Root Cause:** Alloy-JS Output component not properly handling basePath
 - **Impact:** 55/169 tests failing
 - **Error:** `null is not an object (evaluating 'props.basePath')`
 
 ### **Component Rendering Problems** 🚨
+
 - **Symptoms:** Empty directories returned from component rendering
 - **Affected Components:** Most Go generation components
 - **Status:** Core architecture needs debugging
 
 ### **TypeScript Compilation Issues** ⚠️
+
 - **Status:** Some TypeScript errors in test files
 - **Impact:** Some tests cannot run
 - **Cause:** JSX/component integration issues
@@ -322,27 +352,31 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 ## 📋 FEATURE IMPLEMENTATION PLAN
 
 ### **Phase 1: Critical Fixes (Immediate)**
+
 1. **Fix Alloy-JS Output Component** - Resolve basePath issue
 2. **Debug Component Rendering** - Fix empty directory returns
 3. **Resolve TypeScript Compilation** - Clear build errors
 4. **Stabilize Test Suite** - Get all tests passing
 
 ### **Phase 2: Core Completion (Week 1)**
+
 1. **Enum Generation** - Fix component rendering
 2. **Go Module Generation** - Enable go.mod file creation
 3. **Package Directory Structure** - Fix file organization
 4. **Interface Generation** - Enable operation interfaces
 
 ### **Phase 3: HTTP Support (Week 2)**
+
 1. **HTTP Operation Processing** - Parse decorators and routes
 2. **Handler Stub Generation** - Create HTTP handler templates
 3. **Route Registration** - Generate route setup code
 4. **Return Type Mapping** - Extract operation return types
 
 ### **Phase 4: Advanced Patterns (Week 3)**
+
 1. **Union Type Generation** - Implement sealed interfaces
 2. **Model Composition** - Add struct embedding support
-3. **Custom Decorators** - Implement @go.* decorator support
+3. **Custom Decorators** - Implement @go.\* decorator support
 4. **Template Support** - Add generic type support
 
 ---
@@ -350,18 +384,21 @@ The TypeSpec Go Emitter is a professional TypeSpec compiler plugin that generate
 ## 🎯 DEVELOPMENT PRIORITIES
 
 ### **HIGH IMPACT** 🔴
+
 1. Fix Alloy-JS Output component (blocking all features)
 2. Stabilize component rendering system
 3. Complete enum generation
 4. Enable basic HTTP operation support
 
 ### **MEDIUM IMPACT** 🟡
+
 1. Union type generation
 2. Go module and package structure
 3. Custom decorator support
 4. Error model handling
 
 ### **LOW IMPACT** 🟢
+
 1. Template/generic support
 2. Visibility decorators
 3. Advanced documentation features
@@ -437,6 +474,7 @@ interface UserAPI {
 ## 📈 ROADMAP TO STABLE RELEASE
 
 ### **MVP Target (4 weeks)**
+
 - [x] Basic model generation
 - [ ] Fix critical component issues
 - [ ] Enum generation
@@ -444,6 +482,7 @@ interface UserAPI {
 - [ ] Go module structure
 
 ### **Beta Target (6 weeks)**
+
 - [ ] Union types
 - [ ] Model composition
 - [ ] Custom decorators
@@ -451,6 +490,7 @@ interface UserAPI {
 - [ ] Error handling
 
 ### **Stable Target (8 weeks)**
+
 - [ ] Template/generic support
 - [ ] Advanced decorators
 - [ ] Performance optimization

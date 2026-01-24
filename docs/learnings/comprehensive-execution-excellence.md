@@ -124,7 +124,7 @@ export class GoGenerationError extends Error {
   constructor(
     message: string,
     public readonly code: "UNSUPPORTED_TYPE" | "INVALID_MODEL" | "GENERATION_FAILED",
-    public readonly context?: unknown
+    public readonly context?: unknown,
   ) {
     super(message);
     this.name = "GoGenerationError";

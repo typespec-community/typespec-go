@@ -11,9 +11,9 @@
 
 ```typescript
 import {
-  SourceFile,           // Creates Go source files
-  SourceDirectory,      // Creates directory structures
-  ModuleDirectory       // Creates module directories
+  SourceFile, // Creates Go source files
+  SourceDirectory, // Creates directory structures
+  ModuleDirectory, // Creates module directories
 } from "@alloy-js/go";
 ```
 
@@ -21,10 +21,10 @@ import {
 
 ```typescript
 import {
-  StructTypeDeclaration,  // Named struct type declaration
-  StructDeclaration,      // Anonymous struct declaration
-  StructMember,          // Struct field/member
-  StructEmbed            // Struct embedding
+  StructTypeDeclaration, // Named struct type declaration
+  StructDeclaration, // Anonymous struct declaration
+  StructMember, // Struct field/member
+  StructEmbed, // Struct embedding
 } from "@alloy-js/go";
 ```
 
@@ -32,9 +32,9 @@ import {
 
 ```typescript
 import {
-  TypeDeclaration,       // Type declarations
-  InterfaceDeclaration,   // Interface declarations
-  Name                   // Name handling
+  TypeDeclaration, // Type declarations
+  InterfaceDeclaration, // Interface declarations
+  Name, // Name handling
 } from "@alloy-js/go";
 ```
 
@@ -42,7 +42,7 @@ import {
 
 ```typescript
 import {
-  FunctionDeclaration     // Function declarations
+  FunctionDeclaration, // Function declarations
 } from "@alloy-js/go";
 ```
 
@@ -50,7 +50,7 @@ import {
 
 ```typescript
 import {
-  ImportStatement        // Import statements
+  ImportStatement, // Import statements
 } from "@alloy-js/go";
 ```
 
@@ -58,7 +58,7 @@ import {
 
 ```typescript
 import {
-  VarDeclaration        // Variable declarations
+  VarDeclaration, // Variable declarations
 } from "@alloy-js/go";
 ```
 
@@ -70,10 +70,10 @@ import {
 
 ```typescript
 interface StructTypeDeclarationProps {
-  name: string;              // Struct name
-  children?: Children;        // Struct members
-  refkey?: Refkey;           // Reference key
-  singleLine?: boolean;       // Single line format
+  name: string; // Struct name
+  children?: Children; // Struct members
+  refkey?: Refkey; // Reference key
+  singleLine?: boolean; // Single line format
 }
 ```
 
@@ -81,12 +81,12 @@ interface StructTypeDeclarationProps {
 
 ```typescript
 interface StructMemberProps {
-  name: string | Namekey;    // Field name
-  type: Children;            // Field type
-  exported?: boolean;         // Exported (uppercase)
+  name: string | Namekey; // Field name
+  type: Children; // Field type
+  exported?: boolean; // Exported (uppercase)
   tag?: string | Record<string, string>; // Struct tags
-  doc?: Children;             // Documentation
-  refkey?: Refkey;           // Reference key
+  doc?: Children; // Documentation
+  refkey?: Refkey; // Reference key
 }
 ```
 
@@ -95,8 +95,8 @@ interface StructMemberProps {
 ```typescript
 // SourceFile creates complete Go files
 interface SourceFileProps {
-  path: string;              // File path
-  children?: Children;        // File content
+  path: string; // File path
+  children?: Children; // File content
 }
 ```
 
@@ -109,8 +109,8 @@ interface SourceFileProps {
 ```tsx
 <SourceFile path="models.go">
   <StructTypeDeclaration name="User">
-    <StructMember exported name="ID" type="string" tag={{json: "id"}} />
-    <StructMember exported name="Name" type="string" tag={{json: "name"}} />
+    <StructMember exported name="ID" type="string" tag={{ json: "id" }} />
+    <StructMember exported name="Name" type="string" tag={{ json: "name" }} />
   </StructTypeDeclaration>
 </SourceFile>
 ```
@@ -132,7 +132,7 @@ interface SourceFileProps {
 
 ```tsx
 // Pointer type for optional fields
-<StructMember name="optionalField" type="*string" tag={{json:"optionalField,omitempty"}} />
+<StructMember name="optionalField" type="*string" tag={{ json: "optionalField,omitempty" }} />
 ```
 
 ### **Anonymous Structs**

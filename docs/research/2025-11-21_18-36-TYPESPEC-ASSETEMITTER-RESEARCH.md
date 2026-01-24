@@ -21,13 +21,9 @@ import {
   Type,
   Scalar,
   Namespace,
-  Interface
+  Interface,
 } from "@typespec/compiler";
-import {
-  createAssetEmitter,
-  emitFile,
-  AssetEmitter
-} from "@typespec/emitter-framework";
+import { createAssetEmitter, emitFile, AssetEmitter } from "@typespec/emitter-framework";
 ```
 
 ### **Core TypeSpec Types (Type-Safe)**
@@ -82,26 +78,24 @@ interface UnionVariant {
 
 ```typescript
 // PROPER TYPESPEC ASSETEMITTER
-export const $onEmit = createAssetEmitter(
-  async (context: EmitContext) => {
-    const { program } = context;
+export const $onEmit = createAssetEmitter(async (context: EmitContext) => {
+  const { program } = context;
 
-    // Extract models from TypeSpec program
-    const globalNamespace = program.getGlobalNamespaceType();
-    const models = [...globalNamespace.models.values()];
+  // Extract models from TypeSpec program
+  const globalNamespace = program.getGlobalNamespaceType();
+  const models = [...globalNamespace.models.values()];
 
-    // Process each model
-    for (const model of models) {
-      if (shouldEmitModel(model)) {
-        const goCode = generateGoFromModel(model, context);
-        await emitFile(program, {
-          path: `${model.name}.go`,
-          content: goCode,
-        });
-      }
+  // Process each model
+  for (const model of models) {
+    if (shouldEmitModel(model)) {
+      const goCode = generateGoFromModel(model, context);
+      await emitFile(program, {
+        path: `${model.name}.go`,
+        content: goCode,
+      });
     }
   }
-);
+});
 
 // TYPE-SAFE MODEL PROCESSING
 function generateGoFromModel(model: Model, context: EmitContext): string {
@@ -170,20 +164,20 @@ function mapTypeSpecToGo(type: Type): string {
 // PROPER SCALAR MAPPING
 function mapScalarToGo(scalar: Scalar): string {
   const scalarMap: Record<string, string> = {
-    "int8": "int8",
-    "int16": "int16",
-    "int32": "int32",
-    "int64": "int64",
-    "uint8": "uint8",
-    "uint16": "uint16",
-    "uint32": "uint32",
-    "uint64": "uint64",
-    "float32": "float32",
-    "float64": "float64",
-    "bytes": "[]byte",
-    "plainDate": "time.Time",
-    "utcDateTime": "time.Time",
-    "duration": "time.Duration",
+    int8: "int8",
+    int16: "int16",
+    int32: "int32",
+    int64: "int64",
+    uint8: "uint8",
+    uint16: "uint16",
+    uint32: "uint32",
+    uint64: "uint64",
+    float32: "float32",
+    float64: "float64",
+    bytes: "[]byte",
+    plainDate: "time.Time",
+    utcDateTime: "time.Time",
+    duration: "time.Duration",
   };
 
   return scalarMap[scalar.name] || "interface{}";
@@ -255,11 +249,9 @@ interface GoStructField {
 // CORRECT ASSETEMITTER PATTERN
 import { createAssetEmitter } from "@typespec/emitter-framework";
 
-export const $onEmit = createAssetEmitter(
-  async (context: EmitContext) => {
-    // Main emitter logic
-  }
-);
+export const $onEmit = createAssetEmitter(async (context: EmitContext) => {
+  // Main emitter logic
+});
 ```
 
 ### **TypeSpec Compiler API**
