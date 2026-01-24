@@ -292,6 +292,7 @@ Checkout → Setup Bun → Install Dependencies → Build → Test → Lint → 
    - **Root Cause:** `alloy build` compiling JSX in dev mode
 
 2. ❌ **Missing Custom Decorators**
+
    ```
    examples/basic/main.tsp:8:2 - error invalid-ref: Unknown decorator @pkg
    examples/basic/main.tsp:5:16 - error invalid-ref: Namespace TypeSpec doesn't have member Go
