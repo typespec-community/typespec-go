@@ -4,89 +4,89 @@
 package testapi
 
 import (
-	"context"
-	"encoding/json"
-	"net/http"
+    "encoding/json"
+    "net/http"
+    "context"
 )
 
 // Type: User from TypeSpec
 type User struct {
-	ID     string  `json:"id"`
-	Name   string  `json:"name"`
-	Email  *string `json:"email,omitempty"`
-	Age    int32   `json:"age"`
-	Active bool    `json:"active"`
+    ID string `json:"id"`
+    Name string `json:"name"`
+    Email *string `json:"email,omitempty"`
+    Age int32 `json:"age"`
+    Active bool `json:"active"`
 }
 
 // Type: CreateUserRequest from TypeSpec
 type CreateUserRequest struct {
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Age   int32  `json:"age"`
+    Name string `json:"name"`
+    Email string `json:"email"`
+    Age int32 `json:"age"`
 }
 
 // Type: UserList from TypeSpec
 type UserList struct {
-	Users []User `json:"users"`
-	Total int32  `json:"total"`
+    Users []User `json:"users"`
+    Total int32 `json:"total"`
 }
 
 // Service: TestAPI from TypeSpec
 type TestAPIService struct {
-	// Service dependencies here
+    // Service dependencies here
 }
 
 // Interface: Generated from TypeSpec operations
 type TestAPIServiceInterface interface {
-	GetUser(ctx context.Context, id string) (User, error)
-	CreateUser(ctx context.Context, user CreateUserRequest) (User, error)
-	ListUsers(ctx context.Context, limit, offset *int32) (UserList, error)
-	UpdateUser(ctx context.Context, id string, user User) (User, error)
-	DeleteUser(ctx context.Context, id string) error
+    GetUser(ctx context.Context, id string) (User, error)
+    CreateUser(ctx context.Context, user CreateUserRequest) (User, error)
+    ListUsers(ctx context.Context, limit *int32, offset *int32) (UserList, error)
+    UpdateUser(ctx context.Context, id string, user User) (User, error)
+    DeleteUser(ctx context.Context, id string) error
 }
 
 // Handler: GetUser from TypeSpec operation
 func (s *TestAPIService) GetUserHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, id string) {
-	// TODO: Implement GetUser handler
-	// Route: GET /users/{id}
-
-	result, err := s.service.GetUser(ctx, id)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(result)
+    // TODO: Implement GetUser handler
+    // Route: GET /users/{id}
+    
+    result, err := s.service.GetUser(ctx, id)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(result)
 }
 
 // Handler: CreateUser from TypeSpec operation
 func (s *TestAPIService) CreateUserHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement CreateUser handler
-	// Route: POST /users
-
-	var input CreateUserRequest
-	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
-		http.Error(w, "Invalid JSON", http.StatusBadRequest)
-		return
-	}
-
-	result, err := s.service.CreateUser(ctx, input)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusCreated)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(result)
+    // TODO: Implement CreateUser handler
+    // Route: POST /users
+    
+    var input CreateUserRequest
+    if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+        http.Error(w, "Invalid JSON", http.StatusBadRequest)
+        return
+    }
+    
+    result, err := s.service.CreateUser(ctx, input)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    
+    w.WriteHeader(http.StatusCreated)
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(result)
 }
 
 // Route Registration: Generated from TypeSpec operations
 func (s *TestAPIService) RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("/users/{id}", s.GetUserHandler)
-	mux.HandleFunc("/users", s.CreateUserHandler)
-	mux.HandleFunc("/users", s.ListUsersHandler)
-	mux.HandleFunc("/users/{id}", s.UpdateUserHandler)
-	mux.HandleFunc("/users/{id}", s.DeleteUserHandler)
+    mux.HandleFunc("/users/{id}", s.GetUserHandler)
+    mux.HandleFunc("/users", s.CreateUserHandler)
+    mux.HandleFunc("/users", s.ListUsersHandler)
+    mux.HandleFunc("/users/{id}", s.UpdateUserHandler)
+    mux.HandleFunc("/users/{id}", s.DeleteUserHandler)
 }
