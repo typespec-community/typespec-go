@@ -15,10 +15,10 @@ describe("🔥 Go Core Helper Components - STC Version", () => {
     const output = renderGoContent(
       <GoSwitchSTC value="e">
         <GoCaseSTC value="User">
-          <GoStringLiteralSTC value="fmt.Printf(&quot;user case&quot;)" />
+          <GoStringLiteralSTC value='fmt.Printf("user case")' />
         </GoCaseSTC>
         <GoDefaultSTC>
-          <GoStringLiteralSTC value="fmt.Printf(&quot;default case&quot;)" />
+          <GoStringLiteralSTC value='fmt.Printf("default case")' />
         </GoDefaultSTC>
       </GoSwitchSTC>,
     );
@@ -33,7 +33,7 @@ describe("🔥 Go Core Helper Components - STC Version", () => {
   test("GoIf renders correctly", () => {
     const output = renderGoContent(
       <GoIfSTC condition="x > 0">
-        <GoStringLiteralSTC value="fmt.Printf(&quot;positive&quot;)" />
+        <GoStringLiteralSTC value='fmt.Printf("positive")' />
       </GoIfSTC>,
     );
 
@@ -73,7 +73,7 @@ describe("🔥 Go Core Helper Components - STC Version", () => {
   test("GoBlock renders correctly", () => {
     const output = renderGoContent(
       <GoBlockSTC>
-        <GoStringLiteralSTC value="fmt.Printf(&quot;Hello&quot;)" />
+        <GoStringLiteralSTC value='fmt.Printf("Hello")' />
       </GoBlockSTC>,
     );
 
