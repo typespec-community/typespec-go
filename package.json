@@ -20,28 +20,28 @@
     "format": "prettier src/ --write"
   },
   "dependencies": {
-    "@alloy-js/core": "^0.21.0",
-    "@alloy-js/go": "^0.1.0",
-    "@types/react": "^19.2.7",
+    "@alloy-js/core": "^0.22.0",
+    "@alloy-js/go": "^0.2.0",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@typespec/compiler": "^1.7.0",
-    "@typespec/emitter-framework": "^0.14.0",
-    "@typespec/http": "^1.7.0",
-    "zod": "^4.1.13"
+    "@typespec/compiler": "^1.10.0",
+    "@typespec/emitter-framework": "^0.17.0",
+    "@typespec/http": "^1.10.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@alloy-js/cli": "^0.21.0",
+    "@alloy-js/cli": "^0.22.0",
     "@alloy-js/rollup-plugin": "^0.1.0",
-    "@alloy-js/typescript": "^0.21.0",
-    "@types/node": "^24.10.2",
-    "@typescript-eslint/eslint-plugin": "^8.49.0",
-    "@typescript-eslint/parser": "^8.49.0",
-    "eslint": "^9.39.1",
+    "@alloy-js/typescript": "^0.22.0",
+    "@types/node": "^25.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.57.1",
+    "@typescript-eslint/parser": "^8.57.1",
+    "eslint": "^10.0.3",
     "prettier": "^4.0.0-alpha.12",
     "typescript": "6.0.0-dev.20251114",
-    "vitest": "^4.0.15"
+    "vitest": "^4.1.0"
   },
   "peerDependencies": {
-    "@typespec/compiler": "1.7.0"
+    "@typespec/compiler": "1.10.0"
   }
 }
