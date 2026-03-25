@@ -7,7 +7,25 @@ import type {
   Program,
   EmitContext,
   ModelProperty,
+  FunctionValue,
 } from "@typespec/compiler";
+
+/**
+ * Minimal PerfReporter interface for test mocking
+ * (Not exported from @typespec/compiler)
+ */
+interface MockPerfReporter {
+  startTimer(label: string): Timer;
+  time<T>(label: string, callback: () => T): T;
+  timeAsync<T>(label: string, callback: () => Promise<T>): Promise<T>;
+  report(label: string, duration: number): void;
+  getDuration(label: string): number;
+  toJSON(): Record<string, unknown>;
+}
+
+interface Timer {
+  end(): number;
+}
 
 /**
  * Mock ModelProperty interface for test purposes
@@ -242,6 +260,7 @@ export class MockFactory {
       isFinished: true,
       namespaces: new Map(),
       decoratorDeclarations: new Map(),
+      functionDeclarations: new Map<string, FunctionValue>(),
     } as Namespace;
   }
 
@@ -251,10 +270,21 @@ export class MockFactory {
   static createEmitContext(program?: Program): EmitContext {
     const prog = program || this.createProgram();
 
+    // Minimal mock PerfReporter
+    const mockPerf: MockPerfReporter = {
+      startTimer: () => ({ end: () => 0 }),
+      time: <T>(_: string, fn: () => T) => fn(),
+      timeAsync: <T>(_: string, fn: () => Promise<T>) => fn(),
+      report: () => {},
+      getDuration: () => 0,
+      toJSON: () => ({}),
+    };
+
     return {
       program: prog,
       emitterOutputDir: "./test-output",
       options: {},
+      perf: mockPerf,
       getAssetEmitter: () => ({
         writeOutput: async () => {},
         getProgram: () => prog,
