@@ -9,6 +9,16 @@ import { isNullType } from "@typespec/compiler";
 import { CleanTypeMapper } from "../domain/clean-type-mapper.js";
 
 /**
+ * Props for TypeExpression component
+ */
+interface TypeExpressionProps {
+  /** TypeSpec type to convert */
+  type: Type;
+  /** Optional field name for strong ID detection */
+  fieldName?: string;
+}
+
+/**
  * Type guard for Scalar types
  */
 function isScalar(type: Type): type is Scalar {
@@ -56,11 +66,11 @@ function getArrayElementType(model: Model & { indexer: { key: Scalar; value: Typ
  * Uses domain layer (CleanTypeMapper) for type mappings
  * Uses proper type guards, NO 'as' casts
  */
-export function TypeExpression({ type }: { type: Type }): string {
+export function TypeExpression({ type, fieldName }: TypeExpressionProps): string {
   // Handle Scalar types (string, int32, bool, etc.)
   if (isScalar(type)) {
-    // Use domain layer for type mapping
-    const mapping = CleanTypeMapper.mapTypeSpecType(type);
+    // Use domain layer for type mapping, pass fieldName for strong ID detection
+    const mapping = CleanTypeMapper.mapTypeSpecType(type, fieldName);
     return mapping.goType || "interface{}";
   }
 
@@ -69,7 +79,10 @@ export function TypeExpression({ type }: { type: Type }): string {
     // Handle array models (Models with indexers)
     if (isArrayModel(type)) {
       const elementType = getArrayElementType(type);
-      const elementGoType = TypeExpression({ type: elementType });
+      const elementGoType = TypeExpression({
+        type: elementType,
+        fieldName: fieldName ? `${fieldName}Element` : undefined,
+      });
       return "[]" + elementGoType;
     }
 
@@ -85,7 +98,7 @@ export function TypeExpression({ type }: { type: Type }): string {
       const hasNull = variants.some((v) => isNullType(v.type));
 
       if (nonNullVariant && hasNull) {
-        const innerType = TypeExpression({ type: nonNullVariant.type });
+        const innerType = TypeExpression({ type: nonNullVariant.type, fieldName });
         return `*${innerType}`;
       }
     }

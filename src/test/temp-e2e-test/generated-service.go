@@ -7,11 +7,25 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+
+	"github.com/larsartmann/go-composable-business-types/id"
+)
+
+// Strong ID type aliases for type safety
+type (
+	IDID = id.ID[UserBrand, string]
+	IdID = id.ID[GetUserHandlerBrand, string]
+)
+
+// Brand types for strong ID generics
+type (
+	UserBrand           struct{}
+	GetUserHandlerBrand struct{}
 )
 
 // Type: User from TypeSpec
 type User struct {
-	ID     string  `json:"id"`
+	ID     IDID    `json:"id"`
 	Name   string  `json:"name"`
 	Email  *string `json:"email,omitempty"`
 	Age    int32   `json:"age"`
@@ -38,15 +52,15 @@ type TestAPIService struct {
 
 // Interface: Generated from TypeSpec operations
 type TestAPIServiceInterface interface {
-	GetUser(ctx context.Context, id string) (User, error)
+	GetUser(ctx context.Context, id IdID) (User, error)
 	CreateUser(ctx context.Context, user CreateUserRequest) (User, error)
 	ListUsers(ctx context.Context, limit, offset *int32) (UserList, error)
-	UpdateUser(ctx context.Context, id string, user User) (User, error)
-	DeleteUser(ctx context.Context, id string) error
+	UpdateUser(ctx context.Context, id IdID, user User) (User, error)
+	DeleteUser(ctx context.Context, id IdID) error
 }
 
 // Handler: GetUser from TypeSpec operation
-func (s *TestAPIService) GetUserHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, id string) {
+func (s *TestAPIService) GetUserHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, id IdID) {
 	// TODO: Implement GetUser handler
 	// Route: GET /users/{id}
 

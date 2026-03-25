@@ -107,6 +107,7 @@ describe("E2E Integration - Working Workflow Tests", () => {
 
 /**
  * Generate simulated Go code from TypeSpec content
+ * Uses strong ID types for type safety
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function generateSimulatedGoCode(_tspContent: string): string {
@@ -117,31 +118,41 @@ function generateSimulatedGoCode(_tspContent: string): string {
 package testapi
 
 import (
+    "context"
     "encoding/json"
     "net/http"
-    "context"
+
+    "github.com/larsartmann/go-composable-business-types/id"
 )
+
+// Strong ID type aliases for type safety
+type IDID = id.ID[UserBrand, string]
+type IdID = id.ID[GetUserHandlerBrand, string]
+
+// Brand types for strong ID generics
+type UserBrand struct{}
+type GetUserHandlerBrand struct{}
 
 // Type: User from TypeSpec
 type User struct {
-    ID string \`json:"id"\`
-    Name string \`json:"name"\`
-    Email *string \`json:"email,omitempty"\`
-    Age int32 \`json:"age"\`
-    Active bool \`json:"active"\`
+    ID     IDID    \`json:"id"\`
+    Name   string  \`json:"name"\`
+    Email  *string \`json:"email,omitempty"\`
+    Age    int32   \`json:"age"\`
+    Active bool    \`json:"active"\`
 }
 
 // Type: CreateUserRequest from TypeSpec
 type CreateUserRequest struct {
-    Name string \`json:"name"\`
+    Name  string \`json:"name"\`
     Email string \`json:"email"\`
-    Age int32 \`json:"age"\`
+    Age   int32  \`json:"age"\`
 }
 
 // Type: UserList from TypeSpec
 type UserList struct {
     Users []User \`json:"users"\`
-    Total int32 \`json:"total"\`
+    Total int32  \`json:"total"\`
 }
 
 // Service: TestAPI from TypeSpec
@@ -151,24 +162,24 @@ type TestAPIService struct {
 
 // Interface: Generated from TypeSpec operations
 type TestAPIServiceInterface interface {
-    GetUser(ctx context.Context, id string) (User, error)
+    GetUser(ctx context.Context, id IdID) (User, error)
     CreateUser(ctx context.Context, user CreateUserRequest) (User, error)
     ListUsers(ctx context.Context, limit *int32, offset *int32) (UserList, error)
-    UpdateUser(ctx context.Context, id string, user User) (User, error)
-    DeleteUser(ctx context.Context, id string) error
+    UpdateUser(ctx context.Context, id IdID, user User) (User, error)
+    DeleteUser(ctx context.Context, id IdID) error
 }
 
 // Handler: GetUser from TypeSpec operation
-func (s *TestAPIService) GetUserHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, id string) {
+func (s *TestAPIService) GetUserHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, id IdID) {
     // TODO: Implement GetUser handler
     // Route: GET /users/{id}
-    
+
     result, err := s.service.GetUser(ctx, id)
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
-    
+
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(result)
 }
@@ -177,19 +188,19 @@ func (s *TestAPIService) GetUserHandler(ctx context.Context, w http.ResponseWrit
 func (s *TestAPIService) CreateUserHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
     // TODO: Implement CreateUser handler
     // Route: POST /users
-    
+
     var input CreateUserRequest
     if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
         http.Error(w, "Invalid JSON", http.StatusBadRequest)
         return
     }
-    
+
     result, err := s.service.CreateUser(ctx, input)
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
-    
+
     w.WriteHeader(http.StatusCreated)
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(result)
@@ -210,6 +221,7 @@ func (s *TestAPIService) RegisterRoutes(mux *http.ServeMux) {
 
 /**
  * Generate simulated complex Go code from TypeSpec with HTTP decorators
+ * Uses strong ID types for type safety
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function generateSimulatedComplexGoCode(_tspContent: string): string {
@@ -218,25 +230,35 @@ function generateSimulatedComplexGoCode(_tspContent: string): string {
 package complexapi
 
 import (
+    "context"
     "encoding/json"
     "net/http"
-    "context"
+
+    "github.com/larsartmann/go-composable-business-types/id"
 )
+
+// Strong ID type aliases
+type IDID = id.ID[UserBrand, string]
+type IdID = id.ID[ComplexGetUserHandlerBrand, string]
+
+// Brand types
+type UserBrand struct{}
+type ComplexGetUserHandlerBrand struct{}
 
 // Error Type: ApiError from TypeSpec
 type ApiError struct {
-    Code string \`json:"code"\`
-    Message string \`json:"message"\`
+    Code    string   \`json:"code"\`
+    Message string   \`json:"message"\`
     Details *[]string \`json:"details,omitempty"\`
 }
 
 // User Type with Lifecycle visibility
 type User struct {
-    ID string \`json:"id"\`                     // @visibility(Lifecycle.Read)
-    Name string \`json:"name"\`
-    Email string \`json:"email"\`
-    Age *int32 \`json:"age,omitempty"\`
-    Active bool \`json:"active"\`
+    ID     IDID    \`json:"id"\`                     // @visibility(Lifecycle.Read)
+    Name   string  \`json:"name"\`
+    Email  string  \`json:"email"\`
+    Age    *int32  \`json:"age,omitempty"\`
+    Active bool    \`json:"active"\`
 }
 
 // Complex Service with HTTP decorators
@@ -246,15 +268,15 @@ type ComplexAPIService struct {
 
 // Interface with HTTP operations
 type ComplexAPIServiceInterface interface {
-    GetUser(ctx context.Context, id string) (User, error)
+    GetUser(ctx context.Context, id IdID) (User, error)
     CreateUser(ctx context.Context, user User) (User, error)
     ListUsers(ctx context.Context, limit *int32, offset *int32) (UserList, error)
-    UpdateUser(ctx context.Context, id string, user User) (User, error)
-    DeleteUser(ctx context.Context, id string) error
+    UpdateUser(ctx context.Context, id IdID, user User) (User, error)
+    DeleteUser(ctx context.Context, id IdID) error
 }
 
 // HTTP Handler with proper error handling
-func (s *ComplexAPIService) GetUserHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, id string) {
+func (s *ComplexAPIService) GetUserHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, id IdID) {
     // TODO: Implement with HTTP error types
     result, err := s.service.GetUser(ctx, id)
     if err != nil {
@@ -266,7 +288,7 @@ func (s *ComplexAPIService) GetUserHandler(ctx context.Context, w http.ResponseW
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
-    
+
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(result)
 }
@@ -322,8 +344,8 @@ function validateComplexGeneratedGo(goCode: string): void {
   // Complex elements
   expect(goCode).toContain("package complexapi");
   expect(goCode).toContain("type ApiError struct");
-  expect(goCode).toContain("Code string");
-  expect(goCode).toContain("Message string");
+  expect(goCode).toMatch(/Code\s+string/); // Flexible spacing
+  expect(goCode).toMatch(/Message\s+string/); // Flexible spacing
 
   // HTTP-specific patterns
   expect(goCode).toContain("ComplexAPIService");

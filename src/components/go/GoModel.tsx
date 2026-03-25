@@ -25,7 +25,7 @@ export function GoModel({ model }: { model: Model }) {
         return (
           <StructMember
             name={prop.name}
-            type={TypeExpression({ type: prop.type })}
+            type={TypeExpression({ type: prop.type, fieldName: prop.name })}
             tag={{
               json: prop.name,
               ...(prop.optional && { omitempty: "" }),

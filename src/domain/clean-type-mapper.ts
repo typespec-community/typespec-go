@@ -5,10 +5,79 @@
  * TYPE SAFETY: Zero any types, comprehensive coverage
  * PERFORMANCE: Optimized type mapping with caching
  * MAINTAINABILITY: Clear separation of concerns
+ * STRONG ID TYPES: Support for brand/phantom types from go-composable-business-types/id
  */
 
 import type { TypeSpecPropertyNode } from "../types/typespec-domain.js";
 import type { GoTypeMapping } from "../types/emitter.types.js";
+
+/**
+ * Strong ID type information
+ */
+export interface StrongIdType {
+  /** Whether this is a strong ID type */
+  isStrongId: true;
+  /** The strong ID Go type (e.g., "IDID", "UserIDID") */
+  strongIdType: string;
+  /** The underlying primitive type (e.g., "string") */
+  underlyingType: string;
+}
+
+/**
+ * Check if a field name represents an ID field that should use strong ID type
+ * Matches patterns like: id, ID, Id, userId, UserId, orderId, OrderId, etc.
+ */
+export function isStrongIdField(fieldName: string): boolean {
+  if (!fieldName) return false;
+
+  // Exact matches for common ID field names
+  const exactMatches = ["id", "ID", "Id", "iD"];
+  if (exactMatches.includes(fieldName)) {
+    return true;
+  }
+
+  // Matches fields ending with "Id" (camelCase) or "ID" (PascalCase)
+  // Examples: userId, orderId, UserId, OrderId, itemId, ItemId
+  if (fieldName.endsWith("Id") || fieldName.endsWith("ID")) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Generate strong ID type name from field name
+ * Examples:
+ *   "id" -> "IDID"
+ *   "ID" -> "IDID"
+ *   "userId" -> "UserIdID"
+ *   "OrderId" -> "OrderIdID"
+ */
+export function generateStrongIdType(fieldName: string): string {
+  if (!fieldName) return "IDID";
+
+  // If it's exactly "id" or "ID", use a generic IDID
+  if (fieldName.toLowerCase() === "id") {
+    return "IDID";
+  }
+
+  // For fields like "userId", "OrderId", "itemId" -> "UserIdID", "OrderIdID", "ItemIdID"
+  // Capitalize the first letter and append "ID"
+  const capitalized = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+  return `${capitalized}ID`;
+}
+
+/**
+ * Get strong ID type mapping for ID fields
+ * Returns the appropriate strong ID type with required imports
+ */
+export function getStrongIdMapping(fieldName: string): StrongIdType {
+  return {
+    isStrongId: true,
+    strongIdType: generateStrongIdType(fieldName),
+    underlyingType: "string",
+  };
+}
 
 /**
  * Type mapping cache for performance
@@ -154,6 +223,15 @@ export class CleanTypeMapper {
 
       // Try to infer from common patterns
       if (scalarName.toLowerCase().includes("string")) {
+        // Check if this is a strong ID field (id, ID, userId, etc.)
+        if (fieldName && isStrongIdField(fieldName)) {
+          const strongId = getStrongIdMapping(fieldName);
+          return {
+            goType: strongId.strongIdType,
+            usePointerForOptional: false,
+            requiresImport: "github.com/larsartmann/go-composable-business-types/id",
+          };
+        }
         return { goType: "string", usePointerForOptional: false };
       }
       if (scalarName.toLowerCase().includes("int")) {
@@ -219,6 +297,15 @@ export class CleanTypeMapper {
       // ALL types use pointers for optional fields - Go best practice
       switch (kind) {
         case "String":
+          // Check if this is a strong ID field (id, ID, userId, etc.)
+          if (fieldName && isStrongIdField(fieldName)) {
+            const strongId = getStrongIdMapping(fieldName);
+            return {
+              goType: strongId.strongIdType,
+              usePointerForOptional: false,
+              requiresImport: "github.com/larsartmann/go-composable-business-types/id",
+            };
+          }
           return { goType: "string", usePointerForOptional: true };
         case "Boolean":
           return { goType: "bool", usePointerForOptional: true };

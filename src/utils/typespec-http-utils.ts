@@ -7,6 +7,7 @@ import type { Program, Operation, ModelProperty } from "@typespec/compiler";
 import { getHttpOperation } from "@typespec/http";
 import type { HttpOperation } from "@typespec/http";
 import { TypeExpression } from "../components/TypeExpression.js";
+import { isStrongIdField, generateStrongIdType } from "../domain/clean-type-mapper.js";
 
 /**
  * HTTP operation metadata extracted from TypeSpec decorators
@@ -122,14 +123,18 @@ function extractHttpParameter(
   httpOp: HttpOperation,
 ): HttpParameter | null {
   // Map TypeSpec type to Go type using unified type mapper
-  const goType = TypeExpression({ type: prop.type });
+  // Pass name for strong ID type detection
+  const goType = TypeExpression({ type: prop.type, fieldName: name });
 
   // Determine parameter source from HTTP operation
   const source = determineParameterSource(name, prop, httpOp);
 
+  // Check if this is a strong ID parameter
+  const finalGoType = isStrongIdField(name) ? generateStrongIdType(name) : goType;
+
   return {
     name: toCamelCase(name),
-    goType,
+    goType: finalGoType,
     source,
     property: prop,
     optional: prop.optional || false,
