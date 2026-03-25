@@ -198,8 +198,8 @@ describe("Model Composition Implementation", () => {
       expect(goCodeA).toContain("B *ModelB");
       expect(goCodeB).toContain("A *ModelA");
 
-      expect(goCodeA).toContain('\tB *ModelB `json:"b",omitempty`');
-      expect(goCodeB).toContain('\tA *ModelA `json:"a",omitempty`');
+      expect(goCodeA).toContain('\tB *ModelB `json:"b,omitempty"`');
+      expect(goCodeB).toContain('\tA *ModelA `json:"a,omitempty"`');
     });
   });
 

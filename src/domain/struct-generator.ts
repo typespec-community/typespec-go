@@ -136,11 +136,8 @@ export class StructGenerator {
       goFieldName = "ID";
     }
 
-    // Generate JSON tag
-    const jsonTag = `json:"${propName}"`;
-
-    // Add omitempty for optional fields
-    const optionalTag = propNode.optional ? ",omitempty" : "";
+    // Generate JSON tag (omitempty inside quotes for correct Go syntax)
+    const jsonTag = propNode.optional ? `json:"${propName},omitempty"` : `json:"${propName}"`;
 
     // Apply pointer for optional fields if configured
     let finalGoType = mappedType.goType;
@@ -159,7 +156,7 @@ export class StructGenerator {
       templateComment = `  // Template type ${(propNode.type as { name: string }).name}`;
     }
 
-    return `${goFieldName} ${finalGoType}${templateComment} \`${jsonTag}${optionalTag}\``;
+    return `${goFieldName} ${finalGoType}${templateComment} \`${jsonTag}\``;
   }
 
   /**
