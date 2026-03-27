@@ -6,10 +6,22 @@
  * PERFORMANCE: Optimized type mapping with caching
  * MAINTAINABILITY: Clear separation of concerns
  * STRONG ID TYPES: Support for brand/phantom types from go-composable-business-types/id
+ * DOMAIN TYPES: Support for Email, Age, Total, and enum types from go-composable-business-types
  */
 
 import type { TypeSpecPropertyNode } from "../types/typespec-domain.js";
 import type { GoTypeMapping } from "../types/emitter.types.js";
+
+/**
+ * Domain type detection patterns
+ * Maps field names to branded types from go-composable-business-types
+ */
+const DOMAIN_TYPE_PATTERNS = {
+  EMAIL: /^email$/i,
+  AGE: /^age$/i,
+  TOTAL: /^(total|count|quantity)$/i,
+  ACTIVE: /^(active|enabled|visible|published|archived|locked)$/i,
+} as const;
 
 /**
  * Strong ID type information
@@ -77,6 +89,128 @@ export function getStrongIdMapping(fieldName: string): StrongIdType {
     strongIdType: generateStrongIdType(fieldName),
     underlyingType: "string",
   };
+}
+
+/**
+ * Domain type information for branded types
+ */
+export interface DomainType {
+  /** Whether this is a domain type */
+  isDomainType: true;
+  /** The Go type (e.g., "types.Email", "Age", "ActiveStatus") */
+  goType: string;
+  /** Whether to use pointer for optional */
+  usePointerForOptional: boolean;
+  /** Required import path */
+  requiresImport: string;
+}
+
+/**
+ * Check if a field name represents an email field that should use types.Email
+ */
+export function isEmailField(fieldName: string): boolean {
+  return DOMAIN_TYPE_PATTERNS.EMAIL.test(fieldName);
+}
+
+/**
+ * Check if a field name represents an age field that should use branded Age type
+ */
+export function isAgeField(fieldName: string): boolean {
+  return DOMAIN_TYPE_PATTERNS.AGE.test(fieldName);
+}
+
+/**
+ * Check if a field name represents a total/count field
+ */
+export function isTotalField(fieldName: string): boolean {
+  return DOMAIN_TYPE_PATTERNS.TOTAL.test(fieldName);
+}
+
+/**
+ * Check if a field name represents a status boolean that should use enum
+ */
+export function isStatusBooleanField(fieldName: string): boolean {
+  return DOMAIN_TYPE_PATTERNS.ACTIVE.test(fieldName);
+}
+
+/**
+ * Get email type mapping
+ * Uses types.Email from go-composable-business-types
+ */
+export function getEmailMapping(isOptional: boolean): DomainType {
+  return {
+    isDomainType: true,
+    goType: "types.Email",
+    usePointerForOptional: isOptional,
+    requiresImport: "github.com/larsartmann/go-composable-business-types/types",
+  };
+}
+
+/**
+ * Get Age type mapping
+ * Uses branded Age type from go-composable-business-types
+ */
+export function getAgeMapping(isOptional: boolean): DomainType {
+  return {
+    isDomainType: true,
+    goType: "Age",
+    usePointerForOptional: isOptional,
+    requiresImport: "github.com/larsartmann/go-composable-business-types/types",
+  };
+}
+
+/**
+ * Get Total type mapping
+ * Uses branded TotalInt type from go-composable-business-types
+ */
+export function getTotalMapping(isOptional: boolean): DomainType {
+  return {
+    isDomainType: true,
+    goType: "TotalInt",
+    usePointerForOptional: isOptional,
+    requiresImport: "github.com/larsartmann/go-composable-business-types/types",
+  };
+}
+
+/**
+ * Get Active status enum mapping
+ * Uses ActiveStatus enum from go-composable-business-types/enums
+ */
+export function getActiveStatusMapping(isOptional: boolean): DomainType {
+  return {
+    isDomainType: true,
+    goType: "ActiveStatus",
+    usePointerForOptional: isOptional,
+    requiresImport: "github.com/larsartmann/go-composable-business-types/enums",
+  };
+}
+
+/**
+ * Detect and map domain types based on field name and type
+ * Returns domain type mapping if applicable, undefined otherwise
+ */
+export function detectDomainType(fieldName: string, typeKind: string): DomainType | undefined {
+  // Email field with string type
+  if (isEmailField(fieldName) && (typeKind === "String" || typeKind === "string")) {
+    return getEmailMapping(false);
+  }
+
+  // Age field with integer type
+  if (isAgeField(fieldName) && typeKind.includes("Int")) {
+    return getAgeMapping(false);
+  }
+
+  // Total/Count field with integer type
+  if (isTotalField(fieldName) && typeKind.includes("Int")) {
+    return getTotalMapping(false);
+  }
+
+  // Active/Enabled status field with boolean type
+  if (isStatusBooleanField(fieldName) && (typeKind === "Boolean" || typeKind === "bool")) {
+    return getActiveStatusMapping(false);
+  }
+
+  return undefined;
 }
 
 /**
@@ -208,6 +342,7 @@ export class CleanTypeMapper {
 
   /**
    * Map TypeSpec scalar type
+   * Uses domain type detection for Email, Age, Total, and Status fields
    */
   private static mapScalarType(
     type: TypeSpecPropertyNode["type"],
@@ -223,6 +358,14 @@ export class CleanTypeMapper {
 
       // Try to infer from common patterns
       if (scalarName.toLowerCase().includes("string")) {
+        // Check for domain types first (Email field)
+        if (fieldName && isEmailField(fieldName)) {
+          return {
+            goType: "types.Email",
+            usePointerForOptional: false,
+            requiresImport: "github.com/larsartmann/go-composable-business-types/types",
+          };
+        }
         // Check if this is a strong ID field (id, ID, userId, etc.)
         if (fieldName && isStrongIdField(fieldName)) {
           const strongId = getStrongIdMapping(fieldName);
@@ -235,12 +378,36 @@ export class CleanTypeMapper {
         return { goType: "string", usePointerForOptional: false };
       }
       if (scalarName.toLowerCase().includes("int")) {
+        // Check for Age field
+        if (fieldName && isAgeField(fieldName)) {
+          return {
+            goType: "Age",
+            usePointerForOptional: false,
+            requiresImport: "github.com/larsartmann/go-composable-business-types/types",
+          };
+        }
+        // Check for Total/Count fields
+        if (fieldName && isTotalField(fieldName)) {
+          return {
+            goType: "TotalInt",
+            usePointerForOptional: false,
+            requiresImport: "github.com/larsartmann/go-composable-business-types/types",
+          };
+        }
         return { goType: "int32", usePointerForOptional: false };
       }
       if (scalarName.toLowerCase().includes("float")) {
         return { goType: "float64", usePointerForOptional: true };
       }
       if (scalarName.toLowerCase().includes("bool")) {
+        // Check for status boolean fields
+        if (fieldName && isStatusBooleanField(fieldName)) {
+          return {
+            goType: "ActiveStatus",
+            usePointerForOptional: false,
+            requiresImport: "github.com/larsartmann/go-composable-business-types/enums",
+          };
+        }
         return { goType: "bool", usePointerForOptional: false };
       }
     }
@@ -280,6 +447,7 @@ export class CleanTypeMapper {
 
   /**
    * Map TypeSpec built-in type
+   * Uses domain type detection for Email, Age, Total, and Status fields
    */
   private static mapBuiltinType(
     type: TypeSpecPropertyNode["type"],
@@ -297,6 +465,14 @@ export class CleanTypeMapper {
       // ALL types use pointers for optional fields - Go best practice
       switch (kind) {
         case "String":
+          // Check for domain types first (Email field)
+          if (fieldName && isEmailField(fieldName)) {
+            return {
+              goType: "types.Email",
+              usePointerForOptional: false,
+              requiresImport: "github.com/larsartmann/go-composable-business-types/types",
+            };
+          }
           // Check if this is a strong ID field (id, ID, userId, etc.)
           if (fieldName && isStrongIdField(fieldName)) {
             const strongId = getStrongIdMapping(fieldName);
@@ -308,15 +484,55 @@ export class CleanTypeMapper {
           }
           return { goType: "string", usePointerForOptional: true };
         case "Boolean":
+          // Check for status boolean fields (Active, Enabled, etc.)
+          if (fieldName && isStatusBooleanField(fieldName)) {
+            return {
+              goType: "ActiveStatus",
+              usePointerForOptional: false,
+              requiresImport: "github.com/larsartmann/go-composable-business-types/enums",
+            };
+          }
           return { goType: "bool", usePointerForOptional: true };
         case "Number":
           return { goType: "float64", usePointerForOptional: true };
         // Handle TypeSpec v1.7.0 numeric types
         case "Int8":
+          // Check for Age field
+          if (fieldName && isAgeField(fieldName)) {
+            return {
+              goType: "Age",
+              usePointerForOptional: false,
+              requiresImport: "github.com/larsartmann/go-composable-business-types/types",
+            };
+          }
           return { goType: "int8", usePointerForOptional: true };
         case "Int16":
+          // Check for Total/Count fields
+          if (fieldName && isTotalField(fieldName)) {
+            return {
+              goType: "TotalInt",
+              usePointerForOptional: false,
+              requiresImport: "github.com/larsartmann/go-composable-business-types/types",
+            };
+          }
           return { goType: "int16", usePointerForOptional: true };
         case "Int32":
+          // Check for Age field
+          if (fieldName && isAgeField(fieldName)) {
+            return {
+              goType: "Age",
+              usePointerForOptional: false,
+              requiresImport: "github.com/larsartmann/go-composable-business-types/types",
+            };
+          }
+          // Check for Total/Count fields
+          if (fieldName && isTotalField(fieldName)) {
+            return {
+              goType: "TotalInt",
+              usePointerForOptional: false,
+              requiresImport: "github.com/larsartmann/go-composable-business-types/types",
+            };
+          }
           return { goType: "int32", usePointerForOptional: true };
         case "Int64":
           return { goType: "int64", usePointerForOptional: true };

@@ -107,13 +107,14 @@ describe("E2E Integration - Working Workflow Tests", () => {
 
 /**
  * Generate simulated Go code from TypeSpec content
- * Uses strong ID types for type safety
+ * Uses strong ID types AND domain types (Email, Age, Total, Status) for type safety
+ * Follows HOW_TO_GOLANG.md guidelines for branded types
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function generateSimulatedGoCode(_tspContent: string): string {
   let goCode = `
 // Generated Go Service from TypeSpec
-// This demonstrates the complete workflow
+// This demonstrates the complete workflow with branded types
 
 package testapi
 
@@ -123,6 +124,8 @@ import (
     "net/http"
 
     "github.com/larsartmann/go-composable-business-types/id"
+    "github.com/larsartmann/go-composable-business-types/types"
+    "github.com/larsartmann/go-composable-business-types/enums"
 )
 
 // Strong ID type aliases for type safety
@@ -133,26 +136,31 @@ type IdID = id.ID[GetUserHandlerBrand, string]
 type UserBrand struct{}
 type GetUserHandlerBrand struct{}
 
+// Domain type aliases (phantom types for type safety)
+type Age = types.Age
+type TotalInt = types.TotalInt
+type ActiveStatus = enums.ActiveStatus
+
 // Type: User from TypeSpec
 type User struct {
-    ID     IDID    \`json:"id"\`
-    Name   string  \`json:"name"\`
-    Email  *string \`json:"email,omitempty"\`
-    Age    int32   \`json:"age"\`
-    Active bool    \`json:"active"\`
+    ID     IDID        \`json:"id"\`
+    Name   string      \`json:"name"\`
+    Email  types.Email \`json:"email,omitempty"\`
+    Age    Age         \`json:"age"\`
+    Active ActiveStatus \`json:"active"\`
 }
 
 // Type: CreateUserRequest from TypeSpec
 type CreateUserRequest struct {
-    Name  string \`json:"name"\`
-    Email string \`json:"email"\`
-    Age   int32  \`json:"age"\`
+    Name  string      \`json:"name"\`
+    Email types.Email \`json:"email"\`
+    Age   Age         \`json:"age"\`
 }
 
 // Type: UserList from TypeSpec
 type UserList struct {
-    Users []User \`json:"users"\`
-    Total int32  \`json:"total"\`
+    Users []User    \`json:"users"\`
+    Total TotalInt  \`json:"total"\`
 }
 
 // Service: TestAPI from TypeSpec
@@ -221,7 +229,8 @@ func (s *TestAPIService) RegisterRoutes(mux *http.ServeMux) {
 
 /**
  * Generate simulated complex Go code from TypeSpec with HTTP decorators
- * Uses strong ID types for type safety
+ * Uses strong ID types AND domain types for type safety
+ * Follows HOW_TO_GOLANG.md guidelines for branded types
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function generateSimulatedComplexGoCode(_tspContent: string): string {
@@ -235,6 +244,8 @@ import (
     "net/http"
 
     "github.com/larsartmann/go-composable-business-types/id"
+    "github.com/larsartmann/go-composable-business-types/types"
+    "github.com/larsartmann/go-composable-business-types/enums"
 )
 
 // Strong ID type aliases
@@ -245,20 +256,25 @@ type IdID = id.ID[ComplexGetUserHandlerBrand, string]
 type UserBrand struct{}
 type ComplexGetUserHandlerBrand struct{}
 
+// Domain type aliases
+type Age = types.Age
+type TotalInt = types.TotalInt
+type ActiveStatus = enums.ActiveStatus
+
 // Error Type: ApiError from TypeSpec
 type ApiError struct {
-    Code    string   \`json:"code"\`
-    Message string   \`json:"message"\`
+    Code    string    \`json:"code"\`
+    Message string    \`json:"message"\`
     Details *[]string \`json:"details,omitempty"\`
 }
 
-// User Type with Lifecycle visibility
+// User Type with Lifecycle visibility and branded types
 type User struct {
-    ID     IDID    \`json:"id"\`                     // @visibility(Lifecycle.Read)
-    Name   string  \`json:"name"\`
-    Email  string  \`json:"email"\`
-    Age    *int32  \`json:"age,omitempty"\`
-    Active bool    \`json:"active"\`
+    ID     IDID         \`json:"id"\`                     // @visibility(Lifecycle.Read)
+    Name   string       \`json:"name"\`
+    Email  types.Email  \`json:"email"\`
+    Age    *Age         \`json:"age,omitempty"\`
+    Active ActiveStatus  \`json:"active"\`
 }
 
 // Complex Service with HTTP decorators
