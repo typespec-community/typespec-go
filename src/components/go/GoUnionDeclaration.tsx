@@ -31,7 +31,7 @@ interface GoUnionDeclarationProps {
  */
 export function GoUnionDeclaration({
   union,
-  packageName = "api",
+  packageName: _packageName = "api",
   discriminator,
   program,
   templateParameters = [],

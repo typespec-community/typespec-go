@@ -12,6 +12,7 @@ import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
  * Follows verified pattern: ModuleDirectory → SourceDirectory → SourceFile
  * Eliminates 'Package Not in Scope' errors
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function createGoTestContext(component: any, filename: string = "test.go") {
   return render(
     <Output>
@@ -31,6 +32,7 @@ export function createGoTestContext(component: any, filename: string = "test.go"
  * Handles nested output structure safely
  * Returns string content for assertion testing
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function extractGoCode(output: any, filename: string = "test/test.go") {
   try {
     const moduleDir = output.contents[0];
@@ -47,6 +49,7 @@ export function extractGoCode(output: any, filename: string = "test/test.go") {
  * Test helper that combines context creation and code extraction
  * Simplifies component testing to one line
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function testComponent(
   component: any,
   expectedContent: string[],

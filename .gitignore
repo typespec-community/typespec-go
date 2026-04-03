@@ -140,3 +140,6 @@ vite.config.ts.timestamp-*
 
 
 /reports/jscpd/jscpd-report.json
+
+# Temp test generated files
+src/test/temp-e2e-test/

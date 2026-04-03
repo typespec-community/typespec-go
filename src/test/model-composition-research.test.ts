@@ -47,7 +47,7 @@ describe("Model Composition Research", () => {
 
     it("should handle multiple inheritance levels", () => {
       // Research multi-level inheritance
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const _animalModel = {
         name: "Animal",
         properties: new Map([

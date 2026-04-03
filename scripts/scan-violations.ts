@@ -2,7 +2,6 @@
 
 import { execSync } from "child_process";
 import { readFileSync, writeFileSync } from "fs";
-import { join } from "path";
 
 const COMPONENTS_DIR = "src/components";
 const VIOLATIONS_FILE = "violations-count.txt";

@@ -4,7 +4,7 @@
  */
 
 import { expect, test } from "vitest";
-import { render, Output, refkey } from "@alloy-js/core";
+import { render, Output } from "@alloy-js/core";
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
@@ -25,6 +25,7 @@ test("GoPackageDirectory renders without errors", async () => {
   const result = render(
     <Output basePath="./">
       <GoPackageDirectory
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         models={[mockModel as any]}
         packageName="test"
         packageDocumentation="Test package"
@@ -45,6 +46,7 @@ test("GoStructDeclaration renders without errors", async () => {
         <SourceDirectory path="api">
           <SourceFile path="models.go">
             <GoStructDeclaration
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               model={mockModel as any}
               packageName="test"
               documentation="Test struct"

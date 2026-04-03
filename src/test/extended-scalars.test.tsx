@@ -4,8 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { render, Output, refkey } from "@alloy-js/core";
-import { Reference } from "@alloy-js/go";
+import { render, Output } from "@alloy-js/core";
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
 
@@ -40,7 +39,7 @@ describe("Extended Scalar Mappings", () => {
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="models.go">
-              <GoStructDeclaration model={model as any} packageName="api" />
+              <GoStructDeclaration model={model as unknown} packageName="api" />
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
@@ -75,7 +74,7 @@ describe("Extended Scalar Mappings", () => {
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="models.go">
-              <GoStructDeclaration model={model as any} packageName="api" />
+              <GoStructDeclaration model={model as unknown} packageName="api" />
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
@@ -102,7 +101,7 @@ describe("Extended Scalar Mappings", () => {
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="models.go">
-              <GoStructDeclaration model={model as any} packageName="api" />
+              <GoStructDeclaration model={model as unknown} packageName="api" />
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
@@ -137,7 +136,7 @@ describe("Extended Scalar Mappings", () => {
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="models.go">
-              <GoStructDeclaration model={model as any} packageName="api" />
+              <GoStructDeclaration model={model as unknown} packageName="api" />
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>
@@ -166,7 +165,7 @@ describe("Extended Scalar Mappings", () => {
         <ModuleDirectory name="github.com/test/api">
           <SourceDirectory path="api">
             <SourceFile path="models.go">
-              <GoStructDeclaration model={model as any} packageName="api" />
+              <GoStructDeclaration model={model as unknown} packageName="api" />
             </SourceFile>
           </SourceDirectory>
         </ModuleDirectory>

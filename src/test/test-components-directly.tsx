@@ -30,7 +30,7 @@ async function testBasicComponentRender() {
     // Test component render
     const result = render(
       <GoStructDeclaration
-        model={mockModel as any}
+        model={mockModel as unknown}
         packageName="test"
         documentation="Test struct"
       />,
@@ -72,7 +72,7 @@ async function testPackageDirectoryRender() {
     // Test package directory render
     const result = render(
       <GoPackageDirectory
-        models={mockModels as any}
+        models={mockModels as unknown}
         packageName="api"
         packageDocumentation="Generated API models"
       />,
@@ -106,7 +106,7 @@ async function testFullEmitterIntegration() {
     const result = render(
       <Output>
         <GoPackageDirectory
-          models={mockModels as any}
+          models={mockModels as unknown}
           packageName="api"
           packageDocumentation="Test API package"
         />

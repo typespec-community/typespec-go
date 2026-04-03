@@ -24,7 +24,11 @@ try {
   // Test 1: Basic component render
   console.log("📋 Test 1: GoStructDeclaration render");
   const structResult = render(
-    <GoStructDeclaration model={mockModel as any} packageName="test" documentation="Test struct" />,
+    <GoStructDeclaration
+      model={mockModel as unknown}
+      packageName="test"
+      documentation="Test struct"
+    />,
   );
   console.log("✅ Struct render successful");
   console.log("📄 Output:", structResult);
@@ -34,7 +38,7 @@ try {
   console.log("📁 Test 2: GoPackageDirectory render");
   const packageResult = render(
     <GoPackageDirectory
-      models={[mockModel as any]}
+      models={[mockModel as unknown]}
       packageName="api"
       packageDocumentation="Test API package"
     />,
@@ -51,7 +55,7 @@ try {
   const fullResult = render(
     <Output>
       <GoPackageDirectory
-        models={[mockModel as any]}
+        models={[mockModel as unknown]}
         packageName="api"
         packageDocumentation="Test API package"
       />

@@ -4,11 +4,10 @@
  * Supports service interfaces with HTTP method mappings
  */
 
-import type { Operation, Model, Type, Program, Namespace } from "@typespec/compiler";
+import type { Operation, Program, Namespace } from "@typespec/compiler";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import { TypeExpression } from "../TypeExpression.js";
-import { refkey } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
 const { InterfaceDeclaration, InterfaceFunction } = go;
 
@@ -53,7 +52,7 @@ interface GoReturnType {
 export function GoInterfaceDeclaration({
   name,
   operations,
-  packageName = "api",
+  packageName: _packageName = "api",
   program,
 }: GoInterfaceDeclarationProps) {
   // Convert operations to method signatures
@@ -110,7 +109,7 @@ function operationToMethod(operation: Operation, program?: Program): GoMethodSig
 /**
  * Extract parameters from operation
  */
-function extractParameters(operation: Operation, program?: Program): GoParameter[] {
+function extractParameters(operation: Operation, _program?: Program): GoParameter[] {
   const params: GoParameter[] = [];
 
   // Always include context as first parameter
@@ -132,7 +131,7 @@ function extractParameters(operation: Operation, program?: Program): GoParameter
 /**
  * Extract return types from operation
  */
-function extractReturns(operation: Operation, program?: Program): GoReturnType[] {
+function extractReturns(operation: Operation, _program?: Program): GoReturnType[] {
   const returns: GoReturnType[] = [];
 
   // Map return type

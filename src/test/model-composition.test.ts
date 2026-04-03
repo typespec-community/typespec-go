@@ -161,7 +161,7 @@ describe("Model Composition Implementation", () => {
       const goCode = Array.from(result.data.values())[0];
       expect(goCode).toContain("type UserList struct {");
       expect(goCode).toContain("Data User");
-      expect(goCode).toContain("Total int32");
+      expect(goCode).toContain("Total TotalInt");
     });
   });
 

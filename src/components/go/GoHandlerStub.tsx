@@ -5,17 +5,13 @@
  */
 
 import type { Operation, Program } from "@typespec/compiler";
-import { For, refkey } from "@alloy-js/core";
+import { refkey } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
 const {
-  ModuleDirectory,
-  SourceDirectory,
   SourceFile,
-  StructDeclaration,
+  StructTypeDeclaration,
   StructMember,
   FunctionDeclaration,
-  StructTypeDeclaration,
-  VariableDeclaration,
   LineComment,
   FunctionReceiver,
   SingleImportStatement,
@@ -24,7 +20,7 @@ import { extractHttpMetadata } from "../../utils/typespec-http-utils.js";
 import type { GoHandlerMethod } from "./GoHandlerMethod.js";
 import { extractReturnType } from "../../services/go-return-type-extractor.js";
 import { GoHandlerMethodComponent } from "./GoHandlerMethodComponent.js";
-import { GoStringLiteral, GoSwitch, GoIf, GoBlock, GoReturn } from "./core/index.js";
+import { GoStringLiteral, GoBlock, GoReturn } from "./core/index.js";
 
 interface GoHandlerStubProps {
   /** TypeSpec operations to convert to HTTP handlers */

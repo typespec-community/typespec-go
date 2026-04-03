@@ -32,7 +32,7 @@ interface GoStructDeclarationProps {
 export function GoStructDeclaration({
   model,
   documentation,
-  packageName = "api",
+  packageName: _packageName = "api",
   usePointersForOptional = true,
   program,
 }: GoStructDeclarationProps) {

@@ -11,7 +11,7 @@ import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
 describe("Pointer Type Generation", () => {
   it("generates pointer for optional nested model fields", () => {
     // Create a mock model with an optional User field
-    const mockUserModel = {
+    const _mockUserModel = {
       kind: "Model" as const,
       name: "User",
       properties: new Map([
@@ -55,7 +55,7 @@ describe("Pointer Type Generation", () => {
           <SourceDirectory path="api">
             <SourceFile path="models.go">
               <GoStructDeclaration
-                model={mockTaskModel as any}
+                model={mockTaskModel as unknown}
                 packageName="api"
                 usePointersForOptional={true}
               />
@@ -91,7 +91,7 @@ describe("Pointer Type Generation", () => {
           <SourceDirectory path="api">
             <SourceFile path="models.go">
               <GoStructDeclaration
-                model={mockTaskModel as any}
+                model={mockTaskModel as unknown}
                 packageName="api"
                 usePointersForOptional={true}
               />
@@ -130,7 +130,7 @@ describe("Pointer Type Generation", () => {
           <SourceDirectory path="api">
             <SourceFile path="models.go">
               <GoStructDeclaration
-                model={mockProjectModel as any}
+                model={mockProjectModel as unknown}
                 packageName="api"
                 usePointersForOptional={true}
               />

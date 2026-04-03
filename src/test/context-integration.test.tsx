@@ -1,6 +1,6 @@
 import { test, expect } from "vitest";
 import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
-import { Output, refkey } from "@alloy-js/core";
+import { Output } from "@alloy-js/core";
 
 /**
  * Test that components work in proper Alloy-JS context
@@ -23,6 +23,7 @@ test("Component Integration - Proper Context", async () => {
       render(
         <Output>
           <GoPackageDirectory
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             models={[mockModel as any]}
             packageName="test"
             packageDocumentation="Test package"

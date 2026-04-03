@@ -29,7 +29,7 @@ const mockHandlers = [
 describe("GoRouteRegistrationComponent", () => {
   it("should generate proper Go route registration function", () => {
     const result = renderGoContent(
-      <GoRouteRegistrationComponent handlers={mockHandlers as any} serviceName="UserService" />,
+      <GoRouteRegistrationComponent handlers={mockHandlers as unknown} serviceName="UserService" />,
       "registration.go",
     );
 

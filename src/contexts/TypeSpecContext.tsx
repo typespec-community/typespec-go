@@ -7,7 +7,7 @@
 import { createContext, useContext } from "@alloy-js/core";
 import type { Children } from "@alloy-js/core";
 import { navigateProgram } from "@typespec/compiler";
-import type { Program, Model, Type, Scalar, Union } from "@typespec/compiler";
+import type { Program, Model, Type } from "@typespec/compiler";
 
 /**
  * Generator configuration interface

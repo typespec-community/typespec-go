@@ -4,7 +4,6 @@
  */
 
 import { expect, test } from "vitest";
-import { render, refkey } from "@alloy-js/core";
 
 test("Alloy-JS Components Integration", async () => {
   // Test basic component compilation

@@ -57,14 +57,14 @@ try {
       jsonTag: "test",
     });
     console.error("❌ Should have thrown error for empty field name");
-  } catch (error) {
+  } catch (_error) {
     console.log("✅ Proper error handling for empty field name");
   }
 
   try {
     GoJsxComponents.Utils.typeSpecKindToGoType("InvalidType");
     console.error("❌ Should have thrown error for invalid type");
-  } catch (error) {
+  } catch (_error) {
     console.log("✅ Proper error handling for invalid type");
   }
 

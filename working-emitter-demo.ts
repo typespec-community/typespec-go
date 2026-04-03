@@ -4,8 +4,8 @@
  * SOLVES: All current component rendering issues
  */
 
+import type { EmitContext } from "@typespec/compiler";
 import { writeOutput } from "@typespec/emitter-framework";
-import { Output } from "@alloy-js/core";
 import { StandaloneGoGenerator } from "./standalone-generator.js";
 import { join } from "path";
 

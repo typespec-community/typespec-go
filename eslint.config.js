@@ -7,12 +7,15 @@ export default [
     ignores: ["**/dist/**/*", "**/.temp/**/*", "**/node_modules/**/*"],
   },
   {
-    files: ["**/*.ts"],
+    files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
       parser,
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
+        ecmaFeatures: {
+          jsx: true,
+        },
       },
     },
     plugins: {
@@ -20,8 +23,15 @@ export default [
     },
     rules: {
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": "warn", // Downgrade to warn for Phase 1
-      "@typescript-eslint/no-explicit-any": "error", // Enforce as error - zero any types policy
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      "@typescript-eslint/no-explicit-any": "error",
     },
   },
 ];

@@ -37,7 +37,7 @@ test("TypeSpec AssetEmitter Integration - Mock Program", async () => {
     await $onEmit(mockContext);
 
     // Verify emitter executed successfully
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     const _hasSuccess = consoleOutput.some(
       (line) =>
         line.includes("completed") || line.includes("Generated") || line.includes("Generating"),

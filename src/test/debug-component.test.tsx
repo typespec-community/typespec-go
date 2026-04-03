@@ -1,11 +1,8 @@
 import { describe, test, expect } from "vitest";
-import { render, Output, code } from "@alloy-js/core";
-import * as go from "@alloy-js/go";
+import { code } from "@alloy-js/core";
 import { GoModFile } from "../components/go/GoModFile.js";
 import { GoStringLiteral } from "../components/go/index.js";
 import { renderGoContent } from "../testing/test-utils.js";
-
-const { FunctionDeclaration, SourceFile } = go;
 
 console.log("GoModFile component:", GoModFile);
 console.log("GoStringLiteral component:", GoStringLiteral);

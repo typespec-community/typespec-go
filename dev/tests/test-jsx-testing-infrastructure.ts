@@ -1,6 +1,20 @@
 // Test JSX testing infrastructure without JSX compilation
 console.log("🧪 Testing JSX Testing Infrastructure...");
 
+interface TestField {
+  name: string;
+  type: string;
+  optional?: boolean;
+  jsonTag: string;
+  documentation?: string;
+}
+
+interface TestStruct {
+  name: string;
+  fields: TestField[];
+  documentation?: string;
+}
+
 try {
   // Test basic validation logic without JSX components
   const assertValidField = (field: unknown) => {
@@ -31,8 +45,8 @@ try {
   };
 
   // Test field creation
-  const createTestField = (overrides: unknown = {}) => {
-    const baseField = {
+  const createTestField = (overrides: Partial<TestField> = {}): TestField => {
+    const baseField: TestField = {
       name: "testField",
       type: "string",
       optional: false,
@@ -43,8 +57,8 @@ try {
   };
 
   // Test struct creation
-  const createTestStruct = (overrides: any = {}) => {
-    const baseStruct = {
+  const createTestStruct = (overrides: Partial<TestStruct> = {}): TestStruct => {
+    const baseStruct: TestStruct = {
       name: "TestStruct",
       fields: [
         createTestField({ name: "id", type: "string", jsonTag: "id" }),
@@ -98,7 +112,7 @@ try {
   console.log("🔗 Testing integration utilities...");
   const calculateSimilarity = (str1: string, str2: string): number => {
     const longer = str1.length > str2.length ? str1 : str2;
-    const shorter = str1.length > str2.length ? str2 : str1;
+    const _shorter = str1.length > str2.length ? str2 : str1;
 
     if (longer.length === 0) return 1.0;
 

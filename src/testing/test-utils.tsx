@@ -1,7 +1,7 @@
 import { render, Output } from "@alloy-js/core";
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import type { Children } from "@alloy-js/core";
-import type { OutputDirectory, OutputFile, ContentOutputFile } from "@alloy-js/core";
+import type { OutputFile, ContentOutputFile } from "@alloy-js/core";
 
 /**
  * Render a Go component within a proper Alloy-JS context

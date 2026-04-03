@@ -49,8 +49,11 @@ function railwayProgrammingExample() {
 
   const generator = new StandaloneGoGenerator();
 
-  // Railway-style functions
-  const validateModel = (model: any) => {
+  // Railway-style functions with proper typing
+  type ValidatedModel = { _tag: "Validated"; model: Partial<GeneratorModel> };
+  type ValidationResult = ValidatedModel | { _tag: "ModelValidationError"; message: string };
+
+  const validateModel = (model: Partial<GeneratorModel>): ValidationResult => {
     if (!model?.name || typeof model.name !== "string") {
       return {
         _tag: "ModelValidationError" as const,
@@ -64,7 +67,7 @@ function railwayProgrammingExample() {
     return { _tag: "Validated" as const, model };
   };
 
-  const generateCode = (validation: any) => {
+  const generateCode = (validation: ValidationResult): GoEmitterResult => {
     if (validation._tag === "Validated") {
       return generator.generateModel(validation.model);
     } else {
@@ -202,7 +205,10 @@ function advancedErrorRecovery() {
   const generator = new StandaloneGoGenerator();
 
   // Recovery strategy function
-  const recoverWithErrorHandling = (model: any, fallbackModel?: any) => {
+  const recoverWithErrorHandling = (
+    model: Partial<GeneratorModel>,
+    fallbackModel?: Partial<GeneratorModel>,
+  ): GoEmitterResult => {
     const result = generator.generateModel(model);
 
     if (result._tag === "Success") {
@@ -275,7 +281,7 @@ async function asyncErrorHandling() {
   const generator = new StandaloneGoGenerator();
 
   // Async wrapper for generation
-  const generateAsync = async (model: any): Promise<GoEmitterResult> => {
+  const generateAsync = async (model: Partial<GeneratorModel>): Promise<GoEmitterResult> => {
     return new Promise((resolve) => {
       // Simulate async processing
       setTimeout(() => {
@@ -338,7 +344,7 @@ function errorLoggingAndMonitoring() {
   }> = [];
 
   // Enhanced error handling with logging
-  const generateWithLogging = (model: any): GoEmitterResult => {
+  const generateWithLogging = (model: Partial<GeneratorModel>): GoEmitterResult => {
     const startTime = Date.now();
     const result = generator.generateModel(model);
     const duration = Date.now() - startTime;

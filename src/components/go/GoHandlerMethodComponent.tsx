@@ -2,15 +2,7 @@ import { FunctionDeclaration, FunctionReceiver } from "@alloy-js/go";
 import { refkey, code } from "@alloy-js/core";
 import type { GoHandlerMethod } from "./GoHandlerMethod";
 import type { HttpParameter } from "../../utils/typespec-http-utils";
-import {
-  GoStringLiteral,
-  GoIf,
-  GoSwitch,
-  GoBlock,
-  GoReturn,
-  GoCase,
-  GoDefault,
-} from "./core/index.js";
+import { GoStringLiteral, GoSwitch, GoBlock, GoCase, GoDefault } from "./core/index.js";
 
 /**
  * Component for individual handler method generation using 100% Alloy-JS components
@@ -18,7 +10,7 @@ import {
 export function GoHandlerMethodComponent({
   handler,
   serviceName,
-  serviceRef,
+  serviceRef: _serviceRef,
 }: {
   handler: GoHandlerMethod;
   serviceName: string;

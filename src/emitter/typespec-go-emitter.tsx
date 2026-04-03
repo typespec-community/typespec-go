@@ -50,28 +50,28 @@ function collectTypesByNamespace(globalNamespace: Namespace): Map<string, Namesp
   };
 
   // Collect models from global namespace
-  for (const [name, model] of globalNamespace.models) {
+  for (const [_name, model] of globalNamespace.models) {
     const groupName = model.namespace?.name || "global";
     const group = ensureGroup(groupName, model.namespace);
     group.models.push(model);
   }
 
   // Collect enums from global namespace
-  for (const [name, enumType] of globalNamespace.enums) {
+  for (const [_name, enumType] of globalNamespace.enums) {
     const groupName = enumType.namespace?.name || "global";
     const group = ensureGroup(groupName, enumType.namespace);
     group.enums.push(enumType);
   }
 
   // Collect unions from global namespace
-  for (const [name, union] of globalNamespace.unions) {
+  for (const [_name, union] of globalNamespace.unions) {
     const groupName = union.namespace?.name || "global";
     const group = ensureGroup(groupName, union.namespace);
     group.unions.push(union);
   }
 
   // Collect operations from global namespace
-  for (const [name, operation] of globalNamespace.operations) {
+  for (const [_name, operation] of globalNamespace.operations) {
     const groupName = operation.namespace?.name || "global";
     const group = ensureGroup(groupName, operation.namespace);
     group.operations.push(operation);

@@ -1,7 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { render } from "@alloy-js/core";
 import { Output } from "@alloy-js/core";
-import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
 import { MockFactory } from "../testing/mock-factory.js";
 
@@ -18,8 +17,11 @@ describe("GoPackageDirectory Component", () => {
     );
 
     // Navigate the structure to get the models.go content
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const moduleDir = output.contents[0] as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sourceDir = moduleDir.contents[0] as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const modelsFile = sourceDir.contents[0] as any;
 
     expect(modelsFile.contents).toContain("type User struct");

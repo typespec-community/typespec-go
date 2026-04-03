@@ -106,13 +106,34 @@ describe("E2E Integration - Working Workflow Tests", () => {
 });
 
 /**
+ * Helper: Generate error handling code fragment
+ */
+function goHandleError(): string {
+  return `if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }`;
+}
+
+/**
+ * Helper: Generate JSON response code fragment
+ */
+function goJsonResponse(): string {
+  return `w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(result)`;
+}
+
+/**
  * Generate simulated Go code from TypeSpec content
  * Uses strong ID types AND domain types (Email, Age, Total, Status) for type safety
  * Follows HOW_TO_GOLANG.md guidelines for branded types
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 function generateSimulatedGoCode(_tspContent: string): string {
-  let goCode = `
+  const handleError = goHandleError();
+  const jsonResponse = goJsonResponse();
+
+  const goCode = `
 // Generated Go Service from TypeSpec
 // This demonstrates the complete workflow with branded types
 
@@ -183,13 +204,9 @@ func (s *TestAPIService) GetUserHandler(ctx context.Context, w http.ResponseWrit
     // Route: GET /users/{id}
 
     result, err := s.service.GetUser(ctx, id)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
+    ${handleError}
 
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(result)
+    ${jsonResponse}
 }
 
 // Handler: CreateUser from TypeSpec operation
@@ -204,14 +221,10 @@ func (s *TestAPIService) CreateUserHandler(ctx context.Context, w http.ResponseW
     }
 
     result, err := s.service.CreateUser(ctx, input)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
+    ${handleError}
 
     w.WriteHeader(http.StatusCreated)
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(result)
+    ${jsonResponse}
 }
 
 // Route Registration: Generated from TypeSpec operations
@@ -232,7 +245,7 @@ func (s *TestAPIService) RegisterRoutes(mux *http.ServeMux) {
  * Uses strong ID types AND domain types for type safety
  * Follows HOW_TO_GOLANG.md guidelines for branded types
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 function generateSimulatedComplexGoCode(_tspContent: string): string {
   return `
 // Generated Complex Go Service from TypeSpec

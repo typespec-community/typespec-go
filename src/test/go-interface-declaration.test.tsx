@@ -1,6 +1,4 @@
 import { describe, test, expect } from "vitest";
-import { render, Output } from "@alloy-js/core";
-import { ModuleDirectory, SourceFile, SourceDirectory } from "@alloy-js/go";
 import { testComponent } from "../testing/go-component-test-utils.js";
 import {
   GoInterfaceDeclaration,

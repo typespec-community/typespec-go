@@ -107,7 +107,7 @@ try {
         console.log("   4. Optimize performance and add features");
       } else {
         console.log("❌ Some Go code patterns missing");
-        console.log("Failed patterns:", results.filter((match, index) => !match).length);
+        console.log("Failed patterns:", results.filter((match) => !match).length);
       }
     } else {
       console.log("❌ File has no contents attribute");

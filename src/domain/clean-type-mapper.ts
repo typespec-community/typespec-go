@@ -561,9 +561,8 @@ export class CleanTypeMapper {
    * Map TypeSpec union type
    */
   private static mapUnionType(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _type: TypeSpecPropertyNode["type"],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     _fieldName?: string,
   ): GoTypeMapping {
     // TODO: Implement proper union type mapping to Go sealed interfaces
@@ -580,7 +579,7 @@ export class CleanTypeMapper {
    */
   private static mapEnumType(
     type: TypeSpecPropertyNode["type"],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     _fieldName?: string,
   ): GoTypeMapping {
     if (this.hasTypeName(type)) {
@@ -699,7 +698,7 @@ export class CleanTypeMapper {
    */
   private static mapTemplateType(
     type: TypeSpecPropertyNode["type"],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     _fieldName?: string,
   ): GoTypeMapping {
     if (this.hasTypeName(type)) {

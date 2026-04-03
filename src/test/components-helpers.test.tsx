@@ -1,5 +1,4 @@
 import { describe, test, expect } from "vitest";
-import { render, Output } from "@alloy-js/core";
 import { renderGoContent } from "../testing/test-utils.js";
 import {
   GoSwitchSTC,

@@ -8,7 +8,7 @@ import type { Enum, Program } from "@typespec/compiler";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import * as go from "@alloy-js/go";
-import { GoSwitch, GoCase, GoDefault, GoReturn, GoStringLiteral } from "./core/index.js";
+import { GoStringLiteral } from "./core/index.js";
 const {
   FunctionDeclaration,
   FunctionReceiver,
@@ -34,15 +34,15 @@ interface GoEnumDeclarationProps {
  */
 export function GoEnumDeclaration({
   enum: enumType,
-  packageName = "api",
+  packageName: _packageName = "api",
   useIota = false,
   program,
 }: GoEnumDeclarationProps) {
   const typeName = enumType.name || "UnnamedEnum";
   const members = Array.from(enumType.members?.values() || []);
 
-  // Get documentation from @doc decorator
-  const doc = program ? getDocumentation(program, enumType) : undefined;
+  // Get documentation from @doc decorator (reserved for future use)
+  const _doc = program ? getDocumentation(program, enumType) : undefined;
 
   // Determine if this is a string enum or numeric enum
   const isStringEnum = members.some((m) => typeof m.value === "string");
