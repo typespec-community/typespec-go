@@ -143,3 +143,5 @@ vite.config.ts.timestamp-*
 
 # Temp test generated files
 src/test/temp-e2e-test/
+# Sensitive files
+*.db
