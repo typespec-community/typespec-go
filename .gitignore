@@ -145,3 +145,5 @@ vite.config.ts.timestamp-*
 src/test/temp-e2e-test/
 # Sensitive files
 *.db
+# Build artifacts
+/<module-path>

@@ -106,33 +106,12 @@ describe("E2E Integration - Working Workflow Tests", () => {
 });
 
 /**
- * Helper: Generate error handling code fragment
- */
-function goHandleError(): string {
-  return `if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }`;
-}
-
-/**
- * Helper: Generate JSON response code fragment
- */
-function goJsonResponse(): string {
-  return `w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(result)`;
-}
-
-/**
  * Generate simulated Go code from TypeSpec content
  * Uses strong ID types AND domain types (Email, Age, Total, Status) for type safety
  * Follows HOW_TO_GOLANG.md guidelines for branded types
  */
 
 function generateSimulatedGoCode(_tspContent: string): string {
-  const handleError = goHandleError();
-  const jsonResponse = goJsonResponse();
-
   const goCode = `
 // Generated Go Service from TypeSpec
 // This demonstrates the complete workflow with branded types
@@ -186,7 +165,7 @@ type UserList struct {
 
 // Service: TestAPI from TypeSpec
 type TestAPIService struct {
-    // Service dependencies here
+    service TestAPIServiceInterface
 }
 
 // Interface: Generated from TypeSpec operations
@@ -198,15 +177,24 @@ type TestAPIServiceInterface interface {
     DeleteUser(ctx context.Context, id IdID) error
 }
 
+// Helper: writeError writes an error response with the given error
+func (s *TestAPIService) writeError(w http.ResponseWriter, err error) {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+}
+
 // Handler: GetUser from TypeSpec operation
 func (s *TestAPIService) GetUserHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, id IdID) {
     // TODO: Implement GetUser handler
     // Route: GET /users/{id}
 
     result, err := s.service.GetUser(ctx, id)
-    ${handleError}
+    if err != nil {
+        s.writeError(w, err)
+        return
+    }
 
-    ${jsonResponse}
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(result)
 }
 
 // Handler: CreateUser from TypeSpec operation
@@ -221,10 +209,14 @@ func (s *TestAPIService) CreateUserHandler(ctx context.Context, w http.ResponseW
     }
 
     result, err := s.service.CreateUser(ctx, input)
-    ${handleError}
+    if err != nil {
+        s.writeError(w, err)
+        return
+    }
 
     w.WriteHeader(http.StatusCreated)
-    ${jsonResponse}
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(result)
 }
 
 // Route Registration: Generated from TypeSpec operations

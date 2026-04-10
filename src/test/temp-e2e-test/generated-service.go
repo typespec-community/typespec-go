@@ -59,6 +59,11 @@ type TestAPIService struct {
 	// Service dependencies here
 }
 
+// writeError writes an error response with the given error
+func (s *TestAPIService) writeError(w http.ResponseWriter, err error) {
+	http.Error(w, err.Error(), http.StatusInternalServerError)
+}
+
 // Interface: Generated from TypeSpec operations
 type TestAPIServiceInterface interface {
 	GetUser(ctx context.Context, id IdID) (User, error)
@@ -75,7 +80,7 @@ func (s *TestAPIService) GetUserHandler(ctx context.Context, w http.ResponseWrit
 
 	result, err := s.service.GetUser(ctx, id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		s.writeError(w, err)
 		return
 	}
 
@@ -96,7 +101,7 @@ func (s *TestAPIService) CreateUserHandler(ctx context.Context, w http.ResponseW
 
 	result, err := s.service.CreateUser(ctx, input)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		s.writeError(w, err)
 		return
 	}
 
