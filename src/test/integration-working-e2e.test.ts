@@ -177,9 +177,20 @@ type TestAPIServiceInterface interface {
     DeleteUser(ctx context.Context, id IdID) error
 }
 
-// Helper: writeError writes an error response with the given error
-func (s *TestAPIService) writeError(w http.ResponseWriter, err error) {
-    http.Error(w, err.Error(), http.StatusInternalServerError)
+// Helper: handleError handles error response, returns true if error occurred
+func (s *TestAPIService) handleError(w http.ResponseWriter, err error) bool {
+    if err != nil {
+        s.writeError(w, err)
+        return true
+    }
+    return false
+}
+
+// Helper: writeJsonResponse writes a JSON response with the given status code
+func (s *TestAPIService) writeJsonResponse(w http.ResponseWriter, statusCode int, result any) {
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(statusCode)
+    json.NewEncoder(w).Encode(result)
 }
 
 // Handler: GetUser from TypeSpec operation
@@ -188,13 +199,11 @@ func (s *TestAPIService) GetUserHandler(ctx context.Context, w http.ResponseWrit
     // Route: GET /users/{id}
 
     result, err := s.service.GetUser(ctx, id)
-    if err != nil {
-        s.writeError(w, err)
+    if s.handleError(w, err) {
         return
     }
 
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(result)
+    s.writeJsonResponse(w, http.StatusOK, result)
 }
 
 // Handler: CreateUser from TypeSpec operation
@@ -209,14 +218,11 @@ func (s *TestAPIService) CreateUserHandler(ctx context.Context, w http.ResponseW
     }
 
     result, err := s.service.CreateUser(ctx, input)
-    if err != nil {
-        s.writeError(w, err)
+    if s.handleError(w, err) {
         return
     }
 
-    w.WriteHeader(http.StatusCreated)
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(result)
+    s.writeJsonResponse(w, http.StatusCreated, result)
 }
 
 // Route Registration: Generated from TypeSpec operations
