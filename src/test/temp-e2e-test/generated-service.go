@@ -84,7 +84,12 @@ func (s *TestAPIService) writeJsonResponse(w http.ResponseWriter, statusCode int
 }
 
 // Handler: GetUser from TypeSpec operation
-func (s *TestAPIService) GetUserHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, id IdID) {
+func (s *TestAPIService) GetUserHandler(
+	ctx context.Context,
+	w http.ResponseWriter,
+	r *http.Request,
+	id IdID,
+) {
 	// TODO: Implement GetUser handler
 	// Route: GET /users/{id}
 
@@ -94,7 +99,11 @@ func (s *TestAPIService) GetUserHandler(ctx context.Context, w http.ResponseWrit
 }
 
 // Handler: CreateUser from TypeSpec operation
-func (s *TestAPIService) CreateUserHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+func (s *TestAPIService) CreateUserHandler(
+	ctx context.Context,
+	w http.ResponseWriter,
+	r *http.Request,
+) {
 	// TODO: Implement CreateUser handler
 	// Route: POST /users
 
