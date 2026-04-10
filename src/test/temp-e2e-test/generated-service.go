@@ -62,13 +62,12 @@ type TestAPIServiceInterface interface {
     DeleteUser(ctx context.Context, id IdID) error
 }
 
-// Helper: handleError handles error response, returns true if error occurred
-func (s *TestAPIService) handleError(w http.ResponseWriter, err error) bool {
+// Helper: handleError handles error response and returns from caller if error occurred
+func (s *TestAPIService) handleError(w http.ResponseWriter, err error) {
     if err != nil {
         s.writeError(w, err)
-        return true
+        return
     }
-    return false
 }
 
 // Helper: writeJsonResponse writes a JSON response with the given status code
@@ -84,10 +83,7 @@ func (s *TestAPIService) GetUserHandler(ctx context.Context, w http.ResponseWrit
     // Route: GET /users/{id}
 
     result, err := s.service.GetUser(ctx, id)
-    if s.handleError(w, err) {
-        return
-    }
-
+    s.handleError(w, err)
     s.writeJsonResponse(w, http.StatusOK, result)
 }
 
@@ -103,10 +99,7 @@ func (s *TestAPIService) CreateUserHandler(ctx context.Context, w http.ResponseW
     }
 
     result, err := s.service.CreateUser(ctx, input)
-    if s.handleError(w, err) {
-        return
-    }
-
+    s.handleError(w, err)
     s.writeJsonResponse(w, http.StatusCreated, result)
 }
 
