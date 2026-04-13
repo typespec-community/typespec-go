@@ -147,3 +147,5 @@ src/test/temp-e2e-test/
 *.db
 # Build artifacts
 /<module-path>
+Copy/paste detection report
+/report/jscpd-report.json

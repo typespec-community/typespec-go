@@ -73,7 +73,6 @@ linters:
     - intrange
     - iotamixing
     - ireturn
-    - lll
     - loggercheck
     - maintidx
     - makezero
