@@ -1,17 +1,30 @@
 {
   "compilerOptions": {
-    "lib": ["es2023", "DOM"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "target": "es2022",
+    "target": "ES2022",
+    "module": "ESNext",
+    "verbatimModuleSyntax": true,
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": false,
+    "jsx": "preserve",
+    "jsxImportSource": "@alloy-js/core",
     "strict": true,
     "skipLibCheck": true,
-    "isolatedModules": true,
+    "lib": ["ES2022", "DOM"],
     "declaration": true,
-    "sourceMap": true,
-    "declarationMap": true,
-    "jsx": "preserve",
-    "outDir": "dist"
+    "outDir": "./dist",
+    "skipDefaultLibCheck": true,
+    // Enhanced strictness for better type safety
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true
   },
-  "include": ["src", "test"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

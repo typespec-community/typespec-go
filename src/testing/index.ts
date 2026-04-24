@@ -1,11 +1,15 @@
-import { fileURLToPath } from "node:url";
-import { resolvePath } from "@typespec/compiler";
-import {
-	createTestLibrary,
-	type TypeSpecTestLibrary,
-} from "@typespec/compiler/testing";
+import { findTestPackageRoot, createTestLibrary } from "@typespec/compiler/testing";
 
-export const TypespecGoTestLibrary: TypeSpecTestLibrary = createTestLibrary({
-	name: "typespec-go",
-	packageRoot: resolvePath(fileURLToPath(import.meta.url), "../../../../"),
-});
+// noinspection JSUnusedGlobalSymbols
+/**
+ * TypeSpec Go Emitter Test Library Factory
+ *
+ * This creates a test library factory function that returns
+ * a promise resolving to the TypeSpecTestLibrary object.
+ */
+export async function TypespecGoTestLibrary() {
+  return createTestLibrary({
+    name: "@typespec-community/typespec-go",
+    packageRoot: await findTestPackageRoot(import.meta.url),
+  });
+}

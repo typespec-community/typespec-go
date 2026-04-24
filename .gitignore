@@ -137,3 +137,15 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+
+/reports/jscpd/jscpd-report.json
+
+# Temp test generated files
+src/test/temp-e2e-test/
+# Sensitive files
+*.db
+# Build artifacts
+/<module-path>
+Copy/paste detection report
+/report/jscpd-report.json

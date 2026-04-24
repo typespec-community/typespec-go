@@ -1,44 +1,47 @@
 {
-	"name": "@typespec-community/typespec-go",
-	"version": "0.0.1",
-	"type": "module",
-	"main": "dist/src/index.js",
-	"exports": {
-		".": {
-			"typespec": "./lib/main.tsp",
-			"types": "./dist/src/index.d.ts",
-			"default": "./dist/src/index.js"
-		},
-		"./testing": {
-			"types": "./dist/src/testing/index.d.ts",
-			"default": "./dist/src/testing/index.js"
-		}
-	},
-	"peerDependencies": {
-		"@alloy-js/core": "^0.21.0",
-		"@alloy-js/typescript": "^0.21.0",
-		"@typespec/compiler": "1.5.0",
-		"@typespec/emitter-framework": "^0.12.0",
-		"@typespec/http": "1.5.0"
-	},
-	"devDependencies": {
-		"@alloy-js/cli": "^0.21.0",
-		"@alloy-js/core": "^0.21.0",
-		"@alloy-js/go": "^0.1.0",
-		"@types/node": "latest",
-		"@typescript-eslint/eslint-plugin": "^8.15.0",
-		"@typescript-eslint/parser": "^8.15.0",
-		"@typespec/compiler": "1.5.0",
-		"@typespec/emitter-framework": "^0.12.0",
-		"@typespec/http": "1.5.0",
-		"eslint": "^9.15.0",
-		"prettier": "^3.3.3",
-		"typescript": "^5.3.3"
-	},
-	"scripts": {
-		"lint": "eslint src/ test/ --report-unused-disable-directives --max-warnings=0",
-		"lint:fix": "eslint . --report-unused-disable-directives --fix",
-		"format": "prettier .  --write",
-		"format:check": "prettier --check ."
-	}
+  "name": "@typespec-community/typespec-go",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "dist/main.js",
+  "exports": {
+    ".": {
+      "types": "./dist/main.d.ts",
+      "default": "./dist/main.js"
+    }
+  },
+  "scripts": {
+    "build": "bunx alloy build",
+    "build:webpack": "tsc --project tsconfig.json && bunx webpack --mode=development",
+    "build:check": "bunx tsc --noEmit --strict",
+    "test": "vitest",
+    "test:typespec": "vitest --run --testTimeout 30000",
+    "lint": "eslint src/ --ext .ts --max-warnings 0",
+    "lint:fix": "eslint src/ --ext .ts --fix",
+    "format": "prettier src/ --write"
+  },
+  "dependencies": {
+    "@alloy-js/core": "^0.22.0",
+    "@alloy-js/go": "^0.2.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@typespec/compiler": "^1.11.0",
+    "@typespec/emitter-framework": "^0.17.0",
+    "@typespec/http": "^1.11.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@alloy-js/cli": "^0.22.0",
+    "@alloy-js/rollup-plugin": "^0.1.0",
+    "@alloy-js/typescript": "^0.22.0",
+    "@types/node": "^25.6.0",
+    "@typescript-eslint/eslint-plugin": "^8.58.1",
+    "@typescript-eslint/parser": "^8.58.1",
+    "eslint": "^10.2.0",
+    "prettier": "^4.0.0-alpha.12",
+    "typescript": "6.0.2",
+    "vitest": "^4.1.4"
+  },
+  "peerDependencies": {
+    "@typespec/compiler": "1.11.0"
+  }
 }

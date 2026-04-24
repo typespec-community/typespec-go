@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    // Target modern JavaScript for better performance and features
+    "target": "es2024",
+    // Use NodeNext for proper Node.js compatibility with ESM
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "skipDefaultLibCheck": true,
+    // Enhanced strictness for better type safety
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "forceConsistentCasingInFileNames": true,
+    // Enable decorators for TypeSpec emitter development
+    "experimentalDecorators": true,
+    // JSX configuration for Alloy integration
+    "jsx": "preserve",
+    "jsxImportSource": "@alloy-js/core",
+    // Module compatibility
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    // Output configuration for library development
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+    "stripInternal": true,
+    "noEmitHelpers": false,
+    // Line endings for consistency
+    "newLine": "LF",
+    // Type libraries
+    "types": ["node"],
+    "lib": ["es2024", "DOM"],
+    // Performance optimizations
+    "skipLibCheck": true,
+    // Build output
+    "outDir": "dist",
+    "rootDir": ".",
+    "tsBuildInfoFile": "temp/tsconfig.tsbuildinfo"
+  },
+  "include": ["src/**/*", "test/**/*.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "dist", "build", "coverage"]
+}

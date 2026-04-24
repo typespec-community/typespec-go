@@ -1,0 +1,5 @@
+{
+  "exclude-pattern": ["src/test/temp-e2e-test/**"],
+  "threshold": 10,
+  "sort": "total-tokens"
+}
