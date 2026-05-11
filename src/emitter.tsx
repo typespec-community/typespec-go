@@ -4,17 +4,17 @@ import type { EmitContext } from "@typespec/compiler";
 import { writeOutput } from "@typespec/emitter-framework";
 
 export async function $onEmit(context: EmitContext) {
-	const modPath = context.options["module-path"];
+  const modPath = context.options["module-path"];
 
-	await writeOutput(
-		context.program,
-		<Output>
-			<ModuleDirectory name={modPath}>
-				<SourceDirectory path="foo">
-					<SourceFile path="main.go"></SourceFile>
-				</SourceDirectory>
-			</ModuleDirectory>
-		</Output>,
-		context.emitterOutputDir,
-	);
+  await writeOutput(
+    context.program,
+    <Output>
+      <ModuleDirectory name={modPath}>
+        <SourceDirectory path="foo">
+          <SourceFile path="main.go"></SourceFile>
+        </SourceDirectory>
+      </ModuleDirectory>
+    </Output>,
+    context.emitterOutputDir,
+  );
 }

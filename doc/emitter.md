@@ -2,7 +2,6 @@
 
 ## Core Concepts
 
-
 ### File and Package Generation
 
 The emitter generates Go files and packages based on the TypeSpec namespace structure.
@@ -31,27 +30,28 @@ The emitter maintains a configurable list of common initialisms (e.g., `ID`, `UR
 
 ### Built-in Types
 
-| TypeSpec Type | Go Type | Notes |
-| :--- | :--- | :--- |
-| `string` | `string` | |
-| `boolean` | `bool` | |
-| `int8`, `int16`, `int32`, `int64` | `int8`, `int16`, `int32`, `int64` | |
-| `uint8`, `uint16`, `uint32`, `uint64` | `uint8`, `uint16`, `uint32`, `uint64` | |
-| `float32`, `float64` | `float32`, `float64` | |
-| `bytes` | `[]byte` | |
-| `plainDate` | `string` | Per ISO 8601 `YYYY-MM-DD`. Can be overridden with `@go.type`. |
-| `plainTime` | `string` | Per ISO 8601 `HH:MM:SS`. Can be overridden with `@go.type`. |
-| `utcDateTime` | `time.Time` | |
-| `offsetDateTime` | `time.Time` | |
-| `duration` | `time.Duration` | |
-| `url` | `string` | Can be overridden with `@go.type("net/url.URL")`. |
-| `null` | `any` | Mapped to `nil` where applicable. Types unioned with nullable become pointer types. |
+| TypeSpec Type                         | Go Type                               | Notes                                                                               |
+| :------------------------------------ | :------------------------------------ | :---------------------------------------------------------------------------------- |
+| `string`                              | `string`                              |                                                                                     |
+| `boolean`                             | `bool`                                |                                                                                     |
+| `int8`, `int16`, `int32`, `int64`     | `int8`, `int16`, `int32`, `int64`     |                                                                                     |
+| `uint8`, `uint16`, `uint32`, `uint64` | `uint8`, `uint16`, `uint32`, `uint64` |                                                                                     |
+| `float32`, `float64`                  | `float32`, `float64`                  |                                                                                     |
+| `bytes`                               | `[]byte`                              |                                                                                     |
+| `plainDate`                           | `string`                              | Per ISO 8601 `YYYY-MM-DD`. Can be overridden with `@go.type`.                       |
+| `plainTime`                           | `string`                              | Per ISO 8601 `HH:MM:SS`. Can be overridden with `@go.type`.                         |
+| `utcDateTime`                         | `time.Time`                           |                                                                                     |
+| `offsetDateTime`                      | `time.Time`                           |                                                                                     |
+| `duration`                            | `time.Duration`                       |                                                                                     |
+| `url`                                 | `string`                              | Can be overridden with `@go.type("net/url.URL")`.                                   |
+| `null`                                | `any`                                 | Mapped to `nil` where applicable. Types unioned with nullable become pointer types. |
 
 ### Models
 
 Model properties become exported fields in the generated struct. JSON tags are added automatically (e.g., `json:"propertyName"`).
 
 By default, an optional property (e.g., `name?: string`) is generated as a pointer field (e.g., `Name *string`). The `go.optional` decorator can be used to instead to prefer usage of the zero value, or a `Null` struct like
+
 ```go
 type Null[T any] struct {
   V      T
@@ -62,6 +62,7 @@ type Null[T any] struct {
 #### Composition
 
 `extends` and the spread operator (`...`) are both implemented using Go's struct embedding.
+
 ```tsp
 model Base {
   id: string;
@@ -89,8 +90,7 @@ type Widget struct {
 
 Models with template parameters that are types (e.g., `model Page<T> { items: T[] }`) are generated as Go structs with generic type parameters (e.g., `type Page[T any] struct { Items []T }`). When `is` is used, the emitter will use the underlying type where possible.
 
-
-#### Cycles 
+#### Cycles
 
 If a model contains a property that creates a cyclic dependency (e.g., a `Node` model with a `Parent` property of type `Node`), the emitter will automatically convert **all** of the fields in the cycle to a pointer type to break the cycle and keep the emitter output consistent. To override this behavior, any of the fields in the cycle can be explicitly marked as optional.
 
@@ -101,7 +101,7 @@ The TypeSpec enum
 ```ts
 enum Status {
   Running,
-  Stopped
+  Stopped,
 }
 ```
 
@@ -215,7 +215,7 @@ If a sub-namespace exists exclusively with operations, the operations are groupe
 
 ```tsp
 model Pet {
-  id: string  
+  id: string
   name: string
 }
 
@@ -251,20 +251,21 @@ The emitter provides a heuristic strategy to reformat comments to follow Go conv
 ## Standard Library Decorator/Directive Support
 
 `#deprecated`: appends a `// Deprecated: <message>` comment to the corresponding Go declaration.
+
 - Decorators like `@minLength`, `@maxLength`, `@minValue`, and `@maxValue` are used to generate validation logic that is executed automatically during unmarshaling, and marshalling (optionally).
 
 ## Go-specific Emitter Decorators
 
 The emitter provides a suite of decorators within a `@go` namespace to control Go-specific generation details.
 
-| Decorator | Target(s) | Parameters | Description |
-| :--- | :--- | :--- | :--- |
-| `@go.name` | `Model`, `ModelProperty`, `Enum`, `EnumMember`, `Operation` | `name: string` | Overrides the generated Go name for the decorated element. |
-| `@go.tag` | `ModelProperty` | `tag: string` | Appends a raw struct tag to the generated field. Example: `@go.tag("xml:\"name,attr\"")`. The `json` tag is handled automatically. |
-| `@go.nullable` | `ModelProperty` | `mode: "pointer" \| "zeroValue" \| "nullable"` | Controls how optional properties are emitted. `"pointer"` (default), `"zeroValue"` (e.g., `string`), or `"nullable"` (e.g., `sql.NullString`). |
-| `@go.type` | `ModelProperty`, `Scalar` | `type: string` | Overrides the Go type. Example: `@go.type("github.com/uuid.UUID")`. |
-| `@go.package` | `Namespace` | `path: string` | Overrides the generated Go package path for a namespace. |
-| `@go.enum` | `Enum` | `strategy: "value"` | "iota"`, `type?: "string" | "int"` | Controls enum generation strategy and underlying type. |
+| Decorator      | Target(s)                                                   | Parameters                                     | Description                                                                                                                                    |
+| :------------- | :---------------------------------------------------------- | :--------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------ |
+| `@go.name`     | `Model`, `ModelProperty`, `Enum`, `EnumMember`, `Operation` | `name: string`                                 | Overrides the generated Go name for the decorated element.                                                                                     |
+| `@go.tag`      | `ModelProperty`                                             | `tag: string`                                  | Appends a raw struct tag to the generated field. Example: `@go.tag("xml:\"name,attr\"")`. The `json` tag is handled automatically.             |
+| `@go.nullable` | `ModelProperty`                                             | `mode: "pointer" \| "zeroValue" \| "nullable"` | Controls how optional properties are emitted. `"pointer"` (default), `"zeroValue"` (e.g., `string`), or `"nullable"` (e.g., `sql.NullString`). |
+| `@go.type`     | `ModelProperty`, `Scalar`                                   | `type: string`                                 | Overrides the Go type. Example: `@go.type("github.com/uuid.UUID")`.                                                                            |
+| `@go.package`  | `Namespace`                                                 | `path: string`                                 | Overrides the generated Go package path for a namespace.                                                                                       |
+| `@go.enum`     | `Enum`                                                      | `strategy: "value"`                            | "iota"`, `type?: "string"                                                                                                                      | "int"` | Controls enum generation strategy and underlying type. |
 
 ## Configuration
 

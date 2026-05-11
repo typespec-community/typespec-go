@@ -24,7 +24,7 @@ export async function createTypespecGoTestRunner() {
 }
 
 export async function emitWithDiagnostics(
-  code: string
+  code: string,
 ): Promise<[Record<string, string>, readonly Diagnostic[]]> {
   const runner = await createTypespecGoTestRunner();
   await runner.compileAndDiagnose(code, {
