@@ -1,10 +1,5 @@
 {
-  "plugins": [
-    "node",
-    "oxc",
-    "typescript",
-    "unicorn"
-  ],
+  "plugins": ["node", "oxc", "typescript", "unicorn"],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
