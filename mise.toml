@@ -4,12 +4,12 @@ quiet = true
 [tools]
 node = "25.1.0"
 "aqua:pnpm/pnpm" = "10.20.0"
-"npm:@typespec/compiler" = "1.5.0"
+"pnpm:@typespec/compiler" = "1.5.0"
 watchexec = "2.3.2"
 
 [tasks.build]
 description = "Build the emitter"
-run = ["npx alloy build"]
+run = ["pnpm dlx alloy build"]
 
 [tasks.test]
 description = "Run tests"

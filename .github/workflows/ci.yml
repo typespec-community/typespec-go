@@ -29,7 +29,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm run build || npx tsc --noEmit
+        run: pnpm run build || pnpm dlx tsc --noEmit
 
       - name: Lint
         run: pnpm run lint
