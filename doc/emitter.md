@@ -265,7 +265,7 @@ The emitter provides a suite of decorators within a `@go` namespace to control G
 | `@go.nullable` | `ModelProperty` | `mode: "pointer" \| "zeroValue" \| "nullable"` | Controls how optional properties are emitted. `"pointer"` (default), `"zeroValue"` (e.g., `string`), or `"nullable"` (e.g., `sql.NullString`). |
 | `@go.type` | `ModelProperty`, `Scalar` | `type: string` | Overrides the Go type. Example: `@go.type("github.com/uuid.UUID")`. |
 | `@go.package` | `Namespace` | `path: string` | Overrides the generated Go package path for a namespace. |
-| `@go.enum` | `Enum` | `strategy: "value"` | "iota"`, `type?: "string" | "int"` | Controls enum generation strategy and underlying type. |
+| `@go.enum` | `Enum` | `strategy: "value"` | "iota"`,`type?: "string" | "int"` | Controls enum generation strategy and underlying type. |
 
 ## Configuration
 

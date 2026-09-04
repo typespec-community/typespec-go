@@ -184,5 +184,6 @@ reports/
 
 ## Javascript and typescript
 build/
+pnpm-debug.log*
 .pnpm-debug.log*
 # <<< buildflow-managed (.gitignore) <<<
