@@ -31,7 +31,7 @@
     "@typespec/emitter-framework": "^0.21.0",
     "@typespec/http": "1.16.0",
     "eslint": "^10.10.0",
-    "prettier": "^3.9.6",
+    "prettier": "^3.9.7",
     "typescript": "^7.0.2"
   },
   "peerDependencies": {
