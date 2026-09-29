@@ -25,13 +25,13 @@
     "@alloy-js/core": "^0.25.0",
     "@alloy-js/go": "^0.3.2",
     "@types/node": "latest",
-    "@typescript-eslint/eslint-plugin": "^8.70.0",
-    "@typescript-eslint/parser": "^8.70.0",
+    "@typescript-eslint/eslint-plugin": "^8.71.0",
+    "@typescript-eslint/parser": "^8.71.0",
     "@typespec/compiler": "1.16.0",
     "@typespec/emitter-framework": "^0.21.0",
     "@typespec/http": "1.16.0",
-    "eslint": "^10.10.0",
-    "prettier": "^3.9.7",
+    "eslint": "^10.11.0",
+    "prettier": "^3.9.9",
     "typescript": "^7.0.2"
   },
   "peerDependencies": {
