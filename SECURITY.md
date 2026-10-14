@@ -2,8 +2,8 @@
 
 ## Supported Versions
 
-| Version          | Supported  |
-| ---------------- | ---------- |
+| Version        | Supported  |
+| -------------- | ---------- |
 | Latest release | ✅ Current |
 
 Only the latest release receives security fixes. Please update to the latest
@@ -12,6 +12,7 @@ version before reporting issues found in older releases.
 ## Reporting a Vulnerability
 
 Please do **not** open public issues for security problems. Report privately instead:
+
 - **GitHub Security Advisory**: https://github.com/typespec-community/typespec-go/security/advisories/new
 
 ### What to include
