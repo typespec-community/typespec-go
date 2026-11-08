@@ -21,7 +21,7 @@
     "format:check": "prettier --check ."
   },
   "devDependencies": {
-    "@alloy-js/cli": "^0.25.0",
+    "@alloy-js/cli": "^0.26.0",
     "@alloy-js/core": "^0.25.0",
     "@alloy-js/go": "^0.3.2",
     "@types/node": "latest",
