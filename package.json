@@ -23,10 +23,10 @@
   "devDependencies": {
     "@alloy-js/cli": "^0.25.0",
     "@alloy-js/core": "^0.25.0",
-    "@alloy-js/go": "^0.3.2",
+    "@alloy-js/go": "^0.3.3",
     "@types/node": "latest",
-    "@typescript-eslint/eslint-plugin": "^8.72.1",
-    "@typescript-eslint/parser": "^8.72.1",
+    "@typescript-eslint/eslint-plugin": "^8.72.2",
+    "@typescript-eslint/parser": "^8.72.2",
     "@typespec/compiler": "1.17.0",
     "@typespec/emitter-framework": "^0.21.0",
     "@typespec/http": "1.17.0",
