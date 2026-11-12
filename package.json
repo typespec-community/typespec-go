@@ -27,18 +27,18 @@
     "@types/node": "latest",
     "@typescript-eslint/eslint-plugin": "^8.72.2",
     "@typescript-eslint/parser": "^8.72.2",
-    "@typespec/compiler": "1.17.0",
+    "@typespec/compiler": "1.18.0",
     "@typespec/emitter-framework": "^0.21.0",
-    "@typespec/http": "1.17.0",
+    "@typespec/http": "1.18.0",
     "eslint": "^10.14.0",
-    "prettier": "^3.9.10",
+    "prettier": "^3.10.1",
     "typescript": "^7.0.2"
   },
   "peerDependencies": {
     "@alloy-js/core": "^0.25.0",
     "@alloy-js/typescript": "^0.25.0",
-    "@typespec/compiler": "1.17.0",
+    "@typespec/compiler": "1.18.0",
     "@typespec/emitter-framework": "^0.21.0",
-    "@typespec/http": "1.17.0"
+    "@typespec/http": "1.18.0"
   }
 }
