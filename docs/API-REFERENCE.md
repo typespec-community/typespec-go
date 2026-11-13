@@ -285,14 +285,15 @@ interface TypeSpecTypeNode {
 ```
 
 **Supported Types:**
-| Category | TypeSpec | Go Type | Description |
-|----------|------------|-----------|-------------|
-| Strings | `"String"` | `string` | UTF-8 text |
-| Signed Integers | `"Int8" | `"Int16" | `"Int32" | `"Int64"`|`int8`|`int16`|`int32`|`int64`| Signed integers |
-| Unsigned Integers |`"Uint8" | `"Uint16" | `"Uint32" | `"Uint64"` | `uint8` | `uint16` | `uint32` | `uint64` | Unsigned integers |
-| Floating Point | `"Float32" | `"Float64"`|`float32`|`float64`| Floating point numbers |
-| Boolean |`"Boolean"`|`bool`| Boolean values |
-| Arrays |`{ kind: "Array", element: T }`|`[]T` | Slices/arrays |
+
+| Category          | TypeSpec                        | Go Type     | Description    |
+| ----------------- | ------------------------------- | ----------- | -------------- |
+| Strings           | `"String"`                      | `string`    | UTF-8 text     |
+| Signed Integers   | `"Int8"                         | `"Int16"    | `"Int32"       |
+| Unsigned Integers | `"Uint8"                        | `"Uint16"   | `"Uint32"      |
+| Floating Point    | `"Float32"                      | `"Float64"` | `float32`      |
+| Boolean           | `"Boolean"`                     | `bool`      | Boolean values |
+| Arrays            | `{ kind: "Array", element: T }` | `[]T`       | Slices/arrays  |
 
 ### GoEmitterOptions
 

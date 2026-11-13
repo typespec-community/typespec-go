@@ -2,10 +2,10 @@
 
 ## 📊 TypeSpec Go Emitter - Component Architecture Excellence
 
-**Generated:** 2025-12-04_18-36  
-**Branch:** lars/lets-rock  
-**Tests:** 136/136 PASSING ✅  
-**Build:** Working ✅  
+**Generated:** 2025-12-04_18-36\
+**Branch:** lars/lets-rock\
+**Tests:** 136/136 PASSING ✅\
+**Build:** Working ✅\
 **Current Task:** Task 7 - Convert GoInterfaceDeclaration to Alloy-JS components 🔄
 
 ---

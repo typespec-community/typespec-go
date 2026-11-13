@@ -1,7 +1,7 @@
 # TypeSpec Go Emitter - Wave 4 Pareto Excellence Plan
 
-**Date:** 2025-11-30 10:15  
-**Branch:** lars/lets-rock  
+**Date:** 2025-11-30 10:15\
+**Branch:** lars/lets-rock\
 **Current Status:** 40/40 tests passing (100%), Wave 3 complete
 
 ---
@@ -10,69 +10,69 @@
 
 ### 🎯 1% → 51% Impact (Critical Path - 3 Tasks)
 
-| ID  | Task                                              | Time  | Impact | Why                   |
-| --- | ------------------------------------------------- | ----- | ------ | --------------------- |
-| C1  | Fix `as any` cast in GoPackageDirectory.tsx:71    | 10min | HIGH   | Type safety violation |
-| C2  | Fix `any` parameter in GoStructDeclaration.tsx:72 | 15min | HIGH   | Type safety violation |
-| C3  | Remove unused imports across all files            | 10min | MEDIUM | Clean code compliance |
+| ID | Task                                              | Time  | Impact | Why                   |
+| -- | ------------------------------------------------- | ----- | ------ | --------------------- |
+| C1 | Fix `as any` cast in GoPackageDirectory.tsx:71    | 10min | HIGH   | Type safety violation |
+| C2 | Fix `any` parameter in GoStructDeclaration.tsx:72 | 15min | HIGH   | Type safety violation |
+| C3 | Remove unused imports across all files            | 10min | MEDIUM | Clean code compliance |
 
 ### 🎯 4% → 64% Impact (Professional Polish - 6 Tasks)
 
-| ID  | Task                                         | Time  | Impact | Why                                     |
-| --- | -------------------------------------------- | ----- | ------ | --------------------------------------- |
-| P1  | Add go.mod generation to output              | 20min | HIGH   | Makes generated code immediately usable |
-| P2  | Add gofmt post-processing                    | 15min | MEDIUM | Professional formatting                 |
-| P3  | Consolidate duplicate capitalize functions   | 10min | LOW    | DRY principle                           |
-| P4  | Add @doc decorator → Go comment support      | 20min | MEDIUM | Documentation quality                   |
-| P5  | Remove unused `relative` import in emitter   | 5min  | LOW    | Clean code                              |
-| P6  | Add optional pointer types for nested models | 15min | MEDIUM | Proper Go patterns                      |
+| ID | Task                                         | Time  | Impact | Why                                     |
+| -- | -------------------------------------------- | ----- | ------ | --------------------------------------- |
+| P1 | Add go.mod generation to output              | 20min | HIGH   | Makes generated code immediately usable |
+| P2 | Add gofmt post-processing                    | 15min | MEDIUM | Professional formatting                 |
+| P3 | Consolidate duplicate capitalize functions   | 10min | LOW    | DRY principle                           |
+| P4 | Add @doc decorator → Go comment support      | 20min | MEDIUM | Documentation quality                   |
+| P5 | Remove unused `relative` import in emitter   | 5min  | LOW    | Clean code                              |
+| P6 | Add optional pointer types for nested models | 15min | MEDIUM | Proper Go patterns                      |
 
 ### 🎯 20% → 80% Impact (Feature Completion - 8 Tasks)
 
-| ID  | Task                                     | Time  | Impact | Why                    |
-| --- | ---------------------------------------- | ----- | ------ | ---------------------- |
-| F1  | Template/generic model support           | 30min | HIGH   | Complex type support   |
-| F2  | Cyclic reference detection               | 25min | MEDIUM | Prevent infinite loops |
-| F3  | Custom struct tags via decorators        | 20min | MEDIUM | Flexibility            |
-| F4  | Operation → Go interface methods         | 30min | HIGH   | HTTP handlers          |
-| F5  | HTTP service generation                  | 30min | HIGH   | Full API support       |
-| F6  | Error type generation                    | 25min | MEDIUM | Error handling         |
-| F7  | Validation generation (from constraints) | 25min | MEDIUM | Data validation        |
-| F8  | Add more scalar type mappings            | 15min | LOW    | Extended type support  |
+| ID | Task                                     | Time  | Impact | Why                    |
+| -- | ---------------------------------------- | ----- | ------ | ---------------------- |
+| F1 | Template/generic model support           | 30min | HIGH   | Complex type support   |
+| F2 | Cyclic reference detection               | 25min | MEDIUM | Prevent infinite loops |
+| F3 | Custom struct tags via decorators        | 20min | MEDIUM | Flexibility            |
+| F4 | Operation → Go interface methods         | 30min | HIGH   | HTTP handlers          |
+| F5 | HTTP service generation                  | 30min | HIGH   | Full API support       |
+| F6 | Error type generation                    | 25min | MEDIUM | Error handling         |
+| F7 | Validation generation (from constraints) | 25min | MEDIUM | Data validation        |
+| F8 | Add more scalar type mappings            | 15min | LOW    | Extended type support  |
 
 ---
 
 ## 📋 27-Task Breakdown (30-100min each)
 
-| #   | Task ID | Description                                                         | Time  | Priority    | Dependencies |
-| --- | ------- | ------------------------------------------------------------------- | ----- | ----------- | ------------ |
-| 1   | C1      | Replace `as any` with proper type guard in GoPackageDirectory       | 10min | P0-CRITICAL | -            |
-| 2   | C2      | Create TypeSpecType interface, replace `any` in mapTypeSpecToGoType | 15min | P0-CRITICAL | -            |
-| 3   | C3      | Clean up unused imports (relative, refkey where unused, For)        | 10min | P0-CRITICAL | -            |
-| 4   | P1      | Add GoModFile component for go.mod generation                       | 20min | P1-HIGH     | -            |
-| 5   | P2      | Add gofmt integration (shell exec or library)                       | 15min | P1-HIGH     | 4            |
-| 6   | P3      | Extract shared capitalize function to utils                         | 10min | P2-MEDIUM   | -            |
-| 7   | P4      | Add @doc decorator parsing and Go comment generation                | 20min | P2-MEDIUM   | -            |
-| 8   | P5      | Remove unused `relative` import from typespec-go-emitter            | 5min  | P2-MEDIUM   | -            |
-| 9   | P6      | Add pointer type detection for optional nested models               | 15min | P2-MEDIUM   | -            |
-| 10  | F1      | Add template parameter extraction and Go generics stub              | 30min | P1-HIGH     | 2            |
-| 11  | F2      | Implement cyclic reference detection in model processing            | 25min | P2-MEDIUM   | -            |
-| 12  | F3      | Add custom struct tag decorator (@go.tag)                           | 20min | P2-MEDIUM   | -            |
-| 13  | F4      | Add Operation parsing and Go interface generation                   | 30min | P1-HIGH     | -            |
-| 14  | F5      | Add HTTP handler skeleton generation                                | 30min | P1-HIGH     | 13           |
-| 15  | F6      | Add error model detection and Go error generation                   | 25min | P2-MEDIUM   | -            |
-| 16  | F7      | Add constraint-based validation code generation                     | 25min | P2-MEDIUM   | -            |
-| 17  | F8      | Add extended scalar mappings (uri, ip, etc.)                        | 15min | P3-LOW      | -            |
-| 18  | T1      | Add test for go.mod generation                                      | 10min | P1-HIGH     | 4            |
-| 19  | T2      | Add test for gofmt output formatting                                | 10min | P1-HIGH     | 5            |
-| 20  | T3      | Add test for type guard replacements                                | 10min | P0-CRITICAL | 1,2          |
-| 21  | T4      | Add test for @doc decorator handling                                | 10min | P2-MEDIUM   | 7            |
-| 22  | T5      | Add test for cyclic reference handling                              | 10min | P2-MEDIUM   | 11           |
-| 23  | T6      | Add test for operation interface generation                         | 10min | P1-HIGH     | 13           |
-| 24  | D1      | Update README with new features                                     | 20min | P2-MEDIUM   | 4,5,7        |
-| 25  | D2      | Add API reference for decorators                                    | 15min | P2-MEDIUM   | 7,12         |
-| 26  | D3      | Create getting started guide                                        | 20min | P2-MEDIUM   | 24           |
-| 27  | V1      | Full end-to-end validation with complex TypeSpec                    | 30min | P0-CRITICAL | ALL          |
+| #  | Task ID | Description                                                         | Time  | Priority    | Dependencies |
+| -- | ------- | ------------------------------------------------------------------- | ----- | ----------- | ------------ |
+| 1  | C1      | Replace `as any` with proper type guard in GoPackageDirectory       | 10min | P0-CRITICAL | -            |
+| 2  | C2      | Create TypeSpecType interface, replace `any` in mapTypeSpecToGoType | 15min | P0-CRITICAL | -            |
+| 3  | C3      | Clean up unused imports (relative, refkey where unused, For)        | 10min | P0-CRITICAL | -            |
+| 4  | P1      | Add GoModFile component for go.mod generation                       | 20min | P1-HIGH     | -            |
+| 5  | P2      | Add gofmt integration (shell exec or library)                       | 15min | P1-HIGH     | 4            |
+| 6  | P3      | Extract shared capitalize function to utils                         | 10min | P2-MEDIUM   | -            |
+| 7  | P4      | Add @doc decorator parsing and Go comment generation                | 20min | P2-MEDIUM   | -            |
+| 8  | P5      | Remove unused `relative` import from typespec-go-emitter            | 5min  | P2-MEDIUM   | -            |
+| 9  | P6      | Add pointer type detection for optional nested models               | 15min | P2-MEDIUM   | -            |
+| 10 | F1      | Add template parameter extraction and Go generics stub              | 30min | P1-HIGH     | 2            |
+| 11 | F2      | Implement cyclic reference detection in model processing            | 25min | P2-MEDIUM   | -            |
+| 12 | F3      | Add custom struct tag decorator (@go.tag)                           | 20min | P2-MEDIUM   | -            |
+| 13 | F4      | Add Operation parsing and Go interface generation                   | 30min | P1-HIGH     | -            |
+| 14 | F5      | Add HTTP handler skeleton generation                                | 30min | P1-HIGH     | 13           |
+| 15 | F6      | Add error model detection and Go error generation                   | 25min | P2-MEDIUM   | -            |
+| 16 | F7      | Add constraint-based validation code generation                     | 25min | P2-MEDIUM   | -            |
+| 17 | F8      | Add extended scalar mappings (uri, ip, etc.)                        | 15min | P3-LOW      | -            |
+| 18 | T1      | Add test for go.mod generation                                      | 10min | P1-HIGH     | 4            |
+| 19 | T2      | Add test for gofmt output formatting                                | 10min | P1-HIGH     | 5            |
+| 20 | T3      | Add test for type guard replacements                                | 10min | P0-CRITICAL | 1,2          |
+| 21 | T4      | Add test for @doc decorator handling                                | 10min | P2-MEDIUM   | 7            |
+| 22 | T5      | Add test for cyclic reference handling                              | 10min | P2-MEDIUM   | 11           |
+| 23 | T6      | Add test for operation interface generation                         | 10min | P1-HIGH     | 13           |
+| 24 | D1      | Update README with new features                                     | 20min | P2-MEDIUM   | 4,5,7        |
+| 25 | D2      | Add API reference for decorators                                    | 15min | P2-MEDIUM   | 7,12         |
+| 26 | D3      | Create getting started guide                                        | 20min | P2-MEDIUM   | 24           |
+| 27 | V1      | Full end-to-end validation with complex TypeSpec                    | 30min | P0-CRITICAL | ALL          |
 
 ---
 

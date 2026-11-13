@@ -1,7 +1,7 @@
 # TypeSpec Go Emitter MVP Execution Plan
 
-**Created**: 2025-11-14_17-41  
-**Scope**: Transform 25% → 80% functional MVP  
+**Created**: 2025-11-14_17-41\
+**Scope**: Transform 25% → 80% functional MVP\
 **Duration**: 1-2 weeks intensive development
 
 ---

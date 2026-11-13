@@ -31,9 +31,9 @@ src/utils/type-mapper.ts: static mapTypeSpecType(..., program?: any): MappedGoTy
 | File                              | Lines | Status      | Required Action              |
 | --------------------------------- | ----- | ----------- | ---------------------------- |
 | src/utils/errors.ts               | 573   | 🚨 CRITICAL | Split into 3 focused modules |
-| src/utils/config.ts               | 310   | ⚠️ WARNING  | Refactor architecture        |
-| src/utils/type-mapper.ts          | 281   | ⚠️ WARNING  | Split by responsibility      |
-| src/utils/property-transformer.ts | 244   | ⚠️ WARNING  | Extract modules              |
+| src/utils/config.ts               | 310   | ⚠️ WARNING   | Refactor architecture        |
+| src/utils/type-mapper.ts          | 281   | ⚠️ WARNING   | Split by responsibility      |
+| src/utils/property-transformer.ts | 244   | ⚠️ WARNING   | Extract modules              |
 
 ---
 

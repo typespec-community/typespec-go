@@ -1,7 +1,7 @@
 # 🎯 TypeSpec Go Emitter - TypeScript Crisis Resolved & Architecture Stabilized
 
-**Status Date:** 2025-12-04 17:33 CET  
-**Branch:** lars/lets-rock  
+**Status Date:** 2025-12-04 17:33 CET\
+**Branch:** lars/lets-rock\
 **Version:** 1.0 - TypeScript Compilation Victory
 
 ---

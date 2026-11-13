@@ -1,7 +1,7 @@
 # TypeSpec Go Emitter Status Report
 
-**Date**: 2025-11-23_05:56  
-**Branch**: lars/lets-rock  
+**Date**: 2025-11-23_05:56\
+**Branch**: lars/lets-rock\
 **Version**: Pre-release - Active Development
 
 ---

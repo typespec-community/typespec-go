@@ -130,11 +130,11 @@
 
 | #        | Action                 | Time   | Dependencies                      | Success Criteria |
 | -------- | ---------------------- | ------ | --------------------------------- | ---------------- |
-| **T1-1** | Test SimpleGoGenerator | 15 min | GoTypeMapper integration working  |
-| **T1-2** | Create End-to-End Test | 20 min | TypeSpec → Go pipeline functional |
-| **T1-3** | Verify File Output     | 15 min | .go files created correctly       |
-| **T1-4** | Validate Go Syntax     | 10 min | Generated Go compiles             |
-| **T1-5** | Test Multiple Models   | 10 min | Complex model generation works    |
+| **T1-1** | Test SimpleGoGenerator | 15 min | GoTypeMapper integration working  |                  |
+| **T1-2** | Create End-to-End Test | 20 min | TypeSpec → Go pipeline functional |                  |
+| **T1-3** | Verify File Output     | 15 min | .go files created correctly       |                  |
+| **T1-4** | Validate Go Syntax     | 10 min | Generated Go compiles             |                  |
+| **T1-5** | Test Multiple Models   | 10 min | Complex model generation works    |                  |
 
 ### **EXECUTION STRATEGY**
 

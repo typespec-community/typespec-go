@@ -1,6 +1,6 @@
 # 🚀 PARETO-BASED EXECUTION GRAPH
 
-**Created:** 2025-11-23_07-03  
+**Created:** 2025-11-23_07-03\
 **Strategy:** 1% → 51% → 64% → 80% Impact Optimization
 
 ```mermaid
@@ -228,20 +228,20 @@ graph TD
 
 ### Critical Path 1: Array Type Resolution (20min)
 
-**T1.1 → T1.2 → T1.3**  
-**Impact:** Fixes 6 test failures immediately  
+**T1.1 → T1.2 → T1.3**\
+**Impact:** Fixes 6 test failures immediately\
 **ROI:** 35% impact for 20min effort
 
 ### Critical Path 2: Enhanced Property Transformer (15min)
 
-**T1.4 → T1.5 → T1.6 → T1.7**  
-**Impact:** Fixes 2 critical logging failures  
+**T1.4 → T1.5 → T1.6 → T1.7**\
+**Impact:** Fixes 2 critical logging failures\
 **ROI:** 10% impact for 15min effort
 
 ### Critical Path 3: Union Type System (45min)
 
-**T2.1 → T2.2 → T2.3 → T2.4 → T2.5 → T2.6 → T2.7 → T2.8 → T2.9 → T2.10 → T2.11 → T2.12 → T2.13 → T2.14 → T2.15**  
-**Impact:** Fixes 8 union test failures  
+**T2.1 → T2.2 → T2.3 → T2.4 → T2.5 → T2.6 → T2.7 → T2.8 → T2.9 → T2.10 → T2.11 → T2.12 → T2.13 → T2.14 → T2.15**\
+**Impact:** Fixes 8 union test failures\
 **ROI:** 25% impact for 45min effort
 
 ---

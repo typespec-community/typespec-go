@@ -1,6 +1,6 @@
 # TypeSpec Go Emitter - Roadmap
 
-**Last Updated:** 2026-04-05  
+**Last Updated:** 2026-04-05\
 **Status:** ASPIRATIONAL - NO TIMELINE
 
 ---

@@ -66,10 +66,10 @@ There is a mismatch in expected field casing:
 
 ## ✅ Accomplishments (What Works)
 
-1.  **TypeScript Compilation:** Zero errors.
-2.  **Linting:** Clean codebase.
-3.  **Test Infrastructure:** Created `renderGoContent` helper in `src/testing/test-utils.tsx` to properly test Alloy components within their required context.
-4.  **Component Updates:** Fixed JSX syntax in `GoStructDeclaration` and `GoUnionDeclaration`.
+1. **TypeScript Compilation:** Zero errors.
+2. **Linting:** Clean codebase.
+3. **Test Infrastructure:** Created `renderGoContent` helper in `src/testing/test-utils.tsx` to properly test Alloy components within their required context.
+4. **Component Updates:** Fixed JSX syntax in `GoStructDeclaration` and `GoUnionDeclaration`.
 
 ---
 
@@ -95,11 +95,11 @@ Once the method receiver logic is fixed, apply it to `GoHandlerStub` and re-enab
 
 ## 🔮 Next Steps (Top 5)
 
-1.  **DEBUG:** Create a minimal reproduction script to test `@alloy-js/go` function/method generation isolated from our domain logic.
-2.  **REFACTOR:** Update `GoEnumDeclaration.tsx` to use correct method generation.
-3.  **REFACTOR:** Update `GoRouteRegistrationComponent.tsx` to use correct method generation.
-4.  **TEST:** Update tests to expect the corrected output.
-5.  **CLEANUP:** Deduplicate `structured-logging.ts` and `union-generator.ts`.
+1. **DEBUG:** Create a minimal reproduction script to test `@alloy-js/go` function/method generation isolated from our domain logic.
+2. **REFACTOR:** Update `GoEnumDeclaration.tsx` to use correct method generation.
+3. **REFACTOR:** Update `GoRouteRegistrationComponent.tsx` to use correct method generation.
+4. **TEST:** Update tests to expect the corrected output.
+5. **CLEANUP:** Deduplicate `structured-logging.ts` and `union-generator.ts`.
 
 ---
 

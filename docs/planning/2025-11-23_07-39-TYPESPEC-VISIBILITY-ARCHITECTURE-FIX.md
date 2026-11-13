@@ -1,7 +1,7 @@
 # TypeSpec Visibility System Architecture Fix Plan
 
-**Date:** 2025-11-23_07-39  
-**Strategy:** Fix Existing Beautiful Architecture (Option A)  
+**Date:** 2025-11-23_07-39\
+**Strategy:** Fix Existing Beautiful Architecture (Option A)\
 **Goal:** Get Production-Ready TypeSpec Visibility System Working
 
 ---

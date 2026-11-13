@@ -1,7 +1,7 @@
 # TypeSpec Go Emitter - Comprehensive Status Report
 
-**Date:** 2025-12-04 01:29  
-**Branch:** lars/lets-rock  
+**Date:** 2025-12-04 01:29\
+**Branch:** lars/lets-rock\
 **Status:** ✅ HEALTHY & PRODUCTION READY
 
 ---
@@ -250,7 +250,7 @@ The project is in optimal condition for continued development and production dep
 
 ---
 
-_Report Generated: 2025-12-04 01:29 CET_  
-_Environment: macOS Darwins_  
-_Branch: lars/lets-rock_  
+_Report Generated: 2025-12-04 01:29 CET_\
+_Environment: macOS Darwins_\
+_Branch: lars/lets-rock_\
 _Commit: Clean working directory_

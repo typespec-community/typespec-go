@@ -1,7 +1,7 @@
 version: "2"
 run:
   timeout: 5m
-  go: 1.26.0
+  go: "1.27"
   build-tags:
     - goexperiment.arenas
     - goexperiment.goroutineleakprofile
@@ -16,7 +16,6 @@ output:
   formats: {}
 linters:
   enable:
-    - arangolint
     - asasalint
     - asciicheck
     - bidichk
@@ -39,7 +38,7 @@ linters:
     - errname
     - errorlint
     - exhaustive
-    - exhaustruct
+    - exhaustruct_v5
     - exptostd
     - fatcontext
     - forbidigo
@@ -59,7 +58,7 @@ linters:
     - godox
     - goheader
     - gomoddirectives
-    - gomodguard
+    - gomodguard_v2
     - goprintffuncname
     - gosec
     - gosmopolitan
@@ -88,7 +87,6 @@ linters:
     - nilnil
     - nlreturn
     - noctx
-    - noinlineerr
     - nolintlint
     - nonamedreturns
     - nosprintfhostport
@@ -125,12 +123,208 @@ linters:
     - wrapcheck
     - wsl_v5
     - zerologlint
+  disable:
+    - noinlineerr
+  settings:
+    cyclop:
+      max-complexity: 12
+    errcheck:
+      check-type-assertions: true
+      exclude-functions:
+        - (*os.File).Close
+        - (io.Closer).Close
+        - (*sql.DB).Close
+        - (*sql.Rows).Close
+        - (*sql.Stmt).Close
+        - (net.Conn).Close
+        - (*net.TCPConn).Close
+        - (*net.UDPConn).Close
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - fmt.Print
+        - fmt.Printf
+        - fmt.Println
+        - (*strings.Builder).WriteString
+        - (*bytes.Buffer).WriteString
+    exhaustruct_v5:
+      ignore-patterns:
+        - net/http.Client
+        - net/http.Server
+        - net/http.Request
+        - net/http.Response
+        - net/http.Transport
+        - net/http.Cookie
+        - net.TCPAddr
+        - net.Dialer
+        - log/slog.HandlerOptions
+        - sync.WaitGroup
+        - bytes.Buffer
+        - time.Ticker
+        - time.Timer
+        - os/exec.Cmd
+    funlen:
+      lines: 200
+      statements: 100
+    ginkgolinter:
+      forbid-focus-container: true
+      forbid-spec-pollution: true
+    gocognit:
+      min-complexity: 25
+    goconst:
+      ignore-tests: true
+      min-len: 4
+      min-occurrences: 5
+    gocritic:
+      disabled-checks:
+        - ifElseChain
+    gocyclo:
+      min-complexity: 20
+    gomoddirectives:
+      replace-local: true
+    gosec:
+      excludes:
+        - G304
+        - G115
+    ireturn:
+      allow:
+        - error
+        - empty
+        - anon
+        - stdlib
+        - generic
+    makezero:
+      always: true
+    mnd:
+      ignored-files:
+        - _test\.go
+    nestif:
+      min-complexity: 6
+    revive:
+      rules:
+        - disabled: true
+          name: exported
+        - disabled: true
+          name: package-comments
+    tagalign:
+      align: false
+      order:
+        - binding
+        - json
+        - yaml
+        - xml
+        - toml
+        - validate
+        - mapstructure
+      sort: true
+    testifylint:
+      disable:
+        - go-require
+      enable-all: true
+    varnamelen:
+      ignore-decls:
+        - err error
+        - wg sync.WaitGroup
+        - mu sync.Mutex
+        - c context.Context
+        - r *http.Request
+        - w http.ResponseWriter
+        - t *testing.T
+        - b *testing.B
+        - f *testing.F
+        - db *sql.DB
+        - tx *sql.Tx
+        - ok bool
+        - id string
+        - n int
+        - fn func()
+        - i int
+        - j int
+      ignore-map-index-ok: true
+      ignore-names:
+        - err
+        - ok
+        - tt
+        - fn
+        - t
+        - i
+        - m
+        - g
+        - a
+        - b
+        - v
+      ignore-type-assert-ok: true
+      max-distance: 15
+      min-name-length: 2
+    wrapcheck:
+      ignore-sig-regexps:
+        - encoding/json
+        - fmt\.
+        - errors\.
+        - slices\.
+        - maps\.
+        - sort\.
+        - time\.
+        - net/http
+        - os\.
+        - io\.
+        - strings\.
+        - strconv\.
+        - path\.
+        - filepath\.
+        - compress/gzip
+        - \(context\.Context\)\.Err
+        - github\.com/larsartmann/([^/]+/pkg/errors|go-error-family)\.
+      ignore-sigs:
+        - .Errorf(
+        - errors.New(
+        - errors.Unwrap(
+        - errors.Join(
+        - .Wrap(
+        - .Wrapf(
+        - .WithMessage(
+        - .WithMessagef(
+        - .WithStack(
+  exclusions:
+    generated: lax
+    rules:
+      - path: _test\.go
+        linters:
+          - exhaustruct_v5
+          - testpackage
+          - gochecknoglobals
+          - funlen
+          - cyclop
+          - goconst
+          - forcetypeassert
+          - gosec
+          - errcheck
+          - wrapcheck
+          - ireturn
+          - recvcheck
+          - contextcheck
+          - exhaustive
+      - path: _test\.go
+        text: unused
+        linters:
+          - unused
+    paths:
+      - \.gen\.go$
+      - _templ\.go$
+      - vendor/
 formatters:
   enable:
     - gci
     - goimports
     - gofumpt
     - golines
+  settings:
+    golines:
+      max-len: 120
+  exclusions:
+    generated: lax
+    paths:
+      - _templ\.go$
 issues:
-  max-issues-per-linter: 50
-  max-same-issues: 10
+  max-issues-per-linter: 0
+  max-same-issues: 0

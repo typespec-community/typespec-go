@@ -1,7 +1,7 @@
 # TypeSpec Go Emitter Status Report
 
-**Date:** 2025-12-09 11:58 CET  
-**Project Health:** 🟡 **EXCELLENT WITH MINOR CONFIGURATION ISSUES**  
+**Date:** 2025-12-09 11:58 CET\
+**Project Health:** 🟡 **EXCELLENT WITH MINOR CONFIGURATION ISSUES**\
 **Test Success Rate:** 99% (156/157 tests passing)
 
 ---

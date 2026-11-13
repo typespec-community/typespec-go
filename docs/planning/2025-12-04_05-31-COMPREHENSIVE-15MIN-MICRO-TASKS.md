@@ -350,8 +350,8 @@ After each batch:
 
 ---
 
-**Total Estimated Time**: 2250 minutes (37.5 hours)  
-**Success Rate Target**: 100% task completion  
+**Total Estimated Time**: 2250 minutes (37.5 hours)\
+**Success Rate Target**: 100% task completion\
 **Final Goal**: Production-ready TypeSpec Go emitter
 
 **Let's execute micro-by-micro! 🚀🔥💎**

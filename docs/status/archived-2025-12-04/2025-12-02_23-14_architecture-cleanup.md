@@ -34,10 +34,10 @@
 
 ## 🔮 Next Steps
 
-1.  **Duplicate Analysis**: Re-run duplicate analysis tools to confirm reduction in code duplication.
-2.  **Error Handling**: Review unified error handling usage across the new modules to ensure consistency.
-3.  **Documentation**: Update internal documentation to reflect the new class structure.
-4.  **Pareto Improvements**: Continue with high-impact/low-effort improvements from the TODO list.
+1. **Duplicate Analysis**: Re-run duplicate analysis tools to confirm reduction in code duplication.
+2. **Error Handling**: Review unified error handling usage across the new modules to ensure consistency.
+3. **Documentation**: Update internal documentation to reflect the new class structure.
+4. **Pareto Improvements**: Continue with high-impact/low-effort improvements from the TODO list.
 
 ## 📝 Notes
 

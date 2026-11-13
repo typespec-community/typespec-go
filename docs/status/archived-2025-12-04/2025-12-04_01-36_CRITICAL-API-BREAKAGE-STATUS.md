@@ -1,16 +1,16 @@
 # TypeSpec Go Emitter Status Report
 
-**Date**: 2025-12-04 01:36:53 CET  
-**Version**: 0.0.1  
+**Date**: 2025-12-04 01:36:53 CET\
+**Version**: 0.0.1\
 **Status**: 🚨 CRITICAL - API BREAKAGE BLOCKING ALL DEVELOPMENT
 
 ---
 
 ## Executive Summary
 
-**CURRENT STATE**: 🔴 **CRITICAL FAILURE**  
-**TEST STATUS**: 115 PASS / 29 FAIL / 15 ERRORS (80% Success Rate)  
-**BLOCKING ISSUE**: Alloy-JS 0.21.0 API Breaking Changes  
+**CURRENT STATE**: 🔴 **CRITICAL FAILURE**\
+**TEST STATUS**: 115 PASS / 29 FAIL / 15 ERRORS (80% Success Rate)\
+**BLOCKING ISSUE**: Alloy-JS 0.21.0 API Breaking Changes\
 **IMPACT**: All development halted until core API migration complete
 
 ---
@@ -309,6 +309,6 @@ The TypeSpec Go Emitter project has an **excellent foundation** with sophisticat
 
 ---
 
-_Last Updated: 2025-12-04 01:36:53 CET_  
-_Next Review: 2025-12-04 12:00:00 CET (12-hour check-in)_  
+_Last Updated: 2025-12-04 01:36:53 CET_\
+_Next Review: 2025-12-04 12:00:00 CET (12-hour check-in)_\
 _Priority Level: CRITICAL_

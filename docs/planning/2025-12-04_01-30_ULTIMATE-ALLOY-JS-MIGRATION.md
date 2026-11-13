@@ -85,58 +85,58 @@
 
 ### **Phase 1: Emergency Stabilization (Tasks 1-10)**
 
-| #   | Micro-Task                                       | Duration | Dependencies |
-| --- | ------------------------------------------------ | -------- | ------------ |
-| 1   | Research TypeSpec compiler type definitions      | 12min    | None         |
-| 2   | Create TypeSpec to internal type adapter         | 12min    | 1            |
-| 3   | Test type adapter with simple example            | 12min    | 2            |
-| 4   | Research Alloy Reference component API           | 12min    | None         |
-| 5   | Research Alloy For component API                 | 12min    | None         |
-| 6   | Create minimal working Alloy component test      | 12min    | 4,5          |
-| 7   | Fix one JSX namespace error                      | 12min    | 6            |
-| 8   | Test JSX fix and verify build progress           | 12min    | 7            |
-| 9   | Remove one `any` type usage                      | 12min    | None         |
-| 10  | Verify `any` removal doesn't break functionality | 12min    | 9            |
+| #  | Micro-Task                                       | Duration | Dependencies |
+| -- | ------------------------------------------------ | -------- | ------------ |
+| 1  | Research TypeSpec compiler type definitions      | 12min    | None         |
+| 2  | Create TypeSpec to internal type adapter         | 12min    | 1            |
+| 3  | Test type adapter with simple example            | 12min    | 2            |
+| 4  | Research Alloy Reference component API           | 12min    | None         |
+| 5  | Research Alloy For component API                 | 12min    | None         |
+| 6  | Create minimal working Alloy component test      | 12min    | 4,5          |
+| 7  | Fix one JSX namespace error                      | 12min    | 6            |
+| 8  | Test JSX fix and verify build progress           | 12min    | 7            |
+| 9  | Remove one `any` type usage                      | 12min    | None         |
+| 10 | Verify `any` removal doesn't break functionality | 12min    | 9            |
 
 ### **Phase 2: Systematic Error Resolution (Tasks 11-25)**
 
-| #   | Micro-Task                                    | Duration | Dependencies |
-| --- | --------------------------------------------- | -------- | ------------ |
-| 11  | Fix GoHandlerStub getDocumentation call       | 12min    | 1            |
-| 12  | Test GoHandlerStub fix                        | 12min    | 11           |
-| 13  | Fix GoPackageDirectory Model type mapping     | 12min    | 1,2          |
-| 14  | Test GoPackageDirectory fix                   | 12min    | 13           |
-| 15  | Fix ErrorFactory AnyError import              | 12min    | None         |
-| 16  | Test ErrorFactory fix                         | 12min    | 15           |
-| 17  | Fix UnionGenerator getVariantName static call | 12min    | None         |
-| 18  | Test UnionGenerator fix                       | 12min    | 17           |
-| 19  | Create Go components index file               | 12min    | None         |
-| 20  | Test index file import resolution             | 12min    | 19           |
-| 21  | Fix one Reference component usage             | 12min    | 4            |
-| 22  | Test Reference fix and verify imports         | 12min    | 21           |
-| 23  | Fix one For component usage                   | 12min    | 5            |
-| 24  | Test For fix and verify iteration             | 12min    | 23           |
-| 25  | Run `bunx alloy build` and check error count  | 12min    | All above    |
+| #  | Micro-Task                                    | Duration | Dependencies |
+| -- | --------------------------------------------- | -------- | ------------ |
+| 11 | Fix GoHandlerStub getDocumentation call       | 12min    | 1            |
+| 12 | Test GoHandlerStub fix                        | 12min    | 11           |
+| 13 | Fix GoPackageDirectory Model type mapping     | 12min    | 1,2          |
+| 14 | Test GoPackageDirectory fix                   | 12min    | 13           |
+| 15 | Fix ErrorFactory AnyError import              | 12min    | None         |
+| 16 | Test ErrorFactory fix                         | 12min    | 15           |
+| 17 | Fix UnionGenerator getVariantName static call | 12min    | None         |
+| 18 | Test UnionGenerator fix                       | 12min    | 17           |
+| 19 | Create Go components index file               | 12min    | None         |
+| 20 | Test index file import resolution             | 12min    | 19           |
+| 21 | Fix one Reference component usage             | 12min    | 4            |
+| 22 | Test Reference fix and verify imports         | 12min    | 21           |
+| 23 | Fix one For component usage                   | 12min    | 5            |
+| 24 | Test For fix and verify iteration             | 12min    | 23           |
+| 25 | Run `bunx alloy build` and check error count  | 12min    | All above    |
 
 ### **Phase 3: Quality Assurance & Testing (Tasks 26-40)**
 
-| #   | Micro-Task                                  | Duration | Dependencies |
-| --- | ------------------------------------------- | -------- | ------------ |
-| 26  | Test string generators with simple model    | 12min    | None         |
-| 27  | Verify string generator output quality      | 12min    | 26           |
-| 28  | Add one Alloy component unit test           | 12min    | None         |
-| 29  | Verify component unit test passes           | 12min    | 28           |
-| 30  | Create performance benchmark test           | 12min    | None         |
-| 31  | Run benchmark and record results            | 12min    | 30           |
-| 32  | Test full TypeSpec to Go generation flow    | 12min    | All fixes    |
-| 33  | Verify generated Go code compiles           | 12min    | 32           |
-| 34  | Test complex model with multiple properties | 12min    | 32           |
-| 35  | Test enum generation functionality          | 12min    | 32           |
-| 36  | Test union generation functionality         | 12min    | 32           |
-| 37  | Test recursive type generation              | 12min    | 32           |
-| 38  | Verify automatic imports in generated code  | 12min    | 32           |
-| 39  | Test JSON tags and serialization            | 12min    | 32           |
-| 40  | Run complete test suite verification        | 12min    | All above    |
+| #  | Micro-Task                                  | Duration | Dependencies |
+| -- | ------------------------------------------- | -------- | ------------ |
+| 26 | Test string generators with simple model    | 12min    | None         |
+| 27 | Verify string generator output quality      | 12min    | 26           |
+| 28 | Add one Alloy component unit test           | 12min    | None         |
+| 29 | Verify component unit test passes           | 12min    | 28           |
+| 30 | Create performance benchmark test           | 12min    | None         |
+| 31 | Run benchmark and record results            | 12min    | 30           |
+| 32 | Test full TypeSpec to Go generation flow    | 12min    | All fixes    |
+| 33 | Verify generated Go code compiles           | 12min    | 32           |
+| 34 | Test complex model with multiple properties | 12min    | 32           |
+| 35 | Test enum generation functionality          | 12min    | 32           |
+| 36 | Test union generation functionality         | 12min    | 32           |
+| 37 | Test recursive type generation              | 12min    | 32           |
+| 38 | Verify automatic imports in generated code  | 12min    | 32           |
+| 39 | Test JSON tags and serialization            | 12min    | 32           |
+| 40 | Run complete test suite verification        | 12min    | All above    |
 
 ### **Phase 4: Cleanup & Optimization (Tasks 41-60)**
 

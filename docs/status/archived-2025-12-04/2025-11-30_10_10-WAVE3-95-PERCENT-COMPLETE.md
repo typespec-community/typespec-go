@@ -1,7 +1,7 @@
 # TypeSpec Go Emitter - Wave 3 Status Report
 
-**Date:** 2025-11-30 10:10  
-**Branch:** lars/lets-rock  
+**Date:** 2025-11-30 10:10\
+**Branch:** lars/lets-rock\
 **Status:** ✅ 95% COMPLETE - PRODUCTION-READY
 
 ---

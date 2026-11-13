@@ -2,7 +2,7 @@
 
 ## **125 MICRO-TASKS (Max 15min each)**
 
-> **Sorted by Impact/Effort/Customer-Value**  
+> **Sorted by Impact/Effort/Customer-Value**\
 > **Total Estimated Time**: 260 minutes (4.3 hours)
 
 ---

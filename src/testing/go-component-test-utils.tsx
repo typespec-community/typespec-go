@@ -49,7 +49,7 @@ export function extractGoCode(output: any, filename: string = "test/test.go") {
  * Test helper that combines context creation and code extraction
  * Simplifies component testing to one line
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export function testComponent(
   component: any,
   expectedContent: string[],

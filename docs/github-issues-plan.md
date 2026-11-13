@@ -4,8 +4,8 @@
 
 ### Issue #2: TypeSpec-Go Emitter - Project Structure and Architecture Discussion
 
-**Status**: OPEN (Enhancement)  
-**Last Activity**: 2025-11-10T08:22:10Z  
+**Status**: OPEN (Enhancement)\
+**Last Activity**: 2025-11-10T08:22:10Z\
 **Comments**:
 
 1. hhhapz: "mostly looks good to me, only thing is that the mise-tasks directory seems unnecessary, we can just keep all of that in mise.toml"
@@ -15,7 +15,7 @@
 
 ### Issue #3: Referenced but Not Found
 
-**Status**: NOT FOUND  
+**Status**: NOT FOUND\
 **Context**: Referenced in Issue #2 as "Work was started with #3"
 
 **Analysis**: Issue #3 appears to be deleted or the reference was incorrect.
@@ -268,8 +268,8 @@ After weeks of architectural work, we need to deliver actual working TypeSpec to
 
 ## Status Summary
 
-**Issues to Comment On**: 1 (Issue #2)  
-**Issues to Create**: 4 (Ghost Systems, Framework, Type Safety, Customer Value)  
+**Issues to Comment On**: 1 (Issue #2)\
+**Issues to Create**: 4 (Ghost Systems, Framework, Type Safety, Customer Value)\
 **Issues to Close**: 0 (Issue #2 remains relevant)
 
 **Ready for GitHub CLI execution once environment is fixed.**

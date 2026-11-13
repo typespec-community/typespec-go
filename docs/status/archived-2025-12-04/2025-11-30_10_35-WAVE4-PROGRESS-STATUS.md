@@ -1,7 +1,7 @@
 # TypeSpec Go Emitter - Wave 4 Progress Status
 
-**Date:** 2025-11-30 10:35  
-**Branch:** lars/lets-rock  
+**Date:** 2025-11-30 10:35\
+**Branch:** lars/lets-rock\
 **Status:** ✅ 60/60 tests passing (100%)
 
 ---
@@ -10,30 +10,30 @@
 
 ### ✅ Completed Tasks
 
-| ID  | Task                                       | Status  | Impact      |
-| --- | ------------------------------------------ | ------- | ----------- |
-| C1  | Fix `as any` cast in GoPackageDirectory    | ✅ DONE | Type safety |
-| C2  | Fix `any` parameter in GoStructDeclaration | ✅ DONE | Type safety |
-| C3  | Remove unused imports                      | ✅ DONE | Clean code  |
-| P1  | go.mod generation                          | ✅ DONE | Usability   |
-| P3  | Consolidate capitalize functions           | ✅ DONE | DRY         |
-| P6  | Pointer types for optional models          | ✅ DONE | Go patterns |
+| ID | Task                                       | Status  | Impact      |
+| -- | ------------------------------------------ | ------- | ----------- |
+| C1 | Fix `as any` cast in GoPackageDirectory    | ✅ DONE | Type safety |
+| C2 | Fix `any` parameter in GoStructDeclaration | ✅ DONE | Type safety |
+| C3 | Remove unused imports                      | ✅ DONE | Clean code  |
+| P1 | go.mod generation                          | ✅ DONE | Usability   |
+| P3 | Consolidate capitalize functions           | ✅ DONE | DRY         |
+| P6 | Pointer types for optional models          | ✅ DONE | Go patterns |
 
 ### 🔧 In Progress
 
-| ID  | Task                   | Status        | Notes                 |
-| --- | ---------------------- | ------------- | --------------------- |
-| P4  | @doc decorator support | 🔧 Foundation | Needs Program context |
+| ID | Task                   | Status        | Notes                 |
+| -- | ---------------------- | ------------- | --------------------- |
+| P4 | @doc decorator support | 🔧 Foundation | Needs Program context |
 
 ### 📋 Remaining Tasks
 
-| ID  | Task                  | Priority | Time  |
-| --- | --------------------- | -------- | ----- |
-| P2  | gofmt integration     | P1-HIGH  | 15min |
-| P5  | Remove unused imports | ✅ DONE  | -     |
-| F1  | Template/generics     | P1-HIGH  | 30min |
-| F4  | Operation interfaces  | P1-HIGH  | 30min |
-| F5  | HTTP handlers         | P1-HIGH  | 30min |
+| ID | Task                  | Priority | Time  |
+| -- | --------------------- | -------- | ----- |
+| P2 | gofmt integration     | P1-HIGH  | 15min |
+| P5 | Remove unused imports | ✅ DONE  | -     |
+| F1 | Template/generics     | P1-HIGH  | 30min |
+| F4 | Operation interfaces  | P1-HIGH  | 30min |
+| F5 | HTTP handlers         | P1-HIGH  | 30min |
 
 ---
 

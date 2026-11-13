@@ -165,9 +165,9 @@ static mapTypeSpecTypeDomain(type: TypeSpecType, fieldName?: string): MappedGoTy
 
 ---
 
-**STRATEGY APPROVED: 2025-11-23_02-58-CET**  
-**EXECUTION STARTING: IMMEDIATELY**  
-**CRISIS RESOLUTION TARGET: 30 minutes**  
+**STRATEGY APPROVED: 2025-11-23_02-58-CET**\
+**EXECUTION STARTING: IMMEDIATELY**\
+**CRISIS RESOLUTION TARGET: 30 minutes**\
 **SUCCESS CRITERIA: Tests expecting proper Go types**
 
 ---

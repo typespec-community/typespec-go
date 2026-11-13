@@ -35,7 +35,7 @@ describe("@doc Decorator Support", () => {
       };
 
       const result = renderGoContent(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         <GoStructDeclaration model={mockModel as unknown} documentation="A user in the system" />,
         "models.go",
       );
@@ -61,7 +61,7 @@ describe("@doc Decorator Support", () => {
       };
 
       const result = renderGoContent(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         <GoStructDeclaration model={mockModel as unknown} />,
         "models.go",
       );

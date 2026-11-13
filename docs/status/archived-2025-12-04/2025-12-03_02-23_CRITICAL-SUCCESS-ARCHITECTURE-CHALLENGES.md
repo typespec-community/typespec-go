@@ -624,6 +624,6 @@ The TypeSpec Go Emitter project has achieved **transformative milestones** in ar
 
 ---
 
-_Report generated: December 3, 2025 @ 02:23 CET_  
-_Analysis period: Array and map type implementation phase_  
+_Report generated: December 3, 2025 @ 02:23 CET_\
+_Analysis period: Array and map type implementation phase_\
 _Next report: Component architecture resolution phase_

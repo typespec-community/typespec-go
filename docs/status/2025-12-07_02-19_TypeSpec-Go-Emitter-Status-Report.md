@@ -1,7 +1,7 @@
 # TypeSpec Go Emitter - Status Report
 
-**Date:** 2025-12-07 02:19  
-**Version:** 0.0.1  
+**Date:** 2025-12-07 02:19\
+**Version:** 0.0.1\
 **Status:** Partial Implementation with Critical Foundation Issues
 
 ---
@@ -228,15 +228,15 @@ The TypeSpec Go Emitter project is at a critical juncture with solid architectur
 
 ## 🔄 Next Review
 
-**Scheduled:** 2025-12-07 14:00 (12 hours from now)  
-**Expected Progress:** Foundation issues resolved, component implementation complete  
+**Scheduled:** 2025-12-07 14:00 (12 hours from now)\
+**Expected Progress:** Foundation issues resolved, component implementation complete\
 **Success Criteria:** Component exports working, JSX compilation fixed, 90%+ tests passing
 
 ---
 
 ## 📞 Contact Information
 
-**Project Lead:** AI Assistant via Crush  
-**Repository:** /Users/larsartmann/projects/typespec-go  
-**Build Commands:** `just build`, `just test`, `just lint`  
+**Project Lead:** AI Assistant via Crush\
+**Repository:** /Users/larsartmann/projects/typespec-go\
+**Build Commands:** `just build`, `just test`, `just lint`\
 **Critical Files:** `src/components/go/index.ts`, `tsconfig.json`, `src/components/go/core/`

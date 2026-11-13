@@ -1,6 +1,6 @@
 # TypeSpec Go Emitter - TODO List
 
-**Last Updated:** 2026-04-05  
+**Last Updated:** 2026-04-05\
 **Status:** ACTIVE DEVELOPMENT
 
 ---

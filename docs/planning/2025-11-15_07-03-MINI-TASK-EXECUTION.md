@@ -162,8 +162,8 @@
 
 ### **Task T15: Long-term Architecture (45 min)**
 
-| #         | Mini Task                    | Time   | Status   | Priority  |
-| --------- | ---------------------------- | ------ | -------- | --------- |
+| #         | Mini Task                    | Time   | Status   | Priority |
+| --------- | ---------------------------- | ------ | -------- | -------- |
 | **T15.1** | Design scalable architecture | 10 min | ❌ START | 🏗️ MEDIUM |
 | **T15.2** | Plan extensibility           | 10 min | ❌ START | 🏗️ MEDIUM |
 | **T15.3** | Create migration strategy    | 10 min | ❌ START | 🏗️ MEDIUM |

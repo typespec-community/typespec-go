@@ -1,6 +1,6 @@
 # TypeSpec Go Emitter - Feature Status
 
-> **Last Updated:** March 25, 2026  
+> **Last Updated:** March 25, 2026\
 > **Status:** Core Features Working - 165/165 Tests Passing
 
 ## 🎯 Executive Summary

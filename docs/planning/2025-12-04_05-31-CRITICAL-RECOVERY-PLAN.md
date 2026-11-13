@@ -1,7 +1,7 @@
 # TypeSpec Go Emitter - Critical Recovery Execution Plan
 
-**Date:** 2025-12-04 05:31  
-**Status:** CRISIS RECOVERY - Build System Collapsed  
+**Date:** 2025-12-04 05:31\
+**Status:** CRISIS RECOVERY - Build System Collapsed\
 **Target:** 0% → 95%+ test pass rate in 1 hour
 
 ## 🎯 PARETO OPTIMIZATION ANALYSIS
@@ -65,17 +65,17 @@
 
 ### **PHASE 1: CRITICAL RECOVERY (First 90 Minutes)**
 
-| ID  | Task                                               | Time  | Dependencies | Success Criteria        |
-| --- | -------------------------------------------------- | ----- | ------------ | ----------------------- |
-| T1  | Fix GoEnumDeclaration Switch/For JSX syntax        | 15min | None         | Build system works      |
-| T2  | Verify build creates dist/ directory               | 5min  | T1           | Build 100% functional   |
-| T3  | Test accessibility - bun test runs                 | 5min  | T2           | Tests 100% runnable     |
-| T4  | Fix GoUnionDeclaration error returns               | 30min | T3           | Union tests pass        |
-| T5  | Fix component import paths in tests                | 20min | T3           | Test imports resolve    |
-| T6  | Fix Component.C tag syntax in GoStructDeclaration  | 10min | T3           | Pointer tests pass      |
-| T7  | Update render() → renderAsync() in remaining tests | 15min | T3           | Async tests work        |
-| T8  | Validate 90%+ test pass rate                       | 10min | T4-T7        | 105/117 tests pass      |
-| T9  | Verify Go code compilation of generated output     | 5min  | T8           | Generated code compiles |
+| ID | Task                                               | Time  | Dependencies | Success Criteria        |
+| -- | -------------------------------------------------- | ----- | ------------ | ----------------------- |
+| T1 | Fix GoEnumDeclaration Switch/For JSX syntax        | 15min | None         | Build system works      |
+| T2 | Verify build creates dist/ directory               | 5min  | T1           | Build 100% functional   |
+| T3 | Test accessibility - bun test runs                 | 5min  | T2           | Tests 100% runnable     |
+| T4 | Fix GoUnionDeclaration error returns               | 30min | T3           | Union tests pass        |
+| T5 | Fix component import paths in tests                | 20min | T3           | Test imports resolve    |
+| T6 | Fix Component.C tag syntax in GoStructDeclaration  | 10min | T3           | Pointer tests pass      |
+| T7 | Update render() → renderAsync() in remaining tests | 15min | T3           | Async tests work        |
+| T8 | Validate 90%+ test pass rate                       | 10min | T4-T7        | 105/117 tests pass      |
+| T9 | Verify Go code compilation of generated output     | 5min  | T8           | Generated code compiles |
 
 ### **PHASE 2: SYSTEM STABILIZATION (Next 3 Hours)**
 
@@ -213,8 +213,8 @@ graph TD
 
 **EXECUTION STARTING NOW - TARGETING 100% RECOVERY IN 8.5 HOURS**
 
-**Total Planned Time:** 8.5 hours  
-**Total Tasks:** 27  
+**Total Planned Time:** 8.5 hours\
+**Total Tasks:** 27\
 **Success Criteria:** 151/151 tests passing, production-ready functionality
 
 **Immediate Priority:** Fix GoEnumDeclaration Switch/For JSX syntax (T1)

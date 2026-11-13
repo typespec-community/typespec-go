@@ -12,25 +12,25 @@
 
 _These tasks unblock everything else. Without them, we are just guessing._
 
-1.  **API DISCOVERY (T1):** Thoroughly research `@alloy-js/go` exports. No more guessing.
-2.  **FOUNDATION LAYER (T2):** Create local "Shim Components" for missing Go constructs (`Switch`, `If`, `Block`) if they don't exist in the library. This enables the "100% Component" rule even if the library is incomplete.
-3.  **VERIFICATION RIG (T3):** Create a script to scan for template literals (`grep`) to track progress and prevent regression.
+1. **API DISCOVERY (T1):** Thoroughly research `@alloy-js/go` exports. No more guessing.
+2. **FOUNDATION LAYER (T2):** Create local "Shim Components" for missing Go constructs (`Switch`, `If`, `Block`) if they don't exist in the library. This enables the "100% Component" rule even if the library is incomplete.
+3. **VERIFICATION RIG (T3):** Create a script to scan for template literals (`grep`) to track progress and prevent regression.
 
 ### **⚡ 4% IMPACT (STRUCTURAL INTEGRITY)**
 
 _High-risk components that are currently using strings._
 
-4.  **ENUM REFACTOR (T4):** Migrate `GoEnumDeclaration` using verified API/Shims.
-5.  **ROUTE REFACTOR (T5):** Migrate `GoRouteRegistrationComponent`.
-6.  **HANDLER REFACTOR (T6):** Migrate `GoHandlerMethodComponent` & `GoHandlerStub`.
+4. **ENUM REFACTOR (T4):** Migrate `GoEnumDeclaration` using verified API/Shims.
+5. **ROUTE REFACTOR (T5):** Migrate `GoRouteRegistrationComponent`.
+6. **HANDLER REFACTOR (T6):** Migrate `GoHandlerMethodComponent` & `GoHandlerStub`.
 
 ### **🌊 20% IMPACT (CORE COMPLETION)**
 
 _Refining the rest of the system._
 
-7.  **INTERFACE REFACTOR (T7):** Clean up `GoInterfaceDeclaration`.
-8.  **PACKAGE REFACTOR (T8):** Clean up `GoPackageDirectory` and import management.
-9.  **CLEANUP (T9):** Remove unused utils, update documentation.
+7. **INTERFACE REFACTOR (T7):** Clean up `GoInterfaceDeclaration`.
+8. **PACKAGE REFACTOR (T8):** Clean up `GoPackageDirectory` and import management.
+9. **CLEANUP (T9):** Remove unused utils, update documentation.
 
 ---
 
@@ -128,7 +128,7 @@ _Goal: If official components are missing, create local wrappers so we NEVER use
 
 ## 🛡️ SAFETY PROTOCOLS (NO "VERSCHLIMMBESSERN")
 
-1.  **Read-First:** Always read the definition files before importing.
-2.  **Incremental:** One component at a time.
-3.  **Verify:** Run tests after EVERY component migration.
-4.  **Fallback:** If a component doesn't exist, create a local component wrapper rather than reverting to raw strings.
+1. **Read-First:** Always read the definition files before importing.
+2. **Incremental:** One component at a time.
+3. **Verify:** Run tests after EVERY component migration.
+4. **Fallback:** If a component doesn't exist, create a local component wrapper rather than reverting to raw strings.

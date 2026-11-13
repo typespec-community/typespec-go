@@ -4,7 +4,7 @@
 
 | ID                                              | Task Name                           | Impact | Effort | Customer Value | Time (min) | Phase   | Status  | File(s) Affected                   |
 | ----------------------------------------------- | ----------------------------------- | ------ | ------ | -------------- | ---------- | ------- | ------- | ---------------------------------- |
-| **IMMEDIATE CRITICAL PATH (Foundation First)**  |
+| **IMMEDIATE CRITICAL PATH (Foundation First)**  |                                     |        |        |                |            |         |         |                                    |
 | 1                                               | Study Alloy-JS Integration Pattern  | HIGH   | LOW    | HIGH           | 8          | Phase 1 | ⏳ TODO | src/emitter/typespec-emitter.tsx   |
 | 3                                               | Implement Type Expression Component | HIGH   | MEDIUM | HIGH           | 12         | Phase 1 | ⏳ TODO | src/components/TypeExpression.tsx  |
 | 4                                               | Create Go Model Component           | HIGH   | MEDIUM | HIGH           | 12         | Phase 2 | ⏳ TODO | src/components/GoModel.tsx         |
@@ -16,7 +16,7 @@
 | 25                                              | Remove Manual Generation Code       | HIGH   | MEDIUM | HIGH           | 12         | Phase 4 | ⏳ TODO | Legacy files removal               |
 | 26                                              | Update All Tests                    | HIGH   | MEDIUM | HIGH           | 10         | Phase 4 | ⏳ TODO | Test suite updates                 |
 | 30                                              | Final Integration Testing           | HIGH   | LOW    | HIGH           | 10         | Phase 4 | ⏳ TODO | Complete test suite                |
-| **HIGH PRIORITY (Core Migration)**              |
+| **HIGH PRIORITY (Core Migration)**              |                                     |        |        |                |            |         |         |                                    |
 | 2                                               | Create Component Library Structure  | HIGH   | LOW    | HIGH           | 10         | Phase 1 | ⏳ TODO | src/components/ directory          |
 | 5                                               | Implement Go Service Component      | MEDIUM | MEDIUM | MEDIUM         | 12         | Phase 1 | ⏳ TODO | src/components/GoService.tsx       |
 | 6                                               | Add Context System                  | MEDIUM | LOW    | MEDIUM         | 8          | Phase 1 | ⏳ TODO | src/contexts/TypeSpecContext.tsx   |
@@ -30,7 +30,7 @@
 | 20                                              | Add Template Parameter Support      | MEDIUM | MEDIUM | MEDIUM         | 10         | Phase 3 | ⏳ TODO | Type system enhancements           |
 | 21                                              | Create CI/CD Integration            | LOW    | LOW    | MEDIUM         | 8          | Phase 3 | ⏳ TODO | GitHub Actions, scripts            |
 | 22                                              | Implement Incremental Generation    | MEDIUM | MEDIUM | MEDIUM         | 10         | Phase 3 | ⏳ TODO | Change detection system            |
-| **MEDIUM PRIORITY (Professional Enhancements)** |
+| **MEDIUM PRIORITY (Professional Enhancements)** |                                     |        |        |                |            |         |         |                                    |
 | 18                                              | Create Documentation Generation     | LOW    | LOW    | MEDIUM         | 8          | Phase 3 | ⏳ TODO | Documentation components           |
 | 23                                              | Add Go Module Management            | LOW    | LOW    | LOW            | 6          | Phase 3 | ⏳ TODO | Module generation                  |
 | 24                                              | Create Example Usage                | LOW    | LOW    | MEDIUM         | 8          | Phase 3 | ⏳ TODO | Example generation                 |

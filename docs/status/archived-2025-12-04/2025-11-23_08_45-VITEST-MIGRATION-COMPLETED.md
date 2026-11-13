@@ -1,7 +1,7 @@
 # 🎉 VITEST MIGRATION COMPLETED - TypeSpec Go Emitter Status Report
 
-**Date**: 2025-11-23 08:45 CET  
-**Branch**: lars/lets-rock  
+**Date**: 2025-11-23 08:45 CET\
+**Branch**: lars/lets-rock\
 **Status**: ✅ MIGRATION SUCCESSFUL
 
 ---
@@ -329,8 +329,8 @@ import { describe, it, expect, beforeAll } from "vitest";
 
 ---
 
-**Status Report Generated**: 2025-11-23 08:45 CET  
-**Migration Completion**: ✅ SUCCESSFUL  
+**Status Report Generated**: 2025-11-23 08:45 CET\
+**Migration Completion**: ✅ SUCCESSFUL\
 **Readiness**: 🚀 PRODUCTION READY
 
 ---

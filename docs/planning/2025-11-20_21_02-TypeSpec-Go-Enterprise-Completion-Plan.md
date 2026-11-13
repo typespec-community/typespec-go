@@ -1,6 +1,6 @@
 # TypeSpec-Go Emitter: Comprehensive Enterprise-Ready Completion Plan
 
-**Date:** 2025-11-20_21_02  
+**Date:** 2025-11-20_21_02\
 **Objective:** Transform production-ready TypeSpec-Go emitter into enterprise-grade tool with full ecosystem integration
 
 ---
@@ -316,7 +316,7 @@
 #### CLI & Tooling (5 Tasks)
 
 1.1.1 Check for Go formatting tools availability (15min)
-1.1.2 Create automatic tool installation script (15min)  
+1.1.2 Create automatic tool installation script (15min)\
 1.1.3 Add --install-tools CLI flag (15min)
 1.1.4 Add tool path detection and validation (15min)
 1.1.5 Create tool installation documentation (15min)

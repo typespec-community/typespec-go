@@ -1,7 +1,7 @@
 # TypeSpec Go Emitter - Wave 5 Execution Status
 
-**Date:** 2025-11-30 12:23  
-**Branch:** lars/lets-rock  
+**Date:** 2025-11-30 12:23\
+**Branch:** lars/lets-rock\
 **Current Status:** 75/75 tests passing (100%), Wave 5.1 complete
 
 ---
@@ -308,6 +308,6 @@ const doc =
 
 ---
 
-_Status Report Generated: 2025-11-30 12:23_  
-_Wave 5.1 Complete - 75/75 tests passing_  
+_Status Report Generated: 2025-11-30 12:23_\
+_Wave 5.1 Complete - 75/75 tests passing_\
 _Architecture Production-Ready_

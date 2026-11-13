@@ -18,9 +18,9 @@ echo ""
 echo "=== CODE PATTERNS (>$THRESHOLD lines) ==="
 # Find files with similar line counts (within threshold)
 find src/ -name "*.ts" -exec wc -l {} \; | sort -n | while read count file; do
-  if [ $count -gt $THRESHOLD ]; then
-    echo "$file: $count lines"
-  fi
+	if [ $count -gt $THRESHOLD ]; then
+		echo "$file: $count lines"
+	fi
 done | sort -k2 -nr
 
 echo ""

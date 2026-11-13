@@ -288,8 +288,8 @@ When splitting `model-extractor.ts` into 3 files, I created new modules but fail
 
 ---
 
-**STATUS: RECOVERY PHASE REQUIRED**  
-**PRIORITY: CRITICAL EXECUTION DISCIPLINE**  
+**STATUS: RECOVERY PHASE REQUIRED**\
+**PRIORITY: CRITICAL EXECUTION DISCIPLINE**\
 **NEXT UPDATE: After Phase 1 recovery complete and verified**
 
 **IMMEDIATE ACTION REQUIRED**: Complete the file split properly before any other work.

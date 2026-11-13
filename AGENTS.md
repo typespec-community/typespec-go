@@ -1,6 +1,6 @@
 # TypeSpec Go Emitter - Agent Development Guide
 
-**Last Updated:** December 4, 2025  
+**Last Updated:** December 4, 2025\
 **Version:** 1.0 - TypeSpec AssetEmitter Edition
 
 ---

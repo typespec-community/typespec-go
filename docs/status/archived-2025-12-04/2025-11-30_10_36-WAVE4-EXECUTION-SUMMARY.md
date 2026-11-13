@@ -1,7 +1,7 @@
 # TypeSpec Go Emitter - Wave 4 Execution Summary
 
-**Date:** 2025-11-30 10:36  
-**Branch:** lars/lets-rock  
+**Date:** 2025-11-30 10:36\
+**Branch:** lars/lets-rock\
 **Final Status:** ✅ 65/65 tests passing (100%)
 
 ---
@@ -22,26 +22,26 @@
 
 ### Phase 1: Critical Type Safety (1% → 51% Impact)
 
-| ID  | Task                                                                | Status |
-| --- | ------------------------------------------------------------------- | ------ |
-| C1  | Replace `as any` in GoPackageDirectory with `isTimeType` type guard | ✅     |
-| C2  | Replace `any` parameter with `Type` in mapTypeSpecToGoType          | ✅     |
-| C3  | Remove unused imports (relative, refkey, For)                       | ✅     |
+| ID | Task                                                                | Status |
+| -- | ------------------------------------------------------------------- | ------ |
+| C1 | Replace `as any` in GoPackageDirectory with `isTimeType` type guard | ✅     |
+| C2 | Replace `any` parameter with `Type` in mapTypeSpecToGoType          | ✅     |
+| C3 | Remove unused imports (relative, refkey, For)                       | ✅     |
 
 ### Phase 2: Professional Polish (4% → 64% Impact)
 
-| ID  | Task                                             | Status |
-| --- | ------------------------------------------------ | ------ |
-| P1  | go.mod generation (GoModFile component)          | ✅     |
-| P3  | Consolidate capitalize functions to shared utils | ✅     |
-| P5  | Remove unused imports                            | ✅     |
-| P6  | Pointer types for optional nested models         | ✅     |
+| ID | Task                                             | Status |
+| -- | ------------------------------------------------ | ------ |
+| P1 | go.mod generation (GoModFile component)          | ✅     |
+| P3 | Consolidate capitalize functions to shared utils | ✅     |
+| P5 | Remove unused imports                            | ✅     |
+| P6 | Pointer types for optional nested models         | ✅     |
 
 ### Phase 3: Feature Completion (20% → 80% Impact)
 
-| ID  | Task                                | Status |
-| --- | ----------------------------------- | ------ |
-| F8  | Extended scalar mappings (32 types) | ✅     |
+| ID | Task                                | Status |
+| -- | ----------------------------------- | ------ |
+| F8 | Extended scalar mappings (32 types) | ✅     |
 
 ---
 

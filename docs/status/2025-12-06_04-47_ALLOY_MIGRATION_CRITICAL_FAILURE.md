@@ -1,9 +1,9 @@
 # 🚨 ALLOY-JS MIGRATION CRITICAL FAILURE REPORT
 
-**Date:** 2025-12-06  
-**Time:** 04:47 CET  
-**Status:** 🚨 BLOCKED - Fundamental JSX/Go String Generation Conflict  
-**Violations:** Unknown (scanner broken)  
+**Date:** 2025-12-06\
+**Time:** 04:47 CET\
+**Status:** 🚨 BLOCKED - Fundamental JSX/Go String Generation Conflict\
+**Violations:** Unknown (scanner broken)\
 **Progress:** ~20% (massive blockers identified)
 
 ---
@@ -12,9 +12,9 @@
 
 ### Mission Status: **CRITICAL FAILURE** 🔥
 
-**Objective:** Complete 100% ALLOY-JS migration by eliminating remaining 11 template literal violations  
-**Achievement:** Started strong but hit fundamental architectural blocker  
-**Blocker:** JSX syntax parser conflicts with Go string generation  
+**Objective:** Complete 100% ALLOY-JS migration by eliminating remaining 11 template literal violations\
+**Achievement:** Started strong but hit fundamental architectural blocker\
+**Blocker:** JSX syntax parser conflicts with Go string generation\
 **Impact:** ALL component migrations blocked until core issue resolved
 
 ---
@@ -50,7 +50,7 @@
 
 #### 1. JSX String Literal Conflict 🔥 BLOCKER
 
-**Files Affected:** `GoHandlerMethodComponent.tsx`, `GoHandlerStub.tsx`  
+**Files Affected:** `GoHandlerMethodComponent.tsx`, `GoHandlerStub.tsx`\
 **Issue:** JSX parser expects Unicode escape sequences for quotes
 **Error:** `Expecting Unicode escape sequence \uXXXX. (43:73)`
 **Impact:** Cannot generate Go code with double quotes in JSX attributes
@@ -65,16 +65,16 @@
 
 #### 2. Module Resolution Failure 🔥 BLOCKER
 
-**Component:** Violation scanner (`scripts/scan-violations.ts`)  
-**Error:** `Cannot find module './cjs/index.cjs' from 'undefined'`  
-**Impact:** Cannot measure current violation count or verify progress  
+**Component:** Violation scanner (`scripts/scan-violations.ts`)\
+**Error:** `Cannot find module './cjs/index.cjs' from 'undefined'`\
+**Impact:** Cannot measure current violation count or verify progress\
 **Tool Status:** Completely non-functional
 
 #### 3. Build System Failure 🔥 BLOCKER
 
-**Status:** No TypeScript compilation possible  
-**Command:** `just build` fails on JSX syntax errors  
-**Impact:** Cannot test any component migrations  
+**Status:** No TypeScript compilation possible\
+**Command:** `just build` fails on JSX syntax errors\
+**Impact:** Cannot test any component migrations\
 **Development:** Fully halted until build issues resolved
 
 ---
@@ -112,8 +112,8 @@
 
 ### d) TOTALLY FUCKED UP 💥 (12/15)
 
-**Primary Failure:** JSX/Go string generation fundamental conflict  
-**Secondary Failure:** Module resolution completely broken  
+**Primary Failure:** JSX/Go string generation fundamental conflict\
+**Secondary Failure:** Module resolution completely broken\
 **Tertiary Failure:** Entire build system non-functional
 
 ---
@@ -151,7 +151,7 @@
 <GoStringLiteral value='w.Header().Set("Content-Type", "application/json")' />
 ```
 
-**Pros:** JSX compatible, existing components can decode  
+**Pros:** JSX compatible, existing components can decode\
 **Cons:** Verbose, requires decoding logic
 
 #### Option B: Raw String Approach
@@ -161,7 +161,7 @@
 <GoStringLiteral raw value="w.Header().Set(`Content-Type`, `application/json`)" />
 ```
 
-**Pros:** Go-friendly, cleaner syntax  
+**Pros:** Go-friendly, cleaner syntax\
 **Cons:** May conflict with other string content
 
 #### Option C: Component Composition Approach
@@ -174,7 +174,7 @@
 </GoStringLiteral>
 ```
 
-**Pros:** Full JSX compatibility, maximum flexibility  
+**Pros:** Full JSX compatibility, maximum flexibility\
 **Cons:** Complex component structure, verbose
 
 ### Phase 2: FIX MODULE RESOLUTION (Est. 15-30 minutes)
@@ -283,7 +283,7 @@
 ## 🔥 IMMEDIATE NEXT STEPS
 
 **Priority 1:** Decide on string generation strategy (10 minutes)
-**Priority 2:** Implement chosen pattern and fix JSX errors (30 minutes)  
+**Priority 2:** Implement chosen pattern and fix JSX errors (30 minutes)\
 **Priority 3:** Verify build system works (10 minutes)
 **Priority 4:** Fix module resolution for scanner (15 minutes)
 **Priority 5:** Get baseline violation count (5 minutes)
@@ -308,7 +308,7 @@
 
 ---
 
-**Report Generated:** 2025-12-06 04:47 CET  
+**Report Generated:** 2025-12-06 04:47 CET\
 **Status:** 🚨 CRITICAL FAILURE - BLOCKED
 **Recovery Time:** Est. 60-90 minutes
 **Confidence:** Medium (multiple viable options identified)

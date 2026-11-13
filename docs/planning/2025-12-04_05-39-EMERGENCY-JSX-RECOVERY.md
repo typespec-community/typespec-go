@@ -1,6 +1,6 @@
 # EMERGENCY JSX RUNTIME RECOVERY & ALLOY-JS EXCELLENCE PLAN
 
-**Date:** 2025-12-04  
+**Date:** 2025-12-04\
 **Focus:** Critical JSX Runtime Fix → 100% Component Recovery
 
 ---
@@ -68,56 +68,56 @@
 
 **Total Effort: 1 Hour | Impact: 95% System Recovery**
 
-| #   | Task                                                        | Component           | Effort | Dependencies | Success Criteria                   |
-| --- | ----------------------------------------------------------- | ------------------- | ------ | ------------ | ---------------------------------- |
-| 1   | **Configure JSX Runtime for Alloy-JS**                      | Build System        | 15min  | None         | JSX components load without errors |
-| 2   | **Fix Reference imports in GoStructDeclaration**            | GoStructDeclaration | 10min  | #1           | @alloy-js/go imports working       |
-| 3   | **Fix Reference imports in GoHandlerStub**                  | GoHandlerStub       | 10min  | #2           | All imports from @alloy-js/go      |
-| 4   | **Fix VariableDeclarationInitializer in GoEnumDeclaration** | GoEnumDeclaration   | 15min  | #3           | initializer → value prop fix       |
+| # | Task                                                        | Component           | Effort | Dependencies | Success Criteria                   |
+| - | ----------------------------------------------------------- | ------------------- | ------ | ------------ | ---------------------------------- |
+| 1 | **Configure JSX Runtime for Alloy-JS**                      | Build System        | 15min  | None         | JSX components load without errors |
+| 2 | **Fix Reference imports in GoStructDeclaration**            | GoStructDeclaration | 10min  | #1           | @alloy-js/go imports working       |
+| 3 | **Fix Reference imports in GoHandlerStub**                  | GoHandlerStub       | 10min  | #2           | All imports from @alloy-js/go      |
+| 4 | **Fix VariableDeclarationInitializer in GoEnumDeclaration** | GoEnumDeclaration   | 15min  | #3           | initializer → value prop fix       |
 
 ### **PHASE 2: TYPE SAFETY RECOVERY (Tasks 5-12)**
 
 **Total Effort: 3.5 Hours | Impact: Complete System Restoration**
 
-| #   | Task                                        | Component                | Effort | Dependencies | Success Criteria              |
-| --- | ------------------------------------------- | ------------------------ | ------ | ------------ | ----------------------------- |
-| 5   | **Fix Type-Only Import Violations**         | Multiple Components      | 30min  | #4           | All imports compile correctly |
-| 6   | **Add Missing refkey imports**              | GoHandlerStub            | 15min  | #5           | refkey available in all files |
-| 7   | **Fix ImportStatements import**             | GoHandlerStub            | 10min  | #6           | ImportStatements resolved     |
-| 8   | **Fix For component import**                | GoHandlerStub            | 10min  | #7           | Loop components available     |
-| 9   | **Resolve Model vs TypeSpecModel mismatch** | GoPackageDirectory       | 30min  | #8           | Type compatibility fixed      |
-| 10  | **Fix GoHandlerMethod type imports**        | GoHandlerMethodComponent | 15min  | #9           | Type-only imports working     |
-| 11  | **Fix JSX type imports**                    | GoHandlerStub            | 10min  | #10          | JSX types compile             |
-| 12  | **Complete TypeScript Compilation Fix**     | Build System             | 30min  | #11          | 0 TypeScript errors           |
+| #  | Task                                        | Component                | Effort | Dependencies | Success Criteria              |
+| -- | ------------------------------------------- | ------------------------ | ------ | ------------ | ----------------------------- |
+| 5  | **Fix Type-Only Import Violations**         | Multiple Components      | 30min  | #4           | All imports compile correctly |
+| 6  | **Add Missing refkey imports**              | GoHandlerStub            | 15min  | #5           | refkey available in all files |
+| 7  | **Fix ImportStatements import**             | GoHandlerStub            | 10min  | #6           | ImportStatements resolved     |
+| 8  | **Fix For component import**                | GoHandlerStub            | 10min  | #7           | Loop components available     |
+| 9  | **Resolve Model vs TypeSpecModel mismatch** | GoPackageDirectory       | 30min  | #8           | Type compatibility fixed      |
+| 10 | **Fix GoHandlerMethod type imports**        | GoHandlerMethodComponent | 15min  | #9           | Type-only imports working     |
+| 11 | **Fix JSX type imports**                    | GoHandlerStub            | 10min  | #10          | JSX types compile             |
+| 12 | **Complete TypeScript Compilation Fix**     | Build System             | 30min  | #11          | 0 TypeScript errors           |
 
 ### **PHASE 3: COMPONENT RECOVERY (Tasks 13-20)**
 
 **Total Effort: 4 Hours | Impact: Production-Ready Components**
 
-| #   | Task                                         | Component                    | Effort | Dependencies | Success Criteria             |
-| --- | -------------------------------------------- | ---------------------------- | ------ | ------------ | ---------------------------- |
-| 13  | **Restore GoRouteRegistrationComponent**     | GoRouteRegistrationComponent | 20min  | #12          | Component renders correctly  |
-| 14  | **Complete GoHandlerMethodComponent**        | GoHandlerMethodComponent     | 30min  | #13          | HTTP method logic working    |
-| 15  | **Fix GoUnionDeclaration interface errors**  | GoUnionDeclaration           | 45min  | #14          | Union generation working     |
-| 16  | **Restore GoInterfaceDeclaration**           | GoInterfaceDeclaration       | 30min  | #15          | Interface generation working |
-| 17  | **Complete GoHandlerStub conditional logic** | GoHandlerStub                | 60min  | #16          | Advanced patterns working    |
-| 18  | **Verify all component compilation**         | All Components               | 30min  | #17          | Zero compilation errors      |
-| 19  | **Test component rendering in isolation**    | All Components               | 45min  | #18          | All components render        |
-| 20  | **Create component integration tests**       | Test Suite                   | 30min  | #19          | Components work together     |
+| #  | Task                                         | Component                    | Effort | Dependencies | Success Criteria             |
+| -- | -------------------------------------------- | ---------------------------- | ------ | ------------ | ---------------------------- |
+| 13 | **Restore GoRouteRegistrationComponent**     | GoRouteRegistrationComponent | 20min  | #12          | Component renders correctly  |
+| 14 | **Complete GoHandlerMethodComponent**        | GoHandlerMethodComponent     | 30min  | #13          | HTTP method logic working    |
+| 15 | **Fix GoUnionDeclaration interface errors**  | GoUnionDeclaration           | 45min  | #14          | Union generation working     |
+| 16 | **Restore GoInterfaceDeclaration**           | GoInterfaceDeclaration       | 30min  | #15          | Interface generation working |
+| 17 | **Complete GoHandlerStub conditional logic** | GoHandlerStub                | 60min  | #16          | Advanced patterns working    |
+| 18 | **Verify all component compilation**         | All Components               | 30min  | #17          | Zero compilation errors      |
+| 19 | **Test component rendering in isolation**    | All Components               | 45min  | #18          | All components render        |
+| 20 | **Create component integration tests**       | Test Suite                   | 30min  | #19          | Components work together     |
 
 ### **PHASE 4: PRODUCTION EXCELLENCE (Tasks 21-27)**
 
 **Total Effort: 6 Hours | Impact: Enterprise-Ready Solution**
 
-| #   | Task                                         | Component         | Effort | Dependencies | Success Criteria           |
-| --- | -------------------------------------------- | ----------------- | ------ | ------------ | -------------------------- |
-| 21  | **Implement Conditional Rendering Patterns** | Advanced Logic    | 90min  | #20          | Dynamic generation working |
-| 22  | **Add HTTP Route Generation Logic**          | API Generation    | 60min  | #21          | REST API complete          |
-| 23  | **Complete Enum Generation Enhancement**     | Enum System       | 45min  | #22          | Go idiomatic enums         |
-| 24  | **Implement Performance Optimization**       | Performance       | 60min  | #23          | Sub-millisecond generation |
-| 25  | **Add Comprehensive Error Handling**         | Error System      | 45min  | #24          | Robust error messages      |
-| 26  | **Create Component Documentation**           | Documentation     | 60min  | #25          | Usage examples ready       |
-| 27  | **Final Production Verification**            | Quality Assurance | 30min  | #26          | Enterprise-ready solution  |
+| #  | Task                                         | Component         | Effort | Dependencies | Success Criteria           |
+| -- | -------------------------------------------- | ----------------- | ------ | ------------ | -------------------------- |
+| 21 | **Implement Conditional Rendering Patterns** | Advanced Logic    | 90min  | #20          | Dynamic generation working |
+| 22 | **Add HTTP Route Generation Logic**          | API Generation    | 60min  | #21          | REST API complete          |
+| 23 | **Complete Enum Generation Enhancement**     | Enum System       | 45min  | #22          | Go idiomatic enums         |
+| 24 | **Implement Performance Optimization**       | Performance       | 60min  | #23          | Sub-millisecond generation |
+| 25 | **Add Comprehensive Error Handling**         | Error System      | 45min  | #24          | Robust error messages      |
+| 26 | **Create Component Documentation**           | Documentation     | 60min  | #25          | Usage examples ready       |
+| 27 | **Final Production Verification**            | Quality Assurance | 30min  | #26          | Enterprise-ready solution  |
 
 ---
 
@@ -125,63 +125,63 @@
 
 ### **EMERGENCY JSX RECOVERY MICRO-TASKS (Tasks 1-20)**
 
-| #   | Micro-Task                                             | Component                | Effort | Success Criteria                  |
-| --- | ------------------------------------------------------ | ------------------------ | ------ | --------------------------------- |
-| 1   | **Research JSX Runtime Configuration**                 | Build System             | 15min  | Configuration approach identified |
-| 2   | **Add React JSX config to package.json**               | Build System             | 15min  | JSX runtime configured            |
-| 3   | **Update tsconfig.json jsx settings**                  | Build System             | 15min  | TypeScript JSX configured         |
-| 4   | **Verify JSX runtime resolution**                      | Build System             | 15min  | No jsx-dev-runtime errors         |
-| 5   | **Test basic JSX component compilation**               | Build System             | 15min  | JSX compiles without errors       |
-| 6   | **Fix GoStructDeclaration Reference import**           | GoStructDeclaration      | 10min  | @alloy-js/go import working       |
-| 7   | **Update all Reference usages in GoStructDeclaration** | GoStructDeclaration      | 15min  | No import errors                  |
-| 8   | **Test GoStructDeclaration compilation**               | GoStructDeclaration      | 10min  | Component compiles correctly      |
-| 9   | **Fix GoHandlerStub Reference imports**                | GoHandlerStub            | 10min  | Reference imports resolved        |
-| 10  | **Add missing refkey import to GoHandlerStub**         | GoHandlerStub            | 5min   | refkey available                  |
-| 11  | **Fix ImportStatements import**                        | GoHandlerStub            | 5min   | ImportStatements available        |
-| 12  | **Fix For component import**                           | GoHandlerStub            | 5min   | For loop component available      |
-| 13  | **Test GoHandlerStub compilation**                     | GoHandlerStub            | 10min  | Component compiles correctly      |
-| 14  | **Fix VariableDeclarationInitializer property**        | GoEnumDeclaration        | 15min  | initializer → value fix           |
-| 15  | **Update all variable declarations**                   | GoEnumDeclaration        | 15min  | Correct props used                |
-| 16  | **Test GoEnumDeclaration compilation**                 | GoEnumDeclaration        | 10min  | Component compiles correctly      |
-| 17  | **Fix Type-Only Import Violations**                    | Multiple Components      | 15min  | All imports compile               |
-| 18  | **Update GoHandlerMethod type imports**                | GoHandlerMethodComponent | 10min  | Type-only imports fixed           |
-| 19  | **Fix JSX type imports**                               | GoHandlerStub            | 10min  | JSX types compile                 |
-| 20  | **Run full TypeScript compilation check**              | Build System             | 15min  | All components compile            |
+| #  | Micro-Task                                             | Component                | Effort | Success Criteria                  |
+| -- | ------------------------------------------------------ | ------------------------ | ------ | --------------------------------- |
+| 1  | **Research JSX Runtime Configuration**                 | Build System             | 15min  | Configuration approach identified |
+| 2  | **Add React JSX config to package.json**               | Build System             | 15min  | JSX runtime configured            |
+| 3  | **Update tsconfig.json jsx settings**                  | Build System             | 15min  | TypeScript JSX configured         |
+| 4  | **Verify JSX runtime resolution**                      | Build System             | 15min  | No jsx-dev-runtime errors         |
+| 5  | **Test basic JSX component compilation**               | Build System             | 15min  | JSX compiles without errors       |
+| 6  | **Fix GoStructDeclaration Reference import**           | GoStructDeclaration      | 10min  | @alloy-js/go import working       |
+| 7  | **Update all Reference usages in GoStructDeclaration** | GoStructDeclaration      | 15min  | No import errors                  |
+| 8  | **Test GoStructDeclaration compilation**               | GoStructDeclaration      | 10min  | Component compiles correctly      |
+| 9  | **Fix GoHandlerStub Reference imports**                | GoHandlerStub            | 10min  | Reference imports resolved        |
+| 10 | **Add missing refkey import to GoHandlerStub**         | GoHandlerStub            | 5min   | refkey available                  |
+| 11 | **Fix ImportStatements import**                        | GoHandlerStub            | 5min   | ImportStatements available        |
+| 12 | **Fix For component import**                           | GoHandlerStub            | 5min   | For loop component available      |
+| 13 | **Test GoHandlerStub compilation**                     | GoHandlerStub            | 10min  | Component compiles correctly      |
+| 14 | **Fix VariableDeclarationInitializer property**        | GoEnumDeclaration        | 15min  | initializer → value fix           |
+| 15 | **Update all variable declarations**                   | GoEnumDeclaration        | 15min  | Correct props used                |
+| 16 | **Test GoEnumDeclaration compilation**                 | GoEnumDeclaration        | 10min  | Component compiles correctly      |
+| 17 | **Fix Type-Only Import Violations**                    | Multiple Components      | 15min  | All imports compile               |
+| 18 | **Update GoHandlerMethod type imports**                | GoHandlerMethodComponent | 10min  | Type-only imports fixed           |
+| 19 | **Fix JSX type imports**                               | GoHandlerStub            | 10min  | JSX types compile                 |
+| 20 | **Run full TypeScript compilation check**              | Build System             | 15min  | All components compile            |
 
 ### **TYPE SAFETY RECOVERY MICRO-TASKS (Tasks 21-50)**
 
-| #   | Micro-Task                                        | Component                    | Effort | Success Criteria              |
-| --- | ------------------------------------------------- | ---------------------------- | ------ | ----------------------------- |
-| 21  | **Resolve Model vs TypeSpecModel mismatch**       | GoPackageDirectory           | 15min  | Type compatibility fixed      |
-| 22  | **Update property iteration patterns**            | GoPackageDirectory           | 15min  | forEach loops working         |
-| 23  | **Test GoPackageDirectory compilation**           | GoPackageDirectory           | 10min  | Component compiles correctly  |
-| 24  | **Add missing ErrorFactory imports**              | Error System                 | 10min  | Error utilities available     |
-| 25  | **Fix type script errors in error handling**      | Error System                 | 15min  | Error system working          |
-| 26  | **Update component export patterns**              | Component Registry           | 10min  | Exports working correctly     |
-| 27  | **Verify all imports are correct**                | All Components               | 15min  | No import errors              |
-| 28  | **Test component import resolution**              | Build System                 | 10min  | All imports resolve           |
-| 29  | **Run build system verification**                 | Build System                 | 10min  | Build produces output         |
-| 30  | **Check for remaining TypeScript errors**         | Build System                 | 15min  | Zero TS errors                |
-| 31  | **Test GoRouteRegistrationComponent imports**     | GoRouteRegistrationComponent | 10min  | Component imports working     |
-| 32  | **Fix FunctionReceiver type issues**              | GoRouteRegistrationComponent | 10min  | Receiver props correct        |
-| 33  | **Fix For iteration pattern**                     | GoRouteRegistrationComponent | 15min  | Map() iteration working       |
-| 34  | **Test GoRouteRegistrationComponent compilation** | GoRouteRegistrationComponent | 10min  | Component compiles correctly  |
-| 35  | **Update GoHandlerMethodComponent props**         | GoHandlerMethodComponent     | 15min  | Props interface correct       |
-| 36  | **Fix conditional rendering patterns**            | GoHandlerMethodComponent     | 15min  | Conditionals working          |
-| 37  | **Test GoHandlerMethodComponent compilation**     | GoHandlerMethodComponent     | 10min  | Component compiles correctly  |
-| 38  | **Fix GoUnionDeclaration interface keyword**      | GoUnionDeclaration           | 15min  | Interface conflicts resolved  |
-| 39  | **Update union type generation patterns**         | GoUnionDeclaration           | 15min  | Union types generating        |
-| 40  | **Test GoUnionDeclaration compilation**           | GoUnionDeclaration           | 10min  | Component compiles correctly  |
-| 41  | **Restore GoInterfaceDeclaration functionality**  | GoInterfaceDeclaration       | 15min  | Interface generation working  |
-| 42  | **Fix interface method generation**               | GoInterfaceDeclaration       | 15min  | Methods generating correctly  |
-| 43  | **Test GoInterfaceDeclaration compilation**       | GoInterfaceDeclaration       | 10min  | Component compiles correctly  |
-| 44  | **Complete GoHandlerStub conditional logic**      | GoHandlerStub                | 30min  | Advanced patterns working     |
-| 45  | **Add HTTP method differentiation**               | GoHandlerStub                | 30min  | GET/POST/PUT handling         |
-| 46  | **Test GoHandlerStub compilation**                | GoHandlerStub                | 10min  | Component compiles correctly  |
-| 47  | **Verify all 10 components compile**              | All Components               | 15min  | Zero compilation errors       |
-| 48  | **Run full build system test**                    | Build System                 | 10min  | Build produces clean output   |
-| 49  | **Check component export integrity**              | Component Registry           | 10min  | All exports working           |
-| 50  | **Verify component import functionality**         | Build System                 | 15min  | All imports resolve correctly |
+| #  | Micro-Task                                        | Component                    | Effort | Success Criteria              |
+| -- | ------------------------------------------------- | ---------------------------- | ------ | ----------------------------- |
+| 21 | **Resolve Model vs TypeSpecModel mismatch**       | GoPackageDirectory           | 15min  | Type compatibility fixed      |
+| 22 | **Update property iteration patterns**            | GoPackageDirectory           | 15min  | forEach loops working         |
+| 23 | **Test GoPackageDirectory compilation**           | GoPackageDirectory           | 10min  | Component compiles correctly  |
+| 24 | **Add missing ErrorFactory imports**              | Error System                 | 10min  | Error utilities available     |
+| 25 | **Fix type script errors in error handling**      | Error System                 | 15min  | Error system working          |
+| 26 | **Update component export patterns**              | Component Registry           | 10min  | Exports working correctly     |
+| 27 | **Verify all imports are correct**                | All Components               | 15min  | No import errors              |
+| 28 | **Test component import resolution**              | Build System                 | 10min  | All imports resolve           |
+| 29 | **Run build system verification**                 | Build System                 | 10min  | Build produces output         |
+| 30 | **Check for remaining TypeScript errors**         | Build System                 | 15min  | Zero TS errors                |
+| 31 | **Test GoRouteRegistrationComponent imports**     | GoRouteRegistrationComponent | 10min  | Component imports working     |
+| 32 | **Fix FunctionReceiver type issues**              | GoRouteRegistrationComponent | 10min  | Receiver props correct        |
+| 33 | **Fix For iteration pattern**                     | GoRouteRegistrationComponent | 15min  | Map() iteration working       |
+| 34 | **Test GoRouteRegistrationComponent compilation** | GoRouteRegistrationComponent | 10min  | Component compiles correctly  |
+| 35 | **Update GoHandlerMethodComponent props**         | GoHandlerMethodComponent     | 15min  | Props interface correct       |
+| 36 | **Fix conditional rendering patterns**            | GoHandlerMethodComponent     | 15min  | Conditionals working          |
+| 37 | **Test GoHandlerMethodComponent compilation**     | GoHandlerMethodComponent     | 10min  | Component compiles correctly  |
+| 38 | **Fix GoUnionDeclaration interface keyword**      | GoUnionDeclaration           | 15min  | Interface conflicts resolved  |
+| 39 | **Update union type generation patterns**         | GoUnionDeclaration           | 15min  | Union types generating        |
+| 40 | **Test GoUnionDeclaration compilation**           | GoUnionDeclaration           | 10min  | Component compiles correctly  |
+| 41 | **Restore GoInterfaceDeclaration functionality**  | GoInterfaceDeclaration       | 15min  | Interface generation working  |
+| 42 | **Fix interface method generation**               | GoInterfaceDeclaration       | 15min  | Methods generating correctly  |
+| 43 | **Test GoInterfaceDeclaration compilation**       | GoInterfaceDeclaration       | 10min  | Component compiles correctly  |
+| 44 | **Complete GoHandlerStub conditional logic**      | GoHandlerStub                | 30min  | Advanced patterns working     |
+| 45 | **Add HTTP method differentiation**               | GoHandlerStub                | 30min  | GET/POST/PUT handling         |
+| 46 | **Test GoHandlerStub compilation**                | GoHandlerStub                | 10min  | Component compiles correctly  |
+| 47 | **Verify all 10 components compile**              | All Components               | 15min  | Zero compilation errors       |
+| 48 | **Run full build system test**                    | Build System                 | 10min  | Build produces clean output   |
+| 49 | **Check component export integrity**              | Component Registry           | 10min  | All exports working           |
+| 50 | **Verify component import functionality**         | Build System                 | 15min  | All imports resolve correctly |
 
 ### **COMPONENT RECOVERY MICRO-TASKS (Tasks 51-100)**
 

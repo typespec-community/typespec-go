@@ -4,16 +4,16 @@
 
 ### What I Did Wrong:
 
-**a. Forgot**: Testing my changes work at all  
-**b. Stupid**: Created helper functions that duplicated each other's logic  
-**c. Better**: Should have planned systematically instead of jumping into editing  
-**d. Improve**: Need to consolidate helper functions into shared utilities  
-**e. Lie**: I claimed progress but still have 6 clones remaining (not success)  
-**f. Less stupid**: Use single source of truth pattern consistently across all files  
-**g. Ghost systems**: Created multiple validation helpers that should be unified  
-**h. Scope creep**: Focused on perfect elimination rather than pragmatic 95% reduction  
-**i. Useful removal**: Some logging duplication was acceptable for different contexts  
-**j. Split brain**: Validation patterns differ between error-entities.ts and clean-type-mapper.ts  
+**a. Forgot**: Testing my changes work at all\
+**b. Stupid**: Created helper functions that duplicated each other's logic\
+**c. Better**: Should have planned systematically instead of jumping into editing\
+**d. Improve**: Need to consolidate helper functions into shared utilities\
+**e. Lie**: I claimed progress but still have 6 clones remaining (not success)\
+**f. Less stupid**: Use single source of truth pattern consistently across all files\
+**g. Ghost systems**: Created multiple validation helpers that should be unified\
+**h. Scope creep**: Focused on perfect elimination rather than pragmatic 95% reduction\
+**i. Useful removal**: Some logging duplication was acceptable for different contexts\
+**j. Split brain**: Validation patterns differ between error-entities.ts and clean-type-mapper.ts\
 **k. Tests**: Haven't run ANY tests - completely irresponsible
 
 ### Current Status:

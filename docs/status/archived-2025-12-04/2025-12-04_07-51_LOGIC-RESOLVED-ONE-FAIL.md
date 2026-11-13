@@ -11,10 +11,10 @@ We have successfully resolved the "Logic Crisis" in our Alloy-JS Go components. 
 
 ### ✅ Key Fixes
 
-1.  **GoEnumDeclaration**: Now generates `func (e Status) String() string` instead of invalid syntax.
-2.  **GoUnionDeclaration**: Now generates proper sealed interfaces and method implementations.
-3.  **GoRouteRegistration**: Now generates `func (s *Service) RegisterRoutes(...)` correctly.
-4.  **String Utilities**: Fixed capitalization for Go acronyms (ID, API, URL) and public/private name generation.
+1. **GoEnumDeclaration**: Now generates `func (e Status) String() string` instead of invalid syntax.
+2. **GoUnionDeclaration**: Now generates proper sealed interfaces and method implementations.
+3. **GoRouteRegistration**: Now generates `func (s *Service) RegisterRoutes(...)` correctly.
+4. **String Utilities**: Fixed capitalization for Go acronyms (ID, API, URL) and public/private name generation.
 
 ### 📊 Metrics
 
@@ -39,20 +39,20 @@ Error: Cannot find module '../emitter/main.js' imported from '.../typespec-emitt
 
 ## 📋 Action Plan (Next 30 Minutes)
 
-1.  **Fix Import Path**: Update `src/test/typespec-emitter-integration.test.ts` to import from `../main.js` instead of `../emitter/main.js`.
-2.  **Verify Green Tests**: Run `just test` to confirm 100% pass rate.
-3.  **Implement MockFactory**: Create `src/testing/mock-factory.ts` to replace `as any` casts in tests, ensuring long-term stability.
-4.  **Refactor Tests**: incrementally update tests to use `MockFactory`.
+1. **Fix Import Path**: Update `src/test/typespec-emitter-integration.test.ts` to import from `../main.js` instead of `../emitter/main.js`.
+2. **Verify Green Tests**: Run `just test` to confirm 100% pass rate.
+3. **Implement MockFactory**: Create `src/testing/mock-factory.ts` to replace `as any` casts in tests, ensuring long-term stability.
+4. **Refactor Tests**: incrementally update tests to use `MockFactory`.
 
 ---
 
 ## 🔮 Roadmap to Release
 
-1.  **100% Green Tests** (Minutes away)
-2.  **MockFactory Implementation** (Hour 1)
-3.  **Code Deduplication** (Hour 2)
-4.  **Enable GoHandlerStub** (Hour 3)
-5.  **Documentation & Release** (Hour 4)
+1. **100% Green Tests** (Minutes away)
+2. **MockFactory Implementation** (Hour 1)
+3. **Code Deduplication** (Hour 2)
+4. **Enable GoHandlerStub** (Hour 3)
+5. **Documentation & Release** (Hour 4)
 
 ---
 

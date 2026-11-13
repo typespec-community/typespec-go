@@ -36,11 +36,11 @@ The project has reached a critical stability milestone. The build system is clea
 
 ## 📅 Next Steps (Immediate Priorities)
 
-1.  **Refactor `GoHandlerStub`**: Replace string templates with granular Alloy AST components.
-2.  **Implement Gin Support**: Hard-code Gin router support (per architectural mandate).
-3.  **Metadata Extraction**: Connect the emitter to real TypeSpec HTTP decorators.
-4.  **Service Interface**: Generate `interfaces.go` to define the contract between handlers and business logic.
-5.  **Router Wiring**: Generate the setup code to register routes to handlers.
+1. **Refactor `GoHandlerStub`**: Replace string templates with granular Alloy AST components.
+2. **Implement Gin Support**: Hard-code Gin router support (per architectural mandate).
+3. **Metadata Extraction**: Connect the emitter to real TypeSpec HTTP decorators.
+4. **Service Interface**: Generate `interfaces.go` to define the contract between handlers and business logic.
+5. **Router Wiring**: Generate the setup code to register routes to handlers.
 
 ## 🛑 Blockers / Critical Issues
 
@@ -48,8 +48,8 @@ _None._ The codebase is stable.
 
 ## 🔮 Future Improvements (Top 5)
 
-1.  **Validation Tags**: Add `binding:"required"` tags to generated structs for Gin binding.
-2.  **Middleware Generation**: Generate Auth and Logger middleware setup.
-3.  **Entrypoint Generation**: Generate `cmd/main.go` to run the server.
-4.  **Docker Support**: Generate a `Dockerfile` for the resulting Go service.
-5.  **E2E Compilation**: Add a CI step that runs `go build` on the generated output to prove validity.
+1. **Validation Tags**: Add `binding:"required"` tags to generated structs for Gin binding.
+2. **Middleware Generation**: Generate Auth and Logger middleware setup.
+3. **Entrypoint Generation**: Generate `cmd/main.go` to run the server.
+4. **Docker Support**: Generate a `Dockerfile` for the resulting Go service.
+5. **E2E Compilation**: Add a CI step that runs `go build` on the generated output to prove validity.

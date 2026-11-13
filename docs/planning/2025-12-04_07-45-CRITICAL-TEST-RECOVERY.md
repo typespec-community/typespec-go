@@ -30,18 +30,18 @@
 
 ### Phase 1: Critical Test Recovery (Hours 0-2)
 
-1.  [ ] **Analyze Test Context Failures**: Debug `GoEnumDeclaration` scope error.
-2.  [ ] **Implement Test Context Wrapper**: Create reusable `renderWithContext` helper for tests.
-3.  [ ] **Fix Enum Tests**: Apply context wrapper to enum tests.
-4.  [ ] **Fix Union Tests**: Apply context wrapper to union tests.
-5.  [ ] **Fix Route Registration Tests**: Update expectations to handle JSX output or render to string.
-6.  [ ] **Fix Struct Isolated Tests**: Align expectations with actual Alloy JS output.
-7.  [ ] **Fix Emitter Integration Path**: Resolve `../emitter/main.js` path issue.
-8.  [ ] **Verify All Tests Pass**: Run full suite.
+1. [ ] **Analyze Test Context Failures**: Debug `GoEnumDeclaration` scope error.
+2. [ ] **Implement Test Context Wrapper**: Create reusable `renderWithContext` helper for tests.
+3. [ ] **Fix Enum Tests**: Apply context wrapper to enum tests.
+4. [ ] **Fix Union Tests**: Apply context wrapper to union tests.
+5. [ ] **Fix Route Registration Tests**: Update expectations to handle JSX output or render to string.
+6. [ ] **Fix Struct Isolated Tests**: Align expectations with actual Alloy JS output.
+7. [ ] **Fix Emitter Integration Path**: Resolve `../emitter/main.js` path issue.
+8. [ ] **Verify All Tests Pass**: Run full suite.
 
 ### Phase 2: Architectural Cleanup (Hours 2-4)
 
-9.  [ ] **Create `MockFactory`**: `src/testing/mock-factory.ts` for strictly typed Model/Enum/Union mocks.
+9. [ ] **Create `MockFactory`**: `src/testing/mock-factory.ts` for strictly typed Model/Enum/Union mocks.
 10. [ ] **Refactor `components-alloy-js.test.tsx`**: Use `MockFactory`, remove casts.
 11. [ ] **Refactor `doc-decorator-support.test.tsx`**: Use `MockFactory`.
 12. [ ] **Refactor `enum-union-integration.test.tsx`**: Use `MockFactory`.

@@ -1,15 +1,15 @@
 # 🚨 De-duplication Critical Failure Status Report
 
-**Date:** 2025-12-04 01:29 CET  
-**Project:** TypeSpec Go Emitter  
+**Date:** 2025-12-04 01:29 CET\
+**Project:** TypeSpec Go Emitter\
 **Status:** CATASTROPHIC FAILURE - IMMEDIATE RECOVERY REQUIRED
 
 ---
 
 ## 🎯 Mission Overview
 
-**Objective:** Eliminate code duplication to <1% threshold  
-**Target:** 0% duplicates in shared utilities, <1% overall  
+**Objective:** Eliminate code duplication to <1% threshold\
+**Target:** 0% duplicates in shared utilities, <1% overall\
 **Actual Result:** MADE PROBLEMS WORSE
 
 ---
@@ -232,14 +232,14 @@ Decision C: Parallel development
 
 ## 📝 Status Summary
 
-**Current State:** 🚨 CRITICAL FAILURE - IMMEDIATE RECOVERY MODE  
-**Blockers:** 16 test failures, broken core functionality  
-**Next Action:** PENDING INSTRUCTIONS - Awaiting guidance on recovery approach  
-**ETA for Recovery:** 3-4 hours (once approach is approved)  
+**Current State:** 🚨 CRITICAL FAILURE - IMMEDIATE RECOVERY MODE\
+**Blockers:** 16 test failures, broken core functionality\
+**Next Action:** PENDING INSTRUCTIONS - Awaiting guidance on recovery approach\
+**ETA for Recovery:** 3-4 hours (once approach is approved)\
 **Confidence Level:** 🟡 MEDIUM - Can fix, but need clear direction
 
 ---
 
-_Report generated: 2025-12-04 01:29 CET_  
-_Severity: CRITICAL_  
+_Report generated: 2025-12-04 01:29 CET_\
+_Severity: CRITICAL_\
 _Action: AWAITING INSTRUCTIONS_

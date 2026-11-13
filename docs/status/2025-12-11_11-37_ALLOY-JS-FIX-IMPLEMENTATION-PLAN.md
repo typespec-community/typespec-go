@@ -1,8 +1,8 @@
 # TypeSpec Go Emitter - Implementation Plan to Fix Alloy-JS Issues
 
-**Date:** 2025-12-11 11:37 CET  
-**Plan Type:** Step-by-Step Implementation  
-**Goal:** Fix ALL 50 failing component tests  
+**Date:** 2025-12-11 11:37 CET\
+**Plan Type:** Step-by-Step Implementation\
+**Goal:** Fix ALL 50 failing component tests\
 **Strategy:** String-based AssetEmitter + Component Fixes
 
 ---
@@ -366,26 +366,26 @@ tsp compile examples/complex-api.tsp --emit go
 
 ### **🚀 TODAY (Day 1): Production Fix**
 
-**09:00 - 10:00:** Step 1 - Create Working AssetEmitter  
-**10:00 - 10:15:** Step 2 - Update Main Export  
-**10:15 - 10:45:** Step 3 - Basic Integration Testing  
-**10:45 - 11:15:** Step 4 - Documentation Updates  
+**09:00 - 10:00:** Step 1 - Create Working AssetEmitter\
+**10:00 - 10:15:** Step 2 - Update Main Export\
+**10:15 - 10:45:** Step 3 - Basic Integration Testing\
+**10:45 - 11:15:** Step 4 - Documentation Updates\
 **11:15 - 12:00:** Review and Deploy
 
 ### **🔧 TOMORROW (Day 2): Core Component Fixes**
 
-**09:00 - 13:00:** Step 5 - Fix GoPackage Component  
-**13:00 - 19:00:** Step 6 - Fix GoStructDeclaration Component  
+**09:00 - 13:00:** Step 5 - Fix GoPackage Component\
+**13:00 - 19:00:** Step 6 - Fix GoStructDeclaration Component\
 **19:00 - 21:00:** Step 7 - Fix GoUnionDeclaration Component
 
 ### **📅 Day 3-4: Complete System**
 
-**Day 3 (09:00 - 17:00):** Step 8 - Fix All Remaining Components  
+**Day 3 (09:00 - 17:00):** Step 8 - Fix All Remaining Components\
 **Day 4 (09:00 - 17:00):** Step 9 - Fix Test Infrastructure
 
 ### **🎯 Day 5: Final Migration**
 
-**09:00 - 13:00:** Step 10 - Replace Original AssetEmitter  
+**09:00 - 13:00:** Step 10 - Replace Original AssetEmitter\
 **13:00 - 17:00:** Step 11 - Final Integration Testing
 
 ---
@@ -520,9 +520,9 @@ tsp compile examples/complex-api.tsp --emit go
 
 ---
 
-**Implementation Plan Created:** 2025-12-11 11:37 CET  
-**Planned Completion:** 2025-12-16 (5 days)  
-**Success Probability:** 95% (based on existing working codebase)  
+**Implementation Plan Created:** 2025-12-11 11:37 CET\
+**Planned Completion:** 2025-12-16 (5 days)\
+**Success Probability:** 95% (based on existing working codebase)\
 **Resource Allocation:** 1 full-time developer (5 days)
 
 **Next Step:** Begin Phase 1 - Production AssetEmitter Implementation
