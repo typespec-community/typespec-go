@@ -1,4 +1,4 @@
-module <module-path>
+module github.com/typespec-community/typespec-go
 
 go 1.26.0
 

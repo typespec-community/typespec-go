@@ -4,7 +4,7 @@
  * Following Alloy-JS patterns with zero string-based logic
  */
 
-import type { Model, ModelProperty, Program, Type } from "@typespec/compiler";
+import type { Model, ModelProperty, Program, Type, Union } from "@typespec/compiler";
 import type { JSX } from "@alloy-js/core/jsx-runtime";
 import { Reference, StructDeclaration, StructMember, TypeDeclaration } from "@alloy-js/go";
 import { For, refkey } from "@alloy-js/core";
@@ -61,8 +61,9 @@ export function GoStructDeclaration({
               // Enum type - Reference for automatic import
               goTypeElement = <Reference refkey={typeRef} />;
             } else if (prop.type.kind === "Union") {
-              // Union type - Reference for automatic import
-              goTypeElement = <Reference refkey={typeRef} />;
+              // Inline literal unions map to primitives; named unions reference
+              // the generated union interface.
+              goTypeElement = mapTypeSpecToGoType(prop.type);
             } else {
               // Built-in types - Use native Go types (no import needed)
               goTypeElement = mapTypeSpecToGoType(prop.type);
@@ -225,10 +226,18 @@ function mapTypeSpecToGoType(type: Type): string | JSX.Element {
       const enumRef = refkey(type);
       return <Reference refkey={enumRef} />;
 
-    case "Union":
-      // Reference to union interface - Alloy.js handles import
-      const unionRef = refkey(type);
+    case "Union": {
+      // Inline literal unions (e.g. "red" | "blue") have no generated Go type
+      // of their own; map them to the closest primitive instead of emitting an
+      // unresolved reference to a type that is never generated.
+      const union = type;
+      if (union.expression || union.variants.size === 0) {
+        return primitiveForLiteralUnion(union);
+      }
+      // Named union - reference the generated union interface
+      const unionRef = refkey(union);
       return <Reference refkey={unionRef} />;
+    }
 
     case "Tuple":
       // TODO: Implement proper Go tuple type mapping with specific slice types
@@ -238,4 +247,26 @@ function mapTypeSpecToGoType(type: Type): string | JSX.Element {
     default:
       return "interface{}";
   }
+}
+
+/**
+ * Maps an inline (anonymous) union to the closest Go primitive based on its
+ * variant kinds. Homogeneous string/number/boolean unions map to that
+ * primitive; anything else falls back to interface{}.
+ */
+function primitiveForLiteralUnion(union: Union): string {
+  const variantKinds = new Set(
+    [...union.variants.values()].map((variant) => variant.type.kind),
+  );
+  if (variantKinds.size === 1) {
+    switch (variantKinds.values().next().value) {
+      case "String":
+        return "string";
+      case "Number":
+        return "float64";
+      case "Boolean":
+        return "bool";
+    }
+  }
+  return "interface{}";
 }

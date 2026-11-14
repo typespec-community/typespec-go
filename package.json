@@ -6,7 +6,8 @@
   "exports": {
     ".": {
       "types": "./dist/main.d.ts",
-      "default": "./dist/main.js"
+      "default": "./dist/main.js",
+      "typespec": "./lib/main.tsp"
     }
   },
   "scripts": {
@@ -17,7 +18,8 @@
     "test:typespec": "vitest --run --testTimeout 30000",
     "lint": "eslint src/ --ext .ts --max-warnings 0",
     "lint:fix": "eslint src/ --ext .ts --fix",
-    "format": "prettier src/ --write"
+    "format": "prettier src/ --write",
+    "test:e2e-cli": "node scripts/test-e2e-cli.mjs"
   },
   "dependencies": {
     "@alloy-js/core": "^0.22.0",
@@ -43,5 +45,6 @@
   },
   "peerDependencies": {
     "@typespec/compiler": "1.18.0"
-  }
+  },
+  "tspMain": "lib/main.tsp"
 }

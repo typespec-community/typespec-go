@@ -1,3 +1,5 @@
+import "../dist/emitter/tsp-index.js";
+
 using TypeSpec.Reflection;
 
 namespace TypeSpec.Go;

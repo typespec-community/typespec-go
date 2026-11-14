@@ -36,9 +36,20 @@ function getOutputDirectory(namespace: Namespace | undefined, context: EmitConte
 }
 
 /**
+ * Namespace roots owned by the TypeSpec standard library. Everything below them
+ * (TypeSpec.Http, TypeSpec.Rest, ...) is compiler infrastructure, not user API,
+ * and must never be emitted as Go packages.
+ */
+const BUILT_IN_LIBRARY_NAMESPACE_ROOTS = new Set(["TypeSpec"]);
+
+function isBuiltInLibraryNamespace(namespace: Namespace): boolean {
+  return BUILT_IN_LIBRARY_NAMESPACE_ROOTS.has(namespace.name);
+}
+
+/**
  * Enhanced collection with namespace grouping for models, enums, and unions
  */
-function collectTypesByNamespace(globalNamespace: Namespace): Map<string, NamespaceGroup> {
+export function collectTypesByNamespace(globalNamespace: Namespace): Map<string, NamespaceGroup> {
   const namespaceGroups = new Map<string, NamespaceGroup>();
 
   // Helper to ensure a group exists
@@ -77,8 +88,14 @@ function collectTypesByNamespace(globalNamespace: Namespace): Map<string, Namesp
     group.operations.push(operation);
   }
 
-  // Process nested namespaces
+  // Process nested namespaces, skipping built-in library namespaces
   for (const namespace of globalNamespace.namespaces.values()) {
+    if (isBuiltInLibraryNamespace(namespace)) {
+      Logger.debug(LogContext.TYPESPEC_INTEGRATION, "Skipping built-in library namespace", {
+        namespace: namespace.name,
+      });
+      continue;
+    }
     processNestedNamespace(namespace, namespaceGroups, ensureGroup);
   }
 

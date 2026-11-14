@@ -332,10 +332,14 @@ export class MockFactory {
     options: {
       operations?: Record<string, Operation>;
       models?: Record<string, Model>;
+      enums?: Record<string, Enum>;
+      unions?: Record<string, Union>;
     } = {},
   ): Namespace {
     const opsMap = new Map<string, Operation>();
     const modelsMap = new Map<string, Model>();
+    const enumsMap = new Map<string, Enum>();
+    const unionsMap = new Map<string, Union>();
 
     if (options.operations) {
       Object.entries(options.operations).forEach(([opName, operation]) => {
@@ -349,14 +353,26 @@ export class MockFactory {
       });
     }
 
+    if (options.enums) {
+      Object.entries(options.enums).forEach(([enumName, enumType]) => {
+        enumsMap.set(enumName, enumType);
+      });
+    }
+
+    if (options.unions) {
+      Object.entries(options.unions).forEach(([unionName, unionType]) => {
+        unionsMap.set(unionName, unionType);
+      });
+    }
+
     return {
       kind: "Namespace",
       name,
       operations: opsMap,
       models: modelsMap,
       scalars: new Map(),
-      enums: new Map(),
-      unions: new Map(),
+      enums: enumsMap,
+      unions: unionsMap,
       interfaces: new Map(),
       strings: new Map(),
       templates: new Map(),
