@@ -4,6 +4,7 @@
  * Supports both string and iota patterns with proper Go components
  */
 
+import { refkey } from "@alloy-js/core";
 import type { Enum, Program } from "@typespec/compiler";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
@@ -49,8 +50,10 @@ export function GoEnumDeclaration({
 
   return (
     <>
-      <TypeDeclaration name={typeName}>{isStringEnum ? "string" : "int"}</TypeDeclaration>
-
+      <TypeDeclaration name={typeName} refkey={refkey(enumType)}>
+        {isStringEnum ? "string" : "int"}
+      </TypeDeclaration>
+      {"\n"}
       {!useIota && (
         <VariableDeclarationGroup>
           {members.map((member) => (
@@ -64,7 +67,7 @@ export function GoEnumDeclaration({
           ))}
         </VariableDeclarationGroup>
       )}
-
+      {"\n"}
       {useIota && (
         <VariableDeclarationGroup>
           {members.map((member, index) => (
@@ -74,7 +77,7 @@ export function GoEnumDeclaration({
           ))}
         </VariableDeclarationGroup>
       )}
-
+      {"\n"}
       {isStringEnum && (
         <FunctionDeclaration
           name="String"
@@ -84,7 +87,7 @@ export function GoEnumDeclaration({
           {"\n  return string(e)"}
         </FunctionDeclaration>
       )}
-
+      {"\n"}
       <FunctionDeclaration
         name="IsValid"
         returns="bool"

@@ -167,6 +167,7 @@ export function GoPackageDirectory({
             {needsFmt ? (
               <>
                 <SingleImportStatement path="encoding/json" />
+                {"\n"}
                 <SingleImportStatement path="fmt" />
               </>
             ) : (

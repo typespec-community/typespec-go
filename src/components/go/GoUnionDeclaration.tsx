@@ -5,10 +5,11 @@
  */
 
 import type { Program, Union, Type } from "@typespec/compiler";
-import { TypeDeclaration, InterfaceDeclaration, FunctionDeclaration } from "@alloy-js/go";
+import { TypeDeclaration, InterfaceDeclaration, FunctionDeclaration, Reference } from "@alloy-js/go";
+import { refkey } from "@alloy-js/core";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import { capitalize } from "../../utils/strings.js";
-import { GoStringLiteral, GoReturn } from "./core/index.js";
+import { GoReturn, GoStringLiteral } from "./core/index.js";
 
 interface GoUnionDeclarationProps {
   /** TypeSpec union to convert to Go interface */
@@ -66,22 +67,43 @@ export function GoUnionDeclaration({
     <>
       <TypeDeclaration
         name={typeName}
+        refkey={refkey(union)}
         doc={interfaceDoc}
         typeParameters={typeParameters.length > 0 ? typeParameters : undefined}
       >
         <InterfaceDeclaration>{methodSignature}</InterfaceDeclaration>
       </TypeDeclaration>
+      {"\n"}
 
       {variants.map((variant) => {
-        // Simple struct for each variant
-        const variantName = capitalize(String(variant.name));
-        // Special case: if union name ends with "Method", add "Type" to constant prefix
-        // e.g. PaymentMethod -> PaymentMethodType
-        // But for now let's just use variant name
+        // Model-typed variants are generated as structs elsewhere (models.go);
+        // re-declaring them here would produce duplicate Go types. The sealing
+        // method is attached to the referenced type via its refkey instead.
+        // Literal/primitive variants get a synthesized struct named after
+        // the variant.
+        const variantType = variant.type;
+        const variantModel = variantType.kind === "Model" ? variantType : undefined;
+        const variantStructName = capitalize(String(variant.name));
+
+        if (variantModel) {
+          return (
+            <>
+              {"\n"}
+              <FunctionDeclaration
+              name={methodReceiverName}
+              receiver={<Reference refkey={refkey(variantModel)} />}
+              returns={discriminator ? "string" : undefined}
+            >
+              {discriminator && <GoReturn value={`"${String(variant.name)}"`} />}
+            </FunctionDeclaration>
+            </>
+          );
+        }
 
         return (
           <>
-            <TypeDeclaration name={variantName}>
+            {"\n"}
+            <TypeDeclaration name={variantStructName} refkey={refkey(variant)}>
               {discriminator && (
                 <>
                   struct {"\n"}
@@ -93,14 +115,15 @@ export function GoUnionDeclaration({
             </TypeDeclaration>
             <FunctionDeclaration
               name={methodReceiverName}
-              receiver={variantName}
+              receiver={variantStructName}
               returns={discriminator ? "string" : undefined}
             >
-              {discriminator && <GoReturn value={String(variant.name)} />}
+              {discriminator && <GoReturn value={`"${String(variant.name)}"`} />}
             </FunctionDeclaration>
           </>
         );
       })}
+      {"\n"}
 
       {discriminator && (
         <FunctionDeclaration

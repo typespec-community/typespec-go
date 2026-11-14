@@ -20,7 +20,6 @@ import { join, resolve } from "node:path";
 
 const repoRoot = resolve(new URL("..", import.meta.url).pathname);
 const distMain = join(repoRoot, "dist", "main.js");
-const exampleTsp = join(repoRoot, "examples", "basic", "main.tsp");
 
 function fail(message) {
   console.error(`❌ e2e-cli: ${message}`);
@@ -45,34 +44,43 @@ rmSync(outputDir, { recursive: true, force: true });
 mkdirSync(outputDir, { recursive: true });
 
 const tspBin = join(repoRoot, "node_modules", ".bin", "tsp");
-const result = spawnSync(
-  tspBin,
-  [
-    "compile",
-    exampleTsp,
-    "--emit",
-    "@typespec-community/typespec-go",
-    "--option",
-    `@typespec-community/typespec-go.emitter-output-dir=${outputDir}`,
-  ],
-  { encoding: "utf8", cwd: repoRoot },
-);
+const examples = ["examples/basic/main.tsp", "examples/crud/main.tsp"];
+const generatedFiles = [];
+const seenGoFiles = new Set();
 
-if (result.status !== 0) {
-  console.error(result.stdout);
-  console.error(result.stderr);
-  fail(`tsp compile exited ${result.status}`);
+for (const example of examples) {
+  const exampleOutput = join(outputDir, example.replaceAll("/", "_"));
+  mkdirSync(exampleOutput, { recursive: true });
+  const result = spawnSync(
+    tspBin,
+    [
+      "compile",
+      join(repoRoot, example),
+      "--emit",
+      "@typespec-community/typespec-go",
+      "--option",
+      `@typespec-community/typespec-go.emitter-output-dir=${exampleOutput}`,
+    ],
+    { encoding: "utf8", cwd: repoRoot },
+  );
+  if (result.status !== 0) {
+    console.error(result.stdout);
+    console.error(result.stderr);
+    fail(`tsp compile for ${example} exited ${result.status}`);
+  }
+  collectGoFilesInto(exampleOutput, generatedFiles);
 }
 
-const generatedFiles = [];
-function collectGoFiles(dir) {
+function collectGoFilesInto(dir, into) {
   for (const entry of readdirSync(dir).toSorted()) {
     const full = join(dir, entry);
-    if (statSync(full).isDirectory()) collectGoFiles(full);
-    else if (entry.endsWith(".go")) generatedFiles.push(full);
+    if (statSync(full).isDirectory()) collectGoFilesInto(full, into);
+    else if (entry.endsWith(".go") && !seenGoFiles.has(full)) {
+      seenGoFiles.add(full);
+      into.push(full);
+    }
   }
 }
-collectGoFiles(outputDir);
 
 if (generatedFiles.length === 0) fail("no .go files generated");
 
@@ -84,6 +92,9 @@ const expectations = [
   ["Color string", true, 'inline union "red" | "blue" mapped to string'],
   ["type Error struct", true, "@error model generated"],
   ["<Unresolved Symbol>", false, "no unresolved references"],
+  ["Status OrderStatus", true, "named enum cross-file reference resolves"],
+  ["Payment PaymentMethod", true, "named union cross-file reference resolves"],
+  ["func (e OrderError) Error() string", true, "@error model generates error interface"],
 ];
 
 for (const [needle, expected, why] of expectations) {
