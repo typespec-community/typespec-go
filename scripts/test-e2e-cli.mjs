@@ -94,4 +94,23 @@ for (const [needle, expected, why] of expectations) {
 
 console.log(`✅ e2e-cli: tsp compile produced ${generatedFiles.length} Go file(s):`);
 for (const file of generatedFiles) console.log(`   ${file}`);
+
+// Go conformance: generated code must be syntactically valid Go
+// (gofmt parse check) and must survive gofmt normalization cleanly.
+const gofmt = spawnSync("gofmt", ["-e", ...generatedFiles], { encoding: "utf8" });
+if (gofmt.status !== 0) {
+  console.error(gofmt.stderr);
+  fail("generated Go has syntax errors (gofmt -e failed)");
+}
+const normalized = spawnSync("gofmt", ["-w", ...generatedFiles], { encoding: "utf8" });
+if (normalized.status !== 0) {
+  console.error(normalized.stderr);
+  fail("gofmt -w failed on generated Go");
+}
+const listed = spawnSync("gofmt", ["-l", ...generatedFiles], { encoding: "utf8" });
+if (listed.status !== 0 || listed.stdout.trim() !== "") {
+  fail("generated Go not gofmt-clean after normalization");
+}
+console.log("✅ e2e-cli: generated Go passes gofmt conformance");
+
 rmSync(outputDir, { recursive: true, force: true });

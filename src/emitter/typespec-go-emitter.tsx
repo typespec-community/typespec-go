@@ -5,8 +5,9 @@
  */
 
 import type { EmitContext, Enum, Model, Namespace, Operation, Union } from "@typespec/compiler";
-import { writeOutput } from "@typespec/emitter-framework";
-import { Output } from "@alloy-js/core";
+import { emitFile } from "@typespec/compiler";
+import { Output, renderAsync } from "@alloy-js/core";
+import type { Children, OutputDirectory } from "@alloy-js/core";
 import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
 import { join } from "path";
 import { LogContext, Logger } from "../domain/structured-logging.js";
@@ -141,6 +142,40 @@ function namespaceToPackageName(namespaceName: string): string {
 }
 
 /**
+ * Render the component tree and write every file to disk.
+ *
+ * Bypasses `@typespec/emitter-framework`'s writeOutput so we can pass
+ * printer options: Go code is emitted with tab indentation (gofmt style).
+ */
+async function writeRenderedOutput(
+  program: EmitContext["program"],
+  rootComponent: Children,
+  emitterOutputDir: string,
+): Promise<void> {
+  const tree = await renderAsync(rootComponent, { useTabs: true, printWidth: 120 });
+
+  const files: Array<{ path: string; content: string }> = [];
+  function collect(dir: OutputDirectory): void {
+    for (const entry of dir.contents) {
+      if (!("contents" in entry)) continue;
+      if (Array.isArray(entry.contents)) {
+        collect(entry as OutputDirectory);
+      } else {
+        files.push({ path: entry.path, content: entry.contents });
+      }
+    }
+  }
+  collect(tree);
+
+  for (const file of files) {
+    await emitFile(program, {
+      content: file.content,
+      path: join(emitterOutputDir, file.path),
+    });
+  }
+}
+
+/**
  * Main TypeSpec emitter entry point
  */
 export async function $onEmit(context: EmitContext): Promise<void> {
@@ -227,7 +262,7 @@ export async function $onEmit(context: EmitContext): Promise<void> {
       }
 
       // Generate JSX Output using professional component architecture
-      await writeOutput(
+      await writeRenderedOutput(
         program,
         <Output>
           <GoPackageDirectory

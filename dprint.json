@@ -19,6 +19,8 @@
     "docs/reports/**",
     "**/CHANGELOG.md",
     "**/helm/**/templates/**",
-    "**/charts/**/templates/**"
+    "**/charts/**/templates/**",
+    ".config/**",
+    "scripts/**"
   ]
 }
