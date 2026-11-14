@@ -5,9 +5,9 @@
   "main": "dist/main.js",
   "exports": {
     ".": {
+      "typespec": "./lib/main.tsp",
       "types": "./dist/main.d.ts",
-      "default": "./dist/main.js",
-      "typespec": "./lib/main.tsp"
+      "default": "./dist/main.js"
     }
   },
   "scripts": {

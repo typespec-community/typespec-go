@@ -200,6 +200,7 @@ reports/
 vendor/
 go.work
 go.work.sum
+/typespec-go
 
 ## Javascript and typescript
 build/

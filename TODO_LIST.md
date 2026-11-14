@@ -21,12 +21,17 @@
 
 ## Medium Impact
 
-| Task                                                                               | Status           | Impact | Effort | Evidence                                                                                                                |
-| ---------------------------------------------------------------------------------- | ---------------- | ------ | ------ | ----------------------------------------------------------------------------------------------------------------------- |
-| Discriminated-union unmarshaler (real implementation, not placeholder)             | 🔴 `TODO`        | Med    | 3h     | `UnmarshalPaymentMethod` renders a comment placeholder; also `import "encoding/json"` is emitted but unused             |
-| Generated-doc comments: one doc block per package, not per type                    | 🟡 `IN_PROGRESS` | Med    | 1h     | `// Go types from TypeSpec namespace: X` repeats above every struct (`GoStructDeclaration` default doc)                 |
-| Cover `typespec/http` in the CI test harness                                       | 🔴 `TODO`        | Med    | 2h     | `createTester(libraries: [])` everywhere; HTTP fixtures compile only via `tsp` e2e, not vitest                          |
-| Union interface body indentation + blank-line separation (gofmt -l clean natively) | 🔴 `TODO`        | Med    | 2h     | Generated Go parses and gofmt-normalizes, but `gofmt -l` still lists files (alignment/blank lines) before normalization |
+| Task                                                                               | Status           | Impact | Effort | Evidence                                                                                                                       |
+| ---------------------------------------------------------------------------------- | ---------------- | ------ | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| Discriminated-union unmarshaler (real implementation, not placeholder)             | 🔴 `TODO`        | Med    | 3h     | `UnmarshalPaymentMethod` renders a comment placeholder; also `import "encoding/json"` is emitted but unused                    |
+| Generated-doc comments: one doc block per package, not per type                    | 🟡 `IN_PROGRESS` | Med    | 1h     | `// Go types from TypeSpec namespace: X` repeats above every struct (`GoStructDeclaration` default doc)                        |
+| Cover `typespec/http` in the CI test harness                                       | 🔴 `TODO`        | Med    | 2h     | `createTester(libraries: [])` everywhere; HTTP fixtures compile only via `tsp` e2e, not vitest                                 |
+| Union interface body indentation + blank-line separation (gofmt -l clean natively) | 🔴 `TODO`        | Med    | 2h     | Generated Go parses and gofmt-normalizes, but `gofmt -l` still lists files (alignment/blank lines) before normalization        |
+| Fix `// //` double doc-comment slash bug in union/enum docs                        | 🔴 `TODO`        | Med    | 30min  | Generated `unions.go` shows `// // PaymentMethod is a sealed interface` (interfaceDoc prepends `//`, renderer adds another)    |
+| Fix unused-import emission in generated unions.go                                  | 🔴 `TODO`        | Med    | 1h     | `import "encoding/json"` emitted with only placeholder usage — would fail `go build`; unused `fmt` import path also suspicious |
+| Remove `.docs-gates-preflight.json` from git; gitignore it                         | 🔴 `TODO`        | Low    | 5min   | Committed accidentally in `6f5bfb1` via `git add -A` — tool artifact, not repo content                                         |
+| Investigate `.go.mod.lock` (0-byte file at repo root)                              | 🔴 `TODO`        | Low    | 5min   | Present since before 2026-11-14; purpose unknown, never documented                                                             |
+| CI: cache the docs-gates go install or vendor the binary                           | 🔴 `TODO`        | Low    | 30min  | CI downloads the module every run; also verify the step actually succeeds (continue-on-error masks failure)                    |
 
 ## Done (2026-11-14 Pareto execution)
 
