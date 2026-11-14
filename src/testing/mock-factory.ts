@@ -260,6 +260,8 @@ export class MockFactory {
       operations: new Map(),
     };
 
+    const stateMaps = new Map<symbol, Map<unknown, unknown>>();
+
     return {
       getGlobalNamespaceType: () => mockNamespace as unknown as Namespace,
       checker: {
@@ -285,7 +287,13 @@ export class MockFactory {
       },
       compilerOptions: { outputDir: "./test-output" } as MockCompilerOptions,
       stateSet: {} as MockStateSet,
-      stateMap: new Map(),
+      stateMap: (key: symbol): Map<unknown, unknown> => {
+        const existing = stateMaps.get(key);
+        if (existing) return existing;
+        const created = new Map<unknown, unknown>();
+        stateMaps.set(key, created);
+        return created;
+      },
       reportDiagnostics: () => {},
       resolveTypeReference: () => ({}) as MockResolvedType,
       resolveType: () => ({}) as MockResolvedType,

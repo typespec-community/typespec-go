@@ -6,10 +6,18 @@
 
 import type { Model, ModelProperty, Program, Type, Union } from "@typespec/compiler";
 import type { JSX } from "@alloy-js/core/jsx-runtime";
-import { Reference, StructDeclaration, StructMember, TypeDeclaration } from "@alloy-js/go";
+import {
+  FunctionDeclaration,
+  FunctionReceiver,
+  Reference,
+  StructDeclaration,
+  StructMember,
+  TypeDeclaration,
+} from "@alloy-js/go";
 import { For, refkey } from "@alloy-js/core";
 import { capitalize } from "../../utils/strings.js";
 import { lookupGoScalarPrimitive } from "../../domain/go-primitive-types.js";
+import { getGoName, getGoStructTag, getGoType } from "../../emitter/go-decorators.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 
 interface GoStructDeclarationProps {
@@ -43,54 +51,84 @@ export function GoStructDeclaration({
     (program ? getDocumentation(program, model) : undefined) ||
     "Generated from TypeSpec model " + model.name;
 
+  // @error models get an Error() string method when they carry a string
+  // `message` property (the Go error convention).
+  const isErrorModel = (model.decorators ?? []).some(
+    (d) => d.decorator?.name?.replace(/^\$/, "") === "error",
+  );
+  const messageProp = Array.from(model.properties?.values() ?? []).find(
+    (p) => p.name.toLowerCase() === "message",
+  );
+  const modelRef = refkey(model);
+
   // Generate struct fields using Alloy-JS components with <For> iteration
   return (
-    <TypeDeclaration name={model.name} refkey={refkey(model)} doc={modelDoc}>
-      <StructDeclaration>
-        <For each={Array.from(model.properties?.values() || [])}>
-          {(prop: ModelProperty) => {
-            const fieldName = capitalize(prop.name);
-            const typeRef = refkey(prop.type);
+    <>
+      <TypeDeclaration name={model.name} refkey={modelRef} doc={modelDoc}>
+        <StructDeclaration>
+          <For each={Array.from(model.properties?.values() || [])}>
+            {(prop: ModelProperty) => {
+              const typeRef = refkey(prop.type);
 
-            // 100% ALLOY.JS - Use Reference system for automatic imports
-            let goTypeElement: string | JSX.Element;
+              // @go.name overrides the generated Go field name
+              const fieldName =
+                (program ? getGoName(program, prop) : undefined) ?? capitalize(prop.name);
 
-            if (prop.type.kind === "Model") {
-              // Model type - Reference for automatic import
-              goTypeElement = <Reference refkey={typeRef} />;
-            } else if (prop.type.kind === "Enum") {
-              // Enum type - Reference for automatic import
-              goTypeElement = <Reference refkey={typeRef} />;
-            } else if (prop.type.kind === "Union") {
-              // Inline literal unions map to primitives; named unions reference
-              // the generated union interface.
-              goTypeElement = mapTypeSpecToGoType(prop.type);
-            } else {
-              // Built-in types - Use native Go types (no import needed)
-              goTypeElement = mapTypeSpecToGoType(prop.type);
-            }
+              // 100% ALLOY.JS - Use Reference system for automatic imports
+              let goTypeElement: string | JSX.Element;
 
-            // Add pointer for optional model/struct fields with Reference
-            const shouldUsePointer =
-              prop.optional && usePointersForOptional && isNestedModelType(prop.type);
-            const finalType = shouldUsePointer ? (
-              <>
-                {"*"}
-                <Reference refkey={typeRef} />
-              </>
-            ) : (
-              goTypeElement
-            );
+              // @go.type overrides the generated Go type entirely
+              const goTypeOverride = program ? getGoType(program, prop) : undefined;
+              if (goTypeOverride) {
+                goTypeElement = goTypeOverride;
+              } else if (prop.type.kind === "Model") {
+                // Model type - Reference for automatic import
+                goTypeElement = <Reference refkey={typeRef} />;
+              } else if (prop.type.kind === "Enum") {
+                // Enum type - Reference for automatic import
+                goTypeElement = <Reference refkey={typeRef} />;
+              } else if (prop.type.kind === "Union") {
+                // Inline literal unions map to primitives; named unions reference
+                // the generated union interface.
+                goTypeElement = mapTypeSpecToGoType(prop.type);
+              } else {
+                // Built-in types - Use native Go types (no import needed)
+                goTypeElement = mapTypeSpecToGoType(prop.type);
+              }
 
-            // Ensure proper JSON tag format: `json:"name"` or `json:"name,omitempty"`
-            const jsonTagValue = prop.optional ? prop.name + ",omitempty" : prop.name;
-            const jsonTag = { json: jsonTagValue };
+              // Add pointer for optional model/struct fields with Reference
+              const shouldUsePointer =
+                prop.optional && usePointersForOptional && isNestedModelType(prop.type);
+              const finalType = shouldUsePointer ? (
+                <>
+                  {"*"}
+                  <Reference refkey={typeRef} />
+                </>
+              ) : (
+                goTypeElement
+              );
 
-            return <StructMember name={fieldName} type={finalType} tag={jsonTag} />;
-          }}
-        </For>
-      </StructDeclaration>
-    </TypeDeclaration>
+              // @go.structTag overrides the default JSON tag with a raw tag string
+              const customTag = program ? getGoStructTag(program, prop) : undefined;
+              const jsonTagValue = prop.optional ? prop.name + ",omitempty" : prop.name;
+              const tag = customTag ?? { json: jsonTagValue };
+
+              return <StructMember name={fieldName} type={finalType} tag={tag} />;
+            }}
+          </For>
+        </StructDeclaration>
+      </TypeDeclaration>
+      {isErrorModel && messageProp ? (
+        <FunctionDeclaration
+          name="Error"
+          returns="string"
+          doc={`Error implements the error interface for ${model.name}.`}
+          receiver={<FunctionReceiver name="e" type={<Reference refkey={modelRef} />} />}
+        >
+          {`return e.${capitalize(messageProp.name)}`}
+        </FunctionDeclaration>
+      ) : undefined}
+    </>
   );
 }
 

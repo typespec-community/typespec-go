@@ -11,6 +11,7 @@ import type { Children, OutputDirectory } from "@alloy-js/core";
 import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
 import { join } from "path";
 import { LogContext, Logger } from "../domain/structured-logging.js";
+import { getGoPackageName } from "./go-decorators.js";
 
 /** Namespace group containing models, enums, unions, and operations */
 interface NamespaceGroup {
@@ -220,7 +221,12 @@ export async function $onEmit(context: EmitContext): Promise<void> {
       }
 
       const packageName = namespaceToPackageName(namespaceName);
-      const outputDirectory = getOutputDirectory(namespace, context);
+
+      // @go.pkg overrides the output package path for this namespace
+      const goPkgPath = namespace ? getGoPackageName(program, namespace) : undefined;
+      const outputDirectory = goPkgPath
+        ? join(context.emitterOutputDir, ...goPkgPath.split("/").map((p) => p.toLowerCase()))
+        : getOutputDirectory(namespace, context);
       const packageDocumentation = `Go types from TypeSpec namespace: ${namespaceName}`;
 
       Logger.info(
