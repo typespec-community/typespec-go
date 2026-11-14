@@ -1,7 +1,7 @@
 # Features
 
 > Honest inventory of what this project does, by status — verified against the
-> code on **2026-11-13** (HEAD `8205ea3`, 165/165 tests passing). Status labels
+> code on **2026-11-14** (v1.0.0 prepared, 177/177 tests passing). Status labels
 > answer one question: does working code exist, and if not, why not?
 
 ## Status legend

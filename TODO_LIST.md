@@ -1,6 +1,6 @@
 # TODO List
 
-> Short-term, actionable, bounded work, verified against the code on **2026-11-14** (HEAD after the 2026-11-14 CI/packaging sweep).
+> Short-term, actionable, bounded work, verified against the code on **2026-11-14** (post Pareto-plan execution, v1.0.0 prepared).
 > Long-term vision lives in [ROADMAP.md](./ROADMAP.md); shipped work lives in [CHANGELOG.md](./CHANGELOG.md).
 
 ## Status legend
@@ -13,46 +13,53 @@
 
 ## High Impact
 
-| Task                                                                | Status    | Impact | Effort | Evidence                                                                                                                                                   |
-| ------------------------------------------------------------------- | --------- | ------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Filter built-in TypeSpec-namespace models in the emitter            | 🔴 `TODO` | High   | 1h     | `collectTypesByNamespace` in `src/emitter/typespec-go-emitter.tsx` has no `TypeSpec`-namespace filter (verified 2026-11-13; routed from 2026-01-02 report) |
-| Verify CLI end-to-end generation (`tsp compile` with built emitter) | 🔴 `TODO` | High   | 2h     | Emitter API-level works (integration tests pass); `dist/main.js` now loads under Node ESM (2026-11-14) — full `tsp compile` path still unverified          |
+| Task                                                                      | Status    | Impact | Effort | Evidence                                                                                                                                |
+| ------------------------------------------------------------------------- | --------- | ------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| HTTP decorator extraction end-to-end (`@route`/`@get`/`@post` → handlers) | 🔴 `TODO` | High   | 3h     | Interface operations are collected and handler files are generated, but `@typespec/http` metadata drives neither routes nor verbs yet   |
+| Consume `@go.nullable` and `@go.enumMode` in generation                   | 🔴 `TODO` | High   | 2h     | Declared in `lib/main.tsp`, JS bindings exist (`src/emitter/go-decorators.ts`); no consumption point in components yet                  |
+| `@visibility` processing in generated output                              | 🔴 `TODO` | High   | 3h     | `@visibility(Lifecycle.Read)` on properties compiles but does not filter output; needs a defined read/update/create model before coding |
 
 ## Medium Impact
 
-| Task                                                                  | Status    | Impact | Effort | Evidence                                                                                                         |
-| --------------------------------------------------------------------- | --------- | ------ | ------ | ---------------------------------------------------------------------------------------------------------------- |
-| Deduplicate type mapping into `CleanTypeMapper`                       | 🔴 `TODO` | Med    | 1h     | `mapTypeSpecToGoType` duplication still at `src/components/go/GoStructDeclaration.tsx:130` (verified 2026-11-13) |
-| HTTP decorator extraction coverage (`@typespec/http` in test harness) | 🔴 `TODO` | Med    | 2h     | `test/typespec/sample-service.tsp` exists; `@typespec/http` library loading + `@route`/`@get` e2e unverified     |
-| Add test coverage reporting with a threshold                          | 🔴 `TODO` | Med    | 30min  | No coverage config in `vitest` setup; `just test-cov` referenced in `justfile:71` but never wired                |
-| Fix `go.mod` placeholder module path                                  | 🔴 `TODO` | Med    | 5min   | `go.mod:1` = `module <module-path>` — breaks any `go run`/tooling executed inside the repo                       |
+| Task                                                                               | Status           | Impact | Effort | Evidence                                                                                                                |
+| ---------------------------------------------------------------------------------- | ---------------- | ------ | ------ | ----------------------------------------------------------------------------------------------------------------------- |
+| Discriminated-union unmarshaler (real implementation, not placeholder)             | 🔴 `TODO`        | Med    | 3h     | `UnmarshalPaymentMethod` renders a comment placeholder; also `import "encoding/json"` is emitted but unused             |
+| Generated-doc comments: one doc block per package, not per type                    | 🟡 `IN_PROGRESS` | Med    | 1h     | `// Go types from TypeSpec namespace: X` repeats above every struct (`GoStructDeclaration` default doc)                 |
+| Cover `typespec/http` in the CI test harness                                       | 🔴 `TODO`        | Med    | 2h     | `createTester(libraries: [])` everywhere; HTTP fixtures compile only via `tsp` e2e, not vitest                          |
+| Union interface body indentation + blank-line separation (gofmt -l clean natively) | 🔴 `TODO`        | Med    | 2h     | Generated Go parses and gofmt-normalizes, but `gofmt -l` still lists files (alignment/blank lines) before normalization |
 
-## Done (2026-11-14 sweep)
+## Done (2026-11-14 Pareto execution)
 
-- ✅ CI build fixed: `typescript` pinned to `6.0.2` (TS 7 removes `ts.sys`; eslint caps `<6.1.0`) — see CHANGELOG 2026-11-14.
-- ✅ ESM packaging: `.js` import suffixes + `rootDir: "./src"` → `dist/main.js` matches `package.json`, loads under Node ESM.
-- ✅ All 13 `no-explicit-any` lint errors + 1 unused-var warning cleared (typed mock factories).
-- ✅ All 28 strict-mode type errors cleared (`tsc --noEmit --strict` = 0 errors).
-- ✅ Dead files removed: `GoHandlerStub.tsx.disabled`, `test-minimal/test-components/test-components-directly`, tracked `temp-e2e-test/` artifact.
-- ✅ `EnvironmentTeardownError` flake root-caused and fixed (unawaited dynamic import); 5× stable runs.
+- ✅ CI green end-to-end: build, tests, lint (`--max-warnings 0`), strict typecheck (0 errors), dprint, CLI e2e, docs-gates job.
+- ✅ CLI product proof: `npm run test:e2e-cli` compiles BOTH examples with the built emitter, verifies content, gofmt conformance.
+- ✅ `TypeSpec.Go` decorator library shipped and consumed (`@go.pkg`/`@go.name`/`@go.type`/`@go.structTag`); `@error` → `Error() string`.
+- ✅ Cross-file type references (enum/union refkeys); union variants backed by models no longer duplicated.
+- ✅ Single-source scalar mapping kernel (`src/domain/go-primitive-types.ts`); invalid Go aliases fixed.
+- ✅ ESM packaging: `.js` suffixes, `rootDir`, `files` whitelist (289 kB tarball), dist pruning.
+- ✅ Coverage reporting with thresholds; benchmarks; docs guides (ARCHITECTURE/DEPLOYMENT/TROUBLESHOOTING/MAPPING-GUIDE).
+- ✅ Community plumbing: CODEOWNERS, issue templates; stale dependabot PR closed for recreation; peerDep `^1.18.0`.
+- ✅ 11 root-layer legacy reports archived with manifest; CALL_GRAPH split brain resolved.
+- ✅ v1.0.0 prepared: version bumped, CHANGELOG cut, `npm pack --dry-run` verified. Publish + tag push await explicit approval.
 
 ---
 
-## Verified baseline (2026-11-14)
+## Verified baseline (2026-11-14, 3× consecutive stable runs)
 
-| Check                                                  | Result                                                               |
-| ------------------------------------------------------ | -------------------------------------------------------------------- |
-| `npm test` (vitest)                                    | ✅ 165/165 tests, 36 files, 5× consecutive stable runs               |
-| `alloy build` (local)                                  | ✅ passes, no warnings                                               |
-| Built emitter loads under Node ESM                     | ✅ `node -e "import('./dist/main.js')"`                              |
-| CI (GitHub Actions)                                    | 🟡 pending green run after push                                      |
-| `npm run lint`                                         | ✅ 0 errors, 0 warnings (`--max-warnings 0`)                         |
-| `tsc --noEmit --strict`                                | ✅ 0 errors                                                          |
-| `any` types in src/components, src/domain, src/emitter | ✅ zero                                                              |
-| Real TypeSpec integration tests                        | ✅ `src/test/integration-typespec-compiler-working.test.ts` + 4 more |
+| Check                                            | Result                                  |
+| ------------------------------------------------ | --------------------------------------- |
+| `npm run test:typespec`                          | ✅ 177/177 tests, 37 files              |
+| `npm run build` (alloy + dist pruning)           | ✅ passes                               |
+| Built emitter loads under Node ESM               | ✅ `node -e "import('./dist/main.js')"` |
+| `npm run test:e2e-cli` (both examples, gofmt)    | ✅ green                                |
+| CI (GitHub Actions)                              | ✅ green (run 43614262527)              |
+| `npm run lint`                                   | ✅ 0 errors, 0 warnings                 |
+| `npm run build:check`                            | ✅ 0 errors                             |
+| `npm run test:coverage` (thresholds 40/30/48/40) | ✅ 43.5% lines                          |
+| `dprint check` / `docs-gates run .`              | ✅ green / 5/5 PASS                     |
 
 ## Quick Links
 
 - [ROADMAP.md](./ROADMAP.md) — long-term vision and unrefined ideas
 - [CHANGELOG.md](./CHANGELOG.md) — what has been completed
 - [FEATURES.md](./FEATURES.md) — honest feature inventory
+- [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) — how the emitter works

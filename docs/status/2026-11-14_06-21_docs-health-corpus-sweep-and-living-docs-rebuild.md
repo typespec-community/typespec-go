@@ -102,7 +102,7 @@ Items 1-11 are bounded TODO_LIST rows; 12-50 are ROADMAP raw ideas (brainstorm, 
 3. Make npm run build:check pass (28 strict-mode errors)
 4. Verify CLI end-to-end generation (tsp compile with built emitter)
 5. Filter built-in TypeSpec-namespace models in the emitter
-6. Deduplicate type mapping into CleanTypeMapper
+6. ~~Deduplicate type mapping into CleanTypeMapper~~ done at `e93820f` — single-source kernel `src/domain/go-primitive-types.ts`; three consumers rewired
 7. HTTP decorator extraction coverage (typespec/http in test harness)
 8. Add test coverage reporting with a threshold
 9. Remove GoHandlerStub.tsx.disabled leftover

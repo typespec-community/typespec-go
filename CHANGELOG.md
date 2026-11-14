@@ -4,6 +4,31 @@
 
 ---
 
+## 1.0.0 — 2026-11-14
+
+First stable release. Verified end-to-end: `tsp compile` with the published
+package layout generates gofmt-conformant Go for two example projects.
+
+- **Decorators:** the `TypeSpec.Go` namespace ships real decorators
+  (`@go.pkg`, `@go.name`, `@go.type`, `@go.structTag`, plus declared
+  `@go.nullable`/`@go.enumMode` pending consumption) and `@error` models
+  generate `Error() string` methods.
+- **Correctness:** built-in TypeSpec library namespaces are never emitted;
+  inline unions map to Go primitives; cross-file references between
+  models/enums/unions in one package resolve; union variants backed by
+  models are not re-declared; scalar aliases (`safeint`, `decimal`, …)
+  produce valid Go.
+- **Output quality:** tab indentation (gofmt-style), CLI e2e gate parses and
+  gofmt-normalizes every generated file from both examples.
+- **Tooling:** coverage with thresholds (v8, matching vitest), dprint format
+  gate and docs-gates in CI, benchmarks (`vitest bench`), npm `files`
+  whitelist (289 kB tarball, was 4.8 MB).
+- **Docs:** ARCHITECTURE/DEPLOYMENT/TROUBLESHOOTING/MAPPING-GUIDE guides;
+  eleven root-layer legacy reports archived; npm-scripts-first workflow.
+
+Gates at release: 177/177 tests · eslint `--max-warnings 0` ·
+`tsc --noEmit --strict` 0 errors · `test:e2e-cli` green · docs-gates 5/5.
+
 ## 2026-11-14 — CI green, ESM packaging fixed, type debt cleared
 
 - **CI build fix:** pinned `typescript` to `6.0.2`. WHY: `typescript@7.0.2` (the Go-native

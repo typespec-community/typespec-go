@@ -1,0 +1,13 @@
+{
+  "recorded": "2026-11-14T16:16:10Z",
+  "lines": [
+    "HTTP decorator extraction end-to-end routed to TODO_LIST High Impact row 1",
+    "@go.nullable and @go.enumMode consumption routed to TODO_LIST High Impact row 2",
+    "@visibility processing routed to TODO_LIST High Impact row 3",
+    "Discriminated-union unmarshaler implementation routed to TODO_LIST Medium Impact row 1",
+    "Per-package doc comments routed to TODO_LIST Medium Impact row 2",
+    "typespec/http in vitest harness routed to TODO_LIST Medium Impact row 3",
+    "Native gofmt -l clean output routed to TODO_LIST Medium Impact row 4",
+    "npm publish and tag push routed to TODO_LIST Done section (awaiting explicit approval)"
+  ]
+}

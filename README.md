@@ -2,7 +2,7 @@
 
 **Transform TypeSpec API definitions into production-ready Go code with 100% Alloy-JS component-based architecture.**
 
-> **Status (2026-11-13):** 165/165 tests passing · local build green · real TypeSpec integration tests in place · CI workflow exists but currently red (build-tool compatibility — see [TODO_LIST](./TODO_LIST.md)).
+> **Status (2026-11-14, v1.0.0):** 177/177 tests · CI fully green (build, lint, strict typecheck, dprint, CLI end-to-end, docs gates) · real `tsp compile` proof with gofmt conformance on two examples · `TypeSpec.Go` decorators (`@go.pkg`, `@go.name`, `@go.type`, `@go.structTag`) and `@error` support.
 
 ---
 
@@ -159,7 +159,7 @@ Verified 2026-11-13 (HEAD `8205ea3`). Full inventory with evidence:
 
 | Category                      | Status                                       |
 | ----------------------------- | -------------------------------------------- |
-| Test suite                    | ✅ 165/165 tests, 36 files (`npm test`)      |
+| Test suite                    | ✅ 177/177 tests, 37 files                   |
 | Real TypeSpec integration     | ✅ `createTester` compilation tests in place |
 | Enum / union / model coverage | ✅ dedicated suites passing                  |
 | HTTP handler & route suites   | ✅ component-level suites passing            |

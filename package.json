@@ -1,6 +1,6 @@
 {
   "name": "@typespec-community/typespec-go",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "type": "module",
   "main": "dist/main.js",
   "exports": {
@@ -11,9 +11,9 @@
     }
   },
   "scripts": {
-    "build": "bunx alloy build",
+    "build": "alloy build && node scripts/prune-dist.mjs",
     "build:webpack": "tsc --project tsconfig.json && bunx webpack --mode=development",
-    "build:check": "bunx tsc --noEmit --strict",
+    "build:check": "tsc --noEmit --strict",
     "test": "vitest",
     "test:typespec": "vitest --run --testTimeout 30000",
     "lint": "eslint src/ --ext .ts --max-warnings 0",
@@ -50,5 +50,12 @@
   "peerDependencies": {
     "@typespec/compiler": "^1.18.0"
   },
-  "tspMain": "lib/main.tsp"
+  "tspMain": "lib/main.tsp",
+  "files": [
+    "dist",
+    "lib",
+    "README.md",
+    "CHANGELOG.md",
+    "docs/MAPPING-GUIDE.md"
+  ]
 }

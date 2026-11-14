@@ -429,12 +429,12 @@ bunx vitest run src/test/integration-*.test.ts
 
 ### **Test Status (Current: 2026-11-13, HEAD `8205ea3`)**
 
-- **Pass Rate:** 165/165 tests passing, 36 files (`npm test`)
+- **Pass Rate:** 177/177 tests passing, 37 files (`npm run test:typespec`)
 - **✅ Real TypeSpec integration:** `src/test/integration-typespec-compiler-working.test.ts` (createTester API) + 4 more integration suites
 - **✅ Production type safety:** zero `any` in `src/components`, `src/domain`, `src/emitter`
-- **🔴 CI red:** `bunx alloy build` crashes on CI (alloy CLI × TypeScript 7.0.2, `ts.sys` undefined) — see TODO_LIST
-- **🔴 Lint:** 13 `no-explicit-any` errors in test-support files (`npm run lint` fails)
-- **🔴 Strict check:** `npm run build:check` reports 28 errors (missing `node` types + test casts)
+- **✅ CI green:** full pipeline (build, tests, lint, strict check, dprint, CLI e2e, docs-gates) — TS pinned to 6.0.2
+- **✅ Lint:** 0 errors, 0 warnings (`eslint --max-warnings 0`)
+- **✅ Strict check:** `npm run build:check` passes with 0 errors
 
 ---
 
@@ -735,7 +735,7 @@ Full sprint list with evidence: [TODO_LIST.md](./TODO_LIST.md).
 - **TypeScript Strict:** zero errors required (build passes today; strict check has 28 known errors — TODO_LIST)
 - **ESLint:** zero errors required (13 known `any` errors in test-support files — TODO_LIST)
 - **Alloy Components:** 100% component-based, zero string generation
-- **Tests:** 100% pass rate (165/165 at HEAD `8205ea3`)
+- **Tests:** 100% pass rate (177/177)
 
 ---
 
@@ -820,7 +820,7 @@ Before committing ANY changes, verify:
 ## ⚠️ NON-OBVIOUS GOTCHAS (verified 2026-11-13)
 
 - **`go run` inside this repo fails** — root `go.mod` is a placeholder (`module <module-path>`). Run Go tooling from outside the repo or fix the module path first.
-- **Nix-managed `bun` has no `bunx`** — `bunx alloy build` fails in the local nix shell; call `./node_modules/.bin/alloy build` directly. CI installs full Bun via `oven-sh/setup-bun`.
+- **npm scripts are canonical and shell-agnostic** — `npm run build` runs `alloy build && node scripts/prune-dist.mjs`; npm puts `node_modules/.bin` on `PATH`, so these work in nix shells (no `bunx`) and CI alike.
 - **CI build crash (current)** — alloy CLI reads `ts.sys.getCurrentDirectory` at load time; TypeScript 7.0.2 in the dependency tree breaks it. Local build works; see TODO_LIST before assuming the emitter is broken.
 - **`alloy build` vs `tsc`** — `alloy build` is the only sanctioned build (overrides tsconfig JSX handling); expect a TS5011 `rootDir` warning line, then "Build completed with 0 errors".
 - **Strict check ≠ build** — `npm run build:check` (`tsc --noEmit --strict`) currently reports 28 errors while `alloy build` and `vitest` pass. Don't conflate them when judging "is it broken?".
@@ -845,7 +845,7 @@ Before committing ANY changes, verify:
 - **100% Component-Based:** All Go code generated through Alloy components
 - **Zero String Generation:** No template literals or string concatenation for code
 - **Type Safety:** zero TypeScript errors required before merge (strict-check debt tracked in TODO_LIST)
-- **Test Success:** 100% test pass rate (165/165)
+- **Test Success:** 100% test pass rate (177/177)
 - **Performance:** benchmark suite pending (ROADMAP)
 
 ---
