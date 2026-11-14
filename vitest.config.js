@@ -7,6 +7,18 @@ export default defineConfig({
     exclude: ["src/test/**/*.d.ts"],
     setupFiles: ["./src/test/vitest.setup.ts"],
     environment: "node",
+    coverage: {
+      provider: "v8",
+      reportsDirectory: "./coverage",
+      include: ["src/components/**", "src/domain/**", "src/emitter/**", "src/services/**", "src/utils/**"],
+      exclude: ["src/test/**", "src/testing/**", "**/*.d.ts"],
+      thresholds: {
+        statements: 40,
+        branches: 30,
+        functions: 48,
+        lines: 40,
+      },
+    },
   },
   esbuild: {
     jsx: "preserve",

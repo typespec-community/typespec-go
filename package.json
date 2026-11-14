@@ -20,7 +20,8 @@
     "lint:fix": "eslint src/ --ext .ts --fix",
     "format": "prettier src/ --write",
     "test:e2e-cli": "node scripts/test-e2e-cli.mjs",
-    "format:check": "dprint check"
+    "format:check": "dprint check",
+    "test:coverage": "vitest --run --coverage.enabled --testTimeout 30000"
   },
   "dependencies": {
     "@alloy-js/core": "^0.22.0",
@@ -39,6 +40,7 @@
     "@types/node": "^25.6.0",
     "@typescript-eslint/eslint-plugin": "^8.72.2",
     "@typescript-eslint/parser": "^8.72.2",
+    "@vitest/coverage-v8": "4.1.12",
     "dprint": "^0.64.3",
     "eslint": "^10.14.0",
     "prettier": "^4.0.0-alpha.12",
@@ -46,7 +48,7 @@
     "vitest": "^4.1.4"
   },
   "peerDependencies": {
-    "@typespec/compiler": "1.18.0"
+    "@typespec/compiler": "^1.18.0"
   },
   "tspMain": "lib/main.tsp"
 }

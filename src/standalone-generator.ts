@@ -1,11 +1,12 @@
 /**
- * Type-safe Standalone Generator - DELEGATION ARCHITECTURE
+ * Standalone Go generator - TEST SCAFFOLD, NOT part of the emitter path.
  *
- * PROFESSIONAL TYPE SAFETY: Zero any types
- * UNIFIED ERROR SYSTEM: Single source of truth for error handling
- * ELIMINATED DUPLICATES: Single source of truth for domain types
- * DELEGATES TO CLEAN TYPE MAPPER: No duplicate mapping logic
- * CUSTOMER VALUE: Working Go generation with professional quality
+ * The production emitter renders Alloy-JS components from real compiler
+ * types (`@typespec/compiler` Model/Enum/Union). This class exercises the
+ * domain generators (StructGenerator, UnionGenerator, CleanTypeMapper)
+ * against domain-shaped inputs (TypeSpecPropertyNode, GeneratorModel) and
+ * is consumed exclusively by test suites. It exists to keep the domain
+ * generation logic covered in isolation; do not wire it into $onEmit.
  */
 
 import { defaultErrorHandler, ErrorFactory } from "./domain/unified-errors.js";

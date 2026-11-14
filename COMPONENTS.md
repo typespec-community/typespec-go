@@ -20,7 +20,7 @@ The TypeSpec Go Emitter uses **100% Alloy-JS component-based architecture**. All
 
 ## 📦 Component Library
 
-### Primary Components (12)
+### Primary Components (11)
 
 | Component                      | Purpose                            | Status              |
 | ------------------------------ | ---------------------------------- | ------------------- |
@@ -31,6 +31,7 @@ The TypeSpec Go Emitter uses **100% Alloy-JS component-based architecture**. All
 | `GoInterfaceDeclaration`       | Service interface generation       | ✅ Production Ready |
 | `GoModFile`                    | Go module file generation          | ✅ Production Ready |
 | `GoPackageDirectory`           | Package organization               | ✅ Production Ready |
+| `GoPackage`                    | Package wrapper with imports       | ✅ Production Ready |
 | `GoHandlerStub`                | HTTP handler generation            | ✅ Production Ready |
 | `GoHandlerMethodComponent`     | Handler method logic               | ✅ Production Ready |
 | `GoRouteRegistrationComponent` | Route registration                 | ✅ Production Ready |

@@ -59,14 +59,17 @@ emit:
   - "@typespec-community/typespec-go"
 options:
   "@typespec-community/typespec-go":
-    emitter-output-dir: "./api"
-    base-package: "github.com/yourcompany/api"
+    emitter-output-dir: "{output-dir}/go"
 ```
 
 ```bash
 # Generate Go code
 tsp compile .
 ```
+
+Generated Go packages mirror your TypeSpec namespaces: a namespace
+`Vendor.Service.API` becomes package path `vendor/service/api`. Output goes to
+`emitter-output-dir` (a standard TypeSpec emitter option).
 
 ---
 
