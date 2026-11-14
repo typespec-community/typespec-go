@@ -38,3 +38,26 @@ resolved; superseded snapshot).
 | 2026-01-02_06-32_critical-integration-crisis-status-report.md | ARCHIVE | 44 items resolved (17 done, 19 superseded, 6 routed); API crisis solved same day `631185b` |
 | 2026-01-02_09-00_production-ready-milestone-report.md | ARCHIVE | 47 items resolved (36 done, 9 superseded) |
 | 2026-01-02_09-55_TYPESPEC-INTEGRATION-PROGRESS.md | ARCHIVE | 121 items resolved (54 done, 14 superseded, 52 routed); Top-25 next-steps judged item-by-item |
+
+## 2026-11-14 root-layer archival (Pareto T16)
+
+Eleven more historical snapshots archived from the repo root and `docs/` root.
+None were annotated item-by-item: all belong to the same 2025 architecture-crisis
+arc whose open work was already harvested into TODO_LIST/ROADMAP during the
+2026-11-14 corpus sweep, and each carries an archive banner pointing at the
+living docs. The CALL_GRAPH pair is superseded by `docs/ARCHITECTURE.md`
+(written 2026-11-14), resolving the two-truths split brain.
+
+| File | Origin | Deciding reason |
+| ---- | ------ | --------------- |
+| CALL_GRAPH.md | repo root | stale hand-written call graph; superseded by docs/ARCHITECTURE.md |
+| CALL_GRAPH_ACTUAL.md | repo root | companion "actual" graph; same supersession, split-brain pair consolidated |
+| DEDUPLICATION_STATUS.md | repo root | 2025 dedup snapshot; type-mapper dedup completed 2026-11-14 (`go-primitive-types.ts`) |
+| EXECUTION_PLAN.md | repo root | superseded execution plan (see also docs/planning/) |
+| IMPROVEMENT_PLAN.md | repo root | superseded improvement plan |
+| INTEGRATION_REALITY_CHECK.md | repo root | integration reality now proven by test:e2e-cli + gofmt conformance |
+| PARTS.md | repo root | architecture-parts snapshot; superseded by docs/ARCHITECTURE.md |
+| PROJECT-COMPLETION-REPORT.md | repo root | completion claim superseded by verified FEATURES inventory |
+| PROJECT_SPLIT_EXECUTIVE_REPORT.md | repo root | split proposal never executed; historical only |
+| 2025-11_status-milestone.md | docs/status.md | filename collided with docs/status/ directory convention |
+| 2025-09_github-issues-plan.md | docs/github-issues-plan.md | 2025 issue triage; actions completed or folded into TODO_LIST/ROADMAP |

@@ -47,30 +47,33 @@ This is a **professional TypeSpec compiler plugin** that generates production-re
 
 ## 🚀 ESSENTIAL COMMANDS
 
-### **Primary Development Workflow** (Use Justfile Commands)
+### **Primary Development Workflow** (Use npm Scripts)
 
 ```bash
 # 🔥 BUILD ALLOY-JS COMPONENTS (required before testing)
-just build         # or: bunx alloy build
+npm run build          # runs: bunx alloy build
 
 # 🔥 RUN TEST SUITE (verifies Alloy components work)
-just test          # or: bunx vitest --run --testTimeout 30000
+npm run test:typespec  # runs: vitest --run --testTimeout 30000
 
 # 🔥 LINT CODE (ESLint with strict any-type enforcement)
-just lint          # or: bun run lint
+npm run lint
 
 # 🔥 TYPE CHECKING (validates TypeScript + JSX compilation)
-just check         # or: bunx tsc --noEmit --strict
+npm run build:check
 
-# Full development workflow (build + test + lint)
-just dev
+# 🔥 COVERAGE (vitest v8 coverage with thresholds)
+npm run test:coverage
 
-# Quality assurance - comprehensive check
-just qa
+# 🔥 CLI END-TO-END PROOF (real tsp compile -> Go on disk -> gofmt check)
+npm run test:e2e-cli
 
-# Check project status (build + test validation)
-just status
+# 🔥 FORMAT CHECK (dprint)
+npm run format:check
 ```
+
+> The legacy `justfile` is deprecated; its commands map 1:1 onto the npm
+> scripts above. Do not add new just recipes.
 
 ### **🚨 ALLOY-JS SPECIFIC BUILD PROCESS**
 
@@ -409,7 +412,7 @@ describe("🔥 Component Integration - ALLOY-JS", () => {
 
 ```bash
 # 🔥 ALL TESTS (validates Alloy components)
-just test
+npm run test:typespec
 
 # 🔥 COMPONENT-ONLY TESTS
 bunx vitest run src/test/components-*.test.tsx
@@ -696,11 +699,11 @@ export function GoNamespacePackage({ namespace }: { namespace: Namespace }) {
 
 ```bash
 # Check current build status
-just status
+npm run build && npm run test:typespec
 
 # Fix common issues
-just fix          # ESLint auto-fix
-just format       # Prettier formatting
+npm run lint:fix  # ESLint auto-fix
+npx dprint fmt    # formatting
 ```
 
 ### **Test Failures**
@@ -790,7 +793,7 @@ Full sprint list with evidence: [TODO_LIST.md](./TODO_LIST.md).
 
 ### **🔥 ALWAYS DO THESE - ALLOY-JS REQUIREMENTS**
 
-- **✅ BUILD BEFORE TEST** - `just build` required before `just test`
+- **✅ BUILD BEFORE TEST** - `npm run build` required before `npm run test:typespec`
 - **✅ TYPE-ONLY IMPORTS** - Required with `verbatimModuleSyntax: true`
 - **✅ COMPONENT REFK ONLY** - Always use `refkey()` for component IDs
 - **✅ ALLOY COMPONENTS ONLY** - Generate Go code exclusively with Alloy Go

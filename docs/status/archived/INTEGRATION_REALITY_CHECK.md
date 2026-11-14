@@ -1,3 +1,5 @@
+> **Archived 2026-11-14** from the repo root. Historical snapshot of the 2025 architecture-crisis arc; superseded by [FEATURES.md](../../FEATURES.md), [TODO_LIST.md](../../TODO_LIST.md), and [docs/ARCHITECTURE.md](../ARCHITECTURE.md). Its genuinely-open items were harvested into the living docs during the 2026-11-14 corpus sweep.
+
 # TypeSpec Go Emitter - Integration Reality Check
 
 ## 🚨 CRITICAL FINDING: Architecture vs Reality

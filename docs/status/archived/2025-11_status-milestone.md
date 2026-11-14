@@ -1,3 +1,5 @@
+> **Archived 2026-11-14** from `docs/status.md` (its filename collided with the `docs/status/` directory convention). Milestone snapshot of the working-emitter breakthrough; superseded by [FEATURES.md](../FEATURES.md) and [TODO_LIST.md](../TODO_LIST.md).
+
 # 🎉 MAJOR MILESTONE ACHIEVED: TypeSpec-Go Emitter Working!
 
 ## ✅ What's Now Working (1% → 25% Complete)

@@ -1,3 +1,5 @@
+> **Archived 2026-11-14**. GitHub-issue triage plan from the 2025 era; every listed action was either completed or folded into [TODO_LIST.md](../TODO_LIST.md) / [ROADMAP.md](../ROADMAP.md).
+
 # GitHub Issues: Status and Actions
 
 ## Current Issues Review

@@ -115,19 +115,25 @@ export function GoModel({ model }: GoModelProps) {
 
 ```bash
 # Build Alloy-JS components (required before testing)
-just build
+npm run build
 
 # Run test suite
-just test
+npm run test:typespec
 
-# Lint code
-just lint
+# Lint code (ESLint, zero warnings allowed)
+npm run lint
 
-# Type check
-just check
+# Strict type check
+npm run build:check
 
-# Full development workflow
-just dev
+# Coverage report
+npm run test:coverage
+
+# CLI end-to-end proof (tsp compile -> Go on disk + gofmt check)
+npm run test:e2e-cli
+
+# Format check (dprint)
+npm run format:check
 ```
 
 ### Project Structure
