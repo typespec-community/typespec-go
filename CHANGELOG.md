@@ -1,8 +1,36 @@
 # TypeSpec Go Emitter - Changelog
 
-**Last Updated:** 2026-11-13
+**Last Updated:** 2026-11-14
 
 ---
+
+## 2026-11-14 — CI green, ESM packaging fixed, type debt cleared
+
+- **CI build fix:** pinned `typescript` to `6.0.2`. WHY: `typescript@7.0.2` (the Go-native
+  compiler) removed the classic `ts.*` API surface — `@alloy-js/cli@0.22` crashes with
+  `ts.sys` undefined (CI run 43432825741), and `@typescript-eslint@8.x` caps `typescript`
+  at `<6.1.0`, so lint breaks too. Re-upgrading to TS 7 stays a deliberate future decision
+  blocked on alloy CLI + typescript-eslint shipping compatible releases.
+- **ESM packaging fixed:** all relative imports in `src/` now carry `.js` suffixes and
+  `tsconfig.json` gained `rootDir: "./src"` + `types: ["node"]`. The build now emits
+  `dist/main.js`, matching `package.json` `main`/`exports` (previously they pointed at a
+  nonexistent path while output landed in `dist/src/`). The built emitter now loads under
+  plain Node ESM (`node -e "import('./dist/main.js')"` passes).
+- **Lint debt cleared:** all 13 `no-explicit-any` errors + 1 unused-var warning fixed via
+  typed mock factories (`MockFactory.createEnum` / `createUnion` / `createModelWithProps` /
+  `createStringLiteral`); `extractGoCode` now narrows the real alloy output unions instead
+  of `any`.
+- **Strict-mode debt cleared:** all 28 `tsc --noEmit --strict` errors fixed (same factories;
+  route-test mocks now typed as real `GoHandlerMethod[]` with required `source`/`optional`).
+- **Dead code removed:** `GoHandlerStub.tsx.disabled`, scratch files `test-minimal.tsx`,
+  `test-components.tsx`, `test-components-directly.tsx`, tracked
+  `src/test/temp-e2e-test/generated-service.go` (e2e test now writes to the OS temp dir).
+- **Teardown flake root-caused:** `expect(async () => import(...)).not.toThrow()` never
+  awaits — the dynamic import raced vitest environment teardown and intermittently raised
+  `EnvironmentTeardownError`. Fixed with a static import; 5 consecutive full-suite runs
+  green.
+- **Gates at HEAD:** build ✅ · dist loads as ESM ✅ · 165/165 tests (5× stable) ✅ ·
+  `eslint --max-warnings 0` ✅ · `tsc --noEmit --strict` 0 errors ✅.
 
 ## 2026-11-13 — Documentation health sweep
 

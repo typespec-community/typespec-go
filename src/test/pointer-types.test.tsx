@@ -7,47 +7,20 @@ import { describe, expect, it } from "vitest";
 import { Output, render } from "@alloy-js/core";
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
+import { MockFactory } from "../testing/mock-factory.js";
+import type { Type } from "@typespec/compiler";
 
 describe("Pointer Type Generation", () => {
   it("generates pointer for optional nested model fields", () => {
     // Create a mock model with an optional User field
-    const _mockUserModel = {
-      kind: "Model" as const,
-      name: "User",
-      properties: new Map([
-        [
-          "id",
-          {
-            name: "id",
-            type: { kind: "Scalar", name: "string" },
-            optional: false,
-          },
-        ],
-      ]),
-    };
+    const mockUserModel = MockFactory.createModelWithProps("User", [
+      { name: "id", type: MockFactory.createScalar("string") },
+    ]);
 
-    const mockTaskModel = {
-      kind: "Model" as const,
-      name: "Task",
-      properties: new Map([
-        [
-          "id",
-          {
-            name: "id",
-            type: { kind: "Scalar", name: "string" },
-            optional: false,
-          },
-        ],
-        [
-          "assignee",
-          {
-            name: "assignee",
-            type: { kind: "Model", name: "User" }, // Nested model
-            optional: true, // Optional field
-          },
-        ],
-      ]),
-    };
+    const mockTaskModel = MockFactory.createModelWithProps("Task", [
+      { name: "id", type: MockFactory.createScalar("string") },
+      { name: "assignee", type: mockUserModel, optional: true }, // Nested model
+    ]);
 
     const result = render(
       <Output>
@@ -55,7 +28,7 @@ describe("Pointer Type Generation", () => {
           <SourceDirectory path="api">
             <SourceFile path="models.go">
               <GoStructDeclaration
-                model={mockTaskModel as unknown}
+                model={mockTaskModel}
                 packageName="api"
                 usePointersForOptional={true}
               />
@@ -70,20 +43,13 @@ describe("Pointer Type Generation", () => {
   });
 
   it("does not generate pointer for required model fields", () => {
-    const mockTaskModel = {
-      kind: "Model" as const,
-      name: "Task",
-      properties: new Map([
-        [
-          "owner",
-          {
-            name: "owner",
-            type: { kind: "Model", name: "User" },
-            optional: false, // Required field
-          },
-        ],
-      ]),
-    };
+    const mockOwnerModel = MockFactory.createModelWithProps("User", [
+      { name: "id", type: MockFactory.createScalar("string") },
+    ]);
+
+    const mockTaskModel = MockFactory.createModelWithProps("Task", [
+      { name: "owner", type: mockOwnerModel, optional: false }, // Required field
+    ]);
 
     const result = render(
       <Output>
@@ -91,7 +57,7 @@ describe("Pointer Type Generation", () => {
           <SourceDirectory path="api">
             <SourceFile path="models.go">
               <GoStructDeclaration
-                model={mockTaskModel as unknown}
+                model={mockTaskModel}
                 packageName="api"
                 usePointersForOptional={true}
               />
@@ -105,24 +71,15 @@ describe("Pointer Type Generation", () => {
   });
 
   it("does not generate pointer for slice types", () => {
-    const mockProjectModel = {
-      kind: "Model" as const,
-      name: "Project",
-      properties: new Map([
-        [
-          "tasks",
-          {
-            name: "tasks",
-            type: {
-              kind: "Model",
-              name: "Array",
-              templateMapper: { args: [{ kind: "Model", name: "Task" }] },
-            },
-            optional: true, // Optional but it's an array
-          },
-        ],
-      ]),
-    };
+    const arrayType = {
+      kind: "Model",
+      name: "Array",
+      templateMapper: { args: [MockFactory.createModel("Task")] },
+    } as unknown as Type;
+
+    const mockProjectModel = MockFactory.createModelWithProps("Project", [
+      { name: "tasks", type: arrayType, optional: true }, // Optional but it's an array
+    ]);
 
     const result = render(
       <Output>
@@ -130,7 +87,7 @@ describe("Pointer Type Generation", () => {
           <SourceDirectory path="api">
             <SourceFile path="models.go">
               <GoStructDeclaration
-                model={mockProjectModel as unknown}
+                model={mockProjectModel}
                 packageName="api"
                 usePointersForOptional={true}
               />

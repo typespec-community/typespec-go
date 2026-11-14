@@ -1,8 +1,8 @@
 import { defaultErrorHandler } from "./unified-errors.js";
-import { ErrorFactory } from "./error-factory";
+import { ErrorFactory } from "./error-factory.js";
 import type { TypeSpecPropertyNode, TypeSpecTypeNode } from "../types/typespec-domain.js";
 import { GeneratorUtils } from "./generator-utils.js";
-import type { GoEmitterResult } from "./error-types";
+import type { GoEmitterResult } from "./error-types.js";
 
 /**
  * Type-safe Union Generator

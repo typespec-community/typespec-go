@@ -5,7 +5,7 @@
  */
 
 import { z } from "zod";
-import { Logger, LogContext } from "./structured-logging";
+import { Logger, LogContext } from "./structured-logging.js";
 
 /**
  * Go struct field validation schema

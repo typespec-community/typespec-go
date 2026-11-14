@@ -7,7 +7,7 @@ import {
   GoIfSTC,
   GoBlockSTC,
   GoStringLiteralSTC,
-} from "../components/go";
+} from "../components/go/index.js";
 import { renderGoContent } from "../testing/test-utils.js";
 
 describe("🔥 Go Core Helper Components - STC Version", () => {

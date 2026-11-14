@@ -4,21 +4,15 @@
  */
 
 import { expect, test } from "vitest";
+import * as goComponents from "../components/go/index.js";
 
-test("Alloy-JS Components Integration", async () => {
-  // Test basic component compilation
-  expect(async () => {
-    // This should not throw if components are properly configured
-    const testModule = await import("../components/go/index.js");
-    expect(testModule).toBeDefined();
-  }).not.toThrow();
+test("Alloy-JS Components Integration", () => {
+  expect(goComponents).toBeDefined();
+  expect(Object.keys(goComponents).length).toBeGreaterThan(0);
 });
 
-test("TypeScript Compilation", async () => {
-  // Test TypeScript compiles JSX correctly
-  expect(() => {
-    // Basic JSX syntax test
-    const testJsx = `<div>Test</div>`;
-    console.log("JSX test:", testJsx);
-  }).not.toThrow();
+test("TypeScript Compilation", () => {
+  // Basic JSX syntax test
+  const testJsx = `<div>Test</div>`;
+  expect(testJsx).toContain("Test");
 });

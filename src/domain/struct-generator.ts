@@ -2,8 +2,8 @@ import { defaultErrorHandler } from "./unified-errors.js";
 import { CleanTypeMapper } from "./clean-type-mapper.js";
 import type { TypeSpecPropertyNode, GeneratorModel } from "../types/typespec-domain.js";
 import { GeneratorUtils } from "./generator-utils.js";
-import type { GoEmitterResult } from "./error-types";
-import { ErrorFactory } from "./error-factory";
+import type { GoEmitterResult } from "./error-types.js";
+import { ErrorFactory } from "./error-factory.js";
 
 /**
  * Type-safe Struct Generator

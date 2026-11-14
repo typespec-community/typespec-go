@@ -5,6 +5,7 @@
 
 import { describe, it, expect } from "vitest";
 import { join } from "path";
+import { tmpdir } from "node:os";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
 
 describe("E2E Integration - Working Workflow Tests", () => {
@@ -47,7 +48,7 @@ describe("E2E Integration - Working Workflow Tests", () => {
       validateGeneratedGo(simulatedGoCode);
 
       // Step 5: Write to temp file for manual verification
-      const tempDir = join(process.cwd(), "src/test/temp-e2e-test");
+      const tempDir = join(tmpdir(), "typespec-go-e2e-test");
       if (!existsSync(tempDir)) {
         mkdirSync(tempDir, { recursive: true });
       }

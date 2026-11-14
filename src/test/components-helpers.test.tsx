@@ -7,7 +7,7 @@ import {
   GoIfSTC,
   GoBlockSTC,
   GoStringLiteralSTC,
-} from "../components/go";
+} from "../components/go/index.js";
 
 describe("🔥 Go Core Helper Components", () => {
   test("GoSwitch renders correctly", () => {

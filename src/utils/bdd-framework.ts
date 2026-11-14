@@ -15,7 +15,7 @@
  * REAL VALIDATION: Actual test framework assertions
  * UNIFIED ERROR SYSTEM: Single source of truth for error handling
  */
-import type { GoEmitterResult } from "../domain/error-types";
+import type { GoEmitterResult } from "../domain/error-types.js";
 
 // Real BDD testing with proper assertions
 import { expect } from "vitest";

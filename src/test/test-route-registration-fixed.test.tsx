@@ -3,11 +3,12 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { GoRouteRegistrationComponent } from "../components/go/GoRouteRegistrationComponent";
+import { GoRouteRegistrationComponent } from "../components/go/GoRouteRegistrationComponent.js";
+import type { GoHandlerMethod } from "../components/go/GoHandlerMethod.js";
 import { renderGoContent } from "../testing/test-utils.js";
 
 // Mock GoHandlerMethod for testing
-const mockHandlers = [
+const mockHandlers: GoHandlerMethod[] = [
   {
     name: "GetUserHandler",
     route: "/users/{id}",
@@ -20,7 +21,7 @@ const mockHandlers = [
     name: "CreateUserHandler",
     route: "/users",
     httpMethod: "POST",
-    parameters: [{ name: "user", type: "User", goType: "User" }],
+    parameters: [{ name: "user", goType: "User", source: "body", optional: false }],
     returnType: "User",
     doc: "Create new user",
   },
@@ -29,7 +30,7 @@ const mockHandlers = [
 describe("GoRouteRegistrationComponent", () => {
   it("should generate proper Go route registration function", () => {
     const result = renderGoContent(
-      <GoRouteRegistrationComponent handlers={mockHandlers as unknown} serviceName="UserService" />,
+      <GoRouteRegistrationComponent handlers={mockHandlers} serviceName="UserService" />,
       "registration.go",
     );
 

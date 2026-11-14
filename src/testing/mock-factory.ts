@@ -8,6 +8,10 @@ import type {
   EmitContext,
   ModelProperty,
   FunctionValue,
+  Enum,
+  EnumMember,
+  Union,
+  UnionVariant,
 } from "@typespec/compiler";
 
 /**
@@ -137,6 +141,107 @@ export class MockFactory {
       isFinished: true,
       decorators: [],
     } as unknown as Model;
+  }
+
+  /**
+   * Create a mock Model with typed property descriptors (supports optional and nested types)
+   */
+  static createModelWithProps(
+    name: string,
+    properties: Array<{ name: string; type: Type; optional?: boolean }>,
+  ): Model {
+    const propsMap = new Map<string, ModelProperty>();
+
+    properties.forEach((prop) => {
+      propsMap.set(prop.name, {
+        kind: "ModelProperty",
+        name: prop.name,
+        type: prop.type,
+        optional: prop.optional ?? false,
+        decorators: [],
+      } as unknown as ModelProperty);
+    });
+
+    return {
+      kind: "Model",
+      name,
+      properties: propsMap,
+      derivedModels: [],
+      sourceModels: [],
+      entityKind: "Type" as const,
+      isFinished: true,
+      decorators: [],
+    } as unknown as Model;
+  }
+
+  /**
+   * Create a mock Enum with typed members
+   */
+  static createEnum(
+    name: string,
+    members: Array<{ name: string; value: string | number }>,
+  ): Enum {
+    const membersMap = new Map<string, EnumMember>();
+
+    members.forEach((member) => {
+      membersMap.set(member.name, {
+        kind: "EnumMember",
+        name: member.name,
+        value: member.value,
+        entityKind: "Type" as const,
+        isFinished: true,
+        decorators: [],
+      } as unknown as EnumMember);
+    });
+
+    return {
+      kind: "Enum",
+      name,
+      members: membersMap,
+      entityKind: "Type" as const,
+      isFinished: true,
+      decorators: [],
+    } as unknown as Enum;
+  }
+
+  /**
+   * Create a mock string literal type (union variant of strings)
+   */
+  static createStringLiteral(value: string): Type {
+    return {
+      kind: "String",
+      value,
+      entityKind: "Type" as const,
+      isFinished: true,
+    } as unknown as Type;
+  }
+
+  /**
+   * Create a mock Union with typed variants
+   */
+  static createUnion(name: string, variants: Array<{ name: string; type: Type }>): Union {
+    const variantsMap = new Map<string, UnionVariant>();
+
+    variants.forEach((variant) => {
+      variantsMap.set(variant.name, {
+        kind: "UnionVariant",
+        name: variant.name,
+        type: variant.type,
+        entityKind: "Type" as const,
+        isFinished: true,
+        decorators: [],
+      } as unknown as UnionVariant);
+    });
+
+    return {
+      kind: "Union",
+      name,
+      variants: variantsMap,
+      expression: false,
+      entityKind: "Type" as const,
+      isFinished: true,
+      decorators: [],
+    } as unknown as Union;
   }
 
   /**

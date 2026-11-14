@@ -16,6 +16,8 @@
     "strict": true,
     "skipLibCheck": true,
     "lib": ["ES2022", "DOM"],
+    "types": ["node"],
+    "rootDir": "./src",
     "declaration": true,
     "outDir": "./dist",
     "skipDefaultLibCheck": true,

@@ -4,6 +4,7 @@
 
 import { describe, it, expect } from "vitest";
 import { renderGoContent } from "../testing/test-utils.js";
+import { MockFactory } from "../testing/mock-factory.js";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
 import { GoEnumDeclaration } from "../components/go/GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "../components/go/GoUnionDeclaration.js";
@@ -11,32 +12,13 @@ import { GoUnionDeclaration } from "../components/go/GoUnionDeclaration.js";
 describe("@doc Decorator Support", () => {
   describe("GoStructDeclaration with explicit documentation", () => {
     it("should use provided documentation prop", () => {
-      const mockModel = {
-        kind: "Model" as const,
-        name: "User",
-        properties: new Map([
-          [
-            "id",
-            {
-              name: "id",
-              type: { kind: "Scalar", name: "string" },
-              optional: false,
-            },
-          ],
-          [
-            "name",
-            {
-              name: "name",
-              type: { kind: "Scalar", name: "string" },
-              optional: false,
-            },
-          ],
-        ]),
-      };
+      const mockModel = MockFactory.createModelWithProps("User", [
+        { name: "id", type: MockFactory.createScalar("string") },
+        { name: "name", type: MockFactory.createScalar("string") },
+      ]);
 
       const result = renderGoContent(
-         
-        <GoStructDeclaration model={mockModel as unknown} documentation="A user in the system" />,
+        <GoStructDeclaration model={mockModel} documentation="A user in the system" />,
         "models.go",
       );
 
@@ -45,24 +27,12 @@ describe("@doc Decorator Support", () => {
     });
 
     it("should fall back to default documentation without program", () => {
-      const mockModel = {
-        kind: "Model" as const,
-        name: "Task",
-        properties: new Map([
-          [
-            "id",
-            {
-              name: "id",
-              type: { kind: "Scalar", name: "string" },
-              optional: false,
-            },
-          ],
-        ]),
-      };
+      const mockModel = MockFactory.createModelWithProps("Task", [
+        { name: "id", type: MockFactory.createScalar("string") },
+      ]);
 
       const result = renderGoContent(
-         
-        <GoStructDeclaration model={mockModel as unknown} />,
+        <GoStructDeclaration model={mockModel} />,
         "models.go",
       );
 
@@ -74,16 +44,10 @@ describe("@doc Decorator Support", () => {
     it("should generate enum correctly", () => {
       const result = renderGoContent(
         <GoEnumDeclaration
-          enum={
-            {
-              kind: "Enum",
-              name: "Status",
-              members: new Map([
-                ["pending", { kind: "EnumMember", name: "pending", value: "pending" }],
-                ["completed", { kind: "EnumMember", name: "completed", value: "completed" }],
-              ]),
-            } as any
-          }
+          enum={MockFactory.createEnum("Status", [
+            { name: "pending", value: "pending" },
+            { name: "completed", value: "completed" },
+          ])}
           packageName="api"
         />,
       );
@@ -98,16 +62,10 @@ describe("@doc Decorator Support", () => {
     it("should generate union interface comment", () => {
       const result = renderGoContent(
         <GoUnionDeclaration
-          union={
-            {
-              kind: "Union",
-              name: "Result",
-              variants: new Map([
-                ["success", { kind: "UnionVariant", name: "success", type: { kind: "String" } }],
-                ["error", { kind: "UnionVariant", name: "error", type: { kind: "String" } }],
-              ]),
-            } as any
-          }
+          union={MockFactory.createUnion("Result", [
+            { name: "success", type: MockFactory.createStringLiteral("success") },
+            { name: "error", type: MockFactory.createStringLiteral("error") },
+          ])}
           packageName="api"
         />,
       );

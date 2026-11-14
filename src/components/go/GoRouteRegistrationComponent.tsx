@@ -1,5 +1,5 @@
 import { FunctionDeclaration, FunctionReceiver } from "@alloy-js/go";
-import type { GoHandlerMethod } from "./GoHandlerMethod";
+import type { GoHandlerMethod } from "./GoHandlerMethod.js";
 import { GoStringLiteral } from "./core/index.js";
 
 type GoRouteRegistrationComponentProps = {

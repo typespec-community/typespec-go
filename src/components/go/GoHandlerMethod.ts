@@ -1,4 +1,4 @@
-import type { HttpParameter } from "../../utils/typespec-http-utils";
+import type { HttpParameter } from "../../utils/typespec-http-utils.js";
 import type { JSX } from "@alloy-js/core/jsx-runtime";
 import type { Operation } from "@typespec/compiler";
 

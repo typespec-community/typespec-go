@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 import { getEnumValues, GoEnumDeclaration } from "../components/go/GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "../components/go/GoUnionDeclaration.js";
-import type { Enum, Union } from "@typespec/compiler";
+import { MockFactory } from "../testing/mock-factory.js";
 import { renderGoContent } from "../testing/test-utils.js";
 
 /**
@@ -9,15 +9,11 @@ import { renderGoContent } from "../testing/test-utils.js";
  */
 test("GoEnumDeclaration generates valid Go string enum", () => {
   // Create mock enum matching TypeSpec Enum interface
-  const mockEnum: Enum = {
-    name: "Status",
-    kind: "Enum",
-    members: new Map([
-      ["pending", { name: "pending", value: "pending" }],
-      ["active", { name: "active", value: "active" }],
-      ["completed", { name: "completed", value: "completed" }],
-    ]) as any,
-  } as any;
+  const mockEnum = MockFactory.createEnum("Status", [
+    { name: "pending", value: "pending" },
+    { name: "active", value: "active" },
+    { name: "completed", value: "completed" },
+  ]);
 
   const goFile = renderGoContent(<GoEnumDeclaration enum={mockEnum} />);
 
@@ -32,15 +28,11 @@ test("GoEnumDeclaration generates valid Go string enum", () => {
 
 test("GoEnumDeclaration generates valid Go iota enum", () => {
   // Create mock numeric enum
-  const mockEnum: Enum = {
-    name: "Priority",
-    kind: "Enum",
-    members: new Map([
-      ["low", { name: "low", value: 0 }],
-      ["medium", { name: "medium", value: 1 }],
-      ["high", { name: "high", value: 2 }],
-    ]) as any,
-  } as any;
+  const mockEnum = MockFactory.createEnum("Priority", [
+    { name: "low", value: 0 },
+    { name: "medium", value: 1 },
+    { name: "high", value: 2 },
+  ]);
 
   const result = renderGoContent(<GoEnumDeclaration enum={mockEnum} useIota={true} />);
 
@@ -52,15 +44,12 @@ test("GoEnumDeclaration generates valid Go iota enum", () => {
 });
 
 test("getEnumValues extracts enum member information", () => {
-  const mockEnum: Partial<Enum> = {
-    name: "Color",
-    members: new Map([
-      ["red", { name: "red", value: "RED" }],
-      ["green", { name: "green", value: "GREEN" }],
-    ]) as any,
-  };
+  const mockEnum = MockFactory.createEnum("Color", [
+    { name: "red", value: "RED" },
+    { name: "green", value: "GREEN" },
+  ]);
 
-  const values = getEnumValues(mockEnum as Enum);
+  const values = getEnumValues(mockEnum);
 
   expect(values).toHaveLength(2);
   expect(values[0]).toEqual({ name: "red", value: "RED" });
@@ -72,16 +61,12 @@ test("getEnumValues extracts enum member information", () => {
  */
 test("GoUnionDeclaration generates sealed interface pattern", () => {
   // Create mock union matching TypeSpec Union interface
-  const mockUnion: Union = {
-    name: "PaymentMethod",
-    kind: "Union",
-    variants: new Map([
-      ["card", { name: "card", type: { kind: "String" } }],
-      ["bank", { name: "bank", type: { kind: "String" } }],
-    ]) as any,
-  } as any;
+  const mockUnion = MockFactory.createUnion("PaymentMethod", [
+    { name: "card", type: MockFactory.createStringLiteral("card") },
+    { name: "bank", type: MockFactory.createStringLiteral("bank") },
+  ]);
 
-  const result = renderGoContent(<GoUnionDeclaration union={mockUnion as Union} />);
+  const result = renderGoContent(<GoUnionDeclaration union={mockUnion} />);
 
   // Verify sealed interface pattern
   expect(result).toContain("type PaymentMethod interface");
@@ -93,17 +78,13 @@ test("GoUnionDeclaration generates sealed interface pattern", () => {
 });
 
 test("GoUnionDeclaration generates discriminated union with unmarshaler", () => {
-  const mockUnion: Partial<Union> = {
-    name: "Event",
-    kind: "Union",
-    variants: new Map([
-      ["created", { name: "created", type: { kind: "String" } }],
-      ["deleted", { name: "deleted", type: { kind: "String" } }],
-    ]) as any,
-  };
+  const mockUnion = MockFactory.createUnion("Event", [
+    { name: "created", type: MockFactory.createStringLiteral("created") },
+    { name: "deleted", type: MockFactory.createStringLiteral("deleted") },
+  ]);
 
   const result = renderGoContent(
-    <GoUnionDeclaration union={mockUnion as Union} discriminator="type" />,
+    <GoUnionDeclaration union={mockUnion} discriminator="type" />,
   );
 
   // Verify discriminated union features
@@ -115,11 +96,7 @@ test("GoUnionDeclaration generates discriminated union with unmarshaler", () => 
 });
 
 test("GoUnionDeclaration handles empty union gracefully", () => {
-  const emptyUnion: Union = {
-    name: "EmptyUnion",
-    kind: "Union",
-    variants: new Map() as any,
-  } as any;
+  const emptyUnion = MockFactory.createUnion("EmptyUnion", []);
 
   const result = renderGoContent(<GoUnionDeclaration union={emptyUnion} />);
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { GoHandlerStub } from "../components/go/GoHandlerStub";
+import { GoHandlerStub } from "../components/go/GoHandlerStub.js";
 
 describe("GoHandlerStub Improvements", () => {
   it("should export GoHandlerStub component correctly", () => {
