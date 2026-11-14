@@ -1,8 +1,10 @@
 # TypeSpec Go Emitter Status Report
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Date:** 2025-12-09 11:58 CET\
 **Project Health:** 🟡 **EXCELLENT WITH MINOR CONFIGURATION ISSUES**\
-**Test Success Rate:** 99% (156/157 tests passing)
+**Test Success Rate:** ~~99% (156/157 tests passing)~~ 165/165 at `8205ea3`.
 
 ---
 
@@ -25,8 +27,8 @@
 
 ### 🚨 CURRENT BLOCKERS (1% Impact)
 
-- **GoHandlerStub Tests:** 1 test failing with component rendering issues
-- **Component Composition:** Some components need proper Go package structure
+~~- **GoHandlerStub Tests:** 1 test failing with component rendering issues~~ resolved `87e2eb4`.
+~~- **Component Composition:** Some components need proper Go package structure~~ resolved `87e2eb4`.
 
 ---
 
@@ -34,10 +36,10 @@
 
 ### Critical Infrastructure Fixes
 
-1. **JSX Runtime Resolution** - Fixed TypeScript compilation errors
-2. **Vitest Configuration** - Added proper JSX transformation support
-3. **Component Import Patterns** - Established correct import/export patterns
-4. **Test Standardization** - Created reliable test patterns
+~~1. **JSX Runtime Resolution** - Fixed TypeScript compilation errors~~ done at `87e2eb4`
+~~2. **Vitest Configuration** - Added proper JSX transformation support~~ done at `87e2eb4`
+~~3. **Component Import Patterns** - Established correct import/export patterns~~ done at `87e2eb4`
+~~4. **Test Standardization** - Created reliable test patterns~~ done at `87e2eb4`
 
 ### Architecture Improvements
 
@@ -59,7 +61,7 @@
 
 ### 🔧 CURRENT FAILURES (1/157 tests)
 
-- **go-handler-return-types.test.tsx:** Component rendering with Output structure
+~~- **go-handler-return-types.test.tsx:** Component rendering with Output structure~~ resolved `87e2eb4`.
 
 ---
 
@@ -76,21 +78,21 @@
 
 #### 🔥 IMMEDIATE (High Impact, Low Work)
 
-1. **Fix GoHandlerStub Test** - Resolve 1 failing test
-2. **Component Documentation** - Add JSDoc to all components
-3. **Error Messages** - Improve TypeSpec validation error clarity
+~~1. **Fix GoHandlerStub Test** - Resolve 1 failing test~~ done at `87e2eb4`
+~~2. **Component Documentation** - Add JSDoc to all components~~ done at `bae8473`
+3. **Error Messages** - Improve TypeSpec validation error clarity **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 #### ⚡ HIGH IMPACT (High Impact, Medium Work)
 
-4. **Complete Type Coverage** - Add missing TypeSpec scalar types
-5. **Union Type Enhancement** - Better union type generation
-6. **Performance Validation** - Benchmark large TypeSpec files
+~~4. **Complete Type Coverage** - Add missing TypeSpec scalar types~~ done at `8ff968d`
+~~5. **Union Type Enhancement** - Better union type generation~~ done at `87e2eb4`
+6. **Performance Validation** - Benchmark large TypeSpec files **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 #### 🏗️ ENHANCEMENT (Medium Impact, Higher Work)
 
-7. **CLI Tool** - Direct command-line interface
-8. **Go Idioms** - More idiomatic generated Go code
-9. **Custom Decorators** - @go.name, @go.type, @go.package support
+7. **CLI Tool** - Direct command-line interface **→ routed to TODO_LIST (2026-11-13 sweep)**
+8. **Go Idioms** - More idiomatic generated Go code **→ routed to TODO_LIST (2026-11-13 sweep)**
+9. **Custom Decorators** - @go.name, @go.type, @go.package support **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 ---
 
@@ -105,9 +107,9 @@
 
 ### 📋 MINOR REMAINING
 
-- **Component Consistency** - Some components need minor cleanup
-- **Documentation** - JSDoc coverage could be improved
-- **Error Handling** - Could be more comprehensive
+~~- **Component Consistency** - Some components need minor cleanup~~ done at `97f7f58`.
+~~- **Documentation** - JSDoc coverage could be improved~~ done at `bae8473` (COMPONENTS.md).
+~~- **Error Handling** - Could be more comprehensive~~ done at `97f7f58`.
 
 ---
 
@@ -162,9 +164,9 @@
 
 **Before Production Release:**
 
-- 🔧 Fix 1 remaining test failure
-- 📋 Add comprehensive documentation
-- 🔧 Performance testing with large TypeSpec files
+~~- 🔧 Fix 1 remaining test failure~~ done at `87e2eb4`.
+~~- 📋 Add comprehensive documentation~~ done at `bae8473` (COMPONENTS.md; SETUP `151579d`, API-REFERENCE `899bc60`).
+- 🔧 Performance testing with large TypeSpec files **→ routed to TODO_LIST (2026-11-13 sweep)** — no benchmark evidence in repo.
 
 ---
 
@@ -172,11 +174,11 @@
 
 ### 🏆 EXCELLENT SCORES
 
-- **Code Quality:** 95% (ESLint strict mode)
-- **Type Safety:** 100% (no any types, strict TypeScript)
-- **Test Coverage:** 99.4% (156/157 tests passing)
-- **Architecture:** 100% (modern component-based)
-- **Documentation:** 85% (good, room for improvement)
+~~- **Code Quality:** 95% (ESLint strict mode)~~ superseded — FEATURES.md quality metrics (2026-11-13).
+~~- **Type Safety:** 100% (no any types, strict TypeScript)~~ superseded — production code zero-`any` since `e7e29ed`; 13 `no-explicit-any` lint errors remain in test-support files (2026-11-13).
+~~- **Test Coverage:** 99.4% (156/157 tests passing)~~ superseded — FEATURES.md quality metrics (2026-11-13).
+~~- **Architecture:** 100% (modern component-based)~~ superseded — FEATURES.md quality metrics (2026-11-13).
+~~- **Documentation:** 85% (good, room for improvement)~~ superseded — FEATURES.md quality metrics (2026-11-13).
 
 ### 🎯 TARGET METRICS
 
@@ -202,9 +204,9 @@ The TypeSpec Go Emitter is in outstanding condition with a 99% test success rate
 
 **Next Steps:**
 
-1. Fix the 1 remaining failing test (minor issue)
-2. Complete documentation for production readiness
-3. Add performance validation for large files
+~~1. Fix the 1 remaining failing test (minor issue)~~ done at `87e2eb4`
+~~2. Complete documentation for production readiness~~ done at `bae8473`
+3. Add performance validation for large files **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 **This project is exceptionally close to production-ready status and demonstrates excellent software engineering practices.**
 

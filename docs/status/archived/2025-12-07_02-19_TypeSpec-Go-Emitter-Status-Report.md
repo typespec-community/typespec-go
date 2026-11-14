@@ -1,5 +1,7 @@
 # TypeSpec Go Emitter - Status Report
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Date:** 2025-12-07 02:19\
 **Version:** 0.0.1\
 **Status:** Partial Implementation with Critical Foundation Issues
@@ -8,13 +10,13 @@
 
 ## 📊 Executive Summary
 
-The TypeSpec Go Emitter project is at a critical juncture with solid architectural foundations but blocked by fundamental import/export and JSX compilation issues. The core Alloy-JS component-based architecture is implemented and functional, but component accessibility is crippled by TypeScript configuration conflicts.
+The TypeSpec Go Emitter project is at a critical juncture with solid architectural foundations ~~but blocked by fundamental import/export and JSX compilation issues~~ (resolved 236efbc, 87e2eb4). The core Alloy-JS component-based architecture is implemented and functional, ~~but component accessibility is crippled by TypeScript configuration conflicts~~ (resolved 87e2eb4; `verbatimModuleSyntax: true` retained).
 
 **Key Metrics:**
 
-- Test Success Rate: 70% (131/144 tests passing)
-- Core Architecture: 60% complete
-- Critical Blockers: 7 major issues preventing progress
+- ~~Test Success Rate: 70% (131/144 tests passing)~~ done at `8205ea3` — 165/165 tests.
+- ~~Core Architecture: 60% complete~~ done — complete at HEAD `8205ea3`.
+- ~~Critical Blockers: 7 major issues preventing progress~~ done — all resolved (`236efbc`, `87e2eb4`).
 - Estimated Time to MVP: 2-3 days (if blockers resolved)
 
 ---
@@ -168,27 +170,27 @@ The TypeSpec Go Emitter project is at a critical juncture with solid architectur
 
 ### Phase 1: Foundation Fixes (Hours 1-4)
 
-1. **Fix Component Exports** - Remove blocking comment, implement proper exports
-2. **Resolve JSX Compilation** - Research Alloy-JS + verbatimModuleSyntax solutions
-3. **Fix Import Paths** - Align imports with actual file structure
+~~1. **Fix Component Exports** - Remove blocking comment, implement proper exports~~ done at `236efbc`
+~~2. **Resolve JSX Compilation** - Research Alloy-JS + verbatimModuleSyntax solutions~~ done at `87e2eb4`
+~~3. **Fix Import Paths** - Align imports with actual file structure~~ done at `87e2eb4`
 
 ### Phase 2: Component Implementation (Hours 5-8)
 
-4. **Implement Missing Components** - GoIf, GoBlock, GoReturn with proper JSX
-5. **Fix Component Helper Tests** - All 7 failing tests
-6. **Validate Component Rendering** - Ensure proper output generation
+~~4. **Implement Missing Components** - GoIf, GoBlock, GoReturn with proper JSX~~ done at `8205ea3`
+~~5. **Fix Component Helper Tests** - All 7 failing tests~~ done at `87e2eb4`
+~~6. **Validate Component Rendering** - Ensure proper output generation~~ done at `87e2eb4`
 
 ### Phase 3: Test Stabilization (Hours 9-12)
 
-7. **Fix Enum/Union Tests** - Complete implementation
-8. **Fix Handler Return Types** - HTTP operation return type mapping
-9. **Achieve 95%+ Test Success Rate** - Target 137/144 tests passing
+~~7. **Fix Enum/Union Tests** - Complete implementation~~ done at `8205ea3`
+~~8. **Fix Handler Return Types** - HTTP operation return type mapping~~ done at `8205ea3`
+~~9. **Achieve 95%+ Test Success Rate** - Target 137/144 tests passing~~ done at `8205ea3`
 
 ### Phase 4: Documentation & Polish (Hours 13-16)
 
-10. **Document Component API** - Usage examples and patterns
-11. **Performance Validation** - Sub-millisecond generation testing
-12. **Prepare for MVP Release** - Feature-complete demonstration
+~~10. **Document Component API** - Usage examples and patterns~~ done at `bae8473`
+11. **Performance Validation** - Sub-millisecond generation testing **→ routed to TODO_LIST (2026-11-13 sweep)**
+~~12. **Prepare for MVP Release** - Feature-complete demonstration~~ **Superseded — FEATURES.md (2026-11-13).**
 
 ---
 
@@ -218,9 +220,9 @@ The TypeSpec Go Emitter project is at a critical juncture with solid architectur
 
 **Options:**
 
-1. **Strict Mode Path** - Research Alloy-JS JSX solutions with verbatimModuleSyntax
-2. **Compatibility Path** - Relax TypeScript strictness for immediate progress
-3. **Hybrid Approach** - Separate configuration for components vs utilities
+~~1. **Strict Mode Path** - Research Alloy-JS JSX solutions with verbatimModuleSyntax~~ done at `8205ea3`
+~~2. **Compatibility Path** - Relax TypeScript strictness for immediate progress~~ **NOT-DO — not needed: strict mode retained and JSX works at HEAD 8205ea3.**
+~~3. **Hybrid Approach** - Separate configuration for components vs utilities~~ **NOT-DO — not needed: vitest jsx:preserve resolved JSX handling at HEAD 8205ea3.**
 
 **Recommendation:** Research hybrid approach first, fallback to compatibility path if needed.
 

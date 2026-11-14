@@ -1,5 +1,7 @@
 # TypeSpec Go Emitter - Status Report
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Date:** 2025-12-08 02:50 CET\
 **Focus:** 51% → 64% Impact Resolution - Major Progress Achieved
 
@@ -9,8 +11,8 @@
 
 ### **MAJOR SUCCESS - 64% IMPACT ISSUES RESOLVED ✅**
 
-**Starting Point:** 131/144 passing tests (90.9% success)\
-**Current Status:** 135/147 passing tests (91.8% success)\
+**Starting Point:** ~~131/144 passing tests (90.9% success)~~ historical — FEATURES.md quality metrics (2026-11-13).\
+**Current Status:** ~~135/147 passing tests (91.8% success)~~ 165/165 at HEAD 8205ea3.\
 **Net Improvement:** +4 tests, +0.9% success rate
 
 **Key Achievement:** Successfully resolved the **high-impact issues** that were blocking 64% of the overall results, moving from **91% → 94% success rate** on core functionality.
@@ -33,8 +35,8 @@ Final:      135/147  (91.8% success)  ← Enum formatting complete
 
 - **🔥 BLOCKING (51% impact)**: Component export system → **✅ COMPLETELY RESOLVED**
 - **🎯 HIGH (64% impact)**: Enum/Union formatting → **✅ COMPLETELY RESOLVED**
-- **📋 MEDIUM (25% impact)**: Handler return types → **❌ REMAINING**
-- **🔧 LOW (10% impact)**: Component helper isolation → **❌ REMAINING**
+- **📋 MEDIUM (25% impact)**: ~~Handler return types → **❌ REMAINING**~~ done at 8205ea3.
+- **🔧 LOW (10% impact)**: ~~Component helper isolation → **❌ REMAINING**~~ done at 87e2eb4.
 
 ---
 
@@ -146,20 +148,20 @@ Type string `json:"type"`
 
 ### **Key Pattern Discoveries:**
 
-1. **Alloy-JS Go Component Prop Pattern:**
+~~1. **Alloy-JS Go Component Prop Pattern:**~~ **Superseded — COMPONENTS.md (2026-11-13).**
 
    ```jsx
    // Function receivers must be props, not children
    receiver={<FunctionReceiver name="e" type={typeName} />}
    ```
 
-2. **Go String Raw Mode for JSON Tags:**
+~~2. **Go String Raw Mode for JSON Tags:**~~ **Superseded — COMPONENTS.md (2026-11-13).**
 
    ```jsx
    <GoStringLiteral raw value={`json:"${discriminator}"`} />
    ```
 
-3. **JSX to Go Comment Conversion:**
+~~3. **JSX to Go Comment Conversion:**~~ **Superseded — COMPONENTS.md (2026-11-13).**
 
    ```jsx
    {
@@ -170,7 +172,7 @@ Type string `json:"type"`
    }
    ```
 
-4. **Proper Line Break Handling:**
+~~4. **Proper Line Break Handling:**~~ **Superseded — COMPONENTS.md (2026-11-13).**
    ```jsx
    {
      ("\n  switch e {");
@@ -188,11 +190,11 @@ Type string `json:"type"`
 
 ---
 
-## 📋 REMAINING ISSUES (12 Failed Tests)
+## 📋 ~~REMAINING ISSUES (12 Failed Tests)~~ resolved 87e2eb4 / 8205ea3.
 
 ### **Component Helper Isolation (7 tests)**
 
-**Issue:** Custom JSX components return directory objects instead of rendered output
+**Issue:** ~~Custom JSX components return directory objects instead of rendered output~~ fixed 87e2eb4 (vitest `jsx: "preserve"` + SourceFile wrapper).
 
 ```
 Expected: "switch e {"
@@ -204,7 +206,7 @@ Received: { kind: 'directory', path: './', contents: [] }
 
 ### **Handler Return Types (3 tests)**
 
-**Issue:** Similar directory object rendering in handler tests
+**Issue:** ~~Similar directory object rendering in handler tests~~ fixed 87e2eb4; handler tests green at HEAD 8205ea3.
 **Root Cause:** Related to component helper isolation issue
 **Status:** Same root cause, will be resolved with component helper fix
 
@@ -218,29 +220,29 @@ Received: { kind: 'directory', path: './', contents: [] }
 
 ### **64% Impact Issues - COMPLETELY RESOLVED ✅**
 
-1. **Component Export System** (BLOCKING) - Fixed
+~~1. **Component Export System** (BLOCKING) - Fixed~~ done at `236efbc`
    - **Impact:** Enabled all component functionality across codebase
    - **Effort:** High discovery, low implementation
    - **Result:** Complete system unblock
 
-2. **Enum Generation** (HIGH) - Fixed
+~~2. **Enum Generation** (HIGH) - Fixed~~ done at `8205ea3`
    - **Impact:** Proper Go enum code generation
    - **Effort:** Medium discovery, medium implementation
    - **Result:** Production-ready enum system
 
-3. **Union Generation** (HIGH) - Fixed
+~~3. **Union Generation** (HIGH) - Fixed~~ done at `8205ea3`
    - **Impact:** Proper Go union code generation
    - **Effort:** Medium discovery, low implementation
    - **Result:** Production-ready union system
 
 ### **36% Impact Issues - REMAINING ❌**
 
-1. **Component Helper Isolation** (MEDIUM) - Remaining
+~~1. **Component Helper Isolation** (MEDIUM) - Remaining~~ done at `87e2eb4`
    - **Impact:** Test suite completeness
    - **Effort:** High investigation required
    - **Result:** Non-blocking for production
 
-2. **Handler Return Types** (MEDIUM) - Remaining
+~~2. **Handler Return Types** (MEDIUM) - Remaining~~ done at `8205ea3`
    - **Impact:** Test suite completeness
    - **Effort:** Medium investigation
    - **Result:** Related to component helper issue
@@ -277,34 +279,34 @@ Received: { kind: 'directory', path: './', contents: [] }
 
 ### **IMMEDIATE NEXT ACTIONS:**
 
-1. **Investigate Component Helper Isolation**
+~~1. **Investigate Component Helper Isolation**~~ done at `87e2eb4`
    - Focus: JSX component rendering in test contexts
    - Goal: Resolve remaining 7 component test failures
    - Timeline: 1-2 investigation sessions
 
-2. **Address Handler Return Types**
+~~2. **Address Handler Return Types**~~ done at `8205ea3`
    - Focus: Related component rendering issues
    - Goal: Resolve remaining 3 handler test failures
    - Timeline: Follow component helper investigation
 
-3. **Documentation Update**
+~~3. **Documentation Update**~~ done at `bae8473`
    - Focus: Component prop patterns discovered
    - Goal: Document proper Alloy-JS Go component usage
    - Timeline: Parallel with investigations
 
 ### **STRATEGIC RECOMMENDATIONS:**
 
-1. **Production Deployment Ready:**
+~~1. **Production Deployment Ready:**~~ **Superseded — FEATURES.md (2026-11-13).**
    - Current 93.7% readiness is excellent for production
    - Remaining issues are test infrastructure, not core functionality
    - Recommend proceed with production deployment
 
-2. **Component Architecture Review:**
+~~2. **Component Architecture Review:**~~ done at `bae8473`
    - Consider standardizing on Alloy-JS Go components over custom components
    - Document prop patterns for future development
    - Establish component testing best practices
 
-3. **Test Infrastructure Enhancement:**
+3. **Test Infrastructure Enhancement:** **→ routed to TODO_LIST (2026-11-13 sweep)**
    - Investigate proper component testing patterns
    - Standardize integration vs unit test approaches
    - Enhance test coverage for edge cases

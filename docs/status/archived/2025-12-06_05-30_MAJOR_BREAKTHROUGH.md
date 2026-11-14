@@ -1,10 +1,12 @@
 # 🎉 MAJOR BREAKTHROUGH - JSX TEMPLATE LITERAL ISSUE RESOLVED
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Date:** 2025-12-06\
 **Time:** 05:30 CET\
 **Status:** 🔥 CRITICAL BREAKTHROUGH - Template Literal Issue Identified & Fixed\
 **Violations:** Unknown (build progress significant)\
-**Progress:** 75% (JSX structural issue isolated, template literal pattern resolved)
+**Progress:** ~~75% (JSX structural issue isolated, template literal pattern resolved)~~ superseded — FEATURES.md quality metrics (2026-11-13).
 
 ---
 
@@ -23,35 +25,35 @@
 
 ### ✅ SYSTEMATIC DEBUGGING METHODOLOGY ✅
 
-1. **Error Tracking:** Meticulously tracked error line movement (144→143→131)
-2. **Isolation Technique:** Removed complex components to isolate root cause
-3. **Incremental Testing:** Applied single change, test, analyze pattern
-4. **Pattern Research:** Studied working GoEnumDeclaration patterns extensively
-5. **Root Cause Discovery:** Identified template literals as core issue
+~~1. **Error Tracking:** Meticulously tracked error line movement (144→143→131)~~ **Superseded — FEATURES.md (2026-11-13).**
+~~2. **Isolation Technique:** Removed complex components to isolate root cause~~ **Superseded — FEATURES.md (2026-11-13).**
+~~3. **Incremental Testing:** Applied single change, test, analyze pattern~~ **Superseded — FEATURES.md (2026-11-13).**
+~~4. **Pattern Research:** Studied working GoEnumDeclaration patterns extensively~~ **Superseded — FEATURES.md (2026-11-13).**
+~~5. **Root Cause Discovery:** Identified template literals as core issue~~ **Superseded — FEATURES.md (2026-11-13).**
 
 ### ✅ TEMPLATE LITERAL ISSUE RESOLVED ✅
 
-1. **Problem Identification:** JSX parser fails on `${...}` inside component attributes
-2. **Pattern Discovery:** Complex template literals incompatible with JSX attributes
-3. **Solution Found:** Use static strings or JSX children for dynamic content
-4. **Verification:** Template literal removal directly reduced error locations
-5. **Pattern Documentation:** Recorded working vs problematic patterns
+~~1. **Problem Identification:** JSX parser fails on `${...}` inside component attributes~~ **Superseded — FEATURES.md (2026-11-13).**
+~~2. **Pattern Discovery:** Complex template literals incompatible with JSX attributes~~ **Superseded — FEATURES.md (2026-11-13).**
+~~3. **Solution Found:** Use static strings or JSX children for dynamic content~~ **Superseded — FEATURES.md (2026-11-13).**
+~~4. **Verification:** Template literal removal directly reduced error locations~~ **Superseded — FEATURES.md (2026-11-13).**
+~~5. **Pattern Documentation:** Recorded working vs problematic patterns~~ **Superseded — FEATURES.md (2026-11-13).**
 
 ### ✅ COMPONENT API MASTERY ✅
 
-1. **@alloy-js/go API:** Mastered actual component exports vs assumptions
-2. **Import Corrections:** Fixed Package/Import to SingleImportStatement and SourceFile package prop
-3. **For Component:** Identified children pattern as correct approach over deprecated 'to' prop
-4. **GoReturn Interface:** Fixed property usage from 'type' to 'value'
-5. **Working Examples:** Used GoEnumDeclaration as reference for correct patterns
+~~1. **@alloy-js/go API:** Mastered actual component exports vs assumptions~~ **Superseded — FEATURES.md (2026-11-13).**
+~~2. **Import Corrections:** Fixed Package/Import to SingleImportStatement and SourceFile package prop~~ **Superseded — FEATURES.md (2026-11-13).**
+~~3. **For Component:** Identified children pattern as correct approach over deprecated 'to' prop~~ **Superseded — FEATURES.md (2026-11-13).**
+~~4. **GoReturn Interface:** Fixed property usage from 'type' to 'value'~~ **Superseded — FEATURES.md (2026-11-13).**
+~~5. **Working Examples:** Used GoEnumDeclaration as reference for correct patterns~~ **Superseded — FEATURES.md (2026-11-13).**
 
 ### ✅ PROFESSIONAL WORKFLOW DISCIPLINE ✅
 
-1. **Incremental Commits:** Committed each logical change set with detailed messages
-2. **Version Control:** Proper git add/commit/push workflow maintained
-3. **Documentation:** Comprehensive commit messages with analysis
-4. **Progress Tracking:** Systematic recording of achievements and blockers
-5. **Rollback Strategy:** Could revert changes when issues introduced
+~~1. **Incremental Commits:** Committed each logical change set with detailed messages~~ **Superseded — FEATURES.md (2026-11-13).**
+~~2. **Version Control:** Proper git add/commit/push workflow maintained~~ **Superseded — FEATURES.md (2026-11-13).**
+~~3. **Documentation:** Comprehensive commit messages with analysis~~ **Superseded — FEATURES.md (2026-11-13).**
+~~4. **Progress Tracking:** Systematic recording of achievements and blockers~~ **Superseded — FEATURES.md (2026-11-13).**
+~~5. **Rollback Strategy:** Could revert changes when issues introduced~~ **Superseded — FEATURES.md (2026-11-13).**
 
 ---
 
@@ -66,11 +68,11 @@
 - **Pattern:** `<GoStringLiteral>{dynamicContent}</GoStringLiteral>` works
 - **Pattern:** `<GoStringLiteral value={`template ${var}`} />` FAILS
 
-### ⚠️ REMAINING ISSUE: JSX STRUCTURE (25% to go)
+### ~~⚠️ REMAINING ISSUE: JSX STRUCTURE (25% to go)~~ resolved 87e2eb4.
 
-- **Current Error:** `Unterminated JSX contents` at line 131
+- **Current Error:** ~~`Unterminated JSX contents` at line 131~~ resolved 87e2eb4.
 - **Location:** End of FunctionDeclaration closing tag
-- **Impact:** Component structure still has minor issues
+- **Impact:** ~~Component structure still has minor issues~~ resolved 87e2eb4.
 - **Root Cause:** Likely JSX tag nesting or whitespace problems
 - **Complexity:** Much simpler than template literal issue
 
@@ -82,31 +84,31 @@
 
 | Task                      | Status | Evidence                                          |
 | ------------------------- | ------ | ------------------------------------------------- |
-| Template Literal Research | 100%   | Identified root cause and solution                |
-| JSX API Mastery           | 100%   | All component APIs now understood                 |
-| Import Structure Fixes    | 100%   | SingleImportStatement and SourceFile package prop |
-| For Component API         | 100%   | Children pattern correctly applied                |
-| GoReturn Interface        | 100%   | Property usage corrected                          |
-| Systematic Debugging      | 100%   | Error location tracking methodology               |
-| Root Cause Analysis       | 100%   | Template literal vs JSX structure separated       |
-| Professional Workflow     | 100%   | Incremental commits with documentation            |
+| ~~Template Literal Research~~ done at `87e2eb4` | ~~100%~~ | ~~Identified root cause and solution~~ |
+| ~~JSX API Mastery~~ done at `87e2eb4` | ~~100%~~ | ~~All component APIs now understood~~ |
+| ~~Import Structure Fixes~~ done at `87e2eb4` | ~~100%~~ | ~~SingleImportStatement and SourceFile package prop~~ |
+| ~~For Component API~~ done at `87e2eb4` | ~~100%~~ | ~~Children pattern correctly applied~~ |
+| ~~GoReturn Interface~~ done at `87e2eb4` | ~~100%~~ | ~~Property usage corrected~~ |
+| ~~Systematic Debugging~~ **Superseded — COMPONENTS.md (2026-11-13).** | ~~100%~~ | ~~Error location tracking methodology~~ |
+| ~~Root Cause Analysis~~ done at `87e2eb4` | ~~100%~~ | ~~Template literal vs JSX structure separated~~ |
+| ~~Professional Workflow~~ **Superseded — COMPONENTS.md (2026-11-13).** | ~~100%~~ | ~~Incremental commits with documentation~~ |
 
 ### b) PARTIALLY DONE ⚠️ (4/15)
 
 | Task                  | Status | Progress                                               |
 | --------------------- | ------ | ------------------------------------------------------ |
-| JSX Structure Fix     | 70%    | Template literals fixed, structure issue remains       |
-| Component Integration | 70%    | Most components working, minor issues remain           |
-| Build Process         | 60%    | Template literal issues resolved, new issues addressed |
-| Error Resolution      | 50%    | Primary issue solved, secondary issue being debugged   |
+| ~~JSX Structure Fix~~ done at `87e2eb4` | ~~70%~~ | ~~Template literals fixed, structure issue remains~~ |
+| ~~Component Integration~~ done at `8205ea3` | ~~70%~~ | ~~Most components working, minor issues remain~~ |
+| ~~Build Process~~ done at `8205ea3` | ~~60%~~ | ~~Template literal issues resolved, new issues addressed~~ |
+| ~~Error Resolution~~ done at `87e2eb4` | ~~50%~~ | ~~Primary issue solved, secondary issue being debugged~~ |
 
 ### c) NOT STARTED 🚫 (3/15)
 
 | Task               | Status | Reason                         |
 | ------------------ | ------ | ------------------------------ |
-| Violation Scanning | 0%     | Build must work first          |
-| Component Testing  | 0%     | Cannot test with broken build  |
-| Final Validation   | 0%     | Not ready for validation phase |
+| ~~Violation Scanning~~ **Superseded — zero-'any' quality campaign (e7e29ed).** | ~~0%~~ | ~~Build must work first~~ |
+| ~~Component Testing~~ done at `8205ea3` | ~~0%~~ | ~~Cannot test with broken build~~ |
+| ~~Final Validation~~ done at `631185b` | ~~0%~~ | ~~Not ready for validation phase~~ |
 
 ### d) TOTALLY FUCKED UP 💥 (0/15)
 
@@ -141,19 +143,19 @@
 
 ### 🔥 FINAL STRUCTURE FIX (NEXT 30 MINUTES)
 
-1. **Resolve FunctionDeclaration Structure:** Fix remaining JSX nesting issue
-2. **Verify Build Success:** Ensure clean compilation
-3. **Test Component Output:** Validate generated Go code
-4. **Scan Current Violations:** Get baseline violation count
-5. **Apply Working Patterns:** Complete remaining component fixes
+~~1. **Resolve FunctionDeclaration Structure:** Fix remaining JSX nesting issue~~ done at `87e2eb4`
+~~2. **Verify Build Success:** Ensure clean compilation~~ done at `8205ea3`
+~~3. **Test Component Output:** Validate generated Go code~~ done at `8205ea3`
+~~4. **Scan Current Violations:** Get baseline violation count~~ **Superseded — zero-'any' quality campaign (e7e29ed).**
+~~5. **Apply Working Patterns:** Complete remaining component fixes~~ done at `87e2eb4`
 
 ### ⚡ VALIDATION PHASE (NEXT 60 MINUTES)
 
-6. **Full Component Testing:** Verify all components work correctly
-7. **Go Output Validation:** Ensure generated code is valid Go
-8. **Violation Resolution:** Apply template literal pattern to remaining issues
-9. **End-to-End Testing:** Verify complete functionality
-10. **Documentation Update:** Record successful patterns and approaches
+~~6. **Full Component Testing:** Verify all components work correctly~~ done at `8205ea3`
+~~7. **Go Output Validation:** Ensure generated code is valid Go~~ done at `631185b`
+~~8. **Violation Resolution:** Apply template literal pattern to remaining issues~~ **Superseded — zero-'any' quality campaign (e7e29ed).**
+~~9. **End-to-End Testing:** Verify complete functionality~~ done at `631185b`
+~~10. **Documentation Update:** Record successful patterns and approaches~~ done at `bae8473`
 
 ---
 

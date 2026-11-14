@@ -1,5 +1,7 @@
 # TypeSpec Go Emitter - Build System Crisis Report
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Report Date:** 2025-12-17 02:32 CET\
 **Analysis Type:** BUILD SYSTEM VERIFICATION & CRITICAL ASSESSMENT\
 **Report Scope:** Complete build system failure analysis with immediate action plan
@@ -16,6 +18,8 @@ Status: ❌ COMPLETE FAILURE
 Exit Code: 1
 Build System: bunx alloy build
 ```
+
+> **2026-11-13 archive annotation:** this build failure was resolved at `87e2eb4` (2026-01-01) — `alloy build` passes locally at `8205ea3`. CI (added `bae8473`) is currently red on a separate alloy-CLI × TypeScript 7.0.2 crash (run 43432825741).
 
 ### COMPILATION ERRORS DETECTED (5 Critical Failures)
 
@@ -156,12 +160,12 @@ Impact: Component testing completely blocked
 
 | COMPONENT         | STATUS    | ERROR TYPE            | IMPACT   | PRIORITY |
 | ----------------- | --------- | --------------------- | -------- | -------- |
-| Alloy-JS Core     | ❌ BROKEN | Type incompatibility  | CRITICAL | P1       |
-| @alloy-js/go      | ❌ BROKEN | Missing exports       | CRITICAL | P1       |
-| JSX Rendering     | ❌ BROKEN | Template literal type | CRITICAL | P1       |
-| Output System     | ❌ BROKEN | Interface mismatch    | CRITICAL | P1       |
-| Test Environment  | ❌ BROKEN | Global references     | HIGH     | P2       |
-| Development Tools | ❌ BROKEN | Configuration issues  | HIGH     | P2       |
+| ~~Alloy-JS Core~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ BROKEN~~ | ~~Type incompatibility~~ | ~~CRITICAL~~ | ~~P1~~ |
+| ~~@alloy-js/go~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ BROKEN~~ | ~~Missing exports~~ | ~~CRITICAL~~ | ~~P1~~ |
+| ~~JSX Rendering~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ BROKEN~~ | ~~Template literal type~~ | ~~CRITICAL~~ | ~~P1~~ |
+| ~~Output System~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ BROKEN~~ | ~~Interface mismatch~~ | ~~CRITICAL~~ | ~~P1~~ |
+| ~~Test Environment~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ BROKEN~~ | ~~Global references~~ | ~~HIGH~~ | ~~P2~~ |
+| ~~Development Tools~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ BROKEN~~ | ~~Configuration issues~~ | ~~HIGH~~ | ~~P2~~ |
 
 ---
 
@@ -171,37 +175,37 @@ Impact: Component testing completely blocked
 
 **Technical Investigation Required:**
 
-1. **Version Compatibility:** Is our @alloy-js version compatible with TypeScript?
-2. **Configuration Issues:** Are we missing critical Alloy-JS setup?
-3. **Component Registration:** Are components properly registered in the framework?
-4. **Context Providers:** Are we missing required context providers for rendering?
-5. **Build Pipeline:** Is the JSX transformation pipeline correctly configured?
+~~1. **Version Compatibility:** Is our @alloy-js version compatible with TypeScript?~~ done at `87e2eb4`
+~~2. **Configuration Issues:** Are we missing critical Alloy-JS setup?~~ done at `87e2eb4`
+~~3. **Component Registration:** Are components properly registered in the framework?~~ done at `87e2eb4`
+~~4. **Context Providers:** Are we missing required context providers for rendering?~~ done at `87e2eb4`
+~~5. **Build Pipeline:** Is the JSX transformation pipeline correctly configured?~~ done at `87e2eb4`
 
 **Immediate Diagnostic Steps:**
 
-1. Check @alloy-js/core version compatibility
-2. Verify @alloy-js/go component exports
-3. Examine Alloy-JS configuration files
-4. Test basic component rendering in isolation
-5. Validate JSX transformation pipeline
+~~1. Check @alloy-js/core version compatibility~~ done at `87e2eb4`
+~~2. Verify @alloy-js/go component exports~~ done at `87e2eb4`
+~~3. Examine Alloy-JS configuration files~~ done at `87e2eb4`
+~~4. Test basic component rendering in isolation~~ done at `87e2eb4`
+~~5. Validate JSX transformation pipeline~~ done at `87e2eb4`
 
 ### DEVELOPMENT ENVIRONMENT FAILURE
 
 **Technical Investigation Required:**
 
-1. **Test Configuration:** Are test files properly configured for mixed syntax?
-2. **Global Resolution:** Are Go package references properly mapped?
-3. **Type Definitions:** Are TypeScript type definitions complete?
-4. **Build Pipeline:** Is the build pipeline handling JSX correctly?
-5. **Dependency Resolution:** Are all dependencies properly resolved?
+~~1. **Test Configuration:** Are test files properly configured for mixed syntax?~~ done at `87e2eb4`
+~~2. **Global Resolution:** Are Go package references properly mapped?~~ done at `87e2eb4`
+~~3. **Type Definitions:** Are TypeScript type definitions complete?~~ done at `87e2eb4`
+~~4. **Build Pipeline:** Is the build pipeline handling JSX correctly?~~ done at `87e2eb4`
+~~5. **Dependency Resolution:** Are all dependencies properly resolved?~~ done at `87e2eb4`
 
 **Immediate Diagnostic Steps:**
 
-1. Review test environment configuration
-2. Check Go package reference mapping
-3. Verify TypeScript type definitions
-4. Test build pipeline configuration
-5. Validate dependency resolution
+~~1. Review test environment configuration~~ done at `87e2eb4`
+~~2. Check Go package reference mapping~~ done at `87e2eb4`
+~~3. Verify TypeScript type definitions~~ done at `87e2eb4`
+~~4. Test build pipeline configuration~~ done at `87e2eb4`
+~~5. Validate dependency resolution~~ done at `87e2eb4`
 
 ---
 
@@ -413,36 +417,36 @@ Questions:
 
 ### STEP 1: EMERGENCY STABILIZATION (2 Hours)
 
-1. **Fix Import Errors**
+~~1. **Fix Import Errors**~~ done at `87e2eb4`
    - Resolve @alloy-js/go Package import issues
    - Fix missing component exports
    - Clean up syntax errors in test files
 
-2. **Restore Basic Build**
+~~2. **Restore Basic Build**~~ done at `87e2eb4`
    - Fix Output type system issues
    - Resolve compilation errors
    - Enable successful build execution
 
 ### STEP 2: COMPONENT SYSTEM RESTORATION (6 Hours)
 
-3. **Investigate Alloy-JS Integration**
+~~3. **Investigate Alloy-JS Integration**~~ done at `87e2eb4`
    - Verify component export system
    - Test basic component rendering
    - Fix type system incompatibilities
 
-4. **Restore Test Environment**
+~~4. **Restore Test Environment**~~ done at `87e2eb4`
    - Fix global Go package references
    - Resolve JSX template literal issues
    - Enable test execution
 
 ### STEP 3: COMPREHENSIVE VALIDATION (24 Hours)
 
-5. **Build System Health Check**
+~~5. **Build System Health Check**~~ done at `8205ea3`
    - Complete dependency audit
    - Verify configuration files
    - Test end-to-end build pipeline
 
-6. **Development Workflow Restoration**
+~~6. **Development Workflow Restoration**~~ done at `87e2eb4`
    - Restore full development productivity
    - Validate component development workflow
    - Ensure test coverage and execution
@@ -451,7 +455,7 @@ Questions:
 
 ## 🚨 URGENT IMPERATIVE
 
-**CRITICAL SITUATION:** Build system completely non-functional
+**CRITICAL SITUATION:** ~~Build system completely non-functional~~ resolved `87e2eb4` (2026-01-01) — `alloy build` passes at `8205ea3`; CI red 2026-11-13 on a separate alloy-CLI/TS-7.0.2 crash.
 
 **IMMEDIATE IMPERATIVE:**
 
@@ -488,11 +492,11 @@ Questions:
 
 ### SUCCESS OUTLOOK
 
-- **High Probability:** Build system can be restored quickly
-- **Medium Probability:** Alloy-JS integration can be fixed
-- **Low Probability:** Major architectural changes required
+~~- **High Probability:** Build system can be restored quickly~~ done at `87e2eb4`.
+~~- **Medium Probability:** Alloy-JS integration can be fixed~~ done at `87e2eb4`.
+~~- **Low Probability:** Major architectural changes required~~ confirmed not required — the component fix sufficed (`87e2eb4`).
 
-**CRITICAL INSIGHT:** This is a build system configuration issue, not a fundamental architectural problem. The underlying codebase and component logic appear sound; the issue is in the build pipeline and toolchain configuration.
+**CRITICAL INSIGHT:** This is a build system configuration issue, not a fundamental architectural problem. ~~The underlying codebase and component logic appear sound; the issue is in the build pipeline and toolchain configuration.~~ Confirmed at `87e2eb4` — vitest JSX configuration was the culprit.
 
 ---
 

@@ -1,5 +1,7 @@
 # TypeSpec Go Emitter - Comprehensive Status Report
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Date:** 2025-12-30
 **Time:** 12:43 UTC
 **Project:** @typespec-community/typespec-go
@@ -13,31 +15,31 @@
 
 ### Overall Health: 🔴 CRITICAL - BLOCKED
 
-The TypeSpec Go Emitter project has **excellent domain layer code** but is **fundamentally blocked** by architectural issues with the Alloy-JS component framework integration. While the business logic for type mapping is production-ready (1,100+ lines), the component rendering system is completely non-functional, blocking all advanced features and 67.5% of tests.
+The TypeSpec Go Emitter project has **excellent domain layer code** but ~~is **fundamentally blocked** by architectural issues with the Alloy-JS component framework integration~~ superseded — component rendering was fixed 2026-01-01 (vitest `jsx: "preserve"` + `<SourceFile filetype="go">`, 87e2eb4). While the business logic for type mapping is production-ready (1,100+ lines), ~~the component rendering system is completely non-functional, blocking all advanced features and 67.5% of tests~~ superseded — 165/165 tests pass at HEAD `8205ea3`.
 
 ### Key Metrics
 
 | Metric                | Value                     | Status                     |
 | --------------------- | ------------------------- | -------------------------- |
-| Tests Passing         | 114/169 (67.5% passing)   | 🔴 Poor                    |
-| TypeScript Build      | ❌ 38+ compilation errors | 🔴 Failing                 |
-| Component Rendering   | ❌ Empty contents arrays  | 🔴 Broken                  |
-| JSX Runtime           | ❌ Resolution errors      | 🔴 Broken                  |
-| Domain Layer Code     | ✅ 1,102 lines working    | 🟢 Excellent               |
-| E2E Integration       | ✅ 2/2 tests passing      | 🟢 Working                 |
-| Basic Type Generation | ✅ 18/18 tests passing    | 🟢 Working                 |
-| Time to Production    | 2-3 weeks (if fixed)      | 🔴 Significant work needed |
+| ~~Tests Passing~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~114/169 (67.5% passing)~~ | ~~🔴 Poor~~ |
+| ~~TypeScript Build~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ 38+ compilation errors~~ | ~~🔴 Failing~~ |
+| ~~Component Rendering~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ Empty contents arrays~~ | ~~🔴 Broken~~ |
+| ~~JSX Runtime~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ Resolution errors~~ | ~~🔴 Broken~~ |
+| ~~Domain Layer Code~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ 1,102 lines working~~ | ~~🟢 Excellent~~ |
+| ~~E2E Integration~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ 2/2 tests passing~~ | ~~🟢 Working~~ |
+| ~~Basic Type Generation~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ 18/18 tests passing~~ | ~~🟢 Working~~ |
+| ~~Time to Production~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~2-3 weeks (if fixed)~~ | ~~🔴 Significant work needed~~ |
 
 ### Production Readiness Assessment
 
-- **Type Safety:** 🔴 Blocked by TypeScript compilation errors
-- **Code Quality:** 🟢 Excellent in domain layer, poor in component layer
-- **Test Coverage:** 🟡 67.5% passing, but failures in critical areas
+- ~~**Type Safety:** 🔴 Blocked by TypeScript compilation errors~~ superseded — compilation errors cleared at 87e2eb4 (2026-01-01).
+- ~~**Code Quality:** 🟢 Excellent in domain layer, poor in component layer~~ superseded — components hardened at 97f7f58; zero 'any' in src since e7e29ed.
+- ~~**Test Coverage:** 🟡 67.5% passing, but failures in critical areas~~ superseded — 165/165 passing at 8205ea3.
 - **Documentation:** 🟢 Comprehensive AGENTS.md guide exists
 - **Performance:** 🟢 Sub-millisecond generation for basic features
-- **User Experience:** 🔴 Broken build system, no working examples
+- ~~**User Experience:** 🔴 Broken build system, no working examples~~ superseded — build fixed (87e2eb4); docs/examples added (bae8473, 899bc60).
 
-**VERDICT:** NOT READY FOR v1.0 - Requires architectural fix or pragmatic pivot
+**VERDICT:** ~~NOT READY FOR v1.0 - Requires architectural fix or pragmatic pivot~~ superseded — Alloy-JS fix landed 2026-01-01 (87e2eb4); suite 165/165 at 8205ea3; v1.0 still unreleased (0.0.1 pre-alpha).
 
 ---
 
@@ -129,7 +131,7 @@ error TS2875: This JSX tag requires the module path '@alloy-js/core/jsx-runtime'
 
 - **Files Affected:** All `.tsx` files
 - **Root Cause:** Vitest config alias not working correctly
-- **Status:** UNRESOLVED
+- ~~**Status:** UNRESOLVED~~ resolved — vitest `jsx: "preserve"` fix (87e2eb4)
 
 **b) Missing Module Exports**
 
@@ -140,7 +142,7 @@ error TS2307: Cannot find module '@typespec/compiler' or its corresponding type 
 
 - **Files Affected:** `GoPackageDirectory.tsx`, test files
 - **Root Cause:** Version mismatch or incorrect imports
-- **Status:** UNRESOLVED
+- ~~**Status:** UNRESOLVED~~ resolved — imports corrected (87e2eb4)
 
 **c) Type Errors**
 
@@ -187,15 +189,15 @@ error TS2304: Cannot find name 'fmt'
 
 | Category                | Tests Failing | Root Cause                 |
 | ----------------------- | ------------- | -------------------------- |
-| Component Rendering     | 40+           | Empty contents array       |
-| Enum Generation         | 5             | Component rendering broken |
-| Union Generation        | 4             | Component rendering broken |
-| Interface Declaration   | 2             | Component rendering broken |
-| Go Package Directory    | 2             | Component rendering broken |
-| HTTP Handler Components | 5             | Component rendering broken |
-| Extended Scalar Types   | 5             | Component rendering broken |
-| Pointer Types           | 3             | Component rendering broken |
-| Doc Decorator Support   | 4             | Component rendering broken |
+| ~~Component Rendering~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~40+~~ | ~~Empty contents array~~ |
+| ~~Enum Generation~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~5~~ | ~~Component rendering broken~~ |
+| ~~Union Generation~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~4~~ | ~~Component rendering broken~~ |
+| ~~Interface Declaration~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~2~~ | ~~Component rendering broken~~ |
+| ~~Go Package Directory~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~2~~ | ~~Component rendering broken~~ |
+| ~~HTTP Handler Components~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~5~~ | ~~Component rendering broken~~ |
+| ~~Extended Scalar Types~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~5~~ | ~~Component rendering broken~~ |
+| ~~Pointer Types~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~3~~ | ~~Component rendering broken~~ |
+| ~~Doc Decorator Support~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~4~~ | ~~Component rendering broken~~ |
 
 **Passing Test Categories:**
 
@@ -384,16 +386,16 @@ Component layer has its own broken logic instead of delegating to domain.
 
 | Feature                | Status     | Tests | Notes                        |
 | ---------------------- | ---------- | ----- | ---------------------------- |
-| Basic Model Generation | ✅ Working | 18/18 | Core Go struct generation    |
-| Scalar Type Mapping    | ✅ Working | 18/18 | String, bool, ints, floats   |
-| Array Types            | ✅ Working | 6/6   | Slice generation             |
-| Map/Record Types       | ✅ Working | 4/4   | Map generation               |
-| Time/Duration Types    | ✅ Working | 5/5   | time.Time, time.Duration     |
-| Optional Properties    | ✅ Working | 4/4   | Pointer types with omitempty |
-| JSON Tag Generation    | ✅ Working | 8/8   | Automatic struct tags        |
-| E2E Integration        | ✅ Working | 2/2   | Full TypeSpec workflow       |
-| Test Infrastructure    | ✅ Working | 33/33 | Utilities, mocks, formatters |
-| Build System           | ✅ Working | -     | Bun, TypeScript, ESLint      |
+| ~~Basic Model Generation~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ Working~~ | ~~18/18~~ | ~~Core Go struct generation~~ |
+| ~~Scalar Type Mapping~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ Working~~ | ~~18/18~~ | ~~String, bool, ints, floats~~ |
+| ~~Array Types~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ Working~~ | ~~6/6~~ | ~~Slice generation~~ |
+| ~~Map/Record Types~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ Working~~ | ~~4/4~~ | ~~Map generation~~ |
+| ~~Time/Duration Types~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ Working~~ | ~~5/5~~ | ~~time.Time, time.Duration~~ |
+| ~~Optional Properties~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ Working~~ | ~~4/4~~ | ~~Pointer types with omitempty~~ |
+| ~~JSON Tag Generation~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ Working~~ | ~~8/8~~ | ~~Automatic struct tags~~ |
+| ~~E2E Integration~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ Working~~ | ~~2/2~~ | ~~Full TypeSpec workflow~~ |
+| ~~Test Infrastructure~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ Working~~ | ~~33/33~~ | ~~Utilities, mocks, formatters~~ |
+| ~~Build System~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ Working~~ | ~~-~~ | ~~Bun, TypeScript, ESLint~~ |
 
 **Subtotal:** 10/33 features working (30%)
 
@@ -403,11 +405,11 @@ Component layer has its own broken logic instead of delegating to domain.
 
 | Feature                 | Status    | Tests       | Blocker             |
 | ----------------------- | --------- | ----------- | ------------------- |
-| Enum Generation         | 🟡 Exists | 1/6 passing | Component rendering |
-| Union Generation        | 🟡 Exists | 0/4 passing | Component rendering |
-| Interface Declaration   | 🟡 Exists | 1/3 passing | Component rendering |
-| @doc Decorator Support  | 🟡 Exists | 0/4 passing | Component rendering |
-| Extended Scalar Mapping | 🟡 Exists | 0/5 passing | Not integrated      |
+| ~~Enum Generation~~ done at `8205ea3` | ~~🟡 Exists~~ | ~~1/6 passing~~ | ~~Component rendering~~ |
+| ~~Union Generation~~ done at `8205ea3` | ~~🟡 Exists~~ | ~~0/4 passing~~ | ~~Component rendering~~ |
+| ~~Interface Declaration~~ done at `8205ea3` | ~~🟡 Exists~~ | ~~1/3 passing~~ | ~~Component rendering~~ |
+| ~~@doc Decorator Support~~ done at `8205ea3` | ~~🟡 Exists~~ | ~~0/4 passing~~ | ~~Component rendering~~ |
+| ~~Extended Scalar Mapping~~ done at `8205ea3` | ~~🟡 Exists~~ | ~~0/5 passing~~ | ~~Not integrated~~ |
 
 **Subtotal:** 5/33 features partial (15%)
 
@@ -417,15 +419,15 @@ Component layer has its own broken logic instead of delegating to domain.
 
 | Feature                      | Status    | Tests | Root Cause          |
 | ---------------------------- | --------- | ----- | ------------------- |
-| Go Package Directory         | ❌ Broken | 0/2   | Component rendering |
-| Go Module Generation         | ❌ Broken | 0/3   | Component rendering |
-| File Splitting               | ❌ Broken | -     | Component rendering |
-| HTTP Operation Support       | ❌ Broken | 0/5   | Component rendering |
-| Handler Stub Generation      | ❌ Broken | 0/3   | Component rendering |
-| Route Registration           | ❌ Broken | 0/2   | Component rendering |
-| Component Helper Functions   | ❌ Broken | 0/16  | Component rendering |
-| Pointer Type Generation      | ❌ Broken | 0/3   | Test framework      |
-| TypeSpec Emitter Integration | ❌ Broken | 0/1   | basePath errors     |
+| ~~Go Package Directory~~ done at `8205ea3` | ~~❌ Broken~~ | ~~0/2~~ | ~~Component rendering~~ |
+| ~~Go Module Generation~~ done at `8205ea3` | ~~❌ Broken~~ | ~~0/3~~ | ~~Component rendering~~ |
+| ~~File Splitting~~ done at `8205ea3` | ~~❌ Broken~~ | ~~-~~ | ~~Component rendering~~ |
+| ~~HTTP Operation Support~~ done at `8205ea3` | ~~❌ Broken~~ | ~~0/5~~ | ~~Component rendering~~ |
+| ~~Handler Stub Generation~~ done at `8205ea3` | ~~❌ Broken~~ | ~~0/3~~ | ~~Component rendering~~ |
+| ~~Route Registration~~ done at `8205ea3` | ~~❌ Broken~~ | ~~0/2~~ | ~~Component rendering~~ |
+| ~~Component Helper Functions~~ done at `8205ea3` | ~~❌ Broken~~ | ~~0/16~~ | ~~Component rendering~~ |
+| ~~Pointer Type Generation~~ done at `8205ea3` | ~~❌ Broken~~ | ~~0/3~~ | ~~Test framework~~ |
+| ~~TypeSpec Emitter Integration~~ done at `8205ea3` | ~~❌ Broken~~ | ~~0/1~~ | ~~basePath errors~~ |
 
 **Subtotal:** 9/33 features broken (27%)
 
@@ -435,11 +437,11 @@ Component layer has its own broken logic instead of delegating to domain.
 
 | Feature                                     | Priority | Est. Effort | Dependencies        |
 | ------------------------------------------- | -------- | ----------- | ------------------- |
-| Go Decorators (@go.name, @go.type, @go.tag) | High     | 1-2 weeks   | Component rendering |
-| Template Models with Generics               | Medium   | 1 week      | Type mapping        |
-| Discriminated Union Error Handling          | High     | 3-4 days    | Union generation    |
-| CLI Tool (optional)                         | Low      | 1 week      | N/A                 |
-| Performance Optimization                    | Low      | 2-3 days    | Working baseline    |
+| Go Decorators (@go.name, @go.type, @go.tag) **→ routed to ROADMAP (2026-11-13 sweep)** | High | 1-2 weeks | Component rendering |
+| Template Models with Generics **→ routed to ROADMAP (2026-11-13 sweep)** | Medium | 1 week | Type mapping |
+| Discriminated Union Error Handling **→ routed to ROADMAP (2026-11-13 sweep)** | High | 3-4 days | Union generation |
+| ~~CLI Tool (optional)~~ **Won't implement — optional CLI out of project scope — emitter is a TypeSpec AssetEmitter plugin, not a CLI (report's own scope section).** | ~~Low~~ | ~~1 week~~ | ~~N/A~~ |
+| Performance Optimization **→ routed to ROADMAP (2026-11-13 sweep)** | Low | 2-3 days | Working baseline |
 
 **Subtotal:** 5/33 features planned (15%)
 
@@ -455,42 +457,42 @@ Component layer has its own broken logic instead of delegating to domain.
 
 **Phase 1: JSX Runtime & Compilation (3-5 days)**
 
-1. Research Alloy-JS documentation and examples
-2. Fix JSX runtime resolution in Vitest config
-3. Resolve all TypeScript compilation errors
-4. Verify component imports work correctly
-5. Get build passing successfully
+~~1. Research Alloy-JS documentation and examples~~ done at `87e2eb4`
+~~2. Fix JSX runtime resolution in Vitest config~~ done at `87e2eb4`
+~~3. Resolve all TypeScript compilation errors~~ done at `87e2eb4`
+~~4. Verify component imports work correctly~~ done at `87e2eb4`
+~~5. Get build passing successfully~~ done at `87e2eb4`
 
 **Phase 2: Component Rendering System (5-7 days)**
 
-1. Debug empty contents array issue
-2. Fix basePath context errors
-3. Test component rendering with simple examples
-4. Verify Output component works correctly
-5. Restore all 40+ failing component tests
+~~1. Debug empty contents array issue~~ done at `87e2eb4`
+~~2. Fix basePath context errors~~ done at `87e2eb4`
+~~3. Test component rendering with simple examples~~ done at `87e2eb4`
+~~4. Verify Output component works correctly~~ done at `87e2eb4`
+~~5. Restore all 40+ failing component tests~~ done at `87e2eb4`
 
 **Phase 3: Domain-Component Integration (3-4 days)**
 
-1. Remove duplicate logic from GoStructDeclaration (lines 129-234)
-2. Connect CleanTypeMapper to all components
-3. Integrate ErrorFactory for error handling
-4. Replace component-local type mapping with domain services
-5. Test integration thoroughly
+~~1. Remove duplicate logic from GoStructDeclaration (lines 129-234)~~ done at `97f7f58`
+~~2. Connect CleanTypeMapper to all components~~ done at `97f7f58`
+~~3. Integrate ErrorFactory for error handling~~ done at `97f7f58`
+~~4. Replace component-local type mapping with domain services~~ done at `97f7f58`
+~~5. Test integration thoroughly~~ done at `8205ea3`
 
 **Phase 4: Feature Implementation (7-10 days)**
 
-1. Fix enum generation (5 tests)
-2. Fix union generation (4 tests)
-3. Fix interface declaration (2 tests)
-4. Fix HTTP operation support (5 tests)
-5. Fix Go package directory (2 tests)
+~~1. Fix enum generation (5 tests)~~ done at `87e2eb4`
+~~2. Fix union generation (4 tests)~~ done at `87e2eb4`
+~~3. Fix interface declaration (2 tests)~~ done at `87e2eb4`
+~~4. Fix HTTP operation support (5 tests)~~ done at `87e2eb4`
+~~5. Fix Go package directory (2 tests)~~ done at `87e2eb4`
 
 **Phase 5: Production Hardening (3-4 days)**
 
-1. Add comprehensive error handling
-2. Performance optimization and testing
-3. Documentation and examples
-4. Release notes and CHANGELOG
+~~1. Add comprehensive error handling~~ done at `97f7f58`
+2. Performance optimization and testing **→ routed to ROADMAP (2026-11-13 sweep)**
+~~3. Documentation and examples~~ done at `899bc60`
+~~4. Release notes and CHANGELOG~~ done at `fe0f990`
 
 **Success Criteria:**
 
@@ -518,33 +520,33 @@ Component layer has its own broken logic instead of delegating to domain.
 
 **Phase 1: Fix Build System (1-2 days)**
 
-1. Remove/bypass JSX runtime resolution issues
-2. Fix TypeScript compilation errors
-3. Switch to working import patterns
-4. Get build passing
+~~1. Remove/bypass JSX runtime resolution issues~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~2. Fix TypeScript compilation errors~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~3. Switch to working import patterns~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~4. Get build passing~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
 
 **Phase 2: Simplify Component Layer (2-3 days)**
 
-1. Use CleanTypeMapper for all type mapping (works)
-2. Use string generation for simple patterns (works)
-3. Add helper functions for common patterns (works)
-4. Remove complex Alloy-JS components that don't work
-5. Keep basic components that render correctly
+~~1. Use CleanTypeMapper for all type mapping (works)~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~2. Use string generation for simple patterns (works)~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~3. Add helper functions for common patterns (works)~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~4. Remove complex Alloy-JS components that don't work~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~5. Keep basic components that render correctly~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
 
 **Phase 3: Feature Implementation (3-4 days)**
 
-1. Add enum generation using string templates
-2. Add union generation using string templates
-3. Add interface generation using string templates
-4. Add HTTP operation support using string templates
-5. Test all features end-to-end
+~~1. Add enum generation using string templates~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~2. Add union generation using string templates~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~3. Add interface generation using string templates~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~4. Add HTTP operation support using string templates~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~5. Test all features end-to-end~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
 
 **Phase 4: Integration & Hardening (2 days)**
 
-1. Connect domain layer to simplified components
-2. Add error handling
-3. Add documentation
-4. Prepare v1.0 release
+~~1. Connect domain layer to simplified components~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~2. Add error handling~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~3. Add documentation~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
+~~4. Prepare v1.0 release~~ **Won't implement — Option B pivot not taken — Option A Alloy-JS fix succeeded (87e2eb4, 2026-01-01).**
 
 **Success Criteria:**
 
@@ -570,11 +572,11 @@ Component layer has its own broken logic instead of delegating to domain.
 
 **Required Actions:**
 
-1. Create minimal reproduction case
-2. Post detailed question on Alloy-JS GitHub issues
-3. Join Alloy-JS Discord for real-time help
-4. Share full project setup and config
-5. Get guidance on:
+~~1. Create minimal reproduction case~~ done — minimal-repro debug tests created during debugging; removed post-fix at b8a74cb
+~~2. Post detailed question on Alloy-JS GitHub issues~~ **Won't implement — not needed — root cause (esbuild jsx transform vs Babel plugin conflict) found internally and fixed at 87e2eb4.**
+~~3. Join Alloy-JS Discord for real-time help~~ **Won't implement — not needed — root cause (esbuild jsx transform vs Babel plugin conflict) found internally and fixed at 87e2eb4.**
+~~4. Share full project setup and config~~ **Won't implement — not needed — root cause (esbuild jsx transform vs Babel plugin conflict) found internally and fixed at 87e2eb4.**
+~~5. Get guidance on:~~ **Won't implement — not needed — root cause (esbuild jsx transform vs Babel plugin conflict) found internally and fixed at 87e2eb4.**
    - JSX runtime resolution
    - Component rendering with Output
    - Proper import patterns
@@ -638,19 +640,19 @@ Component layer has its own broken logic instead of delegating to domain.
 
 ### Regardless of Path Chosen:
 
-1. ✅ **Fix TypeScript Compilation Errors** (Priority: CRITICAL)
+~~1. ✅ **Fix TypeScript Compilation Errors** (Priority: CRITICAL)~~ done at `87e2eb4`
    - Remove/bypass JSX runtime issues
    - Fix import errors
    - Add missing type annotations
    - Goal: Build passes
 
-2. ✅ **Create Minimal Reproduction Case** (Priority: HIGH)
+~~2. ✅ **Create Minimal Reproduction Case** (Priority: HIGH)~~ done — minimal-repro debug tests created during debugging; removed post-fix at b8a74cb
    - Isolate component rendering issue
    - Create simple test case
    - Document exact error messages
    - Ready for expert help or debugging
 
-3. ✅ **Document Working Patterns** (Priority: HIGH)
+~~3. ✅ **Document Working Patterns** (Priority: HIGH)~~ done at `151579d`
    - What actually works (domain layer)
    - What's broken (component layer)
    - Bridge patterns needed
@@ -662,42 +664,42 @@ Component layer has its own broken logic instead of delegating to domain.
 
 ### High Priority Debt (Must Fix)
 
-1. **Component Rendering System** 🚨 CRITICAL
+~~1. **Component Rendering System** 🚨 CRITICAL~~ done at `87e2eb4`
    - 40+ tests failing
    - Blocks all advanced features
    - Estimated effort: 5-10 days (Option A) or 2-3 days (Option B)
 
-2. **TypeScript Compilation Errors** 🚨 CRITICAL
+~~2. **TypeScript Compilation Errors** 🚨 CRITICAL~~ done at `87e2eb4`
    - 38+ errors blocking development
    - IDE experience degraded
    - Type safety lost
    - Estimated effort: 1-2 days
 
-3. **Domain-Component Integration** 🔴 HIGH
+~~3. **Domain-Component Integration** 🔴 HIGH~~ done at `97f7f58`
    - 500+ lines duplicate code
    - 1,102 lines unused domain code
    - Estimated effort: 1-2 days
 
 ### Medium Priority Debt (Should Fix)
 
-4. **Test Coverage** 🟡 MEDIUM
+~~4. **Test Coverage** 🟡 MEDIUM~~ done at `8205ea3`
    - 67.5% passing (need 95%+ for v1.0)
    - Missing integration tests
    - Estimated effort: 3-5 days
 
-5. **Error Handling** 🟡 MEDIUM
+~~5. **Error Handling** 🟡 MEDIUM~~ done at `97f7f58`
    - Primitive error messages
    - No user-friendly guidance
    - Estimated effort: 2-3 days
 
 ### Low Priority Debt (Can Defer)
 
-6. **Performance Optimization** 🟢 LOW
+6. **Performance Optimization** 🟢 LOW **→ routed to ROADMAP (2026-11-13 sweep)**
    - Already sub-millisecond
    - Can optimize later
    - Estimated effort: 1-2 days
 
-7. **Documentation Examples** 🟢 LOW
+~~7. **Documentation Examples** 🟢 LOW~~ done at `bae8473`
    - Have AGENTS.md guide
    - Need more examples
    - Estimated effort: 1-2 days
@@ -708,37 +710,37 @@ Component layer has its own broken logic instead of delegating to domain.
 
 ### Phase 1: Foundation (Week 1)
 
-- [ ] Fix TypeScript compilation errors
-- [ ] Build command passes successfully
-- [ ] Resolve JSX runtime issues
-- [ ] Component rendering generates output
-- [ ] Domain layer integrated
-- [ ] 50+ tests passing (currently 67%)
+~~- [ ] Fix TypeScript compilation errors~~ done at `87e2eb4`
+~~- [ ] Build command passes successfully~~ done at `87e2eb4`
+~~- [ ] Resolve JSX runtime issues~~ done at `87e2eb4`
+~~- [ ] Component rendering generates output~~ done at `87e2eb4`
+~~- [ ] Domain layer integrated~~ done at `87e2eb4`, `97f7f58`
+~~- [ ] 50+ tests passing (currently 67%)~~ done at `87e2eb4`
 
 ### Phase 2: Core Features (Week 2)
 
-- [ ] Enum generation working
-- [ ] Union generation working
-- [ ] Interface generation working
-- [ ] HTTP operation support
-- [ ] Go package directory working
-- [ ] 100+ tests passing
+~~- [ ] Enum generation working~~ done at `87e2eb4`
+~~- [ ] Union generation working~~ done at `87e2eb4`
+~~- [ ] Interface generation working~~ done at `87e2eb4`
+~~- [ ] HTTP operation support~~ done at `87e2eb4`
+~~- [ ] Go package directory working~~ done at `87e2eb4`
+~~- [ ] 100+ tests passing~~ done at `87e2eb4`
 
 ### Phase 3: Advanced Features (Week 3)
 
-- [ ] Go decorator support
-- [ ] Template models
-- [ ] Discriminated union errors
-- [ ] Error handling improvements
-- [ ] 150+ tests passing
+- [ ] Go decorator support **→ routed to ROADMAP (2026-11-13 sweep)**
+- [ ] Template models **→ routed to ROADMAP (2026-11-13 sweep)**
+- [ ] Discriminated union errors **→ routed to ROADMAP (2026-11-13 sweep)**
+~~- [ ] Error handling improvements~~ done at `97f7f58`
+~~- [ ] 150+ tests passing~~ done at `8205ea3`
 
 ### Phase 4: Production Hardening (Week 4)
 
-- [ ] All 169 tests passing
-- [ ] Performance testing and optimization
-- [ ] Complete documentation
-- [ ] Release notes and CHANGELOG
-- [ ] v1.0 release
+~~- [ ] All 169 tests passing~~ done at `8205ea3` (suite now 165/165)
+- [ ] Performance testing and optimization **→ routed to ROADMAP (2026-11-13 sweep)**
+~~- [ ] Complete documentation~~ done at `899bc60`
+~~- [ ] Release notes and CHANGELOG~~ done at `fe0f990`
+- [ ] v1.0 release **→ routed to ROADMAP (2026-11-13 sweep)**
 
 ---
 
@@ -777,10 +779,10 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 
 **Potential Fixes:**
 
-1. Disable esbuild JSX transformation (use alloy plugin only)
-2. Update rollup plugin to use correct import
-3. Create shim file for jsx-dev-runtime
-4. Use different JSX configuration
+~~1. Disable esbuild JSX transformation (use alloy plugin only)~~ **Superseded — vitest jsx:"preserve" fix — 87e2eb4 (2026-01-01).**
+~~2. Update rollup plugin to use correct import~~ **Superseded — vitest jsx:"preserve" fix — 87e2eb4 (2026-01-01).**
+~~3. Create shim file for jsx-dev-runtime~~ **Superseded — vitest jsx:"preserve" fix — 87e2eb4 (2026-01-01).**
+~~4. Use different JSX configuration~~ **Superseded — vitest jsx:"preserve" fix — 87e2eb4 (2026-01-01).**
 
 ---
 
@@ -790,7 +792,7 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 
 ```tsx
 <Output basePath="./output">
-  <SourceFile path="test.go">{code`package main`}</SourceFile>
+  <SourceFile path="test.go">{code `package main`}</SourceFile>
 </Output>
 ```
 
@@ -823,10 +825,10 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 
 **Potential Fixes:**
 
-1. Check Alloy-JS docs for correct Output usage
-2. Use `render()` with proper parameters
-3. Add missing context providers
-4. Verify component composition patterns
+~~1. Check Alloy-JS docs for correct Output usage~~ **Superseded — vitest jsx:"preserve" + <SourceFile filetype="go"> wrapper — 87e2eb4 (2026-01-01).**
+~~2. Use `render()` with proper parameters~~ **Superseded — vitest jsx:"preserve" + <SourceFile filetype="go"> wrapper — 87e2eb4 (2026-01-01).**
+~~3. Add missing context providers~~ **Superseded — vitest jsx:"preserve" + <SourceFile filetype="go"> wrapper — 87e2eb4 (2026-01-01).**
+~~4. Verify component composition patterns~~ **Superseded — vitest jsx:"preserve" + <SourceFile filetype="go"> wrapper — 87e2eb4 (2026-01-01).**
 
 ---
 
@@ -892,18 +894,18 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 
 **Weaknesses:**
 
-- ❌ Component rendering system completely broken
-- ❌ TypeScript compilation fails (38+ errors)
-- ❌ 67.5% of tests failing
-- ❌ Domain layer unused
-- ❌ 500+ lines duplicate code
+- ~~❌ Component rendering system completely broken~~ superseded — fixed at 87e2eb4 (2026-01-01)
+- ~~❌ TypeScript compilation fails (38+ errors)~~ superseded — errors cleared at 87e2eb4
+- ~~❌ 67.5% of tests failing~~ superseded — 165/165 passing at 8205ea3
+- ~~❌ Domain layer unused~~ superseded — integrated at 87e2eb4, completed at 97f7f58
+- ~~❌ 500+ lines duplicate code~~ superseded — duplication refactored at 97f7f58
 
 **Critical Blockers:**
 
-1. JSX runtime resolution
-2. Component rendering (empty contents)
-3. TypeScript compilation
-4. Domain-component integration
+~~1. JSX runtime resolution~~ done at `87e2eb4`
+~~2. Component rendering (empty contents)~~ done at `87e2eb4`
+~~3. TypeScript compilation~~ done at `87e2eb4`
+~~4. Domain-component integration~~ done at `97f7f58`
 
 ### Path Forward: Choose One of Three
 
@@ -927,10 +929,10 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 
 ### My Recommendation: **Option C → Option B**
 
-1. Seek expert help (1-2 days)
-2. Pragmatic pivot if needed (1 week)
-3. Ship v1.0
-4. Iterate in v1.1 with learnings
+~~1. Seek expert help (1-2 days)~~ **Superseded — direct Alloy-JS fix — 87e2eb4 (2026-01-01).**
+~~2. Pragmatic pivot if needed (1 week)~~ **Superseded — direct Alloy-JS fix — 87e2eb4 (2026-01-01).**
+3. Ship v1.0 **→ routed to ROADMAP (2026-11-13 sweep)**
+4. Iterate in v1.1 with learnings **→ routed to ROADMAP (2026-11-13 sweep)**
 
 ### Expected Timeline to v1.0
 
@@ -945,9 +947,9 @@ Cannot find module '@alloy-js/core/jsx-dev-runtime'
 
 **Which path do you choose?**
 
-1. **Option A:** Double down on Alloy-JS (fix everything)
-2. **Option B:** Pragmatic pivot to working approach
-3. **Option C:** Seek expert help first (recommended)
+~~1. **Option A:** Double down on Alloy-JS (fix everything)~~ **Superseded — chosen in effect — Alloy-JS fix landed at 87e2eb4 (2026-01-01).**
+~~2. **Option B:** Pragmatic pivot to working approach~~ **Won't implement — not chosen — Alloy-JS fix succeeded first (87e2eb4).**
+~~3. **Option C:** Seek expert help first (recommended)~~ **Won't implement — not needed — root cause found internally.**
 
 I'm ready to execute immediately upon your decision.
 

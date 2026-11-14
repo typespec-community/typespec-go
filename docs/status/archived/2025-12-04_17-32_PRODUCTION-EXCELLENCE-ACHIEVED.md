@@ -1,8 +1,10 @@
 # 🎉 PRODUCTION EXCELLENCE ACHIEVED - TypeSpec Go Emitter Status Report
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Report Date:** December 4, 2025, 17:32 CET\
 **Version:** 1.0.0-Production-Ready\
-**Status:** 🎉 PRODUCTION READY - 100% Test Success Rate Achieved
+**Status:** ~~🎉 PRODUCTION READY - 100% Test Success Rate Achieved~~ superseded same day by the 18-36 crisis-resolution reports; 165/165 tests at `8205ea3` (2026-11-13)
 
 ---
 
@@ -10,13 +12,13 @@
 
 **🚨 BREAKTHROUGH MOMENT:** TypeSpec Go Emitter has achieved **PRODUCTION EXCELLENCE** with:
 
-- ✅ **100% Test Success Rate** (136/136 tests passing)
-- ✅ **Zero TypeScript Compilation Errors** (strict mode)
-- ✅ **Enterprise-Grade Performance** (sub-millisecond generation)
+- ✅ ~~**100% Test Success Rate** (136/136 tests passing)~~ done — 165/165 tests at `8205ea3`
+- ✅ ~~**Zero TypeScript Compilation Errors** (strict mode)~~ superseded — 28 tsc --strict errors at HEAD (2026-11-13)
+- ✅ ~~**Enterprise-Grade Performance** (sub-millisecond generation)~~ superseded — never verified, no benchmark suite at HEAD
 - ✅ **Complete Alloy-JS Component Architecture**
-- ✅ **Full TypeSpec AssetEmitter Integration**
+- ✅ ~~**Full TypeSpec AssetEmitter Integration**~~ done — integration tests pass (`631185b`); CLI end-to-end still unverified (TODO_LIST)
 
-**🎯 CURRENT STATUS: READY FOR IMMEDIATE ENTERPRISE DEPLOYMENT**
+**🎯 ~~CURRENT STATUS: READY FOR IMMEDIATE ENTERPRISE DEPLOYMENT~~ superseded — crisis arc continued 2025-12-04..06; see 2026 status docs
 
 ---
 
@@ -148,33 +150,33 @@
 
 | Component                  | Status      | Description                          |
 | -------------------------- | ----------- | ------------------------------------ |
-| **GoModel**                | ✅ COMPLETE | Struct generation with JSON tags     |
-| **GoEnumDeclaration**      | ✅ COMPLETE | Enum generation with methods         |
-| **GoUnionDeclaration**     | ✅ COMPLETE | Sealed interface generation          |
-| **GoPackageDirectory**     | ✅ COMPLETE | Package organization and structure   |
-| **GoInterfaceDeclaration** | ✅ COMPLETE | Interface generation from operations |
-| **GoHandlerStub**          | ✅ COMPLETE | HTTP handler stub generation         |
-| **GoModFile**              | ✅ COMPLETE | Go module file generation            |
-| **TypeExpression**         | ✅ COMPLETE | Type mapping component               |
+| ~~**GoModel**~~ done at `8205ea3` | ~~✅ COMPLETE~~ | ~~Struct generation with JSON tags~~ |
+| ~~**GoEnumDeclaration**~~ done at `0237f02` | ~~✅ COMPLETE~~ | ~~Enum generation with methods~~ |
+| ~~**GoUnionDeclaration**~~ done at `f7c3041` | ~~✅ COMPLETE~~ | ~~Sealed interface generation~~ |
+| ~~**GoPackageDirectory**~~ done at `5d4b0d5` | ~~✅ COMPLETE~~ | ~~Package organization and structure~~ |
+| ~~**GoInterfaceDeclaration**~~ done at `dc7f251` | ~~✅ COMPLETE~~ | ~~Interface generation from operations~~ |
+| ~~**GoHandlerStub**~~ done at `b8a63f8` | ~~✅ COMPLETE~~ | ~~HTTP handler stub generation~~ |
+| ~~**GoModFile**~~ done at `0237f02` | ~~✅ COMPLETE~~ | ~~Go module file generation~~ |
+| ~~**TypeExpression**~~ done — src/components/TypeExpression.tsx at HEAD 8205ea3 | ~~✅ COMPLETE~~ | ~~Type mapping component~~ |
 
 ### **Service Layer Status** ✅ ENTERPRISE READY
 
 | Service                   | Status      | Description                         |
 | ------------------------- | ----------- | ----------------------------------- |
-| **TypeMappingService**    | ✅ COMPLETE | TypeSpec to Go type mapping         |
-| **GoReturnTypeExtractor** | ✅ COMPLETE | Operation return type extraction    |
-| **MockFactory**           | ✅ ENHANCED | Complete TypeSpec interface mocking |
+| ~~**TypeMappingService**~~ done — src/services/type-mapping.service.ts at HEAD 8205ea3 | ~~✅ COMPLETE~~ | ~~TypeSpec to Go type mapping~~ |
+| ~~**GoReturnTypeExtractor**~~ done — src/services/go-return-type-extractor.ts at HEAD 8205ea3 | ~~✅ COMPLETE~~ | ~~Operation return type extraction~~ |
+| ~~**MockFactory**~~ done — src/testing/mock-factory.ts lint-clean at HEAD 8205ea3 | ~~✅ ENHANCED~~ | ~~Complete TypeSpec interface mocking~~ |
 
 ### **Testing Infrastructure Status** ✅ COMPREHENSIVE
 
 | Category              | Tests       | Status                   |
 | --------------------- | ----------- | ------------------------ |
-| **Component Tests**   | 15/15       | ✅ 100% Passing          |
-| **Integration Tests** | 25/25       | ✅ 100% Passing          |
-| **E2E Tests**         | 8/8         | ✅ 100% Passing          |
-| **Performance Tests** | 12/12       | ✅ 100% Passing          |
-| **Type Safety Tests** | 76/76       | ✅ 100% Passing          |
-| **TOTAL**             | **136/136** | ✅ **100% SUCCESS RATE** |
+| ~~**Component Tests**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~15/15~~ | ~~✅ 100% Passing~~ |
+| ~~**Integration Tests**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~25/25~~ | ~~✅ 100% Passing~~ |
+| ~~**E2E Tests**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~8/8~~ | ~~✅ 100% Passing~~ |
+| ~~**Performance Tests**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~12/12~~ | ~~✅ 100% Passing~~ |
+| ~~**Type Safety Tests**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~76/76~~ | ~~✅ 100% Passing~~ |
+| ~~**TOTAL**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~**136/136**~~ | ~~✅ **100% SUCCESS RATE**~~ |
 
 ---
 
@@ -207,24 +209,24 @@
 
 ### **🔥 IMMEDIATE CRITICAL PATH (Next 24-48 Hours)**
 
-1. **Complete Component Export System** - Finalize `src/components/go/index.ts`
-2. **Consolidate Test Organization** - Unify test structure under single directory
-3. **Documentation Cleanup** - Remove redundant status documents, create single source of truth
-4. **Production Release Preparation** - Version tagging, release notes, community communication
+~~1. **Complete Component Export System** - Finalize `src/components/go/index.ts`~~ done at `1ae9c2a`
+~~2. **Consolidate Test Organization** - Unify test structure under single directory~~ done — tests unified under src/test/ (36 files) at HEAD 8205ea3
+~~3. **Documentation Cleanup** - Remove redundant status documents, create single source of truth~~ done at `f7c3041`
+4. **Production Release Preparation** - Version tagging, release notes, community communication **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 ### **🚀 HIGH IMPROVEMENTS (Next Week)**
 
-5. **Performance Benchmark Suite** - Comprehensive performance testing framework
-6. **Error Message Enhancement** - User-friendly actionable error messages
-7. **Advanced Route Registration** - Complete HTTP mux setup beyond basic patterns
-8. **Full Handler Implementation** - Complete HTTP handlers beyond stub generation
+5. **Performance Benchmark Suite** - Comprehensive performance testing framework **→ routed to TODO_LIST (2026-11-13 sweep)**
+~~6. **Error Message Enhancement** - User-friendly actionable error messages~~ done — src/domain/error-factory.ts at HEAD 8205ea3
+~~7. **Advanced Route Registration** - Complete HTTP mux setup beyond basic patterns~~ done at `8205ea3`
+8. **Full Handler Implementation** - Complete HTTP handlers beyond stub generation **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 ### **🏗️ ARCHITECTURAL ENHANCEMENTS (Next 2 Weeks)**
 
-9. **Higher-Order Component System** - Advanced composition patterns
-10. **Plugin Architecture Foundation** - Extensible generator system
-11. **Intelligent Component Caching** - Performance optimization
-12. **Advanced Go Decorator Support** - Complete @go.\* ecosystem
+~~9. **Higher-Order Component System** - Advanced composition patterns~~ **Won't implement — superseded by Alloy-JS component architecture.**
+~~10. **Plugin Architecture Foundation** - Extensible generator system~~ **Won't implement — superseded by Alloy-JS emitter architecture.**
+~~11. **Intelligent Component Caching** - Performance optimization~~ **Won't implement — superseded by Alloy-JS rendering pipeline.**
+12. **Advanced Go Decorator Support** - Complete @go.\* ecosystem **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 ---
 
@@ -234,15 +236,15 @@
 
 | Requirement                | Status  | Notes                             |
 | -------------------------- | ------- | --------------------------------- |
-| **TypeScript Compilation** | ✅ PASS | Zero errors, strict mode          |
-| **Test Coverage**          | ✅ PASS | 100% success rate (136/136)       |
-| **Performance**            | ✅ PASS | Sub-millisecond generation        |
-| **Memory Management**      | ✅ PASS | Zero leaks, constant usage        |
-| **Code Quality**           | ✅ PASS | ESLint compliant, zero any-types  |
-| **Documentation**          | ✅ PASS | Comprehensive user and dev guides |
-| **Integration**            | ✅ PASS | Native TypeSpec AssetEmitter      |
-| **Error Handling**         | ✅ PASS | Graceful failures, validation     |
-| **Architecture**           | ✅ PASS | Modern Alloy-JS components        |
+| ~~**TypeScript Compilation**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ PASS~~ | ~~Zero errors, strict mode~~ |
+| ~~**Test Coverage**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ PASS~~ | ~~100% success rate (136/136)~~ |
+| ~~**Performance**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ PASS~~ | ~~Sub-millisecond generation~~ |
+| ~~**Memory Management**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ PASS~~ | ~~Zero leaks, constant usage~~ |
+| ~~**Code Quality**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ PASS~~ | ~~ESLint compliant, zero any-types~~ |
+| ~~**Documentation**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ PASS~~ | ~~Comprehensive user and dev guides~~ |
+| ~~**Integration**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ PASS~~ | ~~Native TypeSpec AssetEmitter~~ |
+| ~~**Error Handling**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ PASS~~ | ~~Graceful failures, validation~~ |
+| ~~**Architecture**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ PASS~~ | ~~Modern Alloy-JS components~~ |
 
 ### **🚀 ENTERPRISE DEPLOYMENT STATUS: READY**
 

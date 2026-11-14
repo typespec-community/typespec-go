@@ -1,5 +1,7 @@
 # TypeSpec Go Emitter - Status Report
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Date:** 2026-01-01 11:09 CET\
 **Session:** Critical Blocker Resolution & Architecture Integration\
 **Branch:** lars/lets-rock
@@ -22,12 +24,12 @@
 
 | Metric            | Before        | After          | Improvement |
 | ----------------- | ------------- | -------------- | ----------- |
-| Test Files        | 44            | 35             | -20%        |
-| Test Pass Rate    | 94% (164/175) | 100% (160/160) | +6%         |
-| TypeScript Errors | 5             | 0              | -100%       |
-| Build Status      | Failing       | Passing        | ✅ Fixed    |
-| 'any' Types       | Unknown       | 9              | Identified  |
-| Debug Files       | 13            | 3              | -77%        |
+| ~~Test Files~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~44~~ | ~~35~~ | ~~-20%~~ |
+| ~~Test Pass Rate~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~94% (164/175)~~ | ~~100% (160/160)~~ | ~~+6%~~ |
+| ~~TypeScript Errors~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~5~~ | ~~0~~ | ~~-100%~~ |
+| ~~Build Status~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Failing~~ | ~~Passing~~ | ~~✅ Fixed~~ |
+| ~~'any' Types~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Unknown~~ | ~~9~~ | ~~Identified~~ |
+| ~~Debug Files~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~13~~ | ~~3~~ | ~~-77%~~ |
 
 ---
 
@@ -221,14 +223,14 @@ Environment:  Node
 
 ### Domain Layer
 
-**Status:** ✅ PARTIALLY INTEGRATED
+**Status:** ~~✅ PARTIALLY INTEGRATED~~ superseded — domain integration completed at 97f7f58 (2026-04-03)
 
 **Components Using Domain Layer:**
 
 - ✅ TypeExpression - Uses CleanTypeMapper
-- ❌ GoEnumDeclaration - Has duplicate mappings
-- ❌ GoUnionDeclaration - Has duplicate mappings
-- ❌ GoStructDeclaration - Has duplicate mappings
+- ~~❌ GoEnumDeclaration - Has duplicate mappings~~ done at `97f7f58`
+- ~~❌ GoUnionDeclaration - Has duplicate mappings~~ done at `97f7f58`
+- ~~❌ GoStructDeclaration - Has duplicate mappings~~ done at `97f7f58`
 
 **Components Not Using Domain Layer:**
 
@@ -270,16 +272,16 @@ Output (@alloy-js/core)
 
 **Status:** ✅ MOSTLY SAFE
 
-**'any' Types Remaining:** 9 (2 fixed, 7 to fix)
+~~**'any' Types Remaining:** 9 (2 fixed, 7 to fix)~~ superseded — zero 'any' in production since e7e29ed (2026-01-02)
 
 **Files with 'any' Types:**
 
-1. ✅ `src/components/go/core/GoStringLiteral.tsx` - FIXED (changed to `Children`)
-2. ✅ `src/components/go/GoPackage.tsx` - FIXED (changed to `Children`)
-3. ❌ `src/components/go/GoUnionDeclaration.tsx` - `templateConstraints?: Array<{ param: TemplateParameter; constraints: any[] }>`
-4. ❌ `src/components/go/GoHandlerMethodComponent.tsx` - `...handler.parameters.map((p: any) => ({`
-5. ❌ `src/components/go/GoStructDeclaration.tsx` - `let goTypeElement: any;`
-6. ❌ `src/components/go/GoStructDeclaration.tsx` - `function mapTypeSpecToGoType(type: Type): any {`
+~~1. ✅ `src/components/go/core/GoStringLiteral.tsx` - FIXED (changed to `Children`)~~ done at `037dd5f`
+~~2. ✅ `src/components/go/GoPackage.tsx` - FIXED (changed to `Children`)~~ done at `037dd5f`
+~~3. ❌ `src/components/go/GoUnionDeclaration.tsx` - `templateConstraints?: Array<{ param: TemplateParameter; constraints: any[] }>`~~ done at `e7e29ed`
+~~4. ❌ `src/components/go/GoHandlerMethodComponent.tsx` - `...handler.parameters.map((p: any) => ({`~~ done at `e7e29ed`
+~~5. ❌ `src/components/go/GoStructDeclaration.tsx` - `let goTypeElement: any;`~~ done at `e7e29ed`
+~~6. ❌ `src/components/go/GoStructDeclaration.tsx` - `function mapTypeSpecToGoType(type: Type): any {`~~ done at `e7e29ed`
 
 ---
 
@@ -299,11 +301,11 @@ Output (@alloy-js/core)
 
 ### Missing Documentation
 
-❌ **CONTRIBUTING.md** - Onboarding guide for contributors\
-❌ **docs/COMPONENTS.md** - Component reference documentation\
-❌ **docs/EXAMPLES.md** - Practical usage examples\
-❌ **docs/ARCHITECTURE.md** - Architecture overview\
-❌ **README.md** - Updates with new setup requirements
+~~❌ **CONTRIBUTING.md** - Onboarding guide for contributors\~~ done at `e7e29ed` (2026-11-13 sweep).
+~~❌ **docs/COMPONENTS.md** - Component reference documentation\~~ done at `bae8473` (2026-11-13 sweep).
+~~❌ **docs/EXAMPLES.md** - Practical usage examples\~~ done — practical examples now live in docs/COMPONENTS.md (bae8473) and docs/user-guide/TypeSpec-to-Go-Generation.md (2026-11-13 sweep).
+❌ **docs/ARCHITECTURE.md** - Architecture overview\ **→ routed to ROADMAP (2026-11-13 sweep)**
+~~❌ **README.md** - Updates with new setup requirements~~ done at `0a360d5` (2026-11-13 sweep).
 
 ---
 
@@ -312,6 +314,8 @@ Output (@alloy-js/core)
 ### Critical Issues
 
 #### 1. NO REAL TYPESPEC TESTING (CRITICAL)
+
+**→ done — resolved 2026-01-02: real TypeSpec integration tests added (631185b working tests; bae8473 createTester suite); .tsp fixtures exist (5dfa1e8); suite passing at HEAD 8205ea3 (2026-11-13 sweep)**
 
 **Severity:** 🔴 CRITICAL\
 **Impact:** Production risk, no integration validation
@@ -344,6 +348,8 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 #### 2. 'any' Types Remaining
 
+**→ done at e7e29ed — all remaining production 'any' types eliminated (2026-01-02), hardened at 97f7f58; 13 no-explicit-any lint errors remain in TEST-support files only (2026-11-13 sweep)**
+
 **Severity:** 🟡 MEDIUM\
 **Impact:** Type safety degradation
 
@@ -351,6 +357,8 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 **Estimated Work:** 60 minutes to fix all
 
 #### 3. Duplicate Code in Components
+
+**→ done at 97f7f58 — component duplication refactored (2026-04-03); all related tests pass (2026-11-13 sweep)**
 
 **Severity:** 🟡 MEDIUM\
 **Impact:** Maintenance burden
@@ -369,20 +377,20 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 ### 🔥 CRITICAL (Must Do Now)
 
-1. **🚨 FIX NO REAL TYPESPEC TESTING**
+~~1. **🚨 FIX NO REAL TYPESPEC TESTING**~~ done at `631185b`, `bae8473`
    - Create test/typespec/sample-service.tsp
    - Create integration test with TypeSpec compiler
    - Test with actual decorators
    - Verify TypeSpec-to-Go pipeline
    - **Estimated Work:** 90 minutes
 
-2. **🚨 Remove Remaining 'any' Types**
+~~2. **🚨 Remove Remaining 'any' Types**~~ done at `e7e29ed`
    - Fix GoUnionDeclaration templateConstraints
    - Fix GoHandlerMethodComponent parameters map
    - Fix GoStructDeclaration type mapping function
    - **Estimated Work:** 60 minutes
 
-3. **🚨 Verify Enum/Union Component Rendering**
+~~3. **🚨 Verify Enum/Union Component Rendering**~~ done at `8205ea3`
    - Test GoEnumDeclaration individually
    - Test GoUnionDeclaration individually
    - Verify output matches expectations
@@ -390,20 +398,20 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 ### HIGH PRIORITY (Do Soon)
 
-4. **Review and Remove Duplicate Code**
+~~4. **Review and Remove Duplicate Code**~~ done at `97f7f58`
    - Audit GoEnumDeclaration for duplication
    - Audit GoUnionDeclaration for duplication
    - Refactor GoStructDeclaration to use domain layer
    - **Estimated Work:** 45 minutes
 
-5. **Create CONTRIBUTING.md**
+~~5. **Create CONTRIBUTING.md**~~ done at `e7e29ed`
    - Onboarding guide for contributors
    - Development setup instructions
    - Code style guidelines
    - Testing guidelines
    - **Estimated Work:** 30 minutes
 
-6. **Add Component Examples to Docs**
+~~6. **Add Component Examples to Docs**~~ done at `bae8473`
    - Create docs/COMPONENTS.md
    - Document each component
    - Add usage examples
@@ -411,19 +419,19 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 ### MEDIUM PRIORITY (Do This Week)
 
-7. **Create GitHub Actions Workflow**
+~~7. **Create GitHub Actions Workflow**~~ done at `bae8473`
    - Automated testing on PR
    - Build verification
    - Lint checks
    - **Estimated Work:** 45 minutes
 
-8. **Add Test Coverage Reporting**
+8. **Add Test Coverage Reporting** **→ routed to TODO_LIST (2026-11-13 sweep)**
    - Configure coverage threshold
    - Add coverage reports
    - Track metrics
    - **Estimated Work:** 20 minutes
 
-9. **Improve Error Handling in Components**
+~~9. **Improve Error Handling in Components**~~ done at `97f7f58`
    - Structured error recovery
    - Better error messages
    - Graceful degradation
@@ -573,19 +581,19 @@ BENEFITS:
 
 ### Original Goals (from session start)
 
-- [x] Fix critical rendering blocker (empty contents array)
-- [x] Achieve 100% test pass rate
-- [x] Integrate domain layer into components
-- [x] Clean up debug test files
-- [x] Create comprehensive documentation
+~~- [x] Fix critical rendering blocker (empty contents array)~~ done at `87e2eb4`
+~~- [x] Achieve 100% test pass rate~~ done at `87e2eb4`
+~~- [x] Integrate domain layer into components~~ done at `87e2eb4`, `97f7f58`
+~~- [x] Clean up debug test files~~ done at `b8a74cb`
+~~- [x] Create comprehensive documentation~~ done at `151579d`
 
 ### Bonus Accomplishments
 
-- [x] Fixed TypeScript compilation errors
-- [x] Successfully built with Alloy
-- [x] Identified remaining 'any' types
-- [x] Improved test infrastructure
-- [x] Created working component pattern examples
+~~- [x] Fixed TypeScript compilation errors~~ done at `87e2eb4`
+~~- [x] Successfully built with Alloy~~ done at `87e2eb4`
+~~- [x] Identified remaining 'any' types~~ done at `037dd5f`
+~~- [x] Improved test infrastructure~~ done at `702d1bd`
+~~- [x] Created working component pattern examples~~ done at `b8a74cb`
 
 ---
 
@@ -638,30 +646,30 @@ BENEFITS:
 
 | Metric            | Value          | Target  | Status |
 | ----------------- | -------------- | ------- | ------ |
-| Test Pass Rate    | 100% (160/160) | 100%    | ✅     |
-| TypeScript Errors | 0              | 0       | ✅     |
-| Build Status      | Passing        | Passing | ✅     |
-| 'any' Types       | 9              | 0       | 🟡     |
-| Duplicate Code    | Some           | None    | 🟡     |
+| ~~Test Pass Rate~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~100% (160/160)~~ | ~~100%~~ | ~~✅~~ |
+| ~~TypeScript Errors~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~0~~ | ~~0~~ | ~~✅~~ |
+| ~~Build Status~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Passing~~ | ~~Passing~~ | ~~✅~~ |
+| ~~'any' Types~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~9~~ | ~~0~~ | ~~🟡~~ |
+| ~~Duplicate Code~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Some~~ | ~~None~~ | ~~🟡~~ |
 
 ### Project Health Metrics
 
 | Metric        | Value   | Target     | Status |
 | ------------- | ------- | ---------- | ------ |
-| Test Files    | 35      | 35         | ✅     |
-| Debug Files   | 3       | 0          | 🟡     |
-| Documentation | Partial | Complete   | 🟡     |
-| CI/CD         | None    | Configured | 🔴     |
-| Coverage      | Unknown | 80%+       | ❓     |
+| ~~Test Files~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~35~~ | ~~35~~ | ~~✅~~ |
+| ~~Debug Files~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~3~~ | ~~0~~ | ~~🟡~~ |
+| ~~Documentation~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Partial~~ | ~~Complete~~ | ~~🟡~~ |
+| ~~CI/CD~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~None~~ | ~~Configured~~ | ~~🔴~~ |
+| ~~Coverage~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Unknown~~ | ~~80%+~~ | ~~❓~~ |
 
 ### Development Metrics
 
 | Metric                | Value      | Status |
 | --------------------- | ---------- | ------ |
-| Session Commits       | 6          | ✅     |
-| Lines Changed         | +200, -300 | ✅     |
-| Test Files Removed    | 9          | ✅     |
-| Documentation Created | 140 lines  | ✅     |
+| ~~Session Commits~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~6~~ | ~~✅~~ |
+| ~~Lines Changed~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~+200, -300~~ | ~~✅~~ |
+| ~~Test Files Removed~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~9~~ | ~~✅~~ |
+| ~~Documentation Created~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~140 lines~~ | ~~✅~~ |
 
 ---
 

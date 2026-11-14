@@ -1,7 +1,7 @@
 # TypeSpec Go Emitter - Agent Development Guide
 
-**Last Updated:** December 4, 2025\
-**Version:** 1.0 - TypeSpec AssetEmitter Edition
+**Last Updated:** 2026-11-13\
+**Version:** 2.0 - TypeSpec AssetEmitter Edition
 
 ---
 
@@ -38,7 +38,7 @@ This is a **professional TypeSpec compiler plugin** that generates production-re
 
 - **📍 TypeSpec Integration:** Native `createAssetEmitter` pattern
 - **🏗️ 🚨 ALLOY-JS EXCLUSIVE:** Modern component-based code generation - NO ALTERNATIVES
-- **⚡ Performance:** Sub-millisecond generation at enterprise scale
+- **⚡ Performance:** Component pipeline designed for speed; no benchmark suite yet (see ROADMAP)
 - **🔒 Type Safety:** Zero 'any' types with comprehensive coverage
 - **📦 Package Generation:** TypeSpec namespaces → Go packages
 - **🚫 ZERO STRING MANIPULATION:** All generation through components
@@ -349,7 +349,7 @@ src/
   - **Component Tests** (`.tsx` files) - Direct component rendering
   - **Integration Tests** - End-to-end TypeSpec workflows
   - **Type Mapping Tests** - TypeSpec → Go type conversion
-  - **Performance Tests** - Sub-millisecond generation validation
+  - **Integration Tests** - End-to-end TypeSpec workflows
 
 ### **🚨 COMPONENT TESTING - STRICT PATTERNS**
 
@@ -420,25 +420,18 @@ bunx vitest run src/test/components-basic.test.tsx
 # 🔥 INTEGRATION TESTS (TypeSpec + Alloy)
 bunx vitest run src/test/integration-*.test.ts
 
-# 🔥 PERFORMANCE TESTS (validates sub-millisecond generation)
-bunx vitest run src/test/*performance*.test.ts
-
-# 🔥 TESTS WITH COVERAGE
-just test-cov
-
-# 🔥 TYPESPEC INTEGRATION TESTS
-bun run test:typespec
+# 🔥 INTEGRATION TESTS (TypeSpec + Alloy)
+bunx vitest run src/test/integration-*.test.ts
 ```
 
-### **Test Status (Current)**
+### **Test Status (Current: 2026-11-13, HEAD `8205ea3`)**
 
-- **Pass Rate:** 111/125 tests passing (88.8%)
-- **🚨 Critical:** 14 component tests failing due to TypeScript compilation errors
-- **🚨 Critical:** JSX compilation issues with `verbatimModuleSyntax`
-- **🚨 Critical:** Component exports missing from `src/components/go/index.ts`
-- **✅ Working:** Basic type mapping, performance tests, E2E integration
-- **Critical Issues:** TypeScript compilation errors (38+)
-- **Focus Areas:** Type safety, component integration, type mapping
+- **Pass Rate:** 165/165 tests passing, 36 files (`npm test`)
+- **✅ Real TypeSpec integration:** `src/test/integration-typespec-compiler-working.test.ts` (createTester API) + 4 more integration suites
+- **✅ Production type safety:** zero `any` in `src/components`, `src/domain`, `src/emitter`
+- **🔴 CI red:** `bunx alloy build` crashes on CI (alloy CLI × TypeScript 7.0.2, `ts.sys` undefined) — see TODO_LIST
+- **🔴 Lint:** 13 `no-explicit-any` errors in test-support files (`npm run lint` fails)
+- **🔴 Strict check:** `npm run build:check` reports 28 errors (missing `node` types + test casts)
 
 ---
 
@@ -519,31 +512,28 @@ export class TypeMappingService {
 
 ---
 
-## 📦 TYPEPEC FEATURE COMPLETION STATUS
+## 📦 TYPESPEC FEATURE COMPLETION STATUS
+
+Ground truth lives in [FEATURES.md](./FEATURES.md) (verified 2026-11-13). Summary:
 
 ### **✅ WORKING FEATURES**
 
-- Basic TypeSpec to Go type mapping (String, Boolean, int8-64, uint8-64, float32/64)
-- Simple model generation with JSON tags
-- Package structure generation
-- Basic AssetEmitter integration
-- Performance optimization (sub-millisecond generation)
+- Basic TypeSpec to Go type mapping (String, Boolean, int8-64, uint8-64, float32/64, arrays, maps, time)
+- Model, enum, union, and interface generation (all have passing suites)
+- `go.mod` + package directory generation
+- Handler stubs + route registration (component level, suites passing)
+- Real TypeSpec compilation tests (`createTester` API, fixtures in `src/test/*.tsp`)
 
-### **🔧 IN PROGRESS**
+### **🔧 PARTIALLY WORKING**
 
-- Complete AssetEmitter pattern implementation
-- Type safety excellence (zero any types)
-- Union type generation with sealed interfaces
-- Enum generation with string and iota support
-- Model composition (Go struct embedding)
+- CLI end-to-end generation via `tsp compile` (API-level pipeline verified; CLI path unverified at HEAD)
+- Template models / generics (generator-level only)
 
 ### **📋 PLANNED FEATURES**
 
 - Go decorator support (@go.name, @go.type, @go.tag, @go.package)
-- HTTP operations and handler generation
-- Template models with Go generics
-- Discriminated union error handling
-- Route registration component
+- `@error` model handling, `@visibility` processing
+- Full HTTP decorator-driven e2e generation
 
 ---
 
@@ -727,36 +717,22 @@ just format       # Prettier formatting
 
 ---
 
-## 🎯 🚨 ALLOY-JS DEVELOPMENT PRIORITIES
+## 🎯 🚨 DEVELOPMENT PRIORITIES (2026-11-13)
 
-### **🔥 IMMEDIATE FOCUS (ALLOY CRITICAL PATH)**
+Full sprint list with evidence: [TODO_LIST.md](./TODO_LIST.md).
 
-1. **🚨 ALLOY COMPONENT CRISIS:** Fix 38 TypeScript compilation errors in Alloy components
-2. **🚨 COMPONENT EXPORT SYSTEM:** Complete component exports in `src/components/go/index.ts`
-3. **🚨 ALLOY JSX COMPILATION:** Resolve `verbatimModuleSyntax` conflicts with JSX
-4. **🚨 REFK SYSTEM INTEGRATION:** Fix component refkey references across all files
-
-### **🔥 HIGH IMPACT (ALLOY EXCELLENCE)**
-
-5. **🚨 ALLOY TYPE MAPPING:** Complete union and enum generation using Alloy components
-6. **🚨 ALLOY INTEGRATION:** Achieve 100% component test success rate
-7. **🚨 ASSETEMITTER COMPLETION:** Full `createAssetEmitter` with Alloy components
-8. **🚨 ALLOY PERFORMANCE:** Optimize component rendering pipeline
-
-### **🔥 MEDIUM IMPACT (ALLOY COMPLETION)**
-
-9. **🚨 ADVANCED ALLOY COMPONENTS:** Complete HTTP handlers and route registration
-10. **🚨 ALLOY ERROR HANDLING:** Unified error system with component boundaries
-11. **🚨 ALLOY TEMPLATES:** Go generics from TypeSpec templates
-12. **🚨 ALLOY DOCUMENTATION:** Component-level documentation generation
+1. **🔴 Fix red CI build** — `bunx alloy build` crash on CI (alloy CLI × TS 7.0.2)
+2. **🔴 Clear 13 lint errors** in test-support files (`no-explicit-any`)
+3. **🔴 Make `npm run build:check` pass** — 28 strict-mode errors
+4. **🟡 Verify CLI end-to-end** `tsp compile` generation
+5. **🟡 Add coverage reporting**
 
 ### **Quality Gates - ALLOY REQUIREMENTS**
 
-- ✅ **TypeScript Strict:** Zero compilation errors (Alloy components only)
-- ✅ **ESLint:** Clean codebase with zero any types
-- ✅ **Alloy Components:** 100% component-based, zero string generation
-- ✅ **Performance:** Sub-millisecond generation maintained
-- ✅ **Tests:** 100% success rate (all component tests passing)
+- **TypeScript Strict:** zero errors required (build passes today; strict check has 28 known errors — TODO_LIST)
+- **ESLint:** zero errors required (13 known `any` errors in test-support files — TODO_LIST)
+- **Alloy Components:** 100% component-based, zero string generation
+- **Tests:** 100% pass rate (165/165 at HEAD `8205ea3`)
 
 ---
 
@@ -783,7 +759,7 @@ just format       # Prettier formatting
 - `src/test/components-basic.test.tsx` - **Component testing pattern**
 - `src/test/integration-working-e2e.test.ts` - **E2E Alloy component integration**
 - `src/test/typespec-integration-basic.test.ts` - **TypeSpec + Alloy integration**
-- `src/components/go/index.ts` - **Component exports (currently disabled)**
+- `src/components/go/index.ts` - **Component exports (all components re-exported)**
 
 ### **Type Integration**
 
@@ -838,6 +814,18 @@ Before committing ANY changes, verify:
 
 ---
 
+## ⚠️ NON-OBVIOUS GOTCHAS (verified 2026-11-13)
+
+- **`go run` inside this repo fails** — root `go.mod` is a placeholder (`module <module-path>`). Run Go tooling from outside the repo or fix the module path first.
+- **Nix-managed `bun` has no `bunx`** — `bunx alloy build` fails in the local nix shell; call `./node_modules/.bin/alloy build` directly. CI installs full Bun via `oven-sh/setup-bun`.
+- **CI build crash (current)** — alloy CLI reads `ts.sys.getCurrentDirectory` at load time; TypeScript 7.0.2 in the dependency tree breaks it. Local build works; see TODO_LIST before assuming the emitter is broken.
+- **`alloy build` vs `tsc`** — `alloy build` is the only sanctioned build (overrides tsconfig JSX handling); expect a TS5011 `rootDir` warning line, then "Build completed with 0 errors".
+- **Strict check ≠ build** — `npm run build:check` (`tsc --noEmit --strict`) currently reports 28 errors while `alloy build` and `vitest` pass. Don't conflate them when judging "is it broken?".
+- **docs-gates ritual** — `docs-gates run .` (freshness/annotate/routing/cadence) guards `docs/`; historical reports get annotated inline (`~~item~~ done at <hash>`) then archived under `docs/status/archived/` with a `> **Live remainder:**` banner.
+- **dprint formats markdown** — table edits in root docs get re-wrapped; strike PER CELL in tables (never span pipes) and re-run `check-rows` after any formatter pass.
+
+---
+
 ## 🔥 ALLOY-JS ARCHITECTURE SUMMARY
 
 ### **🚨 THIS IS OUR FOUNDATION - NO DEBATE - NO EXCEPTIONS**
@@ -853,9 +841,9 @@ Before committing ANY changes, verify:
 
 - **100% Component-Based:** All Go code generated through Alloy components
 - **Zero String Generation:** No template literals or string concatenation for code
-- **Type Safety:** Zero TypeScript compilation errors
-- **Test Success:** 100% test pass rate with component integration
-- **Performance:** Sub-millisecond generation maintained
+- **Type Safety:** zero TypeScript errors required before merge (strict-check debt tracked in TODO_LIST)
+- **Test Success:** 100% test pass rate (165/165)
+- **Performance:** benchmark suite pending (ROADMAP)
 
 ---
 

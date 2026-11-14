@@ -1,23 +1,25 @@
 # 🚨 COMPREHENSIVE STATUS UPDATE - DECEMBER 4, 2025
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 ## 📊 Architecture Excellence & Component Migration Progress
 
 **Generated:** 2025-12-04_09-36\
 **Branch:** lars/lets-rock\
-**Tests:** 126/126 PASSING ✅\
-**Build:** Working ✅
+**Tests:** ~~126/126 PASSING ✅~~ 165/165 at `8205ea3` (2026-11-13)\
+**Build:** ~~Working ✅~~ local `alloy build` passes; CI red (2026-11-13)
 
 ---
 
 ## 🎯 EXECUTIVE SUMMARY
 
-### **CURRENT STATE: 🟡 MOSTLY EXCELLENT WITH CRITICAL GAPS**
+### ~~**CURRENT STATE: 🟡 MOSTLY EXCELLENT WITH CRITICAL GAPS**~~ RESOLVED — gaps closed by 2026-04; 165/165 tests at `8205ea3`
 
-The TypeSpec Go Emitter project has achieved significant success with **126/126 tests passing** and a working build system. However, critical architectural gaps prevent achieving our goal of **100% component-based architecture** using Alloy-JS.
+The TypeSpec Go Emitter project has achieved significant success with ~~**126/126 tests passing**~~ now 165/165 at `8205ea3` and a working build system. ~~However, critical architectural gaps prevent achieving our goal of **100% component-based architecture** using Alloy-JS.~~ All gaps closed — full component architecture in place at `8205ea3`.
 
 **Key Achievement:** GoHandlerStub.tsx successfully migrated to 100% Alloy-JS components, serving as a working pattern for the entire project.
 
-**Critical Blocker:** Multiple components still use string templates, violating our core architectural principle of zero string-based code generation.
+~~**Critical Blocker:** Multiple components still use string templates, violating our core architectural principle of zero string-based code generation.~~ Resolved — components converted to Alloy-JS (`b8a63f8`, `0237f02`, `dc7f251`; verified at `8205ea3`).
 
 ---
 
@@ -27,13 +29,13 @@ The TypeSpec Go Emitter project has achieved significant success with **126/126 
 
 | Component                  | Architecture             | Tests                 | Status           |
 | -------------------------- | ------------------------ | --------------------- | ---------------- |
-| **Test Suite**             | Comprehensive Coverage   | 126/126 PASSING       | ✅ PERFECT       |
-| **Build System**           | Justfile Automation      | `just dev` succeeds   | ✅ WORKING       |
-| **TypeScript Compilation** | Strict Mode              | No errors             | ✅ STABLE        |
-| **GoHandlerStub.tsx**      | 100% Alloy-JS Components | Individual tests pass | ✅ PERFECT       |
-| **GoModel.tsx**            | Proper refkey Patterns   | Component tests pass  | ✅ EXCELLENT     |
-| **Research Documentation** | Complete Guides          | Working examples      | ✅ COMPREHENSIVE |
-| **Alloy-JS Integration**   | Solved Import Patterns   | Mastered syntax       | ✅ SOLVED        |
+| ~~**Test Suite**~~ done at `8205ea3` | ~~Comprehensive Coverage~~ | ~~126/126 PASSING~~ | ~~✅ PERFECT~~ |
+| ~~**Build System**~~ done — justfile + bun.lock present; alloy build passes locally at 8205ea3 (CI red 2026-11-13) | ~~Justfile Automation~~ | ~~`just dev` succeeds~~ | ~~✅ WORKING~~ |
+| ~~**TypeScript Compilation**~~ **NOT-DO — claim false at HEAD: 28 tsc --strict errors remain (2026-11-13).** | ~~Strict Mode~~ | ~~No errors~~ | ~~✅ STABLE~~ |
+| ~~**GoHandlerStub.tsx**~~ done at `b8a63f8` | ~~100% Alloy-JS Components~~ | ~~Individual tests pass~~ | ~~✅ PERFECT~~ |
+| ~~**GoModel.tsx**~~ done at `8205ea3` | ~~Proper refkey Patterns~~ | ~~Component tests pass~~ | ~~✅ EXCELLENT~~ |
+| ~~**Research Documentation**~~ done — docs/research/ guides exist at HEAD 8205ea3 | ~~Complete Guides~~ | ~~Working examples~~ | ~~✅ COMPREHENSIVE~~ |
+| ~~**Alloy-JS Integration**~~ done at `8205ea3` | ~~Solved Import Patterns~~ | ~~Mastered syntax~~ | ~~✅ SOLVED~~ |
 
 ### **Infrastructure Excellence**
 
@@ -51,11 +53,11 @@ The TypeSpec Go Emitter project has achieved significant success with **126/126 
 
 | Component                  | Current State         | Progress            | Critical Issues                                                |
 | -------------------------- | --------------------- | ------------------- | -------------------------------------------------------------- |
-| **GoEnumDeclaration.tsx**  | Mixed Architecture    | 70% component-based | 🔥 String templates in FunctionDeclaration bodies              |
-| **GoUnionDeclaration.tsx** | Mixed Architecture    | 60% component-based | 🔥 String templates in TypeDeclaration and FunctionDeclaration |
-| **GoPackageDirectory.tsx** | Broken + Mixed        | 50% component-based | 🔥 String templates + broken SingleImportStatement usage       |
-| **Export System**          | Conflicting Files     | 80% resolved        | 🚨 index.ts contradictions causing import chaos                |
-| **Component Imports**      | Inconsistent Patterns | 75% correct         | 🔥 Mixed correct/incorrect import statements                   |
+| ~~**GoEnumDeclaration.tsx**~~ done — converted to FunctionDeclaration components; enum generation tests pass at HEAD 8205ea3 | ~~Mixed Architecture~~ | ~~70% component-based~~ | ~~🔥 String templates in FunctionDeclaration bodies~~ |
+| ~~**GoUnionDeclaration.tsx**~~ done at `f7c3041` | ~~Mixed Architecture~~ | ~~60% component-based~~ | ~~🔥 String templates in TypeDeclaration and FunctionDeclaration~~ |
+| ~~**GoPackageDirectory.tsx**~~ done at `5d4b0d5`, `0237f02` | ~~Broken + Mixed~~ | ~~50% component-based~~ | ~~🔥 String templates + broken SingleImportStatement usage~~ |
+| ~~**Export System**~~ done at `1ae9c2a` | ~~Conflicting Files~~ | ~~80% resolved~~ | ~~🚨 index.ts contradictions causing import chaos~~ |
+| ~~**Component Imports**~~ done at `c47c2d7` | ~~Inconsistent Patterns~~ | ~~75% correct~~ | ~~🔥 Mixed correct/incorrect import statements~~ |
 
 ### **Specific Technical Issues**
 
@@ -120,21 +122,21 @@ default:
 
 | Component                            | Risk Level | Unknown Status          | Priority |
 | ------------------------------------ | ---------- | ----------------------- | -------- |
-| **GoInterfaceDeclaration.tsx**       | 🚨 HIGH    | Unknown string usage    | CRITICAL |
-| **GoRouteRegistrationComponent.tsx** | 🚨 HIGH    | Unknown string usage    | CRITICAL |
-| **GoHandlerMethodComponent.tsx**     | 🚨 HIGH    | Unknown string usage    | CRITICAL |
-| **GoModFile.tsx**                    | ⚠️ MEDIUM   | Likely string templates | HIGH     |
-| **GoStructDeclaration.tsx**          | ⚠️ MEDIUM   | Unknown patterns        | MEDIUM   |
+| ~~**GoInterfaceDeclaration.tsx**~~ done at `dc7f251` | ~~🚨 HIGH~~ | ~~Unknown string usage~~ | ~~CRITICAL~~ |
+| ~~**GoRouteRegistrationComponent.tsx**~~ done at `8205ea3` | ~~🚨 HIGH~~ | ~~Unknown string usage~~ | ~~CRITICAL~~ |
+| ~~**GoHandlerMethodComponent.tsx**~~ done at `8205ea3` | ~~🚨 HIGH~~ | ~~Unknown string usage~~ | ~~CRITICAL~~ |
+| ~~**GoModFile.tsx**~~ done at `8205ea3` | ~~⚠️ MEDIUM~~ | ~~Likely string templates~~ | ~~HIGH~~ |
+| ~~**GoStructDeclaration.tsx**~~ done at `4be9633` | ~~⚠️ MEDIUM~~ | ~~Unknown patterns~~ | ~~MEDIUM~~ |
 
 ### **System-Level Gaps**
 
 | Gap                               | Impact      | Current State         | Priority  |
 | --------------------------------- | ----------- | --------------------- | --------- |
-| **Component Integration Testing** | 🚨 CRITICAL | No systematic testing | IMMEDIATE |
-| **Performance Validation**        | ⚠️ MEDIUM    | Not measured          | HIGH      |
-| **Component Library**             | ⚠️ MEDIUM    | Not established       | MEDIUM    |
-| **Error Boundary System**         | ⚠️ MEDIUM    | Not implemented       | MEDIUM    |
-| **Documentation Website**         | ⚠️ LOW       | Not created           | LOW       |
+| ~~**Component Integration Testing**~~ done at `631185b` | ~~🚨 CRITICAL~~ | ~~No systematic testing~~ | ~~IMMEDIATE~~ |
+| **Performance Validation** **→ routed to TODO_LIST (2026-11-13 sweep)** | ⚠️ MEDIUM | Not measured | HIGH |
+| ~~**Component Library**~~ **Won't implement — superseded by Alloy-JS component architecture.** | ~~⚠️ MEDIUM~~ | ~~Not established~~ | ~~MEDIUM~~ |
+| **Error Boundary System** **→ routed to TODO_LIST (2026-11-13 sweep)** | ⚠️ MEDIUM | Not implemented | MEDIUM |
+| ~~**Documentation Website**~~ **Won't implement — superseded by README, COMPONENTS.md, docs/API-REFERENCE.md.** | ~~⚠️ LOW~~ | ~~Not created~~ | ~~LOW~~ |
 
 ---
 
@@ -224,46 +226,46 @@ export * from "./go/index.js"; // CONFLICT! Empty file!
 
 | Priority | Task                                            | Impact   | Time  | Status     |
 | -------- | ----------------------------------------------- | -------- | ----- | ---------- |
-| 1        | Fix export system conflict                      | CRITICAL | 8min  | 🔄 PENDING |
-| 2        | Remove string templates from GoEnumDeclaration  | HIGH     | 12min | 🔄 PENDING |
-| 3        | Remove string templates from GoUnionDeclaration | HIGH     | 12min | 🔄 PENDING |
-| 4        | Remove string templates from GoPackageDirectory | HIGH     | 12min | 🔄 PENDING |
-| 5        | Fix all component imports                       | HIGH     | 10min | 🔄 PENDING |
-| 6        | Verify all components individually              | HIGH     | 10min | 🔄 PENDING |
+| ~~1~~ done at `1ae9c2a` | ~~Fix export system conflict~~ | ~~CRITICAL~~ | ~~8min~~ | ~~🔄 PENDING~~ |
+| ~~2~~ done at `0237f02` | ~~Remove string templates from GoEnumDeclaration~~ | ~~HIGH~~ | ~~12min~~ | ~~🔄 PENDING~~ |
+| ~~3~~ done at `f7c3041` | ~~Remove string templates from GoUnionDeclaration~~ | ~~HIGH~~ | ~~12min~~ | ~~🔄 PENDING~~ |
+| ~~4~~ done at `5d4b0d5`, `0237f02` | ~~Remove string templates from GoPackageDirectory~~ | ~~HIGH~~ | ~~12min~~ | ~~🔄 PENDING~~ |
+| ~~5~~ done at `c47c2d7` | ~~Fix all component imports~~ | ~~HIGH~~ | ~~10min~~ | ~~🔄 PENDING~~ |
+| ~~6~~ done at `8205ea3` | ~~Verify all components individually~~ | ~~HIGH~~ | ~~10min~~ | ~~🔄 PENDING~~ |
 
 ### **HIGH PRIORITY (THIS WEEK)**
 
 | Priority | Task                                     | Impact | Time  | Status     |
 | -------- | ---------------------------------------- | ------ | ----- | ---------- |
-| 7        | Examine GoInterfaceDeclaration.tsx       | HIGH   | 15min | 🔄 PENDING |
-| 8        | Examine GoRouteRegistrationComponent.tsx | HIGH   | 15min | 🔄 PENDING |
-| 9        | Examine GoHandlerMethodComponent.tsx     | HIGH   | 15min | 🔄 PENDING |
-| 10       | Create component testing framework       | HIGH   | 45min | 🔄 PENDING |
-| 11       | Performance baseline testing             | MEDIUM | 30min | 🔄 PENDING |
-| 12       | Documentation consolidation              | MEDIUM | 60min | 🔄 PENDING |
+| ~~7~~ done at `dc7f251` | ~~Examine GoInterfaceDeclaration.tsx~~ | ~~HIGH~~ | ~~15min~~ | ~~🔄 PENDING~~ |
+| ~~8~~ done at `8205ea3` | ~~Examine GoRouteRegistrationComponent.tsx~~ | ~~HIGH~~ | ~~15min~~ | ~~🔄 PENDING~~ |
+| ~~9~~ done at `8205ea3` | ~~Examine GoHandlerMethodComponent.tsx~~ | ~~HIGH~~ | ~~15min~~ | ~~🔄 PENDING~~ |
+| ~~10~~ done — 36 vitest test files with JSX support at HEAD 8205ea3 | ~~Create component testing framework~~ | ~~HIGH~~ | ~~45min~~ | ~~🔄 PENDING~~ |
+| 11 **→ routed to TODO_LIST (2026-11-13 sweep)** | Performance baseline testing | MEDIUM | 30min | 🔄 PENDING |
+| ~~12~~ done at `f7c3041` | ~~Documentation consolidation~~ | ~~MEDIUM~~ | ~~60min~~ | ~~🔄 PENDING~~ |
 
 ### **MEDIUM PRIORITY (NEXT WEEK)**
 
 | Priority | Task                              | Impact | Time   | Status     |
 | -------- | --------------------------------- | ------ | ------ | ---------- |
-| 13       | Component library creation        | MEDIUM | 2hrs   | 🔄 PENDING |
-| 14       | Error boundary implementation     | MEDIUM | 1hr    | 🔄 PENDING |
-| 15       | Import automation system          | MEDIUM | 1.5hrs | 🔄 PENDING |
-| 16       | Type safety enforcement           | MEDIUM | 1hr    | 🔄 PENDING |
-| 17       | Code quality monitoring           | MEDIUM | 45min  | 🔄 PENDING |
-| 18       | Developer experience optimization | MEDIUM | 1hr    | 🔄 PENDING |
+| ~~13~~ **Won't implement — superseded by Alloy-JS component architecture.** | ~~Component library creation~~ | ~~MEDIUM~~ | ~~2hrs~~ | ~~🔄 PENDING~~ |
+| 14 **→ routed to TODO_LIST (2026-11-13 sweep)** | Error boundary implementation | MEDIUM | 1hr | 🔄 PENDING |
+| ~~15~~ **Won't implement — superseded by Alloy-JS import management.** | ~~Import automation system~~ | ~~MEDIUM~~ | ~~1.5hrs~~ | ~~🔄 PENDING~~ |
+| 16 **→ routed to TODO_LIST (2026-11-13 sweep)** | Type safety enforcement | MEDIUM | 1hr | 🔄 PENDING |
+| ~~17~~ done at `bae8473` | ~~Code quality monitoring~~ | ~~MEDIUM~~ | ~~45min~~ | ~~🔄 PENDING~~ |
+| ~~18~~ done — CONTRIBUTING.md (e7e29ed) + docs/SETUP.md (151579d) at HEAD 8205ea3 | ~~Developer experience optimization~~ | ~~MEDIUM~~ | ~~1hr~~ | ~~🔄 PENDING~~ |
 
 ### **LONG TERM (FUTURE SPRINTS)**
 
 | Priority | Task                        | Impact | Time | Status     |
 | -------- | --------------------------- | ------ | ---- | ---------- |
-| 19       | Advanced component patterns | LOW    | 3hrs | 🔄 PENDING |
-| 20       | Plugin architecture         | LOW    | 4hrs | 🔄 PENDING |
-| 21       | Performance optimization    | LOW    | 2hrs | 🔄 PENDING |
-| 22       | Enterprise features         | LOW    | 6hrs | 🔄 PENDING |
-| 23       | Community contribution      | LOW    | 8hrs | 🔄 PENDING |
-| 24       | Documentation website       | LOW    | 4hrs | 🔄 PENDING |
-| 25       | Training materials          | LOW    | 3hrs | 🔄 PENDING |
+| ~~19~~ **Won't implement — superseded by Alloy-JS component architecture.** | ~~Advanced component patterns~~ | ~~LOW~~ | ~~3hrs~~ | ~~🔄 PENDING~~ |
+| ~~20~~ **Won't implement — superseded by Alloy-JS emitter architecture.** | ~~Plugin architecture~~ | ~~LOW~~ | ~~4hrs~~ | ~~🔄 PENDING~~ |
+| 21 **→ routed to TODO_LIST (2026-11-13 sweep)** | Performance optimization | LOW | 2hrs | 🔄 PENDING |
+| ~~22~~ **Won't implement — superseded by 2026 production hardening (97f7f58, db6b4bd).** | ~~Enterprise features~~ | ~~LOW~~ | ~~6hrs~~ | ~~🔄 PENDING~~ |
+| ~~23~~ done — CONTRIBUTING.md (e7e29ed) at HEAD 8205ea3 | ~~Community contribution~~ | ~~LOW~~ | ~~8hrs~~ | ~~🔄 PENDING~~ |
+| ~~24~~ **Won't implement — superseded by README, COMPONENTS.md, docs/API-REFERENCE.md.** | ~~Documentation website~~ | ~~LOW~~ | ~~4hrs~~ | ~~🔄 PENDING~~ |
+| ~~25~~ **Won't implement — superseded by docs/SETUP.md (151579d) + COMPONENTS.md (bae8473).** | ~~Training materials~~ | ~~LOW~~ | ~~3hrs~~ | ~~🔄 PENDING~~ |
 
 ---
 
@@ -383,10 +385,10 @@ import { Package, Import, VarDeclaration } from "@alloy-js/go"; // These don't e
 
 ### **EXECUTE IMMEDIATELY**
 
-1. **Fix Critical Path (Tasks 1-6):** Resolve export system and string templates
-2. **Enable Strict TypeScript:** Test current state with stricter compilation
-3. **Systematic Component Testing:** Validate each component individually
-4. **Documentation Update:** Document working patterns and known issues
+~~1. **Fix Critical Path (Tasks 1-6):** Resolve export system and string templates~~ done at `8205ea3`
+2. **Enable Strict TypeScript:** Test current state with stricter compilation **→ routed to TODO_LIST (2026-11-13 sweep)**
+~~3. **Systematic Component Testing:** Validate each component individually~~ done at `8205ea3`
+~~4. **Documentation Update:** Document working patterns and known issues~~ done — README + COMPONENTS.md (bae8473) current at HEAD 8205ea3
 
 ### **EXPECTED OUTCOMES**
 
@@ -413,4 +415,4 @@ The TypeSpec Go Emitter project is **90% excellent** with critical gaps preventi
 **Time to Completion:** 2-3 hours for critical path\
 **Risk Level:** Low - working system provides safety net
 
-**Next Action:** Execute Task 1 - Fix export system conflict immediately.
+~~**Next Action:** Execute Task 1 - Fix export system conflict immediately.~~ done — export restructure landed as `1ae9c2a` (2025-12-04).

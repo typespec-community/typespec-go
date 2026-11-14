@@ -1,9 +1,11 @@
 # TypeSpec Go Emitter - Implementation Plan to Fix Alloy-JS Issues
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Date:** 2025-12-11 11:37 CET\
 **Plan Type:** Step-by-Step Implementation\
-**Goal:** Fix ALL 50 failing component tests\
-**Strategy:** String-based AssetEmitter + Component Fixes
+**Goal:** ~~Fix ALL 50 failing component tests~~ done — 165/165 passing (`87e2eb4` fixed rendering; `8205ea3` state).\
+**Strategy:** ~~String-based AssetEmitter + Component Fixes~~ revised — string-based emitter not adopted; the component system itself was fixed at `87e2eb4`.
 
 ---
 
@@ -11,9 +13,9 @@
 
 ### **🔧 Dual-Approach Solution:**
 
-1. **Immediate Production Fix:** Deploy working string-based AssetEmitter
-2. **Gradual Component Fixes:** Fix component system incrementally
-3. **Full Migration:** Eventually transition to pure component system
+~~1. **Immediate Production Fix:** Deploy working string-based AssetEmitter~~ **Won't implement — string-based AssetEmitter never deployed; Alloy-JS rendering fixed at 87e2eb4 (2026-01-01) instead.**
+~~2. **Gradual Component Fixes:** Fix component system incrementally~~ done at `87e2eb4`
+~~3. **Full Migration:** Eventually transition to pure component system~~ done at `87e2eb4`
 
 ### **📊 Impact Timeline:**
 
@@ -133,7 +135,7 @@ export function GoPackage(props: GoPackageProps) {
 import { code } from "@alloy-js/core";
 
 export function PackageDeclaration(props: { name: string }) {
-  return code`package ${props.name}\n\n`;
+  return code `package ${props.name}\n\n`;
 }
 ```
 
@@ -185,7 +187,7 @@ export function GoStructDeclarationWorking(props: { model: Model; packageName: s
     return code`${prop.name}: ${pointer}${goType} \`json:"${jsonTag}"\``;
   });
 
-  return code`package ${packageName}
+  return code `package ${packageName}
 
 // ${model.name} - TypeSpec generated model
 type ${model.name} struct {
@@ -219,7 +221,7 @@ export function GoUnionDeclarationWorking(props: { union: Union; packageName: st
   const { union, packageName } = props;
 
   // Generate sealed interface
-  const interfaceCode = code`package ${packageName}
+  const interfaceCode = code `package ${packageName}
 
 type ${union.name} interface {
   is${union.name}()
@@ -228,7 +230,7 @@ type ${union.name} interface {
   // Generate variant types
   const variantTypes = union.variants.map(
     (variant) =>
-      code`type ${variant.name} struct {}
+      code `type ${variant.name} struct {}
 func (e ${variant.name}) is${union.name}() {}`,
   );
 
@@ -248,11 +250,11 @@ ${variantTypes.join("\n")}`;
 
 #### **8.1 Priority Component Fixes:**
 
-1. **GoEnumDeclaration** (4 hours)
-2. **GoInterfaceDeclaration** (4 hours)
-3. **GoHandlerStub** (6 hours)
-4. **GoRouteRegistrationComponent** (4 hours)
-5. **GoModFile** (2 hours)
+~~1. **GoEnumDeclaration** (4 hours)~~ done at `87e2eb4`
+~~2. **GoInterfaceDeclaration** (4 hours)~~ done at `87e2eb4`
+~~3. **GoHandlerStub** (6 hours)~~ done at `87e2eb4`
+~~4. **GoRouteRegistrationComponent** (4 hours)~~ done at `87e2eb4`
+~~5. **GoModFile** (2 hours)~~ done at `87e2eb4`
 
 #### **8.2 Component Integration Testing** (2 days)
 
@@ -426,21 +428,21 @@ tsp compile examples/complex-api.tsp --emit go
 
 ### **🔴 High Risks:**
 
-1. **Component incompatibility:** Mitigate with string-based fallback
-2. **Testing complexity:** Mitigate with incremental testing
-3. **Timeline pressure:** Mitigate with prioritized implementation
+~~1. **Component incompatibility:** Mitigate with string-based fallback~~ **Won't implement — string-based fallback never needed; rendering fixed at 87e2eb4.**
+~~2. **Testing complexity:** Mitigate with incremental testing~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
+~~3. **Timeline pressure:** Mitigate with prioritized implementation~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
 
 ### **🟡 Medium Risks:**
 
-1. **Performance regression:** Mitigate with performance testing
-2. **Documentation gaps:** Mitigate with thorough review
-3. **Edge cases:** Mitigate with comprehensive testing
+~~1. **Performance regression:** Mitigate with performance testing~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
+~~2. **Documentation gaps:** Mitigate with thorough review~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
+~~3. **Edge cases:** Mitigate with comprehensive testing~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
 
 ### **🟢 Low Risks:**
 
-1. **Minor bugs:** Mitigate with thorough testing
-2. **Code quality:** Mitigate with code review
-3. **User adoption:** Mitigate with clear documentation
+~~1. **Minor bugs:** Mitigate with thorough testing~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
+~~2. **Code quality:** Mitigate with code review~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
+~~3. **User adoption:** Mitigate with clear documentation~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
 
 ---
 
@@ -474,27 +476,27 @@ tsp compile examples/complex-api.tsp --emit go
 
 ### **✅ Pre-Execution Checklist:**
 
-- [ ] Codebase backed up
-- [ ] Development environment ready
-- [ ] Test data prepared
-- [ ] Documentation templates ready
-- [ ] Deployment pipeline tested
+~~- [ ] Codebase backed up~~ **Superseded — plan superseded by rendering fix `87e2eb4` (2026-01-01); never executed as written.**
+~~- [ ] Development environment ready~~ **Superseded — plan superseded by rendering fix `87e2eb4` (2026-01-01); never executed as written.**
+~~- [ ] Test data prepared~~ **Superseded — plan superseded by rendering fix `87e2eb4` (2026-01-01); never executed as written.**
+~~- [ ] Documentation templates ready~~ **Superseded — plan superseded by rendering fix `87e2eb4` (2026-01-01); never executed as written.**
+~~- [ ] Deployment pipeline tested~~ **Superseded — plan superseded by rendering fix `87e2eb4` (2026-01-01); never executed as written.**
 
 ### **✅ Execution Monitoring:**
 
-- [ ] Progress tracked hourly
-- [ ] Test results recorded
-- [ ] Risks monitored
-- [ ] Documentation updated
-- [ ] Quality gates enforced
+~~- [ ] Progress tracked hourly~~ **Superseded — plan superseded by rendering fix `87e2eb4` (2026-01-01); never executed as written.**
+~~- [ ] Test results recorded~~ **Superseded — plan superseded by rendering fix `87e2eb4` (2026-01-01); never executed as written.**
+~~- [ ] Risks monitored~~ **Superseded — plan superseded by rendering fix `87e2eb4` (2026-01-01); never executed as written.**
+~~- [ ] Documentation updated~~ **Superseded — plan superseded by rendering fix `87e2eb4` (2026-01-01); never executed as written.**
+~~- [ ] Quality gates enforced~~ **Superseded — plan superseded by rendering fix `87e2eb4` (2026-01-01); never executed as written.**
 
 ### **✅ Post-Execution Checklist:**
 
-- [ ] All tests passing
-- [ ] Documentation complete
-- [ ] Production deployment validated
-- [ ] Performance verified
-- [ ] User feedback collected
+~~- [ ] All tests passing~~ done at `8205ea3` (165/165).
+~~- [ ] Documentation complete~~ done at `bae8473` (COMPONENTS.md).
+- [ ] Production deployment validated **→ routed to TODO_LIST (2026-11-13 sweep)** — CLI end-to-end tsp compile verification still open.
+- [ ] Performance verified **→ routed to TODO_LIST (2026-11-13 sweep)** — no benchmark evidence in repo.
+- [ ] User feedback collected **→ routed to TODO_LIST (2026-11-13 sweep)**.
 
 ---
 

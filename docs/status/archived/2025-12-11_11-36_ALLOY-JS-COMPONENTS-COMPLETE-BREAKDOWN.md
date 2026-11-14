@@ -1,5 +1,7 @@
 # TypeSpec Go Emitter - Alloy-JS Components Complete Breakdown
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Date:** 2025-12-11 11:36 CET\
 **Analysis Type:** Deep Technical Root Cause Analysis\
 **Status:** 🔴 **COMPLETE FAILURE** - Critical architectural incompatibility\
@@ -11,10 +13,10 @@
 
 ### **Critical Findings:**
 
-1. **🔴 NO Package Component:** `@alloy-js/go` exports NO `Package` component
-2. **🔴 Go Package Scope Failure:** All components require Go package context that's impossible to establish
-3. **🔴 Empty Directory Syndrome:** Every component returns `{"kind": "directory", "contents": []}`
-4. **🔴 Broken Dependency Chain:** Components depend on non-existent Go package system
+~~1. **🔴 NO Package Component:** `@alloy-js/go` exports NO `Package` component~~ done at `87e2eb4`
+~~2. **🔴 Go Package Scope Failure:** All components require Go package context that's impossible to establish~~ done at `87e2eb4`
+~~3. **🔴 Empty Directory Syndrome:** Every component returns `{"kind": "directory", "contents": []}`~~ done at `87e2eb4`
+~~4. **🔴 Broken Dependency Chain:** Components depend on non-existent Go package system~~ done at `87e2eb4`
 
 ---
 
@@ -138,10 +140,10 @@ export function usePackage() {
 
 ### **🔴 Complete Component Failure**
 
-- **100% of Go component tests:** Broken by missing Package component
-- **100% of GoPackageDirectory tests:** Broken by package scope issues
-- **100% of AssetEmitter integration:** Broken by empty directory outputs
-- **100% of Go file generation:** Broken by component system failure
+~~- **100% of Go component tests:** Broken by missing Package component~~ resolved `87e2eb4` — 165/165 passing.
+~~- **100% of GoPackageDirectory tests:** Broken by package scope issues~~ resolved `87e2eb4`.
+~~- **100% of AssetEmitter integration:** Broken by empty directory outputs~~ resolved `87e2eb4`.
+~~- **100% of Go file generation:** Broken by component system failure~~ resolved `87e2eb4`.
 
 ### **📊 Test Results Analysis:**
 
@@ -176,7 +178,7 @@ generator.generatePackage(package)                  // ✅ Complete packages
 
 ### **🟢 RECOMMENDED: String-Based AssetEmitter** (2-4 hours)
 
-**Replace broken component system with proven string generators:**
+~~**Replace broken component system with proven string generators:**~~ **Won't implement — pathway rejected; components fixed at `87e2eb4`.**
 
 ```typescript
 // WORKING ASSET EMITTER:
@@ -197,19 +199,19 @@ export async function $onEmit(context: any) {
 
 **✅ PROS:**
 
-- 100% working (already tested and proven)
-- Enterprise-grade Go code quality
-- Immediate production readiness
-- Zero architectural changes needed
+~~- 100% working (already tested and proven)~~ **Won't implement — pathway rejected; components fixed at `87e2eb4`.**
+~~- Enterprise-grade Go code quality~~ **Won't implement — pathway rejected; components fixed at `87e2eb4`.**
+~~- Immediate production readiness~~ **Won't implement — pathway rejected; components fixed at `87e2eb4`.**
+~~- Zero architectural changes needed~~ **Won't implement — pathway rejected; components fixed at `87e2eb4`.**
 
 **❌ CONS:**
 
-- No JSX component system (but current system doesn't work)
-- Maintains string-based approach (already working perfectly)
+~~- No JSX component system (but current system doesn't work)~~ **Superseded — the component system does work since `87e2eb4`.**
+~~- Maintains string-based approach (already working perfectly)~~ **Won't implement — pathway rejected.**
 
 ### **🟡 ALTERNATIVE: Fix Component System** (2-4 weeks)
 
-**Fix all missing components and package scope issues:**
+~~**Fix all missing components and package scope issues:**~~ done at `87e2eb4`.
 
 ```typescript
 // REQUIRED COMPONENTS TO CREATE:
@@ -222,19 +224,19 @@ export async function $onEmit(context: any) {
 
 **✅ PROS:**
 
-- Modern component architecture
-- JSX template support
-- Alloy-JS ecosystem alignment
+~~- Modern component architecture~~ done at `87e2eb4`.
+~~- JSX template support~~ done at `87e2eb4`.
+~~- Alloy-JS ecosystem alignment~~ done at `87e2eb4`.
 
 **❌ CONS:**
 
-- 2-4 weeks minimum development time
-- High complexity and uncertainty
-- Risk of further incompatibility issues
+~~- 2-4 weeks minimum development time~~ done at `87e2eb4` (~3 weeks later, one rendering fix).
+~~- High complexity and uncertainty~~ resolved `87e2eb4` — root cause was vitest JSX config, not complexity.
+~~- Risk of further incompatibility issues~~ resolved `87e2eb4`.
 
 ### **🔴 NOT RECOMMENDED: Status Quo** (Production Failure)
 
-**Continue with broken component system:**
+~~**Continue with broken component system:**~~ superseded `87e2eb4` — system not continued; fixed instead.
 
 ```
 Result: ❌ ZERO file generation capability
@@ -250,10 +252,10 @@ Timeline: ❌ Indefinite failure state
 
 **Rationale:**
 
-1. **Current component system is 100% broken** - not fixable with small changes
-2. **String-based system is 100% working** - enterprise-grade quality already proven
-3. **Time to market:** String approach = 2-4 hours vs Component approach = 2-4 weeks
-4. **Risk:** String approach = zero risk vs Component approach = high technical risk
+~~1. **Current component system is 100% broken** - not fixable with small changes~~ **Won't implement — decision reversed - the Alloy-JS components were fixed at 87e2eb4 (2026-01-01), not abandoned.**
+~~2. **String-based system is 100% working** - enterprise-grade quality already proven~~ **Won't implement — decision reversed - the Alloy-JS components were fixed at 87e2eb4 (2026-01-01), not abandoned.**
+~~3. **Time to market:** String approach = 2-4 hours vs Component approach = 2-4 weeks~~ **Won't implement — decision reversed - the Alloy-JS components were fixed at 87e2eb4 (2026-01-01), not abandoned.**
+~~4. **Risk:** String approach = zero risk vs Component approach = high technical risk~~ **Won't implement — decision reversed - the Alloy-JS components were fixed at 87e2eb4 (2026-01-01), not abandoned.**
 
 ### **📋 IMMEDIATE ACTION PLAN**
 
@@ -278,18 +280,18 @@ Timeline: ❌ Indefinite failure state
 
 **String-Based Approach:**
 
-- ✅ Generation Success Rate: 100%
-- ✅ Go Code Quality: Enterprise-grade
-- ✅ TypeSpec Coverage: Complete
-- ✅ Production Timeline: 2-4 hours
-- ✅ Risk Level: Zero
+~~- ✅ Generation Success Rate: 100%~~ **Won't implement — string-based pathway rejected (`87e2eb4` fixed components instead).**
+~~- ✅ Go Code Quality: Enterprise-grade~~ **Won't implement — pathway rejected.**
+~~- ✅ TypeSpec Coverage: Complete~~ **Won't implement — pathway rejected.**
+~~- ✅ Production Timeline: 2-4 hours~~ **Won't implement — pathway rejected.**
+~~- ✅ Risk Level: Zero~~ **Won't implement — pathway rejected.**
 
 **Component-Based Approach:**
 
-- ❌ Generation Success Rate: 0%
-- ❌ Current Status: Completely broken
-- ❌ Production Timeline: 2-4 weeks minimum
-- ❌ Risk Level: High
+~~- ❌ Generation Success Rate: 0%~~ done at `87e2eb4` — components generate fully.
+~~- ❌ Current Status: Completely broken~~ done at `87e2eb4`.
+~~- ❌ Production Timeline: 2-4 weeks minimum~~ done at `87e2eb4` (~3 weeks).
+~~- ❌ Risk Level: High~~ resolved `87e2eb4`.
 
 ---
 
@@ -303,11 +305,11 @@ Timeline: ❌ Indefinite failure state
 
 **This is not a reflection of project quality - it's a technical architecture mismatch. The project has a complete, working solution ready to deploy.**
 
-**Recommendation:** Deploy the working string-based AssetEmitter immediately for production use.
+**Recommendation:** ~~Deploy the working string-based AssetEmitter immediately for production use.~~ Not taken — Alloy-JS rendering fixed at `87e2eb4` and the component architecture shipped.
 
 ---
 
 **Report Generated:** 2025-12-11 11:36 CET\
 **Analysis Duration:** Comprehensive deep-dive\
 **Confidence Level:** 100% (complete root cause identified)\
-**Recommended Action:** Deploy string-based AssetEmitter
+**Recommended Action:** ~~Deploy string-based AssetEmitter~~ superseded — components fixed `87e2eb4`; string generator remains test-only.

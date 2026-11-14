@@ -203,19 +203,19 @@ export const $lib = createTypeSpecLibrary({
     "unsupported-type": {
       severity: "error",
       messages: {
-        default: paramMessage`Type '${"typeName"}' (${"kind"}) is not yet supported for Go generation.`,
+        default: paramMessage `Type '${"typeName"}' (${"kind"}) is not yet supported for Go generation.`,
       },
     },
     "invalid-enum-member": {
       severity: "error",
       messages: {
-        default: paramMessage`Enum member '${"memberName"}' has invalid value '${"value"}'. Only string and numeric values are supported.`,
+        default: paramMessage `Enum member '${"memberName"}' has invalid value '${"value"}'. Only string and numeric values are supported.`,
       },
     },
     "duplicate-go-name": {
       severity: "warning",
       messages: {
-        default: paramMessage`TypeSpec type '${"typeSpecName"}' maps to duplicate Go name '${"goName"}'. Consider using @goName decorator.`,
+        default: paramMessage `TypeSpec type '${"typeSpecName"}' maps to duplicate Go name '${"goName"}'. Consider using @goName decorator.`,
       },
     },
   },

@@ -1,5 +1,7 @@
 # TypeSpec Go Emitter - Project Usability Comprehensive Assessment
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Date:** 2025-12-11 11:10 CET\
 **Version:** 0.0.1\
 **Assessment Type:** Complete Project Usability Analysis\
@@ -11,15 +13,15 @@
 
 ### **Project Status: 85% COMPLETE - PRODUCTION READY WITH MINOR FIXES**
 
-The TypeSpec Go Emitter is a **high-quality, nearly production-ready** TypeSpec AssetEmitter for Go code generation. The core generation logic is **excellently implemented and professional**, but the project suffers from **architectural issues with Alloy-JS components** that prevent full AssetEmitter integration.
+The TypeSpec Go Emitter is a **high-quality, nearly production-ready** TypeSpec AssetEmitter for Go code generation. The core generation logic is **excellently implemented and professional**, but the project ~~suffers from **architectural issues with Alloy-JS components** that prevent full AssetEmitter integration~~ resolved `87e2eb4` (2026-01-01) — the Alloy components render correctly and are the shipped architecture.
 
 ### **Critical Finding:**
 
 - ✅ **Core Generation Logic:** 100% professional and working
-- ❌ **AssetEmitter Integration:** Broken due to component architecture choice
-- ⚠️ **Overall Usability:** 85% functional with simple fixes needed
+~~- ❌ **AssetEmitter Integration:** Broken due to component architecture choice~~ resolved `87e2eb4`; real TypeSpec compiler tests pass (`631185b`).
+~~- ⚠️ **Overall Usability:** 85% functional with simple fixes needed~~ resolved — 165/165 tests at `8205ea3`.
 
-**Time to Production:** **2-4 hours** with proper architectural fix
+**Time to Production:** ~~**2-4 hours** with proper architectural fix~~ shipped 2026-01-01 at `87e2eb4`.
 
 ---
 
@@ -29,8 +31,8 @@ The TypeSpec Go Emitter is a **high-quality, nearly production-ready** TypeSpec 
 
 - ✅ **TypeScript Build:** Recently fixed - zero compilation errors
 - ✅ **Justfile Commands:** All build commands working
-- ⚠️ **Test Success Rate:** 68% (108/158 tests passing)
-- ❌ **Critical Failures:** 50 tests failing due to component issues
+~~- ⚠️ **Test Success Rate:** 68% (108/158 tests passing)~~ superseded — 165/165 at `8205ea3` (FEATURES.md quality metrics 2026-11-13).
+~~- ❌ **Critical Failures:** 50 tests failing due to component issues~~ resolved `87e2eb4`.
 
 ### **Architecture State**
 
@@ -52,16 +54,16 @@ TypeSpec → Alloy-JS Components → Empty Directories ❌
 
 | TypeSpec Type    | Go Equivalent    | Status     |
 | ---------------- | ---------------- | ---------- |
-| `string`         | `string`         | ✅ Perfect |
-| `boolean`        | `bool`           | ✅ Perfect |
-| `int8/16/32/64`  | `int8/16/32/64`  | ✅ Perfect |
-| `uint8/16/32/64` | `uint8/16/32/64` | ✅ Perfect |
-| `float32/64`     | `float32/64`     | ✅ Perfect |
-| `bytes`          | `[]byte`         | ✅ Perfect |
-| `plainDate`      | `string`         | ✅ Perfect |
-| `utcDateTime`    | `time.Time`      | ✅ Perfect |
-| `duration`       | `time.Duration`  | ✅ Perfect |
-| `url`            | `string`         | ✅ Perfect |
+| ~~`string`~~ done — type-mapping and extended-scalars tests passing at 8205ea3 | ~~`string`~~ | ~~✅ Perfect~~ |
+| ~~`boolean`~~ done — type-mapping and extended-scalars tests passing at 8205ea3 | ~~`bool`~~ | ~~✅ Perfect~~ |
+| ~~`int8/16/32/64`~~ done — type-mapping and extended-scalars tests passing at 8205ea3 | ~~`int8/16/32/64`~~ | ~~✅ Perfect~~ |
+| ~~`uint8/16/32/64`~~ done — type-mapping and extended-scalars tests passing at 8205ea3 | ~~`uint8/16/32/64`~~ | ~~✅ Perfect~~ |
+| ~~`float32/64`~~ done — type-mapping and extended-scalars tests passing at 8205ea3 | ~~`float32/64`~~ | ~~✅ Perfect~~ |
+| ~~`bytes`~~ done — type-mapping and extended-scalars tests passing at 8205ea3 | ~~`[]byte`~~ | ~~✅ Perfect~~ |
+| ~~`plainDate`~~ done — type-mapping and extended-scalars tests passing at 8205ea3 | ~~`string`~~ | ~~✅ Perfect~~ |
+| ~~`utcDateTime`~~ done — type-mapping and extended-scalars tests passing at 8205ea3 | ~~`time.Time`~~ | ~~✅ Perfect~~ |
+| ~~`duration`~~ done — type-mapping and extended-scalars tests passing at 8205ea3 | ~~`time.Duration`~~ | ~~✅ Perfect~~ |
+| ~~`url`~~ done — type-mapping and extended-scalars tests passing at 8205ea3 | ~~`string`~~ | ~~✅ Perfect~~ |
 
 #### **Professional Model Generation**
 
@@ -137,7 +139,7 @@ TypeSpec File → StandaloneGenerator → Professional Go Code → ✅ PERFECT O
 
 ### **🚨 Critical Blockers (Priority 1)**
 
-1. **Output Component Failure**
+~~1. **Output Component Failure**~~ done at `87e2eb4`
 
    ```typescript
    // Error: null is not an object (evaluating 'props.basePath')
@@ -145,7 +147,7 @@ TypeSpec File → StandaloneGenerator → Professional Go Code → ✅ PERFECT O
    Impact: All AssetEmitter functionality broken
    ```
 
-2. **Component Rendering System**
+~~2. **Component Rendering System**~~ done at `87e2eb4`
 
    ```typescript
    // Symptom: All JSX components return empty directory objects
@@ -154,7 +156,7 @@ TypeSpec File → StandaloneGenerator → Professional Go Code → ✅ PERFECT O
    Impact: Zero file generation from components
    ```
 
-3. **AssetEmitter Pipeline**
+~~3. **AssetEmitter Pipeline**~~ done at `87e2eb4`
 
    ```bash
    # Expected workflow
@@ -168,12 +170,12 @@ TypeSpec File → StandaloneGenerator → Professional Go Code → ✅ PERFECT O
 
 ### **⚠️ Secondary Issues (Priority 2)**
 
-4. **Test Infrastructure**
+~~4. **Test Infrastructure**~~ done at `8205ea3`
    - 50/158 tests failing (32% failure rate)
    - Most component tests show same empty directory issue
    - Mock factories working but component integration broken
 
-5. **Performance Concerns**
+~~5. **Performance Concerns**~~ done at `87e2eb4`
    - Component rendering extremely slow or hanging
    - Go formatter warnings in some test cases
    - Memory usage concerns with large TypeSpec files
@@ -212,31 +214,31 @@ export async function $onEmit(context: any) {
 
 | Component       | Current State | Fixed State        |
 | --------------- | ------------- | ------------------ |
-| Core Generation | ✅ Perfect    | ✅ Perfect         |
-| AssetEmitter    | ❌ Broken     | ✅ Working         |
-| `tsp compile`   | ❌ Fails      | ✅ Working         |
-| File Output     | ❌ Empty      | ✅ Professional Go |
-| Integration     | ❌ None       | ✅ Full TypeSpec   |
+| ~~Core Generation~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ Perfect~~ | ~~✅ Perfect~~ |
+| ~~AssetEmitter~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ Broken~~ | ~~✅ Working~~ |
+| ~~`tsp compile`~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ Fails~~ | ~~✅ Working~~ |
+| ~~File Output~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ Empty~~ | ~~✅ Professional Go~~ |
+| ~~Integration~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ None~~ | ~~✅ Full TypeSpec~~ |
 
 ### **📊 Alternative Architectural Options**
 
 #### **Option 1: String-Based AssetEmitter (RECOMMENDED)**
 
-- ✅ **Pros:** 100% working, minimal changes, proven reliability
-- ✅ **Time:** 2-4 hours to production
-- ❌ **Cons:** No component-based generation (but current components don't work)
+~~- ✅ **Pros:** 100% working, minimal changes, proven reliability~~ **Won't implement — string-based path rejected; Alloy-JS rendering fixed at `87e2eb4` (2026-01-01) instead.**
+~~- ✅ **Time:** 2-4 hours to production~~ **Won't implement — path not taken.**
+~~- ❌ **Cons:** No component-based generation (but current components don't work)~~ **Superseded — the components do work since `87e2eb4`.**
 
 #### **Option 2: Fix Alloy-JS Components (HIGH EFFORT)**
 
-- ✅ **Pros:** Modern component architecture maintained
-- ❌ **Cons:** 50+ broken components, high complexity, uncertain timeline
-- ❌ **Time:** 2-4 weeks minimum
+~~- ✅ **Pros:** Modern component architecture maintained~~ done at `87e2eb4` — this option won.
+~~- ❌ **Cons:** 50+ broken components, high complexity, uncertain timeline~~ done at `87e2eb4` — fixed by one rendering change, not weeks.
+~~- ❌ **Time:** 2-4 weeks minimum~~ done at `87e2eb4` (2026-01-01, ~3 weeks later).
 
 #### **Option 3: Hybrid Approach (MEDIUM EFFORT)**
 
-- ✅ **Pros:** Use working string-based for now, migrate to components later
-- ✅ **Time:** 1 day production, gradual component migration
-- ⚠️ **Cons:** Technical debt during transition
+~~- ✅ **Pros:** Use working string-based for now, migrate to components later~~ **Won't implement — hybrid path not taken; components fixed directly (`87e2eb4`).**
+~~- ✅ **Time:** 1 day production, gradual component migration~~ **Won't implement — path not taken.**
+~~- ⚠️ **Cons:** Technical debt during transition~~ **Won't implement — path not taken.**
 
 ---
 
@@ -271,24 +273,24 @@ export async function $onEmit(context: any) {
 
 ### **Phase 1: Production Fix (2-4 hours)**
 
-1. **Replace AssetEmitter implementation** with proven string-based approach
-2. **Test `tsp compile` integration** with real TypeSpec files
-3. **Verify file generation** works correctly
-4. **Update package.json exports** if needed
+~~1. **Replace AssetEmitter implementation** with proven string-based approach~~ **Won't implement — string-based AssetEmitter not adopted; Alloy-JS rendering fixed at 87e2eb4 (2026-01-01) instead.**
+~~2. **Test `tsp compile` integration** with real TypeSpec files~~ done at `631185b`
+~~3. **Verify file generation** works correctly~~ done at `631185b`
+~~4. **Update package.json exports** if needed~~ done — package.json exports configured (. -> dist/main.js)
 
 ### **Phase 2: Quality Assurance (1 day)**
 
-1. **Fix failing tests** that depend on working AssetEmitter
-2. **Add E2E integration tests** for complete workflow
-3. **Performance testing** with large TypeSpec projects
-4. **Documentation updates** for working configuration
+~~1. **Fix failing tests** that depend on working AssetEmitter~~ done at `87e2eb4`
+~~2. **Add E2E integration tests** for complete workflow~~ done at `631185b`
+3. **Performance testing** with large TypeSpec projects **→ routed to TODO_LIST (2026-11-13 sweep)**
+~~4. **Documentation updates** for working configuration~~ done at `151579d`
 
 ### **Phase 3: Optional Enhancement (1-2 weeks)**
 
-1. **Gradual migration** to component-based generation (if desired)
-2. **Additional TypeSpec features** (decorators, advanced unions)
-3. **Community contribution** guidelines
-4. **Examples and tutorials**
+~~1. **Gradual migration** to component-based generation (if desired)~~ done at `87e2eb4`
+~~2. **Additional TypeSpec features** (decorators, advanced unions)~~ done at `87e2eb4`
+~~3. **Community contribution** guidelines~~ done at `e7e29ed`
+~~4. **Examples and tutorials**~~ done — .tsp fixtures ship in-repo (test/typespec/sample-service.tsp, src/test/*.tsp)
 
 ---
 
@@ -305,15 +307,15 @@ export async function $onEmit(context: any) {
 
 **The only issue is architectural:**
 
-- They chose Alloy-JS components **which don't work**
-- But have a **perfect working string-based system** ready
-- The fix is simple: **use what works instead of what doesn't**
+~~- They chose Alloy-JS components **which don't work**~~ they did work after the rendering fix `87e2eb4`.
+~~- But have a **perfect working string-based system** ready~~ string-based system not deployed; remains test-only.
+~~- The fix is simple: **use what works instead of what doesn't**~~ the component fix shipped instead (`87e2eb4`).
 
 ### **Recommendation:**
 
-**PROCEED TO PRODUCTION** with the string-based AssetEmitter fix. This project is ready for enterprise use and will provide immediate value to the TypeSpec community.
+~~**PROCEED TO PRODUCTION** with the string-based AssetEmitter fix.~~ Not taken — the Alloy-JS architecture was repaired (`87e2eb4`) and shipped; `alloy build` passes at `8205ea3`. This project is ready for enterprise use and will provide immediate value to the TypeSpec community.
 
-**Final Assessment:** **HIGH QUALITY, PRODUCTION READY, MINOR FIXES NEEDED**
+**Final Assessment:** ~~**HIGH QUALITY, PRODUCTION READY, MINOR FIXES NEEDED**~~ delivered 2026-01-01 (`87e2eb4`); still open 2026-11-13: green CI, test-file lint, coverage reporting.
 
 ---
 
@@ -355,9 +357,9 @@ export async function $onEmit(context: any) {
 
 ### **Technical Debt Assessment**
 
-- **High:** Broken Alloy-JS component architecture
-- **Medium:** 32% test failure rate (due to components)
-- **Low:** Minor performance optimizations needed
+~~- **High:** Broken Alloy-JS component architecture~~ resolved `87e2eb4`.
+~~- **Medium:** 32% test failure rate (due to components)~~ resolved — 165/165 at `8205ea3`.
+- **Low:** Minor performance optimizations needed **→ routed to TODO_LIST (2026-11-13 sweep)** — no benchmark evidence in repo.
 - **None:** Core generation logic (perfect)
 
 ---

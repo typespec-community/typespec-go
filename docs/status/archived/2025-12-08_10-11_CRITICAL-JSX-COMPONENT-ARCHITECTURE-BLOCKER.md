@@ -1,18 +1,20 @@
 # 📊 CRITICAL ARCHITECTURE BLOCKER STATUS REPORT
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Date**: 2025-12-08 10:11:54 CET\
 **Duration**: Extended deep research session (6+ hours)\
 **Project**: TypeSpec Go Emitter - 100% Alloy-JS Component Architecture\
-**Status**: 🚨 CRITICAL BLOCKER IDENTIFIED - 75.5% TEST PASS RATE
+**Status**: 🚨 ~~CRITICAL BLOCKER IDENTIFIED - 75.5% TEST PASS RATE~~ resolved `87e2eb4` (2026-01-01) — 165/165 tests passing.
 
 ---
 
 ## 🎯 EXECUTIVE SUMMARY
 
-**CRISIS STATE**: Component architecture failure blocking all advanced features.\
-**ROOT CAUSE**: Fundamental misunderstanding of Alloy-JS JSX component patterns.\
-**IMPACT**: Cannot progress with enum/union generation, HTTP handlers, or route registration.\
-**ESTIMATED RESOLUTION**: 1-2 days with proper architectural guidance.
+**CRISIS STATE**: ~~Component architecture failure blocking all advanced features.~~ resolved `87e2eb4` (2026-01-01).\
+**ROOT CAUSE**: ~~Fundamental misunderstanding of Alloy-JS JSX component patterns.~~ confirmed — fixed by vitest `jsx: "preserve"` + `<SourceFile filetype="go">` at `87e2eb4`.\
+**IMPACT**: ~~Cannot progress with enum/union generation, HTTP handlers, or route registration.~~ all unblocked — enum/union, handlers, routes generated and tested (`87e2eb4`).\
+**ESTIMATED RESOLUTION**: ~~1-2 days with proper architectural guidance.~~ actually resolved 2026-01-01 at `87e2eb4`.
 
 ---
 
@@ -20,22 +22,22 @@
 
 ### Test Coverage Analysis
 
-- **Current**: 111/147 tests passing (75.5%)
-- **Previous**: 135/147 tests passing (91.8%)
-- **Regression**: -24 tests (16.3% decline)
-- **Critical Failures**: 13/31 test files failing
-- **Blocking Issue**: JSX component rendering
+~~- **Current**: 111/147 tests passing (75.5%)~~ superseded — 165/165 at `8205ea3`.
+~~- **Previous**: 135/147 tests passing (91.8%)~~ superseded — FEATURES.md quality metrics (2026-11-13).
+~~- **Regression**: -24 tests (16.3% decline)~~ superseded — FEATURES.md quality metrics (2026-11-13).
+~~- **Critical Failures**: 13/31 test files failing~~ superseded — FEATURES.md quality metrics (2026-11-13).
+~~- **Blocking Issue**: JSX component rendering~~ resolved `87e2eb4`.
 
 ### Component Status Matrix
 
 | Component Type         | Status     | Test Result              | Impact   |
 | ---------------------- | ---------- | ------------------------ | -------- |
-| GoModFile              | ✅ WORKING | 4/4 pass                 | Low      |
-| Basic Type Mapping     | ✅ WORKING | 55/55 pass               | Low      |
-| E2E Integration        | ✅ WORKING | 8/8 pass                 | Low      |
-| Core Helper Components | ❌ BROKEN  | 0/8 pass                 | CRITICAL |
-| Handler Methods        | ❌ BROKEN  | 2/2 pass (broken output) | HIGH     |
-| JSX Rendering          | 🚫 CRISIS  | 0/100% success           | CRITICAL |
+| ~~GoModFile~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ WORKING~~ | ~~4/4 pass~~ | ~~Low~~ |
+| ~~Basic Type Mapping~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ WORKING~~ | ~~55/55 pass~~ | ~~Low~~ |
+| ~~E2E Integration~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅ WORKING~~ | ~~8/8 pass~~ | ~~Low~~ |
+| ~~Core Helper Components~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ BROKEN~~ | ~~0/8 pass~~ | ~~CRITICAL~~ |
+| ~~Handler Methods~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~❌ BROKEN~~ | ~~2/2 pass (broken output)~~ | ~~HIGH~~ |
+| ~~JSX Rendering~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~🚫 CRISIS~~ | ~~0/100% success~~ | ~~CRITICAL~~ |
 
 ---
 
@@ -237,11 +239,11 @@ func (s *UserService) CreateUserHandler(...) {
 
 **Specific Actions**:
 
-1. **Research Working Examples**: Find and analyze successful JSX components in Alloy-JS codebase
-2. **Pattern Identification**: Extract exact JSX composition rules and patterns
-3. **Component Refactoring**: Rebuild core helpers using proper patterns
-4. **Testing Strategy**: Implement component-level testing methodology
-5. **Integration Testing**: Verify components work within larger compositions
+~~1. **Research Working Examples**: Find and analyze successful JSX components in Alloy-JS codebase~~ done at `87e2eb4`
+~~2. **Pattern Identification**: Extract exact JSX composition rules and patterns~~ done at `87e2eb4`
+~~3. **Component Refactoring**: Rebuild core helpers using proper patterns~~ done at `87e2eb4`
+~~4. **Testing Strategy**: Implement component-level testing methodology~~ done at `87e2eb4`
+~~5. **Integration Testing**: Verify components work within larger compositions~~ done at `87e2eb4`
 
 **Success Criteria**: All core helper components render correctly in JSX contexts.
 
@@ -251,11 +253,11 @@ func (s *UserService) CreateUserHandler(...) {
 
 **Specific Actions**:
 
-1. **Component Integration**: Make helper components work within FunctionDeclaration
-2. **Template System**: Create reusable handler implementation patterns
-3. **Business Logic**: Generate example/placeholder implementations
-4. **Error Handling**: Implement proper Go error patterns
-5. **Return Types**: Handle different response types correctly
+~~1. **Component Integration**: Make helper components work within FunctionDeclaration~~ done at `87e2eb4`
+~~2. **Template System**: Create reusable handler implementation patterns~~ done at `87e2eb4`
+~~3. **Business Logic**: Generate example/placeholder implementations~~ done at `87e2eb4`
+~~4. **Error Handling**: Implement proper Go error patterns~~ done at `87e2eb4`
+~~5. **Return Types**: Handle different response types correctly~~ done at `87e2eb4`
 
 **Success Criteria**: Handler methods generate complete Go code implementations.
 
@@ -290,17 +292,17 @@ func (s *UserService) CreateUserHandler(...) {
 
 ### Immediate Technical Debt
 
-1. **Component Architecture**: Fundamental JSX misunderstanding (CRITICAL)
-2. **Type Safety**: Any type usage in component boundaries (HIGH)
-3. **Test Coverage**: Missing component-specific tests (HIGH)
-4. **Documentation**: Component usage patterns not documented (MEDIUM)
+~~1. **Component Architecture**: Fundamental JSX misunderstanding (CRITICAL)~~ done at `87e2eb4`
+~~2. **Type Safety**: Any type usage in component boundaries (HIGH)~~ done at `e7e29ed`
+~~3. **Test Coverage**: Missing component-specific tests (HIGH)~~ done at `87e2eb4`
+~~4. **Documentation**: Component usage patterns not documented (MEDIUM)~~ done at `bae8473`
 
 ### Architectural Debt
 
-1. **String Mixing**: Residual string-based generation patterns
-2. **Error Boundaries**: No component-level error handling
-3. **Performance**: Unoptimized component rendering pipeline
-4. **Maintainability**: Complex component composition logic
+~~1. **String Mixing**: Residual string-based generation patterns~~ done — production generation is component-only since 87e2eb4; string generator remains test-only
+~~2. **Error Boundaries**: No component-level error handling~~ done at `97f7f58`
+3. **Performance**: Unoptimized component rendering pipeline **→ routed to TODO_LIST (2026-11-13 sweep)**
+4. **Maintainability**: Complex component composition logic **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 ---
 
@@ -348,24 +350,24 @@ func (s *UserService) CreateUserHandler(...) {
 
 ### Immediate Success (Next 48 hours)
 
-- [ ] All core helper components render correctly in JSX (100%)
-- [ ] Handler method bodies generate proper Go code (100%)
-- [ ] Test coverage returns to 90%+ pass rate
-- [ ] Component composition patterns documented and verified
+~~- [ ] All core helper components render correctly in JSX (100%)~~ done at `87e2eb4`.
+~~- [ ] Handler method bodies generate proper Go code (100%)~~ done at `87e2eb4`.
+~~- [ ] Test coverage returns to 90%+ pass rate~~ done at `87e2eb4` (100% by 2026-01-01; 165/165 at `8205ea3`).
+~~- [ ] Component composition patterns documented and verified~~ done at `bae8473` (COMPONENTS.md).
 
 ### Short-term Success (Next 2 weeks)
 
-- [ ] Complete enum and union type generation
-- [ ] HTTP route registration with component-based approach
-- [ ] Advanced TypeSpec feature integration
-- [ ] Performance benchmarks meeting sub-millisecond targets
+~~- [ ] Complete enum and union type generation~~ done at `87e2eb4`.
+~~- [ ] HTTP route registration with component-based approach~~ done at `87e2eb4`.
+~~- [ ] Advanced TypeSpec feature integration~~ done at `631185b` (real TypeSpec compiler tests).
+- [ ] Performance benchmarks meeting sub-millisecond targets **→ routed to TODO_LIST (2026-11-13 sweep)** — no benchmark evidence in repo.
 
 ### Long-term Success (Next 4 weeks)
 
-- [ ] Full TypeSpec to Go code generation pipeline
-- [ ] Production-ready component architecture
-- [ ] Comprehensive documentation and examples
-- [ ] Developer tooling integration
+~~- [ ] Full TypeSpec to Go code generation pipeline~~ done at `631185b`.
+~~- [ ] Production-ready component architecture~~ done at `97f7f58` (type-safety hardening).
+~~- [ ] Comprehensive documentation and examples~~ done at `bae8473` (COMPONENTS.md; SETUP `151579d`, API-REFERENCE `899bc60`).
+- [ ] Developer tooling integration **→ routed to TODO_LIST (2026-11-13 sweep)** — CLI end-to-end tsp compile verification still open.
 
 ---
 
@@ -377,11 +379,11 @@ func (s *UserService) CreateUserHandler(...) {
 
 **Specific Guidance Needed**:
 
-1. **Component Definition**: Proper way to create JSX-compatible components
-2. **Composition Patterns**: How to nest components within larger structures
-3. **Context Management**: Correct use of useContext and Scope
-4. **Testing Methodology**: How to test JSX components effectively
-5. **Debugging Techniques**: Tools and approaches for JSX rendering issues
+~~1. **Component Definition**: Proper way to create JSX-compatible components~~ done at `87e2eb4`
+~~2. **Composition Patterns**: How to nest components within larger structures~~ done at `87e2eb4`
+~~3. **Context Management**: Correct use of useContext and Scope~~ done at `87e2eb4`
+~~4. **Testing Methodology**: How to test JSX components effectively~~ done at `87e2eb4`
+~~5. **Debugging Techniques**: Tools and approaches for JSX rendering issues~~ done at `87e2eb4`
 
 **Preferred Resolution**: Direct architectural guidance with working examples.
 
@@ -391,31 +393,31 @@ func (s *UserService) CreateUserHandler(...) {
 
 ### 1. Research Phase (Immediate)
 
-- [ ] Study working Alloy-JS component examples in depth
-- [ ] Extract common patterns and principles
-- [ ] Identify minimal reproducible patterns
-- [ ] Document component composition rules
+~~- [ ] Study working Alloy-JS component examples in depth~~ done at `87e2eb4`.
+~~- [ ] Extract common patterns and principles~~ done at `87e2eb4`.
+~~- [ ] Identify minimal reproducible patterns~~ done at `87e2eb4`.
+~~- [ ] Document component composition rules~~ done at `bae8473`.
 
 ### 2. Refactoring Phase (Day 1-2)
 
-- [ ] Rebuild core helper components with proper patterns
-- [ ] Fix handler method body generation
-- [ ] Implement component testing framework
-- [ ] Restore test coverage to 90%+
+~~- [ ] Rebuild core helper components with proper patterns~~ done at `87e2eb4`.
+~~- [ ] Fix handler method body generation~~ done at `87e2eb4`.
+~~- [ ] Implement component testing framework~~ done at `87e2eb4` (vitest jsx-preserve fix; test utils since `dc7f251`).
+~~- [ ] Restore test coverage to 90%+~~ done at `87e2eb4`.
 
 ### 3. Advanced Features Phase (Week 2)
 
-- [ ] Complete enum and union type generation
-- [ ] Implement HTTP route registration
-- [ ] Add advanced TypeSpec feature support
-- [ ] Optimize performance and documentation
+~~- [ ] Complete enum and union type generation~~ done at `87e2eb4`.
+~~- [ ] Implement HTTP route registration~~ done at `87e2eb4`.
+~~- [ ] Add advanced TypeSpec feature support~~ done at `631185b`.
+~~- [ ] Optimize performance and documentation~~ done at `bae8473` (documentation); performance optimization unverified — **→ routed to TODO_LIST (2026-11-13 sweep)**.
 
 ### 4. Production Readiness Phase (Week 3-4)
 
-- [ ] Full integration testing and validation
-- [ ] Developer tooling and CLI implementation
-- [ ] Documentation and example creation
-- [ ] Performance benchmarking and optimization
+~~- [ ] Full integration testing and validation~~ done at `631185b`.
+- [ ] Developer tooling and CLI implementation **→ routed to TODO_LIST (2026-11-13 sweep)** — CLI end-to-end tsp compile verification still open.
+~~- [ ] Documentation and example creation~~ done at `bae8473` (COMPONENTS.md, .tsp fixtures).
+- [ ] Performance benchmarking and optimization **→ routed to TODO_LIST (2026-11-13 sweep)** — no benchmark evidence in repo.
 
 ---
 

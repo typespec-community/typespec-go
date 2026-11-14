@@ -1,7 +1,9 @@
 # TypeSpec Go Emitter - Comprehensive Project Status Report
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Report Date:** 2026-01-01 14:57:48 CET\
-**Project Status:** 🟡 ALMOST READY (Production Blocker: Real TypeSpec Testing)\
+**Project Status:** 🟡 ALMOST READY ~~(Production Blocker: Real TypeSpec Testing)~~ superseded — real TypeSpec integration tests pass since 631185b/bae8473 (2026-11-13 sweep).\
 **Branch:** lars/lets-rock\
 **Reporting Period:** Session 1 - Critical Blocker Resolution & Architecture Integration
 
@@ -13,15 +15,15 @@
 
 | Metric                    | Score          | Status        |
 | ------------------------- | -------------- | ------------- |
-| **Test Coverage**         | 100% (160/160) | ✅ EXCELLENT  |
-| **TypeScript Quality**    | 0 errors       | ✅ EXCELLENT  |
-| **Build Status**          | Passing        | ✅ EXCELLENT  |
-| **Code Quality**          | 7 'any' types  | 🟡 GOOD       |
-| **Documentation**         | 15% complete   | 🟡 MODERATE   |
-| **CI/CD**                 | Not configured | 🔴 NEEDS WORK |
-| **Real TypeSpec Testing** | 0%             | 🔴 CRITICAL   |
+| ~~**Test Coverage**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~100% (160/160)~~ | ~~✅ EXCELLENT~~ |
+| ~~**TypeScript Quality**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~0 errors~~ | ~~✅ EXCELLENT~~ |
+| ~~**Build Status**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Passing~~ | ~~✅ EXCELLENT~~ |
+| ~~**Code Quality**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~7 'any' types~~ | ~~🟡 GOOD~~ |
+| ~~**Documentation**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~15% complete~~ | ~~🟡 MODERATE~~ |
+| ~~**CI/CD**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Not configured~~ | ~~🔴 NEEDS WORK~~ |
+| ~~**Real TypeSpec Testing**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~0%~~ | ~~🔴 CRITICAL~~ |
 
-**Overall Project Health:** 🟡 **ALMOST PRODUCTION-READY** (74/100)
+**Overall Project Health:** 🟡 **ALMOST PRODUCTION-READY** ~~(74/100)~~ superseded — 165/165 tests, zero production 'any', docs/CI in place at 8205ea3 (2026-11-13 CI red regression tracked in TODO_LIST).
 
 ---
 
@@ -224,16 +226,16 @@ return mapping.goType || "interface{}";
 
 | Metric                       | Before        | After          | Change      | Status         |
 | ---------------------------- | ------------- | -------------- | ----------- | -------------- |
-| **Test Files**               | 44            | 35             | -20%        | ✅ CLEANED     |
-| **Test Pass Rate**           | 94% (164/175) | 100% (160/160) | +6%         | ✅ PERFECT     |
-| **TypeScript Errors**        | 5             | 0              | -100%       | ✅ CLEAN       |
-| **Build Status**             | Failing       | Passing        | ✅ FIXED    | ✅ WORKING     |
-| **'any' Types**              | Unknown       | 9              | Identified  | 🟡 IN PROGRESS |
-| **'any' Types Fixed**        | 0             | 2              | +22%        | 🟡 IN PROGRESS |
-| **Debug Files**              | 13            | 3              | -77%        | ✅ CLEANED     |
-| **Documentation**            | Minimal       | 840 lines      | +840        | 🟡 IN PROGRESS |
-| **Domain Layer Integration** | 0%            | 25%            | +25%        | 🟡 IN PROGRESS |
-| **Test Infrastructure**      | Basic         | Professional   | ✅ IMPROVED | ✅ GOOD        |
+| ~~**Test Files**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~44~~ | ~~35~~ | ~~-20%~~ | ~~✅ CLEANED~~ |
+| ~~**Test Pass Rate**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~94% (164/175)~~ | ~~100% (160/160)~~ | ~~+6%~~ | ~~✅ PERFECT~~ |
+| ~~**TypeScript Errors**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~5~~ | ~~0~~ | ~~-100%~~ | ~~✅ CLEAN~~ |
+| ~~**Build Status**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Failing~~ | ~~Passing~~ | ~~✅ FIXED~~ | ~~✅ WORKING~~ |
+| ~~**'any' Types**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Unknown~~ | ~~9~~ | ~~Identified~~ | ~~🟡 IN PROGRESS~~ |
+| ~~**'any' Types Fixed**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~0~~ | ~~2~~ | ~~+22%~~ | ~~🟡 IN PROGRESS~~ |
+| ~~**Debug Files**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~13~~ | ~~3~~ | ~~-77%~~ | ~~✅ CLEANED~~ |
+| ~~**Documentation**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Minimal~~ | ~~840 lines~~ | ~~+840~~ | ~~🟡 IN PROGRESS~~ |
+| ~~**Domain Layer Integration**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~0%~~ | ~~25%~~ | ~~+25%~~ | ~~🟡 IN PROGRESS~~ |
+| ~~**Test Infrastructure**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Basic~~ | ~~Professional~~ | ~~✅ IMPROVED~~ | ~~✅ GOOD~~ |
 
 ### Code Changes Statistics
 
@@ -485,11 +487,11 @@ Coverage: Go output, Vite resolution, modules
 ✅ Mock factory for isolated unit tests
 
 **Weaknesses:**
-❌ No real TypeSpec .tsp file testing (CRITICAL)
-❌ All tests use mock factories
-❌ Decorators (@route, @get, @doc) never tested with real TypeSpec
-❌ TypeSpec compiler integration untested
-❌ End-to-end pipeline untested
+~~❌ No real TypeSpec .tsp file testing (CRITICAL)~~ superseded — real TypeSpec integration testing since 631185b/bae8473 (2026-11-13 sweep).
+~~❌ All tests use mock factories~~ superseded — createTester-based real-compiler tests added at bae8473.
+~~❌ Decorators (@route, @get, @doc) never tested with real TypeSpec~~ superseded — decorators exercised via src/test/*.tsp + test/typespec/sample-service.tsp fixtures (5dfa1e8).
+~~❌ TypeSpec compiler integration untested~~ superseded — integration-typespec-compiler-working.test.ts (631185b).
+~~❌ End-to-end pipeline untested~~ superseded — integration suites pass at HEAD 8205ea3.
 
 ---
 
@@ -661,6 +663,8 @@ const mapping = CleanTypeMapper.mapTypeSpecType(type);
 
 #### 1. CONTRIBUTING.md ❌
 
+**→ done at e7e29ed — CONTRIBUTING.md added (500+ lines) (2026-11-13 sweep)**
+
 **Purpose:** Onboarding guide for contributors
 
 **Needed Sections:**
@@ -675,6 +679,8 @@ const mapping = CleanTypeMapper.mapTypeSpecType(type);
 
 #### 2. README.md Updates ❌
 
+**→ done — README updated at 0a360d5 (2026-11-13 sweep)**
+
 **Purpose:** Project overview and getting started
 
 **Needed Updates:**
@@ -687,6 +693,8 @@ const mapping = CleanTypeMapper.mapTypeSpecType(type);
 **Priority:** 🟡 **HIGH**
 
 #### 3. docs/COMPONENTS.md ❌
+
+**→ done at bae8473 — docs/COMPONENTS.md added (2026-11-13 sweep)**
 
 **Purpose:** Component reference documentation
 
@@ -704,6 +712,8 @@ const mapping = CleanTypeMapper.mapTypeSpecType(type);
 
 #### 4. docs/EXAMPLES.md ❌
 
+**→ done — practical examples now in docs/COMPONENTS.md (bae8473) and docs/user-guide/TypeSpec-to-Go-Generation.md (2026-11-13 sweep)**
+
 **Purpose:** Practical usage examples
 
 **Needed Sections:**
@@ -717,6 +727,8 @@ const mapping = CleanTypeMapper.mapTypeSpecType(type);
 **Priority:** 🟡 **MEDIUM-HIGH**
 
 #### 5. docs/ARCHITECTURE.md ❌
+
+**→ routed to ROADMAP (2026-11-13 sweep; partial: docs/architecture/typespec-visibility-system.md exists)**
 
 **Purpose:** Architecture overview
 
@@ -732,6 +744,8 @@ const mapping = CleanTypeMapper.mapTypeSpecType(type);
 
 #### 6. docs/API.md ❌
 
+**→ done at 899bc60 — docs/API-REFERENCE.md added (2026-11-13 sweep)**
+
 **Purpose:** API reference
 
 **Needed Sections:**
@@ -744,6 +758,8 @@ const mapping = CleanTypeMapper.mapTypeSpecType(type);
 **Priority:** 🟢 **LOW**
 
 #### 7. docs/DEPLOYMENT.md ❌
+
+**→ routed to ROADMAP (2026-11-13 sweep)**
 
 **Purpose:** Deployment guide
 
@@ -758,6 +774,8 @@ const mapping = CleanTypeMapper.mapTypeSpecType(type);
 
 #### 8. docs/TROUBLESHOOTING.md ❌
 
+**→ routed to ROADMAP (2026-11-13 sweep)**
+
 **Purpose:** Common issues (beyond SETUP.md)
 
 **Needed Sections:**
@@ -770,6 +788,8 @@ const mapping = CleanTypeMapper.mapTypeSpecType(type);
 **Priority:** 🟡 **MEDIUM**
 
 #### 9. docs/CHANGELOG.md ❌
+
+**→ done at fe0f990 — CHANGELOG.md added (2026-11-13 sweep)**
 
 **Purpose:** Change history
 
@@ -789,6 +809,8 @@ const mapping = CleanTypeMapper.mapTypeSpecType(type);
 ### Critical Issues
 
 #### 1. NO REAL TYPESPEC TESTING 🔴
+
+**→ done — resolved 2026-01-02: real TypeSpec integration tests (631185b working tests, bae8473 createTester suite); .tsp fixtures exist (5dfa1e8); suite passing at HEAD 8205ea3 (2026-11-13 sweep)**
 
 **Severity:** 🔴 **CRITICAL**\
 **Impact:** Production blocker, integration validation missing
@@ -825,6 +847,8 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 #### 2. 'any' Types Remaining 🟡
 
+**→ done at e7e29ed — all remaining production 'any' types eliminated (2026-01-02), hardened at 97f7f58; 13 no-explicit-any lint errors remain in TEST-support files only (2026-11-13 sweep)**
+
 **Severity:** 🟡 **MEDIUM**\
 **Impact:** Type safety degradation
 
@@ -839,6 +863,8 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 **Estimated Work:** 60 minutes
 
 #### 3. Duplicate Code in Components 🟡
+
+**→ done at 97f7f58 — component duplication refactored (2026-04-03); all related tests pass (2026-11-13 sweep)**
 
 **Severity:** 🟡 **MEDIUM**\
 **Impact:** Maintenance burden
@@ -855,6 +881,8 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 #### 4. Missing CI/CD Pipeline 🟢
 
+**→ done at bae8473 — .github/workflows/ci.yml added 2026-01-02; NOTE: CI red 2026-11-13 (alloy CLI × TypeScript 7.0.2 crash, run 43432825741) tracked as a new regression in TODO_LIST (2026-11-13 sweep)**
+
 **Severity:** 🟢 **LOW**\
 **Impact:** No automated testing/verification
 
@@ -868,6 +896,8 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 **Estimated Work:** 45 minutes
 
 #### 5. No Test Coverage Reporting 🟢
+
+**→ routed to TODO_LIST (2026-11-13 sweep)**
 
 **Severity:** 🟢 **LOW**\
 **Impact:** No quality metrics
@@ -888,12 +918,14 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 #### 1. Create Real TypeSpec .tsp Test File (60 min)
 
+**→ done at 5dfa1e8 — test/typespec/sample-service.tsp with real decorators; src/test/*.tsp fixtures in use (2026-11-13 sweep)**
+
 **Task:** Create test/typespec/sample-service.tsp with real decorators
 
 **Steps:**
 
-1. Create test/typespec directory
-2. Create sample-service.tsp with:
+~~1. Create test/typespec directory~~ done at `5dfa1e8`
+~~2. Create sample-service.tsp with:~~ done at `5dfa1e8`
    - @route decorator
    - @get/@post decorators
    - @doc decorator
@@ -906,20 +938,24 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 #### 2. Create E2E Compiler Integration Test (90 min)
 
+**→ done at 631185b — src/test/integration-typespec-compiler-working.test.ts; original .tsx draft preserved at test/broken/integration-typespec-compiler.test.tsx (2026-11-13 sweep)**
+
 **Task:** Create src/test/integration-typespec-compiler.test.tsx
 
 **Steps:**
 
-1. Import TypeSpec compiler
-2. Compile real .tsp file
-3. Invoke Go emitter
-4. Verify output matches expectations
+~~1. Import TypeSpec compiler~~ done at `631185b`
+~~2. Compile real .tsp file~~ done at `631185b`
+~~3. Invoke Go emitter~~ done at `631185b`
+~~4. Verify output matches expectations~~ done at `631185b`
 
 **Output:**
 
 - src/test/integration-typespec-compiler.test.tsx
 
 #### 3. Test with Real TypeSpec Decorators (45 min)
+
+**→ done — decorators (@route/@get/@doc) exercised by .tsp fixtures (5dfa1e8) in the integration suite passing at HEAD 8205ea3 (2026-11-13 sweep)**
 
 **Task:** Verify decorators work correctly
 
@@ -935,6 +971,8 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 - Passing integration tests for decorators
 
 #### 4. Verify TypeSpec-to-Go Transformation Pipeline (30 min)
+
+**→ done — pipeline validated by the integration suites passing at HEAD 8205ea3 (2026-11-13 sweep)**
 
 **Task:** Test end-to-end pipeline
 
@@ -955,6 +993,8 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 #### 5. Remove Remaining 7 'any' Types (60 min)
 
+**→ done at e7e29ed — all remaining production 'any' types eliminated (2026-11-13 sweep)**
+
 **Task:** Fix all remaining 'any' types
 
 **Files:**
@@ -965,6 +1005,8 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 #### 6. Review and Remove Duplicate Code (45 min)
 
+**→ done at 97f7f58 — duplication refactored (2026-11-13 sweep)**
+
 **Task:** Refactor components to use domain layer
 
 **Files:**
@@ -974,6 +1016,8 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 - GoStructDeclaration
 
 #### 7. Create CONTRIBUTING.md (30 min)
+
+**→ done at e7e29ed (2026-11-13 sweep)**
 
 **Task:** Onboarding guide for contributors
 
@@ -986,6 +1030,8 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 #### 8. Add Component Examples to Docs (45 min)
 
+**→ done at bae8473 — docs/COMPONENTS.md (2026-11-13 sweep)**
+
 **Task:** Create docs/COMPONENTS.md with examples
 
 **Content:**
@@ -996,6 +1042,8 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 #### 9. Verify Enum/Union Component Rendering (30 min)
 
+**→ done — enum/union component tests pass at HEAD 8205ea3 (2026-11-13 sweep)**
+
 **Task:** Test components individually
 
 **Tests:**
@@ -1005,6 +1053,8 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 - Various enum/union patterns
 
 #### 10. Test GoModel Component Individually (20 min)
+
+**→ done — model-generation/nested-models suites pass at HEAD 8205ea3 (2026-11-13 sweep)**
 
 **Task:** Create isolated test for GoModel
 
@@ -1020,23 +1070,43 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 #### 11. Create GitHub Actions Workflow (45 min)
 
+**→ done at bae8473 — .github/workflows/ci.yml; NOTE 2026-11-13 CI red regression tracked in TODO_LIST (2026-11-13 sweep)**
+
 #### 12. Add Test Coverage Reporting (20 min)
+
+**→ routed to TODO_LIST (2026-11-13 sweep)**
 
 #### 13. Improve Error Handling in Components (45 min)
 
+**→ done at 97f7f58 — error handling hardened (2026-11-13 sweep)**
+
 #### 14. Add Error Recovery Tests (45 min)
+
+**→ routed to ROADMAP (2026-11-13 sweep)**
 
 #### 15. Create Real TypeSpec Test File (30 min)
 
+**→ done at 5dfa1e8 (2026-11-13 sweep)**
+
 #### 16. Add .github/CODEOWNERS (5 min)
+
+**→ routed to ROADMAP (2026-11-13 sweep)**
 
 #### 17. Add .github/ISSUE_TEMPLATE (15 min)
 
+**→ routed to ROADMAP (2026-11-13 sweep)**
+
 #### 18. Update README.md (20 min)
+
+**→ done — README updated at 0a360d5 (2026-11-13 sweep)**
 
 #### 19. Integrate Domain Layer in All Components (45 min)
 
+**→ done at 97f7f58 (2026-11-13 sweep)**
+
 #### 20. Create docs/ARCHITECTURE.md (60 min)
+
+**→ routed to ROADMAP (2026-11-13 sweep; partial: docs/architecture/typespec-visibility-system.md)**
 
 **Total Estimated Work:** 5 hours
 
@@ -1044,13 +1114,23 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 #### 21. Add Performance Benchmark Suite (60 min)
 
+**→ routed to ROADMAP (2026-11-13 sweep)**
+
 #### 22. Create docs/DEPLOYMENT.md (30 min)
+
+**→ routed to ROADMAP (2026-11-13 sweep)**
 
 #### 23. Create docs/CHANGELOG.md (30 min)
 
+**→ done at fe0f990 — CHANGELOG.md added (2026-11-13 sweep)**
+
 #### 24. Create docs/API.md (60 min)
 
+**→ done at 899bc60 — docs/API-REFERENCE.md added (2026-11-13 sweep)**
+
 #### 25. Create docs/TROUBLESHOOTING.md (45 min)
+
+**→ routed to ROADMAP (2026-11-13 sweep)**
 
 **Total Estimated Work:** 4.5 hours
 
@@ -1062,14 +1142,14 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 | Metric                       | Current        | Target  | Status          |
 | ---------------------------- | -------------- | ------- | --------------- |
-| **Test Pass Rate**           | 100% (160/160) | 100%    | ✅ ACHIEVED     |
-| **TypeScript Errors**        | 0              | 0       | ✅ ACHIEVED     |
-| **Build Status**             | Passing        | Passing | ✅ ACHIEVED     |
-| **'any' Types**              | 7 remaining    | 0       | 🟡 78% COMPLETE |
-| **Domain Layer Integration** | 25%            | 100%    | 🟡 25% COMPLETE |
-| **Real TypeSpec Testing**    | 0%             | 50%+    | 🔴 CRITICAL     |
-| **Documentation**            | 15%            | 80%     | 🟡 15% COMPLETE |
-| **CI/CD Pipeline**           | 0%             | 100%    | 🟢 0% COMPLETE  |
+| ~~**Test Pass Rate**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~100% (160/160)~~ | ~~100%~~ | ~~✅ ACHIEVED~~ |
+| ~~**TypeScript Errors**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~0~~ | ~~0~~ | ~~✅ ACHIEVED~~ |
+| ~~**Build Status**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Passing~~ | ~~Passing~~ | ~~✅ ACHIEVED~~ |
+| ~~**'any' Types**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~7 remaining~~ | ~~0~~ | ~~🟡 78% COMPLETE~~ |
+| ~~**Domain Layer Integration**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~25%~~ | ~~100%~~ | ~~🟡 25% COMPLETE~~ |
+| ~~**Real TypeSpec Testing**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~0%~~ | ~~50%+~~ | ~~🔴 CRITICAL~~ |
+| ~~**Documentation**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~15%~~ | ~~80%~~ | ~~🟡 15% COMPLETE~~ |
+| ~~**CI/CD Pipeline**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~0%~~ | ~~100%~~ | ~~🟢 0% COMPLETE~~ |
 
 ### Project Health Score: 74/100
 
@@ -1123,27 +1203,27 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 ### Needs Work Before Production
 
-❌ **Real TypeSpec Integration Testing** (CRITICAL)
+~~❌ **Real TypeSpec Integration Testing** (CRITICAL)~~ superseded — resolved 2026-01-02 (631185b, bae8473; fixtures 5dfa1e8).
 
 - No tests with actual .tsp files
 - Decorators never tested
 - TypeSpec compiler integration unvalidated
 - **Estimated Time:** 3-4 hours
 
-🟡 **Remaining 'any' Types** (HIGH)
+~~🟡 **Remaining 'any' Types** (HIGH)~~ superseded — eliminated at e7e29ed (2026-01-02).
 
 - 7 'any' types remaining
 - Type safety degraded
 - **Estimated Time:** 1 hour
 
-🟡 **Complete Documentation** (MEDIUM)
+~~🟡 **Complete Documentation** (MEDIUM)~~ superseded — CONTRIBUTING.md (e7e29ed), COMPONENTS.md (bae8473), API-REFERENCE.md (899bc60).
 
 - CONTRIBUTING.md missing
 - Component examples missing
 - API reference missing
 - **Estimated Time:** 3-4 hours
 
-🟢 **CI/CD Pipeline** (LOW)
+~~🟢 **CI/CD Pipeline** (LOW)~~ superseded — ci.yml added at bae8473; 2026-11-13 CI red regression tracked in TODO_LIST.
 
 - No automated testing
 - No build verification
@@ -1154,11 +1234,11 @@ $ grep -r "@route\|@get\|@post\|@doc" src/ --include="*.tsp"
 
 | Category                             | Estimated Time |
 | ------------------------------------ | -------------- |
-| Critical fixes (real TypeSpec)       | 3-4 hours      |
-| Code quality (remaining 'any' types) | 1 hour         |
-| Documentation (comprehensive)        | 3-4 hours      |
-| CI/CD setup                          | 1 hour         |
-| **Total:**                           | **8-10 hours** |
+| ~~Critical fixes (real TypeSpec)~~ done at `631185b`, `bae8473` | ~~3-4 hours~~ |
+| ~~Code quality (remaining 'any' types)~~ done at `e7e29ed` | ~~1 hour~~ |
+| ~~Documentation (comprehensive)~~ done at `899bc60` | ~~3-4 hours~~ |
+| ~~CI/CD setup~~ done at `bae8473` | ~~1 hour~~ |
+| ~~**Total:**~~ **Superseded — categories above — all closed by 2026-01-04 (2026-11-13 sweep).** | ~~**8-10 hours**~~ |
 
 ---
 
@@ -1510,32 +1590,32 @@ RELATED:
 
 | Metric                    | Value                    |
 | ------------------------- | ------------------------ |
-| **Duration**              | 4+ hours                 |
-| **Commits**               | 7                        |
-| **Files Modified**        | 12                       |
-| **Files Created**         | 4                        |
-| **Lines Added**           | ~900                     |
-| **Lines Removed**         | ~300                     |
-| **Net Change**            | +600 lines               |
-| **Tests Fixed**           | 11 failures → 0 failures |
-| **Test Pass Rate**        | 94% → 100%               |
-| **TypeScript Errors**     | 5 → 0                    |
-| **'any' Types Fixed**     | 2/9 (22%)                |
-| **Documentation Created** | ~1,000 lines             |
+| ~~**Duration**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~4+ hours~~ |
+| ~~**Commits**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~7~~ |
+| ~~**Files Modified**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~12~~ |
+| ~~**Files Created**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~4~~ |
+| ~~**Lines Added**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~~900~~ |
+| ~~**Lines Removed**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~~300~~ |
+| ~~**Net Change**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~+600 lines~~ |
+| ~~**Tests Fixed**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~11 failures → 0 failures~~ |
+| ~~**Test Pass Rate**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~94% → 100%~~ |
+| ~~**TypeScript Errors**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~5 → 0~~ |
+| ~~**'any' Types Fixed**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~2/9 (22%)~~ |
+| ~~**Documentation Created**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~~1,000 lines~~ |
 
 ### Cumulative Progress
 
 | Milestone                            | Status | Date        |
 | ------------------------------------ | ------ | ----------- |
-| **Critical Rendering Blocker Fixed** | ✅     | Session 1   |
-| **100% Test Pass Rate**              | ✅     | Session 1   |
-| **Zero TypeScript Errors**           | ✅     | Session 1   |
-| **Successful Build**                 | ✅     | Session 1   |
-| **Domain Layer Integration**         | 🟡 25% | Session 1   |
-| **Code Quality ('any' types)**       | 🟡 78% | Session 1   |
-| **Documentation**                    | 🟡 15% | Session 1   |
-| **Real TypeSpec Testing**            | 🔴 0%  | **BLOCKER** |
-| **CI/CD Pipeline**                   | 🔴 0%  | Not Started |
+| ~~**Critical Rendering Blocker Fixed**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅~~ | ~~Session 1~~ |
+| ~~**100% Test Pass Rate**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅~~ | ~~Session 1~~ |
+| ~~**Zero TypeScript Errors**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅~~ | ~~Session 1~~ |
+| ~~**Successful Build**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~✅~~ | ~~Session 1~~ |
+| ~~**Domain Layer Integration**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~🟡 25%~~ | ~~Session 1~~ |
+| ~~**Code Quality ('any' types)**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~🟡 78%~~ | ~~Session 1~~ |
+| ~~**Documentation**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~🟡 15%~~ | ~~Session 1~~ |
+| ~~**Real TypeSpec Testing**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~🔴 0%~~ | ~~**BLOCKER**~~ |
+| ~~**CI/CD Pipeline**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~🔴 0%~~ | ~~Not Started~~ |
 
 ---
 
@@ -1543,32 +1623,32 @@ RELATED:
 
 ### Original Goals (Session 1)
 
-- [x] Fix critical rendering blocker (empty contents array)
-- [x] Achieve 100% test pass rate
-- [x] Integrate domain layer into components
-- [x] Clean up debug test files
-- [x] Create comprehensive documentation
+~~- [x] Fix critical rendering blocker (empty contents array)~~ done at `87e2eb4`
+~~- [x] Achieve 100% test pass rate~~ done at `87e2eb4`
+~~- [x] Integrate domain layer into components~~ done at `87e2eb4`, `97f7f58`
+~~- [x] Clean up debug test files~~ done at `b8a74cb`
+~~- [x] Create comprehensive documentation~~ done at `151579d`
 
 ### Bonus Achievements
 
-- [x] Fixed TypeScript compilation errors
-- [x] Successfully built with Alloy
-- [x] Identified remaining 'any' types
-- [x] Improved test infrastructure
-- [x] Created working component pattern examples
-- [x] Removed 2 'any' types (22% progress)
-- [x] Created comprehensive status reports
+~~- [x] Fixed TypeScript compilation errors~~ done at `87e2eb4`
+~~- [x] Successfully built with Alloy~~ done at `87e2eb4`
+~~- [x] Identified remaining 'any' types~~ done at `037dd5f`
+~~- [x] Improved test infrastructure~~ done at `702d1bd`
+~~- [x] Created working component pattern examples~~ done at `b8a74cb`
+~~- [x] Removed 2 'any' types (22% progress)~~ done at `037dd5f`
+~~- [x] Created comprehensive status reports~~ done at `037dd5f`
 
 ### Remaining Goals (Session 2+)
 
-- [ ] Create real TypeSpec .tsp test file
-- [ ] Create E2E compiler integration test
-- [ ] Fix remaining 7 'any' types
-- [ ] Review and remove duplicate code
-- [ ] Create CONTRIBUTING.md
-- [ ] Add component examples to docs
-- [ ] Create GitHub Actions workflow
-- [ ] Add test coverage reporting
+~~- [ ] Create real TypeSpec .tsp test file~~ done at `5dfa1e8`
+~~- [ ] Create E2E compiler integration test~~ done at `631185b`
+~~- [ ] Fix remaining 7 'any' types~~ done at `e7e29ed`
+~~- [ ] Review and remove duplicate code~~ done at `97f7f58`
+~~- [ ] Create CONTRIBUTING.md~~ done at `e7e29ed`
+~~- [ ] Add component examples to docs~~ done at `bae8473`
+~~- [ ] Create GitHub Actions workflow~~ done at `bae8473`
+- [ ] Add test coverage reporting **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 ---
 
@@ -1598,7 +1678,7 @@ RELATED:
 
 - **Repository:** github.com/typespec-community/typespec-go
 - **Branch:** lars/lets-rock
-- **Status:** Almost production-ready (74/100)
+- **Status:** ~~Almost production-ready (74/100)~~ superseded — 165/165 tests passing at 8205ea3 (2026-11-13 sweep).
 
 ### Issue Reporting
 
@@ -1619,33 +1699,33 @@ RELATED:
 
 ### Phase 1: Production Readiness (Week 1)
 
-- [ ] Fix real TypeSpec testing (CRITICAL)
-- [ ] Remove remaining 'any' types
-- [ ] Complete documentation (CONTRIBUTING.md, examples)
-- [ ] Create GitHub Actions workflow
-- [ ] Add test coverage reporting
+~~- [ ] Fix real TypeSpec testing (CRITICAL)~~ done at `631185b`, `bae8473`
+~~- [ ] Remove remaining 'any' types~~ done at `e7e29ed`
+~~- [ ] Complete documentation (CONTRIBUTING.md, examples)~~ done at `899bc60`
+~~- [ ] Create GitHub Actions workflow~~ done at `bae8473`
+- [ ] Add test coverage reporting **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 **Estimated Time:** 8-10 hours\
 **Goal:** Production-ready emitter
 
 ### Phase 2: Feature Enhancement (Week 2-3)
 
-- [ ] Add performance benchmarking
-- [ ] Improve error handling
-- [ ] Add error recovery tests
-- [ ] Create comprehensive examples
-- [ ] Optimize generation speed
+- [ ] Add performance benchmarking **→ routed to ROADMAP (2026-11-13 sweep)**
+~~- [ ] Improve error handling~~ done at `97f7f58`
+- [ ] Add error recovery tests **→ routed to ROADMAP (2026-11-13 sweep)**
+~~- [ ] Create comprehensive examples~~ done at `bae8473`
+- [ ] Optimize generation speed **→ routed to ROADMAP (2026-11-13 sweep)**
 
 **Estimated Time:** 15-20 hours\
 **Goal:** Enhanced features and performance
 
 ### Phase 3: Community Growth (Week 4+)
 
-- [ ] Add more real TypeSpec test files
-- [ ] Create video tutorials
-- [ ] Add blog posts
-- [ ] Speak at conferences
-- [ ] Grow contributor base
+~~- [ ] Add more real TypeSpec test files~~ done at `5dfa1e8`
+- [ ] Create video tutorials **→ routed to ROADMAP (2026-11-13 sweep)**
+- [ ] Add blog posts **→ routed to ROADMAP (2026-11-13 sweep)**
+- [ ] Speak at conferences **→ routed to ROADMAP (2026-11-13 sweep)**
+- [ ] Grow contributor base **→ routed to ROADMAP (2026-11-13 sweep)**
 
 **Estimated Time:** Ongoing\
 **Goal:** Thriving community and ecosystem
@@ -1656,7 +1736,7 @@ RELATED:
 
 ### Project Status: 🟡 **ALMOST PRODUCTION-READY**
 
-**Score:** 74/100
+~~**Score:** 74/100~~ superseded — all 2026-01 blockers resolved by 2026-01-04 (631185b, bae8473, e7e29ed, 97f7f58, 899bc60).
 
 **Strengths:**
 
@@ -1669,14 +1749,14 @@ RELATED:
 
 **Weaknesses:**
 
-- ❌ No real TypeSpec testing (CRITICAL)
-- 🟡 7 'any' types remaining
-- 🟡 Documentation incomplete
-- 🟢 No CI/CD pipeline
+- ~~❌ No real TypeSpec testing (CRITICAL)~~ superseded — resolved 2026-01-02 (631185b, bae8473).
+- ~~🟡 7 'any' types remaining~~ superseded — zero production 'any' since e7e29ed.
+- ~~🟡 Documentation incomplete~~ superseded — CONTRIBUTING/COMPONENTS/API-REFERENCE added (e7e29ed, bae8473, 899bc60).
+- ~~🟢 No CI/CD pipeline~~ superseded — ci.yml at bae8473; 2026-11-13 CI red regression tracked in TODO_LIST.
 
 **Critical Blocker:**
 
-- 🔴 Real TypeSpec integration testing (production blocker)
+- ~~🔴 Real TypeSpec integration testing (production blocker)~~ superseded — resolved 2026-01-02 (631185b, bae8473).
 
 **Time to Production-Ready:** 8-10 hours (1-2 focused days)
 

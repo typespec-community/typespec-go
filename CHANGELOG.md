@@ -1,6 +1,33 @@
 # TypeSpec Go Emitter - Changelog
 
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-11-13
+
+---
+
+## 2026-11-13 — Documentation health sweep
+
+- Annotated all 28 unarchived status reports in `docs/status/` inline (every open item struck with evidence or routed) and archived them to `docs/status/archived/` with a manifest — closes the docs-gates cadence drift (oldest report was 344 days unarchived).
+- Rewrote living docs against verified code state: TODO_LIST (fresh sprint rows), FEATURES (status upsert with evidence), ROADMAP, README, AGENTS.
+- New verified baseline recorded in TODO_LIST: 165/165 tests, local build green, CI red (alloy CLI × TypeScript 7.0.2 crash, run 43432825741), 13 lint errors in test-support files, 28 strict-mode type errors.
+
+## 2026-11 (tooling & CI hardening)
+
+- Pinned GitHub Actions to SHAs, added dprint formatter config, reworked lint config, dependency upgrades (`8205ea3`, `db6b4bd`).
+- CI currently red on the build step: `bunx alloy build` crashes with `ts.sys` undefined (alloy CLI incompatible with the pinned TypeScript 7.0.2). Tracked as the top TODO_LIST row.
+
+## 2026-04 — production hardening
+
+- Comprehensive type-safety improvements across Alloy-JS components (`97f7f58`).
+- HTTP handler e2e refactors: reusable helpers, direct-return error pattern (`52ae4fe`, `defeb38`, `fdef8c1`).
+- golangci-lint config for generated-Go quality; TypeSpec/ESLint dependency upgrades (`5fde08f`, `46797fe`).
+- Core dependency upgrades (`5b9b3b9`).
+
+## 2026-01 — integration breakthrough
+
+- Working real-TypeSpec integration tests via the `createTester` API (`631185b`, `bae8473`); sample service fixture `test/typespec/sample-service.tsp` (`5dfa1e8`).
+- Eliminated all `any` types from production code and added comprehensive CONTRIBUTING.md (`e7e29ed`).
+- Fixed the component-rendering blocker (`vitest` `jsx: "preserve"` + `<SourceFile filetype="go">`): 100% test pass rate restored (`87e2eb4`, `702d1bd`).
+- Setup guide `docs/SETUP.md` (`151579d`); component reference `COMPONENTS.md` (`bae8473`).
 
 ---
 

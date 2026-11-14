@@ -2,6 +2,8 @@
 
 **Transform TypeSpec API definitions into production-ready Go code with 100% Alloy-JS component-based architecture.**
 
+> **Status (2026-11-13):** 165/165 tests passing · local build green · real TypeSpec integration tests in place · CI workflow exists but currently red (build-tool compatibility — see [TODO_LIST](./TODO_LIST.md)).
+
 ---
 
 ## What is this?
@@ -12,9 +14,9 @@ TypeSpec Go Emitter is a **TypeSpec compiler plugin** that generates Go packages
 
 - **100% Component-Based** — All Go code generation uses Alloy-JS components, not string manipulation
 - **Native TypeSpec Integration** — Works with `tsp compile` and the TypeSpec compiler pipeline
-- **Enterprise Type Safety** — Zero `any` types, strict TypeScript throughout
-- **Sub-millisecond Generation** — High-performance code generation at any scale
-- **Production-Ready Output** — Go code that passes `gofmt`, `goimports`, and `gofumpt`
+- **Enterprise Type Safety** — Zero `any` types in production code, strict TypeScript throughout
+- **Real TypeSpec Testing** — In-memory compilation tests via the official `createTester` API
+- **Component-Driven Output** — Structs, enums, unions, interfaces, handlers, routes, and `go.mod` generated as components
 
 ### Quick Example
 
@@ -141,32 +143,38 @@ src/
 
 ## Status
 
+Verified 2026-11-13 (HEAD `8205ea3`). Full inventory with evidence:
+[FEATURES.md](./FEATURES.md).
+
 ### Test Coverage
 
-| Category         | Status             |
-| ---------------- | ------------------ |
-| Type Mapping     | ✅ Working         |
-| Model Generation | ✅ Working         |
-| Enum Generation  | ✅ Working         |
-| Union Generation | ✅ Working         |
-| Performance      | ✅ Sub-millisecond |
+| Category                      | Status                                       |
+| ----------------------------- | -------------------------------------------- |
+| Test suite                    | ✅ 165/165 tests, 36 files (`npm test`)      |
+| Real TypeSpec integration     | ✅ `createTester` compilation tests in place |
+| Enum / union / model coverage | ✅ dedicated suites passing                  |
+| HTTP handler & route suites   | ✅ component-level suites passing            |
 
 ### Feature Completeness
 
-- ✅ Basic TypeSpec to Go type mapping (string, boolean, int, float, etc.)
-- ✅ Model generation with JSON tags
-- ✅ Package structure generation
-- ✅ AssetEmitter integration
-- ✅ Alloy-JS component architecture
-- 🔧 Advanced union/enum features
-- 🔧 HTTP operations and handlers
+- ✅ Basic TypeSpec to Go type mapping (string, boolean, int/uint/float, arrays, maps, time)
+- ✅ Model generation with JSON tags, optional → pointer
+- ✅ Enum, union, and interface generation
+- ✅ `go.mod` + package directory generation
+- ✅ Handler stubs and route registration (component level)
+- 🔧 CLI end-to-end generation via `tsp compile` (verification in progress)
+- ⚪ `@go.*` decorators, `@error` models, `@visibility` (planned)
 
 ---
 
 ## Resources
 
 - [AGENTS.md](AGENTS.md) — Development guidelines and architecture
-- [docs/](docs/) — Technical documentation and research
+- [FEATURES.md](FEATURES.md) — Honest feature inventory with evidence
+- [TODO_LIST.md](TODO_LIST.md) — Current actionable work
+- [CHANGELOG.md](CHANGELOG.md) — What shipped, when
+- [COMPONENTS.md](COMPONENTS.md) — Component reference (12 primary + 5 helpers)
+- [docs/](docs/) — Setup, API reference, and type mapping guides
 
 ---
 

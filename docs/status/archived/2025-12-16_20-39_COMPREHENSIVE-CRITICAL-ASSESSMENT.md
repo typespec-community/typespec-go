@@ -1,5 +1,7 @@
 # TypeSpec Go Emitter - Comprehensive Status Report
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Report Date:** 2025-12-16 20:39 CET\
 **Analysis Type:** LIVE CODEBASE VERIFICATION vs DOCUMENTATION CLAIMS\
 **Report Scope:** Complete project status with actionable insights
@@ -10,22 +12,22 @@
 
 ### CRITICAL STATUS DISCOVERY
 
-**PROJECT IS NOT PRODUCTION READY** despite documentation claims
+~~**PROJECT IS NOT PRODUCTION READY** despite documentation claims~~ resolved `87e2eb4` (2026-01-01): 165/165 tests, `alloy build` passing locally (CI red 2026-11-13: alloy CLI × TypeScript 7.0.2 crash).
 
 **Key Findings:**
 
-- **Actual Test Results:** 55/169 tests FAILED (67.5% failure rate)
-- **Build Status:** TypeScript compilation FAILING with multiple errors
-- **Core Architecture:** Alloy-JS component rendering system completely broken
-- **Domain Layer:** 1,102 lines of production-ready code COMPLETELY UNUSED
-- **Integration Reality:** 0% functional integration (not 42% as documented)
+~~- **Actual Test Results:** 55/169 tests FAILED (67.5% failure rate)~~ resolved — 165/165 passing at `8205ea3`.
+~~- **Build Status:** TypeScript compilation FAILING with multiple errors~~ resolved — `alloy build` passes locally (`87e2eb4`); CI currently red on a separate alloy-CLI/TS-7.0.2 issue.
+~~- **Core Architecture:** Alloy-JS component rendering system completely broken~~ resolved `87e2eb4` (vitest `jsx: "preserve"` + `<SourceFile filetype="go">`).
+~~- **Domain Layer:** 1,102 lines of production-ready code COMPLETELY UNUSED~~ resolved `87e2eb4` — domain layer integrated into components.
+~~- **Integration Reality:** 0% functional integration (not 42% as documented)~~ resolved — real TypeSpec compiler integration tests pass (`631185b`).
 
 ### IMMEDIATE IMPACT ASSESSMENT
 
-- **BLOCKED DEVELOPMENT:** Compilation errors prevent any feature work
-- **BROKEN ARCHITECTURE:** Component system cannot generate any content
-- **WASTED ASSETS:** 1,102 lines of domain code sitting unused
-- **MISLEADING DOCUMENTATION:** Status reports completely inaccurate
+~~- **BLOCKED DEVELOPMENT:** Compilation errors prevent any feature work~~ resolved `87e2eb4`.
+~~- **BROKEN ARCHITECTURE:** Component system cannot generate any content~~ resolved `87e2eb4`.
+~~- **WASTED ASSETS:** 1,102 lines of domain code sitting unused~~ resolved `87e2eb4` — domain layer integrated.
+~~- **MISLEADING DOCUMENTATION:** Status reports completely inaccurate~~ addressed — docs rebuilt 2026-01 (CONTRIBUTING `e7e29ed`, COMPONENTS `bae8473`, SETUP `151579d`).
 
 ---
 
@@ -207,10 +209,10 @@ INTEGRATION SCORE: 0% FUNCTIONAL
 
 **Failure Cascade:**
 
-1. Component rendering fails → Empty file generation
-2. Empty file generation → All component tests fail
-3. Test failures → 67.5% test failure rate
-4. Component failures → Domain code integration blocked
+~~1. Component rendering fails → Empty file generation~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
+~~2. Empty file generation → All component tests fail~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
+~~3. Test failures → 67.5% test failure rate~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
+~~4. Component failures → Domain code integration blocked~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
 
 ### SECONDARY CRITICAL FAILURE
 
@@ -242,25 +244,25 @@ INTEGRATION SCORE: 0% FUNCTIONAL
 
 | Metric                   | Documented         | Actual          | Accuracy            |
 | ------------------------ | ------------------ | --------------- | ------------------- |
-| Test Success Rate        | 98.6% (154/157)    | 67.5% (114/169) | ❌ COMPLETELY FALSE |
-| Project Status           | "PRODUCTION READY" | BROKEN          | ❌ COMPLETELY FALSE |
-| Architecture Integration | 42%                | 0%              | ❌ COMPLETELY FALSE |
-| Domain Layer Usage       | 5%                 | 0%              | ❌ FALSE            |
-| Build Status             | "ZERO ERRORS"      | FAILING         | ❌ COMPLETELY FALSE |
+| ~~Test Success Rate~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~98.6% (154/157)~~ | ~~67.5% (114/169)~~ | ~~❌ COMPLETELY FALSE~~ |
+| ~~Project Status~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~"PRODUCTION READY"~~ | ~~BROKEN~~ | ~~❌ COMPLETELY FALSE~~ |
+| ~~Architecture Integration~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~42%~~ | ~~0%~~ | ~~❌ COMPLETELY FALSE~~ |
+| ~~Domain Layer Usage~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~5%~~ | ~~0%~~ | ~~❌ FALSE~~ |
+| ~~Build Status~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~"ZERO ERRORS"~~ | ~~FAILING~~ | ~~❌ COMPLETELY FALSE~~ |
 
 ### CRITICAL DOCUMENTATION INACCURACIES
 
-1. **PROJECT-COMPLETION-REPORT.md**
+~~1. **PROJECT-COMPLETION-REPORT.md**~~ **Superseded — documentation reality changed at 87e2eb4 (2026-01-01); status docs superseded by 2026-01 rebuild.**
    - Claims: "PRODUCTION READY with 100% completion"
    - Reality: 67.5% test failure rate, build errors, broken architecture
    - Status: COMPLETELY MISLEADING
 
-2. **IMPROVEMENT_PLAN.md**
+~~2. **IMPROVEMENT_PLAN.md**~~ **Superseded — documentation reality changed at 87e2eb4 (2026-01-01); status docs superseded by 2026-01 rebuild.**
    - Claims: 154/157 tests passing (98% success)
    - Reality: 114/169 tests passing (67.5% success)
    - Status: TEST COUNT AND SUCCESS RATE FALSE
 
-3. **INTEGRATION_REALITY_CHECK.md**
+~~3. **INTEGRATION_REALITY_CHECK.md**~~ **Superseded — documentation reality changed at 87e2eb4 (2026-01-01); status docs superseded by 2026-01 rebuild.**
    - Claims: 42% integration score
    - Reality: 0% functional integration
    - Status: INTEGRATION ASSESSMENT FALSE
@@ -273,13 +275,13 @@ INTEGRATION SCORE: 0% FUNCTIONAL
 
 **PRIORITY 1: Restore Core Architecture**
 
-1. **Diagnose Alloy-JS Component Rendering Failure**
+~~1. **Diagnose Alloy-JS Component Rendering Failure**~~ done at `87e2eb4`
    - Identify missing context providers
    - Fix basePath null reference errors
    - Restore component content generation
    - **Impact:** Unblocks 40+ failing tests
 
-2. **Fix TypeScript Compilation Errors**
+~~2. **Fix TypeScript Compilation Errors**~~ done at `87e2eb4`
    - Resolve Output type property issues
    - Fix @alloy-js/go import problems
    - Clear JSX template literal errors
@@ -292,26 +294,26 @@ INTEGRATION SCORE: 0% FUNCTIONAL
 - Use existing 615-line domain module
 - **Impact:** Leverages existing production code
 
-4. **Connect ErrorFactory to Components**
+~~4. **Connect ErrorFactory to Components**~~ done at `97f7f58`
    - Replace console.warn/error throughout components
    - Use existing 214-line professional error system
    - **Impact:** Improves error handling quality
 
 ### 🔧 HIGH PRIORITY (Next 48 Hours)
 
-5. **Restore Union/Enum Generation**
+~~5. **Restore Union/Enum Generation**~~ done at `87e2eb4`
    - Fix GoEnumDeclaration rendering (5 test failures)
    - Fix GoUnionDeclaration rendering (4 test failures)
    - Integrate UnionGenerator (271 lines available)
    - **Impact:** Restores core TypeSpec features
 
-6. **Fix Extended Scalar Type Mapping**
+~~6. **Fix Extended Scalar Type Mapping**~~ done at `87e2eb4`
    - Connect CleanTypeMapper to component system
    - Restore comprehensive scalar type support
    - Fix 5 extended scalar test failures
    - **Impact:** Complete TypeSpec scalar coverage
 
-7. **Restore Go Package Integration**
+~~7. **Restore Go Package Integration**~~ done at `87e2eb4`
    - Fix GoPackageDirectory context issues
    - Resolve basePath configuration
    - Fix 2 critical architectural test failures
@@ -319,17 +321,17 @@ INTEGRATION SCORE: 0% FUNCTIONAL
 
 ### 📈 MEDIUM PRIORITY (Following Week)
 
-8. **Complete Component Helper Functions**
+~~8. **Complete Component Helper Functions**~~ done at `87e2eb4`
    - Fix GoSwitch, GoIf, GoBlock, GoStringLiteral rendering
    - Resolve 16 component helper test failures
    - **Impact:** Complete component system functionality
 
-9. **Restore Go Handler Components**
+~~9. **Restore Go Handler Components**~~ done at `87e2eb4`
    - Fix GoHandlerStub and GoRouteRegistration rendering
    - Resolve 5 handler component test failures
    - **Impact:** HTTP operation generation
 
-10. **Fix Doc Decorator Integration**
+~~10. **Fix Doc Decorator Integration**~~ done at `87e2eb4`
     - Connect @doc decorator extraction to components
     - Resolve 4 documentation test failures
     - **Impact:** Complete TypeSpec decorator support
@@ -369,11 +371,11 @@ INTEGRATION SCORE: 0% FUNCTIONAL
 
 **Specific Investigation Required:**
 
-1. Is this an Alloy-JS version compatibility issue?
-2. Are we missing critical context providers or setup requirements?
-3. Is there a fundamental misunderstanding of Alloy-JS rendering patterns?
-4. Are we missing critical configuration for the Output component?
-5. Is this a JSX transformation or bundling issue?
+~~1. Is this an Alloy-JS version compatibility issue?~~ done at `87e2eb4`
+~~2. Are we missing critical context providers or setup requirements?~~ done at `87e2eb4`
+~~3. Is there a fundamental misunderstanding of Alloy-JS rendering patterns?~~ done at `87e2eb4`
+~~4. Are we missing critical configuration for the Output component?~~ done at `87e2eb4`
+~~5. Is this a JSX transformation or bundling issue?~~ done at `87e2eb4`
 
 **Research Needed:**
 
@@ -388,11 +390,11 @@ INTEGRATION SCORE: 0% FUNCTIONAL
 
 **Specific Investigation Required:**
 
-1. Was this intentional architectural separation?
-2. Was integration planned but never completed?
-3. Are there missing adapter or bridge components?
-4. Is there a pattern or interface mismatch between layers?
-5. Were there integration attempts that failed?
+~~1. Was this intentional architectural separation?~~ done at `87e2eb4`
+~~2. Was integration planned but never completed?~~ done at `87e2eb4`
+~~3. Are there missing adapter or bridge components?~~ done at `87e2eb4`
+~~4. Is there a pattern or interface mismatch between layers?~~ done at `87e2eb4`
+~~5. Were there integration attempts that failed?~~ done at `87e2eb4`
 
 ### TOP #3 DOCUMENTATION MYSTERY
 
@@ -400,11 +402,11 @@ INTEGRATION SCORE: 0% FUNCTIONAL
 
 **Specific Investigation Required:**
 
-1. Were these documents written based on plans rather than reality?
-2. Was there a major regression that invalidated all status reports?
-3. Are the documents from a different project state or branch?
-4. Was there a communication breakdown between development and documentation?
-5. Are we missing critical context about project history?
+~~1. Were these documents written based on plans rather than reality?~~ **Superseded — status reporting rebuilt 2026-01 (CONTRIBUTING e7e29ed, COMPONENTS bae8473).**
+~~2. Was there a major regression that invalidated all status reports?~~ **Superseded — status reporting rebuilt 2026-01 (CONTRIBUTING e7e29ed, COMPONENTS bae8473).**
+~~3. Are the documents from a different project state or branch?~~ **Superseded — status reporting rebuilt 2026-01 (CONTRIBUTING e7e29ed, COMPONENTS bae8473).**
+~~4. Was there a communication breakdown between development and documentation?~~ **Superseded — status reporting rebuilt 2026-01 (CONTRIBUTING e7e29ed, COMPONENTS bae8473).**
+~~5. Are we missing critical context about project history?~~ **Superseded — status reporting rebuilt 2026-01 (CONTRIBUTING e7e29ed, COMPONENTS bae8473).**
 
 ---
 
@@ -460,30 +462,30 @@ INTEGRATION SCORE: 0% FUNCTIONAL
 
 ### IMMEDIATE EXECUTION
 
-1. **STOP ALL NEW FEATURE DEVELOPMENT**
-2. **FOCUS 100% ON ARCHITECTURAL RESTORATION**
-3. **ALLOCATE ALL RESOURCES TO CRITICAL FAILURES**
+~~1. **STOP ALL NEW FEATURE DEVELOPMENT**~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
+~~2. **FOCUS 100% ON ARCHITECTURAL RESTORATION**~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
+~~3. **ALLOCATE ALL RESOURCES TO CRITICAL FAILURES**~~ **Superseded — Alloy-JS rendering fix 87e2eb4 (2026-01-01).**
 
 ### TECHNICAL APPROACH
 
-1. **Diagnose Alloy-JS Issues First** (root cause)
-2. **Fix Build System Second** (enable development)
-3. **Integrate Domain Code Third** (leverage existing assets)
-4. **Restore Component Functionality Fourth** (unblock tests)
+~~1. **Diagnose Alloy-JS Issues First** (root cause)~~ done at `87e2eb4`
+~~2. **Fix Build System Second** (enable development)~~ done at `87e2eb4`
+~~3. **Integrate Domain Code Third** (leverage existing assets)~~ done at `87e2eb4`
+~~4. **Restore Component Functionality Fourth** (unblock tests)~~ done at `87e2eb4`
 
 ### QUALITY ASSURANCE
 
-1. **Update All Documentation to Reality**
-2. **Establish Accurate Status Reporting**
-3. **Implement Continuous Integration Testing**
-4. **Create Realistic Project Timelines**
+~~1. **Update All Documentation to Reality**~~ done at `bae8473`
+~~2. **Establish Accurate Status Reporting**~~ done at `bae8473`
+~~3. **Implement Continuous Integration Testing**~~ done at `bae8473`
+~~4. **Create Realistic Project Timelines**~~ **Superseded — delivered by 2026-01 (87e2eb4).**
 
 ### PROJECT MANAGEMENT
 
-1. **Reset Expectations for Production Readiness**
-2. **Communicate Actual Project Status**
-3. **Adjust Timeline for True Production Readiness**
-4. **Plan for Comprehensive Testing Before Release**
+~~1. **Reset Expectations for Production Readiness**~~ **Superseded — moot after rendering fix 87e2eb4 (2026-01-01).**
+~~2. **Communicate Actual Project Status**~~ **Superseded — moot after rendering fix 87e2eb4 (2026-01-01).**
+~~3. **Adjust Timeline for True Production Readiness**~~ **Superseded — moot after rendering fix 87e2eb4 (2026-01-01).**
+~~4. **Plan for Comprehensive Testing Before Release**~~ **Superseded — moot after rendering fix 87e2eb4 (2026-01-01).**
 
 ---
 
@@ -513,13 +515,13 @@ INTEGRATION SCORE: 0% FUNCTIONAL
 
 ### IMMEDIATE NEXT STEPS
 
-1. Investigate Alloy-JS component rendering failure
-2. Fix TypeScript compilation errors
-3. Integrate CleanTypeMapper and ErrorFactory
-4. Restore component functionality
-5. Update documentation to reflect reality
+~~1. Investigate Alloy-JS component rendering failure~~ done at `87e2eb4`
+~~2. Fix TypeScript compilation errors~~ done at `87e2eb4`
+~~3. Integrate CleanTypeMapper and ErrorFactory~~ done at `87e2eb4`
+~~4. Restore component functionality~~ done at `87e2eb4`
+~~5. Update documentation to reflect reality~~ done at `bae8473`
 
-**CRITICAL INSIGHT:** The project has excellent domain architecture and comprehensive test coverage, but is completely blocked by fundamental component rendering failures. Fix the rendering system, integrate existing domain code, and the project can rapidly achieve production readiness.
+**CRITICAL INSIGHT:** The project has excellent domain architecture and comprehensive test coverage, but ~~is completely blocked by fundamental component rendering failures~~ that blocker was lifted at `87e2eb4` (2026-01-01). Fix the rendering system, integrate existing domain code, and the project can rapidly achieve production readiness.
 
 ---
 

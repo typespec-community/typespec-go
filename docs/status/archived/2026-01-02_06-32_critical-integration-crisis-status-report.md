@@ -1,7 +1,9 @@
 # TypeSpec Go Emitter - Critical Integration Status Report
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Report Date:** 2026-01-02 06:32:26 CET\
-**Project Status:** 🔴 **CRITICAL INTEGRATION BLOCKER - TypeSpec Testing API Crisis**\
+~~**Project Status:** 🔴 **CRITICAL INTEGRATION BLOCKER - TypeSpec Testing API Crisis**~~ resolved same day — working `createTester` integration tests added (631185b) and passing at HEAD 8205ea3.\
 **Branch:** lars/lets-rock\
 **Session:** Real TypeSpec Integration Attempt (Failed)
 
@@ -13,15 +15,15 @@
 
 | Metric                    | Score          | Status              | Change     |
 | ------------------------- | -------------- | ------------------- | ---------- |
-| **Test Coverage**         | 100% (160/160) | ✅ EXCELLENT        | No change  |
-| **TypeScript Quality**    | 0 errors       | ✅ EXCELLENT        | No change  |
-| **Build Status**          | Passing        | ✅ EXCELLENT        | No change  |
-| **Code Quality**          | 7 'any' types  | 🟡 GOOD             | No change  |
-| **Documentation**         | 15% complete   | 🟡 MODERATE         | No change  |
-| **CI/CD**                 | Not configured | 🔴 NEEDS WORK       | No change  |
-| **Real TypeSpec Testing** | 0%             | 🔴 CRITICAL FAILURE | **CRISIS** |
+| ~~**Test Coverage**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~100% (160/160)~~ | ~~✅ EXCELLENT~~ | ~~No change~~ |
+| ~~**TypeScript Quality**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~0 errors~~ | ~~✅ EXCELLENT~~ | ~~No change~~ |
+| ~~**Build Status**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Passing~~ | ~~✅ EXCELLENT~~ | ~~No change~~ |
+| ~~**Code Quality**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~7 'any' types~~ | ~~🟡 GOOD~~ | ~~No change~~ |
+| ~~**Documentation**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~15% complete~~ | ~~🟡 MODERATE~~ | ~~No change~~ |
+| ~~**CI/CD**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Not configured~~ | ~~🔴 NEEDS WORK~~ | ~~No change~~ |
+| ~~**Real TypeSpec Testing**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~0%~~ | ~~🔴 CRITICAL FAILURE~~ | ~~**CRISIS**~~ |
 
-**Overall Project Health:** 🔴 **65/100 (DOWN FROM 74/100)**
+~~**Overall Project Health:** 🔴 **65/100 (DOWN FROM 74/100)**~~ superseded — FEATURES.md quality metrics (2026-11-13).
 
 ---
 
@@ -44,11 +46,11 @@ import { createMemoryFileSystem } from "@typespec/compiler";
 
 **What Happened:**
 
-1. **Research Incorrect:** TypeSpec compiler testing API completely misunderstood
-2. **All 5 New Tests Fail:** Cannot run any real TypeSpec integration tests
-3. **API Mismatch:** Documentation shows non-existent functions
-4. **Import Resolution Fails:** @typespec/http decorators not recognized
-5. **JSX Runtime Missing:** @alloy-js/core/jsx-dev-runtime cannot be resolved
+~~1. **Research Incorrect:** TypeSpec compiler testing API completely misunderstood~~ done — corrected same day — working `createTester` API found (631185b)
+~~2. **All 5 New Tests Fail:** Cannot run any real TypeSpec integration tests~~ **Superseded — working integration tests src/test/integration-typespec-compiler-working.test.ts (631185b); broken file preserved at test/broken/.**
+~~3. **API Mismatch:** Documentation shows non-existent functions~~ done — resolved same day via `createTester` API (631185b)
+4. **Import Resolution Fails:** @typespec/http decorators not recognized **→ routed to TODO_LIST (2026-11-13 sweep)**
+5. **JSX Runtime Missing:** @alloy-js/core/jsx-dev-runtime cannot be resolved **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 **Evidence of Failure:**
 
@@ -106,10 +108,10 @@ import { compile } from "@typespec/compiler/testing";
 
 **Failed Attempts:**
 
-1. ❌ **createMemoryFileSystem** - doesn't exist in @typespec/compiler
-2. ❌ **@typespec/compiler/testing** - no memory file system API
-3. ❌ **Direct compilation** - requires actual file system
-4. ❌ **Library registration** - @typespec/http decorators not recognized
+~~1. ❌ **createMemoryFileSystem** - doesn't exist in @typespec/compiler~~ done — verified API fact; superseded in practice by `createTester` (631185b)
+~~2. ❌ **@typespec/compiler/testing** - no memory file system API~~ done — verified API fact; `createTester` is the working API (631185b)
+~~3. ❌ **Direct compilation** - requires actual file system~~ **Superseded — `createTester` compiles inline source strings (631185b).**
+4. ❌ **Library registration** - @typespec/http decorators not recognized **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 **CLI Compilation Issues:**
 
@@ -158,10 +160,10 @@ describe("🔥 Real TypeSpec Integration - Production Blocker Resolution", () =>
 
 | Component                  | Before     | After       | Impact              |
 | -------------------------- | ---------- | ----------- | ------------------- |
-| **Real TypeSpec Testing**  | 0%         | 0%          | 🔴 CRITICAL FAILURE |
-| **Test Infrastructure**    | Missing    | Built       | ✅ PROGRESS         |
-| **Integration Validation** | Missing    | Crashing    | 🔴 REGRESSION       |
-| **Production Blocking**    | Identified | WORSE SENED | 🔴 CRISIS           |
+| ~~**Real TypeSpec Testing**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~0%~~ | ~~0%~~ | ~~🔴 CRITICAL FAILURE~~ |
+| ~~**Test Infrastructure**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Missing~~ | ~~Built~~ | ~~✅ PROGRESS~~ |
+| ~~**Integration Validation**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Missing~~ | ~~Crashing~~ | ~~🔴 REGRESSION~~ |
+| ~~**Production Blocking**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Identified~~ | ~~WORSE SENED~~ | ~~🔴 CRISIS~~ |
 
 ### Work Impact
 
@@ -218,11 +220,11 @@ Total: 4 remaining 'any' types (unfixed)
 
 **Specific Unknowns:**
 
-1. **Correct API:** What is the proper way to create in-memory TypeSpec files for testing?
-2. **Library Loading:** How do we load @typespec/http decorators in test environment?
-3. **Compilation Approach:** Should we test via CLI (`tsp compile`) or programmatic API?
-4. **Working Examples:** Where are actual working TypeSpec emitter integration tests?
-5. **JSX Runtime:** How to resolve @alloy-js/core/jsx-dev-runtime in compiled output?
+~~1. **Correct API:** What is the proper way to create in-memory TypeSpec files for testing?~~ done — `createTester` API is the working approach (631185b), passing at HEAD 8205ea3
+2. **Library Loading:** How do we load @typespec/http decorators in test environment? **→ routed to TODO_LIST (2026-11-13 sweep)**
+~~3. **Compilation Approach:** Should we test via CLI (`tsp compile`) or programmatic API?~~ done — programmatic `createTester` API chosen (631185b, passing at HEAD 8205ea3); CLI e2e verification routed to TODO_LIST (2026-11-13 sweep)
+~~4. **Working Examples:** Where are actual working TypeSpec emitter integration tests?~~ done at `631185b`
+5. **JSX Runtime:** How to resolve @alloy-js/core/jsx-dev-runtime in compiled output? **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 **What I've Tried:**
 
@@ -282,10 +284,10 @@ grep -r "compile" node_modules/@typespec/compiler/ --include="*.d.ts" | head -10
 
 #### Fix Technical Debt (Assuming Integration Solved)
 
-1. **Remove 4 remaining 'any' types** (2 hours)
-2. **Refactor 3 components to use CleanTypeMapper** (2 hours)
-3. **Create documentation (README, CONTRIBUTING, COMPONENTS)** (2 hours)
-4. **Add GitHub Actions workflow** (2 hours)
+~~1. **Remove 4 remaining 'any' types** (2 hours)~~ done at `e7e29ed`
+2. **Refactor 3 components to use CleanTypeMapper** (2 hours) **→ routed to TODO_LIST (2026-11-13 sweep)**
+~~3. **Create documentation (README, CONTRIBUTING, COMPONENTS)** (2 hours)~~ done at `e7e29ed`, `bae8473`, `189ad88`
+~~4. **Add GitHub Actions workflow** (2 hours)~~ done at `bae8473`
 
 ---
 
@@ -295,12 +297,12 @@ grep -r "compile" node_modules/@typespec/compiler/ --include="*.d.ts" | head -10
 
 | Metric                    | Target  | Current         | Status        |
 | ------------------------- | ------- | --------------- | ------------- |
-| **Test Pass Rate**        | 100%    | 100% (existing) | ✅ STABLE     |
-| **Real TypeSpec Testing** | 50%+    | 0%              | 🔴 CRITICAL   |
-| **TypeScript Errors**     | 0       | 0               | ✅ PERFECT    |
-| **Build Status**          | Passing | Passing         | ✅ STABLE     |
-| **'any' Types**           | 0       | 4               | 🟡 DEGRADED   |
-| **Documentation**         | 80%     | 15%             | 🟡 INCOMPLETE |
+| ~~**Test Pass Rate**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~100%~~ | ~~100% (existing)~~ | ~~✅ STABLE~~ |
+| ~~**Real TypeSpec Testing**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~50%+~~ | ~~0%~~ | ~~🔴 CRITICAL~~ |
+| ~~**TypeScript Errors**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~0~~ | ~~0~~ | ~~✅ PERFECT~~ |
+| ~~**Build Status**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~Passing~~ | ~~Passing~~ | ~~✅ STABLE~~ |
+| ~~**'any' Types**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~0~~ | ~~4~~ | ~~🟡 DEGRADED~~ |
+| ~~**Documentation**~~ **Superseded — FEATURES.md quality metrics (2026-11-13).** | ~~80%~~ | ~~15%~~ | ~~🟡 INCOMPLETE~~ |
 
 ### Project Health Score: 65/100 (Down from 74/100)
 
@@ -364,11 +366,11 @@ grep -r "compile" node_modules/@typespec/compiler/ --include="*.d.ts" | head -10
 
 ### Critical Path to Production
 
-1. **Solve TypeSpec testing API** (2-3 hours) - CRITICAL BLOCKER
-2. **Validate real .tsp compilation** (1 hour) - INTEGRATION CONFIRMATION
-3. **Fix remaining 'any' types** (2 hours) - CODE COMPLETION
-4. **Complete documentation** (2 hours) - USABILITY
-5. **Setup CI/CD** (1 hour) - PRODUCTION READINESS
+~~1. **Solve TypeSpec testing API** (2-3 hours) - CRITICAL BLOCKER~~ done at `631185b`
+~~2. **Validate real .tsp compilation** (1 hour) - INTEGRATION CONFIRMATION~~ done at `631185b`
+~~3. **Fix remaining 'any' types** (2 hours) - CODE COMPLETION~~ done at `e7e29ed`
+~~4. **Complete documentation** (2 hours) - USABILITY~~ done at `e7e29ed`, `bae8473`
+~~5. **Setup CI/CD** (1 hour) - PRODUCTION READINESS~~ done — ci.yml added bae8473 (green at launch); 2026-11-13 red build is a new regression tracked in TODO_LIST
 
 **Estimated Time to Production:** 8-10 hours (DEPENDS ON API CRISIS)
 
@@ -509,10 +511,10 @@ bunx node -e "console.log(typeof require('@typespec/compiler').createMemoryFileS
 
 **OPTIONS:**
 
-1. **Continue Research** (2-3 more hours) - Risk of more dead ends
-2. **CLI Workaround** (1-2 hours) - Not ideal but provides validation
-3. **Pivot Priorities** (1 hour) - Fix 'any' types and documentation first
-4. **Community Help** (unknown time) - Ask TypeSpec community for guidance
+~~1. **Continue Research** (2-3 more hours) - Risk of more dead ends~~ done — research succeeded same day — `createTester` API found (631185b)
+~~2. **CLI Workaround** (1-2 hours) - Not ideal but provides validation~~ **NOT-DO — programmatic integration testing solved the same day (631185b), CLI workaround unnecessary.**
+~~3. **Pivot Priorities** (1 hour) - Fix 'any' types and documentation first~~ done — 'any'-type fixes and documentation landed same day (e7e29ed, 189ad88)
+~~4. **Community Help** (unknown time) - Ask TypeSpec community for guidance~~ **NOT-DO — API crisis solved in-session (631185b).**
 
 **RECOMMENDATION:** Give API research 1 more hour with CLI fallback plan
 
@@ -570,10 +572,10 @@ bunx node -e "console.log(typeof require('@typespec/compiler').createMemoryFileS
 **Report Type:** Crisis Integration Status Report\
 **Next Report:** After TypeSpec API crisis resolution\
 **Session Duration:** 2.5 hours\
-**Net Progress:** Negative (integration blockage worsened)
+~~**Net Progress:** Negative (integration blockage worsened)~~ reversed same day — integration solved (631185b), 'any' types eliminated (e7e29ed).
 
 ---
 
-**🚨 CRITICAL TAKEAWAY: We cannot validate TypeSpec Go emitter with real .tsp files until we solve the testing API crisis. This prevents production readiness validation despite perfect component architecture.**
+~~**🚨 CRITICAL TAKEAWAY: We cannot validate TypeSpec Go emitter with real .tsp files until we solve the testing API crisis. This prevents production readiness validation despite perfect component architecture.**~~ resolved 631185b — integration tests compile real .tsp fixtures (src/test/*.tsp, test/typespec/sample-service.tsp) and pass at HEAD 8205ea3.
 
 **END OF CRISIS REPORT**

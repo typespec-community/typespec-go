@@ -1,16 +1,18 @@
 # 📊 TYPEPEC-GO STATUS REPORT
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Date**: 2025-12-08_06-44\
-**Project Phase**: Component Architecture Blocker\
-**Overall Status**: ⚠️ **PARTIALLY DONE - CRITICAL BLOCKER**
+**Project Phase**: ~~Component Architecture Blocker~~ resolved 87e2eb4.\
+**Overall Status**: ~~⚠️ **PARTIALLY DONE - CRITICAL BLOCKER**~~ resolved 87e2eb4; 165/165 tests at HEAD 8205ea3.
 
 ---
 
 ## 🎯 EXECUTIVE SUMMARY
 
-The TypeSpec-Go project has achieved **significant milestones** in TypeSpec integration and basic Go code generation, but is currently **BLOCKED** by a fundamental issue with **Alloy-JS component architecture**. While 90% of the foundation is solid, the core component system that enables sophisticated Go code generation is non-functional in JSX contexts.
+The TypeSpec-Go project has achieved **significant milestones** in TypeSpec integration and basic Go code generation, ~~but is currently **BLOCKED** by a fundamental issue with **Alloy-JS component architecture**. While 90% of the foundation is solid, the core component system that enables sophisticated Go code generation is non-functional in JSX contexts~~ (resolved 87e2eb4; all components render and test green at HEAD 8205ea3).
 
-**🚨 CRITICAL**: The project cannot advance until Alloy-JS JSX component patterns are understood and implemented correctly.
+**🚨 CRITICAL**: ~~The project cannot advance until Alloy-JS JSX component patterns are understood and implemented correctly.~~ resolved 87e2eb4.
 
 ---
 
@@ -106,27 +108,27 @@ The TypeSpec-Go project has achieved **significant milestones** in TypeSpec inte
 
 ### Immediate (This Sprint)
 
-1. **🔥 SOLVE ALLOY-JS JSX COMPONENT ISSUE** - Research framework patterns
-2. **Fix Core Helper Components** - Make them JSX-compatible
-3. **Handler Stub Method Bodies** - Fix empty method generation
-4. **Component Testing** - Individual component unit tests
-5. **Error Handling** - Robust error handling in component pipeline
+~~1. **🔥 SOLVE ALLOY-JS JSX COMPONENT ISSUE** - Research framework patterns~~ done at `87e2eb4`
+~~2. **Fix Core Helper Components** - Make them JSX-compatible~~ done at `87e2eb4`
+~~3. **Handler Stub Method Bodies** - Fix empty method generation~~ done at `8205ea3`
+~~4. **Component Testing** - Individual component unit tests~~ done at `8205ea3`
+~~5. **Error Handling** - Robust error handling in component pipeline~~ done at `97f7f58`
 
 ### Short Term (Next Sprint)
 
-6. **HTTP Route Registration Component**
-7. **Enum Generation Components**
-8. **Union Type Handling**
-9. **HTTP Decorator Processing**
-10. **Error Handler Components**
+~~6. **HTTP Route Registration Component**~~ done at `8205ea3`
+~~7. **Enum Generation Components**~~ done at `8205ea3`
+~~8. **Union Type Handling**~~ done at `8205ea3`
+~~9. **HTTP Decorator Processing**~~ done at `8205ea3`
+10. **Error Handler Components** **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 ### Long Term (Month 2+)
 
-11. **Documentation Integration**
-12. **Advanced TypeSpec Features**
-13. **Go Package Management**
-14. **Testing Framework Integration**
-15. **Performance Optimization**
+~~11. **Documentation Integration**~~ done at `3ef7008`
+~~12. **Advanced TypeSpec Features**~~ **Superseded — FEATURES.md (2026-11-13).**
+~~13. **Go Package Management**~~ done at `8205ea3`
+~~14. **Testing Framework Integration**~~ done at `8205ea3`
+15. **Performance Optimization** **→ routed to TODO_LIST (2026-11-13 sweep)**
 
 ---
 
@@ -208,22 +210,22 @@ The TypeSpec-Go project has achieved **significant milestones** in TypeSpec inte
 
 ### Week 1 (Research & Fix)
 
-1. **Day 1-2**: Research Alloy-JS documentation, source code, examples
-2. **Day 3**: Create minimal working JSX component example
-3. **Day 4**: Fix all core helper components (GoStringLiteral, GoBlock, GoIf, GoSwitch)
-4. **Day 5**: Test component integration, fix handler method bodies
+~~1. **Day 1-2**: Research Alloy-JS documentation, source code, examples~~ done at `87e2eb4`
+~~2. **Day 3**: Create minimal working JSX component example~~ done at `87e2eb4`
+~~3. **Day 4**: Fix all core helper components (GoStringLiteral, GoBlock, GoIf, GoSwitch)~~ done at `87e2eb4`
+~~4. **Day 5**: Test component integration, fix handler method bodies~~ done at `8205ea3`
 
 ### Week 2 (Feature Development)
 
-1. **Day 6-7**: Implement HTTP route registration component
-2. **Day 8-9**: Add enum generation components
-3. **Day 10**: Union type handling implementation
+~~1. **Day 6-7**: Implement HTTP route registration component~~ done at `8205ea3`
+~~2. **Day 8-9**: Add enum generation components~~ done at `8205ea3`
+~~3. **Day 10**: Union type handling implementation~~ done at `8205ea3`
 
 ### Week 3 (Integration & Polish)
 
-1. **Day 11-12**: HTTP decorator processing completion
-2. **Day 13**: Error handling components
-3. **Day 14**: Documentation integration, final testing
+~~1. **Day 11-12**: HTTP decorator processing completion~~ done at `8205ea3`
+2. **Day 13**: Error handling components **→ routed to TODO_LIST (2026-11-13 sweep)**
+~~3. **Day 14**: Documentation integration, final testing~~ done at `8205ea3`
 
 ---
 
@@ -259,11 +261,11 @@ However, the project is **completely blocked** by a fundamental misunderstanding
 
 ## 📋 IMMEDIATE ACTION ITEMS
 
-1. **[TODAY]** Research Alloy-JS component patterns and documentation
-2. **[TODAY]** Create minimal JSX component test case
-3. **[TOMORROW]** Implement working GoStringLiteral JSX component
-4. **[THIS WEEK]** Fix all core helper components
-5. **[THIS WEEK]** Resolve handler method body generation
+~~1. **[TODAY]** Research Alloy-JS component patterns and documentation~~ done at `87e2eb4`
+~~2. **[TODAY]** Create minimal JSX component test case~~ done at `87e2eb4`
+~~3. **[TOMORROW]** Implement working GoStringLiteral JSX component~~ done at `87e2eb4`
+~~4. **[THIS WEEK]** Fix all core helper components~~ done at `87e2eb4`
+~~5. **[THIS WEEK]** Resolve handler method body generation~~ done at `8205ea3`
 
 **Timeline**: 7-10 days to unblock core component system
 **Effort**: High - requires deep understanding of framework internals

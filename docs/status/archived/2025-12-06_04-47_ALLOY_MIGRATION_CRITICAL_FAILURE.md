@@ -1,10 +1,12 @@
 # 🚨 ALLOY-JS MIGRATION CRITICAL FAILURE REPORT
 
+> **Live remainder:** Open work was routed to [TODO_LIST.md](../../TODO_LIST.md) and [ROADMAP.md](../../ROADMAP.md); shipped work is recorded in [CHANGELOG.md](../../CHANGELOG.md); current feature status: [FEATURES.md](../../FEATURES.md). Annotated and archived 2026-11-13 (docs-health sweep, HEAD `8205ea3`).
+
 **Date:** 2025-12-06\
 **Time:** 04:47 CET\
-**Status:** 🚨 BLOCKED - Fundamental JSX/Go String Generation Conflict\
+**Status:** ~~🚨 BLOCKED - Fundamental JSX/Go String Generation Conflict~~ resolved 87e2eb4.\
 **Violations:** Unknown (scanner broken)\
-**Progress:** ~20% (massive blockers identified)
+**Progress:** ~20% ~~(massive blockers identified)~~ 165/165 tests at HEAD 8205ea3.
 
 ---
 
@@ -14,8 +16,8 @@
 
 **Objective:** Complete 100% ALLOY-JS migration by eliminating remaining 11 template literal violations\
 **Achievement:** Started strong but hit fundamental architectural blocker\
-**Blocker:** JSX syntax parser conflicts with Go string generation\
-**Impact:** ALL component migrations blocked until core issue resolved
+**Blocker:** ~~JSX syntax parser conflicts with Go string generation~~ resolved 87e2eb4.\
+**Impact:** ~~ALL component migrations blocked until core issue resolved~~ all components render; 165/165 tests at HEAD 8205ea3.
 
 ---
 
@@ -85,30 +87,30 @@
 
 | Task                       | File                | Status | Impact                   |
 | -------------------------- | ------------------- | ------ | ------------------------ |
-| Planning Document Analysis | README              | 100%   | Strategy clear           |
-| Import Infrastructure      | GoHandlerStub.tsx   | 100%   | Components accessible    |
-| String Literal Fix         | GoStringLiteral.tsx | 100%   | Minor violation resolved |
+| ~~Planning Document Analysis~~ done — planning doc docs/planning/2025-12-05_ALLOY_FINAL_PHASE.md present at HEAD 8205ea3 | ~~README~~ | ~~100%~~ | ~~Strategy clear~~ |
+| ~~Import Infrastructure~~ done at `8205ea3` | ~~GoHandlerStub.tsx~~ | ~~100%~~ | ~~Components accessible~~ |
+| ~~String Literal Fix~~ done at `8205ea3` | ~~GoStringLiteral.tsx~~ | ~~100%~~ | ~~Minor violation resolved~~ |
 
 ### b) PARTIALLY DONE ⚠️ (2/15)
 
 | Task                     | File                         | Status | Issues                  |
 | ------------------------ | ---------------------------- | ------ | ----------------------- |
-| GoHandlerStub Migration  | GoHandlerStub.tsx            | 60%    | JSX syntax errors       |
-| Handler Method Component | GoHandlerMethodComponent.tsx | 70%    | String escaping blocked |
+| ~~GoHandlerStub Migration~~ done at `87e2eb4` | ~~GoHandlerStub.tsx~~ | ~~60%~~ | ~~JSX syntax errors~~ |
+| ~~Handler Method Component~~ done at `87e2eb4` | ~~GoHandlerMethodComponent.tsx~~ | ~~70%~~ | ~~String escaping blocked~~ |
 
 ### c) NOT STARTED 🚫 (10/15)
 
 | Task                  | File                         | Status | Reason                   |
 | --------------------- | ---------------------------- | ------ | ------------------------ |
-| Violation Scanning    | scripts/scan-violations.ts   | 0%     | Module resolution broken |
-| GoSwitch Integration  | GoHandlerMethodComponent.tsx | 0%     | Build system blocked     |
-| Route Registration    | GoHandlerStub.tsx            | 0%     | JSX syntax errors        |
-| Service Constructor   | GoHandlerStub.tsx            | 0%     | Build system blocked     |
-| Component Testing     | All components               | 0%     | No compilation possible  |
-| Documentation Updates | docs/                        | 0%     | Blocked by failures      |
-| Performance Review    | All components               | 0%     | Cannot run without build |
-| Quality Assurance     | All components               | 0%     | Build system blocked     |
-| Error Boundaries      | All components               | 0%     | Development halted       |
+| ~~Violation Scanning~~ **Superseded — zero-'any' quality campaign (e7e29ed).** | ~~scripts/scan-violations.ts~~ | ~~0%~~ | ~~Module resolution broken~~ |
+| ~~GoSwitch Integration~~ done at `8205ea3` | ~~GoHandlerMethodComponent.tsx~~ | ~~0%~~ | ~~Build system blocked~~ |
+| ~~Route Registration~~ done at `8205ea3` | ~~GoHandlerStub.tsx~~ | ~~0%~~ | ~~JSX syntax errors~~ |
+| ~~Service Constructor~~ done at `8205ea3` | ~~GoHandlerStub.tsx~~ | ~~0%~~ | ~~Build system blocked~~ |
+| ~~Component Testing~~ done at `8205ea3` | ~~All components~~ | ~~0%~~ | ~~No compilation possible~~ |
+| ~~Documentation Updates~~ done at `bae8473` | ~~docs/~~ | ~~0%~~ | ~~Blocked by failures~~ |
+| Performance Review **→ routed to TODO_LIST (2026-11-13 sweep)** | All components | 0% | Cannot run without build |
+| ~~Quality Assurance~~ done at `8205ea3` | ~~All components~~ | ~~0%~~ | ~~Build system blocked~~ |
+| Error Boundaries **→ routed to TODO_LIST (2026-11-13 sweep)** | All components | 0% | Development halted |
 
 ### d) TOTALLY FUCKED UP 💥 (12/15)
 
@@ -237,27 +239,27 @@
 
 ### Immediate Actions (Next 60 minutes)
 
-1. **CHOOSE STRING GENERATION STRATEGY** - Decide on Option A, B, or C
-2. **IMPLEMENT CHOSEN PATTERN** - Fix all JSX string literal errors
-3. **VERIFY BUILD SYSTEM** - Ensure `just build` compiles successfully
-4. **FIX MODULE RESOLUTION** - Repair violation scanner
-5. **GET BASELINE METRICS** - Scan for current violations
+~~1. **CHOOSE STRING GENERATION STRATEGY** - Decide on Option A, B, or C~~ done at `87e2eb4`
+~~2. **IMPLEMENT CHOSEN PATTERN** - Fix all JSX string literal errors~~ done at `87e2eb4`
+~~3. **VERIFY BUILD SYSTEM** - Ensure `just build` compiles successfully~~ done at `8205ea3`
+~~4. **FIX MODULE RESOLUTION** - Repair violation scanner~~ done — scanner reworked; no './cjs/index.cjs' import at HEAD 8205ea3
+~~5. **GET BASELINE METRICS** - Scan for current violations~~ **Superseded — zero-'any' quality campaign (e7e29ed).**
 
 ### Short-term Actions (Next 120 minutes)
 
-6. **COMPLETE GOHANDLERSTUB** - Finish component migration
-7. **COMPLETE GOHANDLERMETHOD** - Fix switch statement patterns
-8. **VERIFY ALL COMPONENTS** - Test compilation and functionality
-9. **SCAN FOR VIOLATIONS** - Confirm all violations resolved
-10. **UPDATE DOCUMENTATION** - Record completed work
+~~6. **COMPLETE GOHANDLERSTUB** - Finish component migration~~ done at `8205ea3`
+~~7. **COMPLETE GOHANDLERMETHOD** - Fix switch statement patterns~~ done at `8205ea3`
+~~8. **VERIFY ALL COMPONENTS** - Test compilation and functionality~~ done at `8205ea3`
+~~9. **SCAN FOR VIOLATIONS** - Confirm all violations resolved~~ **Superseded — zero-'any' quality campaign (e7e29ed).**
+~~10. **UPDATE DOCUMENTATION** - Record completed work~~ done at `bae8473`
 
 ### Medium-term Actions (Next 180 minutes)
 
-11. **QUALITY ASSURANCE** - Comprehensive testing
-12. **PERFORMANCE REVIEW** - Optimize component generation
-13. **PRODUCTION VALIDATION** - End-to-end testing
-14. **ARCHITECTURE REVIEW** - Document patterns and decisions
-15. **FINAL REPORTING** - Complete migration documentation
+~~11. **QUALITY ASSURANCE** - Comprehensive testing~~ done at `8205ea3`
+12. **PERFORMANCE REVIEW** - Optimize component generation **→ routed to TODO_LIST (2026-11-13 sweep)**
+~~13. **PRODUCTION VALIDATION** - End-to-end testing~~ done at `631185b`
+~~14. **ARCHITECTURE REVIEW** - Document patterns and decisions~~ done at `bae8473`
+~~15. **FINAL REPORTING** - Complete migration documentation~~ **Superseded — FEATURES.md (2026-11-13).**
 
 ---
 
@@ -298,10 +300,10 @@
 
 **If string generation issue cannot be resolved within 2 hours:**
 
-1. Consider architectural pivot to different component pattern
-2. Evaluate alternative code generation approaches
-3. Potentially modify Alloy-JS components to handle Go strings specially
-4. May need to consult Alloy-JS documentation for string handling patterns
+~~1. Consider architectural pivot to different component pattern~~ **NOT-DO — contingency never needed: rendering blocker resolved 87e2eb4.**
+~~2. Evaluate alternative code generation approaches~~ **NOT-DO — contingency never needed: rendering blocker resolved 87e2eb4.**
+~~3. Potentially modify Alloy-JS components to handle Go strings specially~~ **NOT-DO — contingency never needed: rendering blocker resolved 87e2eb4.**
+~~4. May need to consult Alloy-JS documentation for string handling patterns~~ **NOT-DO — contingency never needed: rendering blocker resolved 87e2eb4.**
 
 **STATUS:** BLOCKED - Awaiting resolution of fundamental JSX/Go string generation conflict
 **NEXT UPDATE:** After string generation strategy decision and implementation
