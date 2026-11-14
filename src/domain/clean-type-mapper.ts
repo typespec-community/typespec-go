@@ -11,6 +11,7 @@
 
 import type { TypeSpecPropertyNode } from "../types/typespec-domain.js";
 import type { GoTypeMapping } from "../types/emitter.types.js";
+import { GO_SCALAR_PRIMITIVES, goPrimitiveRequiresTimeImport } from "./go-primitive-types.js";
 
 /**
  * Domain type detection patterns
@@ -245,33 +246,16 @@ export class CleanTypeMapper {
   /**
    * Core TypeSpec scalar to Go type mappings
    */
-  private static readonly SCALAR_MAPPINGS: Record<string, GoTypeMapping> = {
-    // String types
-    string: { goType: "string", usePointerForOptional: true },
-    plainDate: { goType: "time.Time", usePointerForOptional: true, requiresImport: "time" },
-    plainTime: { goType: "time.Time", usePointerForOptional: true, requiresImport: "time" },
-    utcDateTime: { goType: "time.Time", usePointerForOptional: true, requiresImport: "time" },
-    duration: { goType: "time.Duration", usePointerForOptional: true, requiresImport: "time" },
-
-    // Integer types
-    int8: { goType: "int8", usePointerForOptional: true },
-    int16: { goType: "int16", usePointerForOptional: true },
-    int32: { goType: "int32", usePointerForOptional: true },
-    int64: { goType: "int64", usePointerForOptional: true },
-    uint8: { goType: "uint8", usePointerForOptional: true },
-    uint16: { goType: "uint16", usePointerForOptional: true },
-    uint32: { goType: "uint32", usePointerForOptional: true },
-    uint64: { goType: "uint64", usePointerForOptional: true },
-
-    // Float types
-    float32: { goType: "float32", usePointerForOptional: true },
-    float64: { goType: "float64", usePointerForOptional: true },
-
-    // Special types
-    bytes: { goType: "[]byte", usePointerForOptional: true },
-    boolean: { goType: "bool", usePointerForOptional: true },
-    bool: { goType: "bool", usePointerForOptional: true },
-  };
+  private static readonly SCALAR_MAPPINGS: Record<string, GoTypeMapping> = Object.fromEntries(
+    Object.entries(GO_SCALAR_PRIMITIVES).map(([scalarName, goType]) => [
+      scalarName,
+      {
+        goType,
+        usePointerForOptional: true,
+        requiresImport: goPrimitiveRequiresTimeImport(goType) ? "time" : undefined,
+      },
+    ]),
+  );
 
   /**
    * TypeSpec built-in type mappings
@@ -350,7 +334,7 @@ export class CleanTypeMapper {
   ): GoTypeMapping {
     if (this.hasTypeName(type)) {
       const scalarName = type.name;
-      const mapping = this.SCALAR_MAPPINGS[scalarName];
+      const mapping = this.SCALAR_MAPPINGS[scalarName.toLowerCase()];
 
       if (mapping) {
         return mapping;

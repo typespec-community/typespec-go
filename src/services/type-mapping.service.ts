@@ -8,6 +8,7 @@
 import type { Program, Type, Scalar, Model, UnionVariant } from "@typespec/compiler";
 import type { TypeMappingResult, GoStructField } from "../types/emitter.types.js";
 import { GoPrimitiveType } from "../types/emitter.types.js";
+import { lookupGoPrimitiveType } from "../domain/go-primitive-types.js";
 
 /**
  * TypeSpec Array Type interface
@@ -41,44 +42,12 @@ interface NamedType {
  * No string literals - compile-time guarantees
  */
 function mapScalarToGoPrimitive(scalar: Scalar): GoPrimitiveType {
-  switch (scalar.name) {
-    case "string":
-      return GoPrimitiveType.STRING;
-    case "boolean":
-      return GoPrimitiveType.BOOLEAN;
-    case "int8":
-      return GoPrimitiveType.INT8;
-    case "int16":
-      return GoPrimitiveType.INT16;
-    case "int32":
-      return GoPrimitiveType.INT32;
-    case "int64":
-      return GoPrimitiveType.INT64;
-    case "uint8":
-      return GoPrimitiveType.UINT8;
-    case "uint16":
-      return GoPrimitiveType.UINT16;
-    case "uint32":
-      return GoPrimitiveType.UINT32;
-    case "uint64":
-      return GoPrimitiveType.UINT64;
-    case "float32":
-      return GoPrimitiveType.FLOAT32;
-    case "float64":
-      return GoPrimitiveType.FLOAT64;
-    case "bytes":
-      return GoPrimitiveType.BYTES;
-    case "plainDate":
-      return GoPrimitiveType.TIME;
-    case "utcDateTime":
-      return GoPrimitiveType.TIME;
-    case "duration":
-      return GoPrimitiveType.DURATION;
-    default:
-      // Log unsupported scalar for debugging
-      console.warn(`Unsupported scalar type: ${scalar.name}`);
-      return GoPrimitiveType.INTERFACE;
+  const mapped = lookupGoPrimitiveType(scalar.name);
+  if (mapped) {
+    return mapped;
   }
+  console.warn(`Unsupported scalar type: ${scalar.name}`);
+  return GoPrimitiveType.INTERFACE;
 }
 
 /**

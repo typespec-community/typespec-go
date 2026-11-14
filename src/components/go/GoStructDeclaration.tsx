@@ -9,6 +9,7 @@ import type { JSX } from "@alloy-js/core/jsx-runtime";
 import { Reference, StructDeclaration, StructMember, TypeDeclaration } from "@alloy-js/go";
 import { For, refkey } from "@alloy-js/core";
 import { capitalize } from "../../utils/strings.js";
+import { lookupGoScalarPrimitive } from "../../domain/go-primitive-types.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 
 interface GoStructDeclarationProps {
@@ -137,65 +138,13 @@ function mapTypeSpecToGoType(type: Type): string | JSX.Element {
     case "Number":
       return "float64"; // Default number type in Go
 
-    case "Scalar":
-      const scalarName = type.name?.toLowerCase() || "";
-
-      // Use Alloy.js Go type references for known Go types
-      switch (scalarName) {
-        // Integer types
-        case "int8":
-        case "int16":
-        case "int32":
-        case "int64":
-        case "uint8":
-        case "uint16":
-        case "uint32":
-        case "uint64":
-        case "integer":
-        case "safeint":
-          return scalarName; // Direct Go type names
-
-        // Float types
-        case "float32":
-        case "float64":
-        case "float":
-        case "numeric":
-        case "decimal":
-        case "decimal64":
-        case "decimal128":
-          return scalarName === "float" ? "float64" : scalarName;
-
-        // Binary types
-        case "bytes":
-          return "[]byte";
-
-        // String types (all map to Go string)
-        case "string":
-        case "url":
-        case "uri":
-        case "email":
-        case "uuid":
-        case "ipaddress":
-        case "ipv4address":
-        case "ipv6address":
-          return "string";
-
-        // Boolean
-        case "boolean":
-          return "bool";
-
-        // Date/Time types - will trigger automatic time import
-        case "plaindate":
-        case "plaintime":
-        case "utcdatetime":
-        case "offsetdatetime":
-        case "duration":
-        case "zoneddatetime":
-          return scalarName === "duration" ? "time.Duration" : "time.Time";
-
-        default:
-          return type.name || "interface{}";
+    case "Scalar": {
+      const mapped = lookupGoScalarPrimitive(type.name ?? "");
+      if (mapped) {
+        return mapped;
       }
+      return type.name || "interface{}";
+    }
 
     case "Model":
       // Handle TypeSpec's built-in Array model with Alloy.js
