@@ -55,7 +55,7 @@ jobs:
         env:
           CI: true
         run: |
-          go install github.com/Artmann-Technologies/docs-gates/cmd/docs-gates@2adbc73
+          go install github.com/Artmann-Technologies/docs-gates/cmd/docs-gates@aac5c7c9288c1ea2e3354b8197c269c50b51b5b8
           "$(go env GOPATH)/bin/docs-gates" run .
 
       - name: Archive build artifacts
