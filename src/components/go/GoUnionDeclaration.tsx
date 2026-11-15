@@ -51,7 +51,7 @@ export function GoUnionDeclaration({
   const doc = program ? getDocumentation(program, union) : undefined;
   const docComment = doc ? doc + "" : "";
   const interfaceDoc =
-    "// " + typeName + " is a sealed interface " + docComment + "representing a union type";
+    typeName + " is a sealed interface " + docComment + "representing a union type";
 
   // Convert template parameters to Go generic format
   const typeParameters = templateParameters.map((param, index) => {

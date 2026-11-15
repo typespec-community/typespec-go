@@ -6,6 +6,7 @@
 
 import type { Operation, Program, Namespace } from "@typespec/compiler";
 import { Scope } from "@alloy-js/core";
+import { getGoName } from "../../emitter/go-decorators.js";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import { TypeExpression } from "../TypeExpression.js";
@@ -106,7 +107,9 @@ function buildGoSignature(returns: GoReturnType[]): string {
  * Convert TypeSpec Operation to Go method signature
  */
 function operationToMethod(operation: Operation, program?: Program): GoMethodSignature {
-  const methodName = capitalize(operation.name);
+  // @go.name overrides the generated Go method name
+  const methodName =
+    (program ? getGoName(program, operation) : undefined) ?? capitalize(operation.name);
   const parameters = extractParameters(operation, program);
   const returns = extractReturns(operation, program);
   const doc = program ? getDocumentation(program, operation) : undefined;

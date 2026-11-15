@@ -9,6 +9,7 @@
 import type {
   DecoratorContext,
   Enum,
+  Model,
   ModelProperty,
   Namespace,
   Program,
@@ -28,43 +29,48 @@ export function $pkg(context: DecoratorContext, target: Namespace, path: string)
   context.program.stateMap(stateKeys.packageName).set(target, path);
 }
 
-export function $name(
-  context: DecoratorContext,
-  target: Type,
-  name: string,
-): void {
+export function $name(context: DecoratorContext, target: Type, name: string): void {
   context.program.stateMap(stateKeys.goName).set(target, name);
 }
 
-export function $type(
-  context: DecoratorContext,
-  target: Type,
-  type: string,
-): void {
+export function $type(context: DecoratorContext, target: Type, type: string): void {
   context.program.stateMap(stateKeys.goType).set(target, type);
 }
 
 export function $structTag(
   context: DecoratorContext,
   target: ModelProperty,
-  tag: string | Record<string, string>,
+  tag: string | Model,
 ): void {
-  context.program.stateMap(stateKeys.structTag).set(target, tag);
+  // The tsp declaration accepts `valueof string | StructTag` (a Record);
+  // the compiler delivers the Record form as a model type whose properties
+  // carry the entries. Normalize both shapes to a raw tag string here so
+  // consumers only ever see the string form.
+  let normalized: string;
+  if (typeof tag === "string") {
+    normalized = tag;
+  } else {
+    normalized = [...tag.properties.values()]
+      .map((entry) => {
+        const entryType = entry.type;
+        const value =
+          entryType?.kind === "String"
+            ? String(entryType.value)
+            : entryType && "name" in entryType
+              ? String(entryType.name)
+              : "";
+        return `${entry.name}:"${value}"`;
+      })
+      .join(" ");
+  }
+  context.program.stateMap(stateKeys.structTag).set(target, normalized);
 }
 
-export function $nullable(
-  context: DecoratorContext,
-  target: ModelProperty,
-  mode: Type,
-): void {
+export function $nullable(context: DecoratorContext, target: ModelProperty, mode: Type): void {
   context.program.stateMap(stateKeys.nullableMode).set(target, mode);
 }
 
-export function $enumMode(
-  context: DecoratorContext,
-  target: Enum,
-  mode: Type,
-): void {
+export function $enumMode(context: DecoratorContext, target: Enum, mode: Type | string): void {
   context.program.stateMap(stateKeys.enumMode).set(target, mode);
 }
 
@@ -88,8 +94,22 @@ export function getGoNullableMode(program: Program, target: ModelProperty): Type
   return program.stateMap(stateKeys.nullableMode).get(target) as Type | undefined;
 }
 
-export function getGoEnumMode(program: Program, target: Enum): Type | undefined {
-  return program.stateMap(stateKeys.enumMode).get(target) as Type | undefined;
+export function getGoEnumMode(program: Program, target: Enum): Type | string | undefined {
+  const raw = program.stateMap(stateKeys.enumMode).get(target) as Type | string | undefined;
+  if (raw === undefined || raw === null) {
+    return undefined;
+  }
+  if (typeof raw === "string") {
+    return raw;
+  }
+  // `valueof EnumMode` arrives wrapped as a TypeSpec value object
+  // ({valueKind, value: <EnumMember type>}) — unwrap to the member type.
+  const wrapper = raw as { value?: unknown };
+  const inner = wrapper?.value;
+  if (inner && typeof inner === "object" && "kind" in inner) {
+    return inner as Type;
+  }
+  return raw;
 }
 
 export const $decorators = {

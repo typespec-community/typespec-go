@@ -8,7 +8,7 @@ import type { Model, Enum, Union, Operation, Type, Program } from "@typespec/com
 import { For } from "@alloy-js/core";
 import { SourceFile as CoreSourceFile } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
-const { ModuleDirectory, SourceDirectory, SourceFile, SingleImportStatement } = go;
+const { ModuleDirectory, SourceDirectory, SourceFile, SingleImportStatement, LineComment } = go;
 import { GoStructDeclaration } from "./GoStructDeclaration.js";
 import { GoEnumDeclaration } from "./GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "./GoUnionDeclaration.js";
@@ -115,8 +115,19 @@ export function GoPackageDirectory({
         </CoreSourceFile>
       )}
       <SourceDirectory path={packageName}>
-        {/* Main models file with proper import block */}
-        <SourceFile path="models.go">
+        {/* Main models file with proper import block; package doc hoisted to
+            the file header instead of repeating above every struct */}
+        <SourceFile
+          path="models.go"
+          header={
+            packageDocumentation ? (
+              <>
+                <LineComment>{packageDocumentation}</LineComment>
+                {"\n"}
+              </>
+            ) : undefined
+          }
+        >
           {needsTimeImport && (
             <>
               <SingleImportStatement path="time" />
@@ -127,12 +138,7 @@ export function GoPackageDirectory({
             {(model: Model, index: number) => (
               <>
                 {index > 0 && "\n"}
-                <GoStructDeclaration
-                  model={model}
-                  packageName={packageName}
-                  documentation={packageDocumentation}
-                  program={program}
-                />
+                <GoStructDeclaration model={model} packageName={packageName} program={program} />
               </>
             )}
           </For>

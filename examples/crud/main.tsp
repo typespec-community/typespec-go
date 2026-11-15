@@ -12,6 +12,13 @@ enum OrderStatus {
   cancelled: "cancelled",
 }
 
+@enumMode(EnumMode.iota)
+enum OrderPriority {
+  low,
+  normal,
+  high,
+}
+
 union PaymentMethod {
   creditCard: CreditCard,
   bankTransfer: BankTransfer,
@@ -33,6 +40,12 @@ model Order {
   payment?: PaymentMethod;
   total: float64;
   createdAt: utcDateTime;
+
+  @nullable(NullableMode.zeroValue)
+  notes?: string;
+
+  @name("OrderReference")
+  externalRef?: string;
 }
 
 @error

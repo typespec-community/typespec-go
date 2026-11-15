@@ -112,8 +112,8 @@ const expectations = [
   ["Color  string", true, 'inline union "red" | "blue" mapped to string'],
   ["type Error struct", true, "@error model generated"],
   ["<Unresolved Symbol>", false, "no unresolved references"],
-  ["Status    OrderStatus", true, "named enum cross-file reference resolves"],
-  ["Payment   PaymentMethod", true, "named union cross-file reference resolves"],
+  ["Status         OrderStatus", true, "named enum cross-file reference resolves"],
+  ["Payment        PaymentMethod", true, "named union cross-file reference resolves"],
   ["func (e OrderError) Error() string", true, "@error model generates error interface"],
   ["func (s *DemoserviceService) listHandler(", true, "interface op becomes handler method"],
   ['mux.HandleFunc("/widgets"', true, "@route path lands in registration"],
@@ -121,6 +121,14 @@ const expectations = [
   ['r.PathValue("id")', true, "path params extracted from request"],
   ["json.NewDecoder(r.Body).Decode(&widget)", true, "body params decoded from request"],
   ["context.Background()", true, "handler context adapted"],
+  ["Notes          string", true, "@go.nullable(zeroValue) keeps optional scalar flat"],
+  ["OrderReference string", true, "@go.name overrides field name"],
+  ["OrderPriorityLow OrderPriority = iota", true, "@go.enumMode(iota) renders iota constants"],
+  [
+    "// Go types from TypeSpec namespace: Orders\npackage orders",
+    true,
+    "package doc hoisted above package clause",
+  ],
 ];
 
 for (const [needle, expected, why] of expectations) {

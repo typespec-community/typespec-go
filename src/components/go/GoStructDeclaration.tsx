@@ -17,7 +17,12 @@ import {
 import { For, refkey } from "@alloy-js/core";
 import { capitalize } from "../../utils/strings.js";
 import { lookupGoScalarPrimitive } from "../../domain/go-primitive-types.js";
-import { getGoName, getGoStructTag, getGoType } from "../../emitter/go-decorators.js";
+import {
+  getGoName,
+  getGoNullableMode,
+  getGoStructTag,
+  getGoType,
+} from "../../emitter/go-decorators.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 
 interface GoStructDeclarationProps {
@@ -61,6 +66,9 @@ export function GoStructDeclaration({
   );
   const modelRef = refkey(model);
 
+  // @go.name overrides the generated Go type name
+  const goModelName = (program ? getGoName(program, model) : undefined) ?? model.name;
+
   const properties = Array.from(model.properties?.values() || []);
 
   // gofmt-style column alignment: pad name and type columns to the widest
@@ -81,29 +89,37 @@ export function GoStructDeclaration({
     // @go.type overrides the generated Go type entirely
     const goTypeOverride = program ? getGoType(program, prop) : undefined;
 
-    const shouldUsePointer =
-      prop.optional && usePointersForOptional && isNestedModelType(prop.type);
+    // @go.nullable overrides the optionality shape (pointer vs zero value vs
+    // struct value); defaults keep the historical nested-model-pointer rule
+    const nullableMode = program ? getGoNullableMode(program, prop) : undefined;
+    const nullableModeName =
+      nullableMode?.kind === "EnumMember" ? String(nullableMode.name) : undefined;
+
+    let shouldUsePointer: boolean;
+    if (nullableModeName === "pointer") {
+      shouldUsePointer = prop.optional === true;
+    } else if (nullableModeName === "zeroValue") {
+      shouldUsePointer = false;
+    } else if (nullableModeName === "struct") {
+      shouldUsePointer = prop.optional === true && !isNestedModelType(prop.type);
+    } else {
+      shouldUsePointer =
+        prop.optional === true && usePointersForOptional && isNestedModelType(prop.type);
+    }
     const pointerPrefix = shouldUsePointer ? "*" : "";
 
-    let finalType: string | JSX.Element;
+    let baseType: string | JSX.Element;
     let displayType: string;
     if (goTypeOverride) {
-      finalType = goTypeOverride;
+      baseType = goTypeOverride;
       displayType = goTypeOverride;
     } else if (prop.type.kind === "Model" || prop.type.kind === "Enum") {
       // Referenced declarations resolve to their symbol name
-      finalType = shouldUsePointer ? (
-        <>
-          {"*"}
-          <Reference refkey={typeRef} />
-        </>
-      ) : (
-        <Reference refkey={typeRef} />
-      );
-      displayType = pointerPrefix + prop.type.name;
+      baseType = <Reference refkey={typeRef} />;
+      displayType = prop.type.name;
     } else {
       const mapped = mapTypeSpecToGoType(prop.type);
-      finalType = mapped;
+      baseType = mapped;
       if (typeof mapped === "string") {
         displayType = mapped;
       } else if (prop.type.kind === "Union") {
@@ -112,6 +128,19 @@ export function GoStructDeclaration({
         displayType = "";
       }
     }
+
+    const finalType: string | JSX.Element = shouldUsePointer ? (
+      typeof baseType === "string" ? (
+        pointerPrefix + baseType
+      ) : (
+        <>
+          {pointerPrefix}
+          {baseType}
+        </>
+      )
+    ) : (
+      baseType
+    );
 
     // @go.structTag overrides the default JSON tag with a raw tag string
     const customTag = program ? getGoStructTag(program, prop) : undefined;
@@ -126,7 +155,7 @@ export function GoStructDeclaration({
   // Generate struct fields using Alloy-JS components with <For> iteration
   return (
     <>
-      <TypeDeclaration name={model.name} refkey={modelRef} doc={modelDoc}>
+      <TypeDeclaration name={goModelName} refkey={modelRef} doc={modelDoc}>
         <StructDeclaration>
           <For each={members}>
             {(member: MemberLayout) => (
