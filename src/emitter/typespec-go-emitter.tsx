@@ -171,7 +171,7 @@ async function writeRenderedOutput(
   program: EmitContext["program"],
   rootComponent: Children,
   emitterOutputDir: string,
-): Promise<void> {
+): Promise<string[]> {
   const tree = await renderAsync(rootComponent, { useTabs: true, printWidth: 120 });
 
   const files: Array<{ path: string; content: string }> = [];
@@ -193,6 +193,8 @@ async function writeRenderedOutput(
       path: join(emitterOutputDir, file.path),
     });
   }
+
+  return files.map((file) => file.path);
 }
 
 /**
@@ -291,7 +293,7 @@ export async function $onEmit(context: EmitContext): Promise<void> {
       }
 
       // Generate JSX Output using professional component architecture
-      await writeRenderedOutput(
+      const writtenFiles = await writeRenderedOutput(
         program,
         <Output>
           <GoPackageDirectory
@@ -308,6 +310,12 @@ export async function $onEmit(context: EmitContext): Promise<void> {
         </Output>,
         outputDirectory,
       );
+
+      Logger.info(LogContext.GO_GENERATION, `Package '${packageName}' written`, {
+        outputDirectory,
+        files: writtenFiles,
+        fileCount: writtenFiles.length,
+      });
     }
 
     Logger.info(LogContext.TYPESPEC_INTEGRATION, "TypeSpec Go emission completed successfully", {
