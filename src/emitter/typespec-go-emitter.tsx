@@ -11,6 +11,7 @@ import type { Children, OutputDirectory } from "@alloy-js/core";
 import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
 import { join } from "path";
 import { LogContext, Logger } from "../domain/structured-logging.js";
+import { isVisibilityMode, type VisibilityMode, VISIBILITY_MODES } from "../domain/visibility.js";
 import { getGoPackageName } from "./go-decorators.js";
 
 /** Namespace group containing models, enums, unions, and operations */
@@ -213,6 +214,18 @@ export async function $onEmit(context: EmitContext): Promise<void> {
     const goModulePath =
       typeof rawModulePath === "string" && rawModulePath !== "" ? rawModulePath : undefined;
 
+    const rawVisibilityMode: unknown = context.options["visibility-mode"];
+    const candidateMode: string =
+      typeof rawVisibilityMode === "string" && rawVisibilityMode !== "" ? rawVisibilityMode : "all";
+    if (!isVisibilityMode(candidateMode)) {
+      throw new Error(
+        `Invalid emitter option 'visibility-mode': "${candidateMode}" is not supported. ` +
+          `Expected one of: ${VISIBILITY_MODES.join(", ")}. ` +
+          `Fix the option in tspconfig.yaml or the --option flag.`,
+      );
+    }
+    const visibilityMode: VisibilityMode = candidateMode;
+
     // Collect all types grouped by namespace
     const namespaceGroups = collectTypesByNamespace(globalNamespace);
 
@@ -306,6 +319,7 @@ export async function $onEmit(context: EmitContext): Promise<void> {
             program={program}
             modulePath={goModulePath}
             generateGoMod={goModulePath !== undefined}
+            visibilityMode={visibilityMode}
           />
         </Output>,
         outputDirectory,

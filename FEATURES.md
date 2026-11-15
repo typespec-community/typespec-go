@@ -55,16 +55,16 @@
 
 ## Decorators (TypeSpec.Go)
 
-| Feature                                 | Status                | Evidence                                      | Notes                                        |
-| --------------------------------------- | --------------------- | --------------------------------------------- | -------------------------------------------- |
-| `@pkg` namespace output path            | 🟢 `FULLY_FUNCTIONAL` | crud example + e2e                            |                                              |
-| `@name` (model/property/enum/operation) | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-decorator-modes.test.tsx`        | All four targets consumed                    |
-| `@type` override                        | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-decorators-consumption.test.tsx` |                                              |
-| `@structTag` (string AND Record form)   | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-decorator-modes.test.tsx`        | Record normalized to raw tag string          |
-| `@nullable` (pointer/zeroValue/struct)  | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-decorator-modes.test.tsx`; e2e   | `valueof` wrappers unwrapped                 |
-| `@enumMode` (iota/string/name)          | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-decorator-modes.test.tsx`; e2e   | iota emits real `const ( … = iota )`         |
-| `@error` models → `Error() string`      | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-decorators-consumption.test.tsx` |                                              |
-| `@visibility` processing                | ⚪ `PLANNED`          | —                                             | Needs a read/create/update design note first |
+| Feature                                 | Status                | Evidence                                      | Notes                                                                             |
+| --------------------------------------- | --------------------- | --------------------------------------------- | --------------------------------------------------------------------------------- |
+| `@pkg` namespace output path            | 🟢 `FULLY_FUNCTIONAL` | crud example + e2e                            |                                                                                   |
+| `@name` (model/property/enum/operation) | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-decorator-modes.test.tsx`        | All four targets consumed                                                         |
+| `@type` override                        | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-decorators-consumption.test.tsx` |                                                                                   |
+| `@structTag` (string AND Record form)   | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-decorator-modes.test.tsx`        | Record normalized to raw tag string                                               |
+| `@nullable` (pointer/zeroValue/struct)  | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-decorator-modes.test.tsx`; e2e   | `valueof` wrappers unwrapped                                                      |
+| `@enumMode` (iota/string/name)          | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-decorator-modes.test.tsx`; e2e   | iota emits real `const ( … = iota )`                                              |
+| `@error` models → `Error() string`      | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-decorators-consumption.test.tsx` |                                                                                   |
+| `@visibility` processing (read mode)    | 🟢 `FULLY_FUNCTIONAL` | `src/test/visibility-filter.test.tsx`         | `visibility-mode: "read"` drops non-Read props; per-lifecycle variants in ROADMAP |
 
 ## Advanced Patterns
 

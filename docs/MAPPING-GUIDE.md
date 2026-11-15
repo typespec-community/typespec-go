@@ -71,13 +71,37 @@ so the type satisfies Go's `error` interface.
 `namespace Vendor.Service.API` → package path `vendor/service/api`. Override
 with `@go.pkg("github.com/org/repo/custom")`.
 
+## Visibility
+
+`@visibility` on properties is evaluated with the compiler's official
+visibility APIs. By default (`visibility-mode: "all"`) every property is
+emitted and `@visibility` is ignored. Set the emitter option
+`visibility-mode: "read"` to emit read-shaped structs: properties without
+`Lifecycle.Read` in their modifier set are dropped, so create-only fields
+such as secrets disappear from generated types. Undecorated properties are
+visible in every lifecycle and never disappear.
+
+```tsp
+using TypeSpec;
+
+model User {
+  id: string;
+  @visibility(Lifecycle.Create)
+  password: string;
+}
+```
+
+With `visibility-mode: "read"`, `User` emits only `ID`; under the default
+mode both fields are emitted. Per-lifecycle variant structs (Create/Update
+suffixed types) are future work tracked in ROADMAP.md.
+
 ## Decorators quick reference
 
-| Decorator                          | Target                   | Effect                        |
-| ---------------------------------- | ------------------------ | ----------------------------- |
-| `@go.pkg("path")`                  | namespace                | output package path           |
-| `@go.name("X")`                    | property (types pending) | Go identifier override        |
-| `@go.type("T")`                    | property                 | Go type override              |
-| `@go.structTag("tag")`             | property                 | raw struct tag override       |
-| `@go.nullable(pointer\|zeroValue)` | property                 | declared, consumption pending |
-| `@go.enumMode(iota\|string\|name)` | enum                     | declared, consumption pending |
+| Decorator                          | Target                     | Effect                       |
+| ---------------------------------- | -------------------------- | ---------------------------- |
+| `@go.pkg("path")`                  | namespace                  | output package path          |
+| `@go.name("X")`                    | model, property, operation | Go identifier override       |
+| `@go.type("T")`                    | property                   | Go type override             |
+| `@go.structTag("tag")`             | property                   | raw struct tag override      |
+| `@go.nullable(pointer\|zeroValue)` | property                   | optional-field emission mode |
+| `@go.enumMode(iota\|string\|name)` | enum                       | const generation mode        |

@@ -16,6 +16,7 @@ import { GoModFile } from "./GoModFile.js";
 import { GoInterfaceDeclaration } from "./GoInterfaceDeclaration.js";
 import { GoHandlerStub } from "./GoHandlerStub.js";
 import { capitalize } from "../../utils/strings.js";
+import type { VisibilityMode } from "../../domain/visibility.js";
 
 /**
  * Type guard to check if a TypeSpec Type is a time-related scalar
@@ -49,6 +50,8 @@ interface GoPackageDirectoryProps {
   goVersion?: string;
   /** TypeSpec program for accessing @doc decorators */
   program?: Program;
+  /** @visibility evaluation mode passed through to struct generation */
+  visibilityMode?: VisibilityMode;
 }
 
 /**
@@ -87,6 +90,7 @@ export function GoPackageDirectory({
   generateGoMod = false,
   goVersion = "1.22",
   program,
+  visibilityMode,
 }: GoPackageDirectoryProps) {
   const moduleDirectory = getModulePath(packageName, modulePath);
   const hasEnums = enums.length > 0;
@@ -138,7 +142,12 @@ export function GoPackageDirectory({
             {(model: Model, index: number) => (
               <>
                 {index > 0 && "\n"}
-                <GoStructDeclaration model={model} packageName={packageName} program={program} />
+                <GoStructDeclaration
+                  model={model}
+                  packageName={packageName}
+                  program={program}
+                  visibilityMode={visibilityMode}
+                />
               </>
             )}
           </For>

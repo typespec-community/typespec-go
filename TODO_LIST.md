@@ -13,11 +13,11 @@
 
 ## High Impact
 
-| Task                                                                      | Status    | Impact | Effort | Evidence                                                                                                                                                                   |
-| ------------------------------------------------------------------------- | --------- | ------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| HTTP decorator extraction end-to-end (`@route`/`@get`/`@post` → handlers) | ✅ `DONE` | High   | 3h     | 2026-11-15: interfaces walk shipped; handlers/interfaces.go generated with real routes (`/widgets/{id}`), verbs, PathValue + body-decode closures; e2e-verified compilable |
-| Consume `@go.nullable` and `@go.enumMode` in generation                   | 🔴 `TODO` | High   | 2h     | Declared in `lib/main.tsp`, JS bindings exist (`src/emitter/go-decorators.ts`); no consumption point in components yet                                                     |
-| `@visibility` processing in generated output                              | 🔴 `TODO` | High   | 3h     | `@visibility(Lifecycle.Read)` on properties compiles but does not filter output; needs a defined read/update/create model before coding                                    |
+| Task                                                                      | Status    | Impact | Effort | Evidence                                                                                                                                                                                          |
+| ------------------------------------------------------------------------- | --------- | ------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTTP decorator extraction end-to-end (`@route`/`@get`/`@post` → handlers) | ✅ `DONE` | High   | 3h     | 2026-11-15: interfaces walk shipped; handlers/interfaces.go generated with real routes (`/widgets/{id}`), verbs, PathValue + body-decode closures; e2e-verified compilable                        |
+| Consume `@go.nullable` and `@go.enumMode` in generation                   | ✅ `DONE` | High   | 2h     | 2026-11-15: consumed by `GoStructDeclaration` (`@go.nullable`) + `GoEnumDeclaration` (`@go.enumMode`), covered by `go-decorator-modes.test.tsx` and e2e; MAPPING-GUIDE table updated              |
+| `@visibility` processing in generated output                              | ✅ `DONE` | High   | 3h     | 2026-11-15: read-shaped emission via `visibility-mode` option (`src/domain/visibility.ts`, compiler `isVisible` API); design note in MAPPING-GUIDE § Visibility; `visibility-filter.test.tsx` 5/5 |
 
 ## Medium Impact
 

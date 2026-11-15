@@ -24,6 +24,7 @@ import {
   getGoType,
 } from "../../emitter/go-decorators.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
+import { filterVisibleProperties, type VisibilityMode } from "../../domain/visibility.js";
 
 interface GoStructDeclarationProps {
   /** TypeSpec model to convert to Go struct */
@@ -36,6 +37,8 @@ interface GoStructDeclarationProps {
   usePointersForOptional?: boolean;
   /** TypeSpec program for accessing @doc decorators */
   program?: Program;
+  /** @visibility evaluation mode (default: "all", emit every property) */
+  visibilityMode?: VisibilityMode;
 }
 
 /**
@@ -49,6 +52,7 @@ export function GoStructDeclaration({
   packageName: _packageName = "api",
   usePointersForOptional = true,
   program,
+  visibilityMode = "all",
 }: GoStructDeclarationProps) {
   // Get documentation from @doc decorator if program is provided
   const modelDoc =
@@ -69,7 +73,9 @@ export function GoStructDeclaration({
   // @go.name overrides the generated Go type name
   const goModelName = (program ? getGoName(program, model) : undefined) ?? model.name;
 
-  const properties = Array.from(model.properties?.values() || []);
+  const properties = program
+    ? filterVisibleProperties(program, model, visibilityMode)
+    : Array.from(model.properties?.values() || []);
 
   // gofmt-style column alignment: pad name and type columns to the widest
   // member so emitted structs are natively gofmt-clean.
