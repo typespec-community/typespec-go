@@ -2,7 +2,7 @@
 
 > Long-term direction and raw ideas, not yet refined into actionable tasks.
 > Short-term bounded work lives in [TODO_LIST.md](./TODO_LIST.md).
-> **Last updated:** 2026-11-13
+> **Last updated:** 2026-11-15
 
 ---
 
@@ -28,7 +28,9 @@ fully-typed Go packages through a 100% Alloy-JS component architecture.
 
 ### Custom Go Decorators
 
-- `@go.name`, `@go.type`, `@go.tag`, `@go.package` (see FEATURES.md Advanced Patterns — PLANNED)
+- ~~`@go.name`, `@go.type`, `@go.tag`, `@go.package`~~ — **shipped 2026-11-14/15** (see
+  FEATURES.md Decorators section; includes `@go.nullable` + `@go.enumMode`)
+- Remaining: decorator coverage for union targets (needs a tsp declaration first)
 
 ### Model Inheritance/Composition (emitter-level)
 
@@ -38,16 +40,18 @@ fully-typed Go packages through a 100% Alloy-JS component architecture.
 
 ### HTTP completeness
 
-- `@typespec/http` library loading inside the test harness (`@route`, `@get`, `@path`, `@body` end-to-end)
+- ~~`@typespec/http` library loading inside the test harness~~ — **shipped 2026-11-15** (`src/test/http-harness.test.tsx`)
+- ~~Handler/route generation from `@route`/`@get`/`@post` specs~~ — **shipped 2026-11-15** (interfaces walk + handlers + route registration, e2e-verified)
+- Runtime behavior tests for generated handlers (mount `RegisterRoutes`, fire requests)
 - Full CRUD service generation from a real `.tsp` service via `tsp compile`
-- Test-surface expansion: TypeSpec visibility system, template types, cross-file references, HTTP metadata extraction (routed from 2026-01-02 report)
+- Test-surface expansion: TypeSpec visibility system, generics, more cross-file cases
 
 ---
 
 ## 🔧 Technical Debt (future)
 
 - **Phantom type warnings** in generated code — consider branded types for common scalars (Email, Age, …)
-- **Coverage reporting** — no visibility into test coverage today (TODO_LIST, medium impact)
+- ~~**Coverage reporting** — no visibility~~ — **shipped 2026-11-14/15**: `test:coverage` with ratcheted thresholds (45/35/53/45)
 
 ---
 
@@ -55,7 +59,7 @@ fully-typed Go packages through a 100% Alloy-JS component architecture.
 
 ### Performance
 
-- Performance benchmark suite (none exists today; "sub-millisecond" claim in older docs is unverified)
+- ~~Performance benchmark suite~~ — **exists 2026-11-14/15**: `src/test/go-generation.bench.tsx` + e2e compile wall-clock timing
 - Parallel package generation
 - Incremental generation / build caching
 
@@ -67,12 +71,12 @@ fully-typed Go packages through a 100% Alloy-JS component architecture.
 - Component error boundaries (structured, per-component error recovery in the generation pipeline; routed from 2025-12-06..08 reports)
 - Error-recovery tests and improved TypeSpec validation error-message clarity (routed from 2025-12 reports)
 - More idiomatic generated Go code (lint the generator against Go idiom guides)
-- Repo community plumbing: `.github/CODEOWNERS`, `.github/ISSUE_TEMPLATE` (routed from 2026-01-01 report)
+- ~~Repo community plumbing: CODEOWNERS, issue templates~~ — **shipped 2026-11-14**
 
 ### Documentation site & guides (routed from 2026-01 reports)
 
-- `docs/ARCHITECTURE.md` — domain layer, component hierarchy, emitter pipeline
-- Deployment + troubleshooting guides beyond `docs/SETUP.md`
+- ~~`docs/ARCHITECTURE.md`~~ — **shipped 2026-11-14** (plus DEPLOYMENT/TROUBLESHOOTING/MAPPING-GUIDE/QUICKSTART)
+- Public documentation site (Astro/Starlight pattern)
 - Real-world examples and a TypeSpec → Go migration guide
 
 ### Community Growth
@@ -86,7 +90,8 @@ fully-typed Go packages through a 100% Alloy-JS component architecture.
 - Multi-module project support
 - Custom code generation templates
 - Plugin system for extensions
-- Tagged v1.0 release with npm publish flow (no git tags/releases exist yet; routed from 2026-01-01 report)
+- Tagged v1.0 release with npm publish flow — v1.0.0 version-bumped and
+  release-rehearsal ready; publish + tag push await explicit owner approval
 
 ---
 

@@ -1,5 +1,15 @@
 # API Reference - TypeSpec Go Emitter
 
+> **⚠️ HISTORICAL DOCUMENT (2026-11-15 routing note).** This reference
+> describes the fenced `StandaloneGoGenerator` test scaffold, NOT the
+> production emitter path. For current usage start with
+> [`QUICKSTART.md`](./QUICKSTART.md) (install → spec → generate → go
+> build, plus the full `TypeSpec.Go` decorator reference). Component
+> inventory lives in [`COMPONENTS.md`](../COMPONENTS.md). A rebuild of
+> this reference from the current `dist` exports is queued in
+> TODO_LIST.md; read the sections below only when working on the
+> StandaloneGoGenerator scaffold itself.
+
 ## Overview
 
 The TypeSpec Go Emitter provides a comprehensive API for generating type-safe Go code from TypeSpec models. The API uses discriminated unions for type-safe error handling and provides professional-grade code generation.
