@@ -32,14 +32,19 @@
 | Remove `.docs-gates-preflight.json` from git; gitignore it                         | ✅ `DONE`        | Low    | 5min   | 2026-11-15: untracked + gitignored (T09)                                                                                                                        |
 | Investigate `.go.mod.lock` (0-byte file at repo root)                              | ✅ `DONE`        | Low    | 5min   | 2026-11-15: 0-byte stray from old commit `38ee369`, zero references anywhere → deleted; also deleted orphan `working-emitter-demo.ts` + `build:webpack` script  |
 | CI: cache the docs-gates go install or vendor the binary                           | 🔴 `TODO`        | Low    | 30min  | CI downloads the module every run; also verify the step actually succeeds (continue-on-error masks failure)                                                     |
+| Pin the bun version in CI (`setup-bun` was `latest`)                               | ✅ `DONE`        | Low    | 5min   | 2026-11-15: `bun-version: 1.4.4` pinned to the locally deployed version (root-cleanup report item 30)                                                           |
+| Verify auto-commit daemon lands the 10 root-cleanup `D` entries intact             | 🔴 `TODO`        | Low    | 10min  | Root-cleanup report item 3: confirm each deletion is separately reviewable in history (buildflow anti-pattern: "don't assume pma committed your work")          |
+| Coordinate sessions before `src/`-adjacent work (root-cleanup §g3)                 | 🔴 `TODO`        | Low    | 5min   | Root-cleanup report item 32: this session and the root-cleanup session overlapped in src/ on 2026-11-15; agree a lock or split boundary                         |
 | Unify `getOutputDirectory` + `namespaceToPackageName` (two name→path mappers)      | 🔴 `TODO`        | Low    | 30min  | `typespec-go-emitter.tsx` keeps two parallel namespace-name→path mappers; consolidate into one to prevent drift (status-report f37, Plan II T16/M56)            |
-| Consumer quickstart doc + emitter generation-summary log                           | 🔴 `TODO`        | Med    | 60min  | Verbatim crud example (install → tspconfig → output) for consumers; INFO-level per-namespace file list at emission end (Plan II T18/M62–M63, status f43/f48)    |
+| Consumer quickstart doc + emitter generation-summary log                           | ✅ `DONE`        | Med    | 60min  | 2026-11-15: `docs/QUICKSTART.md` (install → tspconfig → output) + INFO-level per-namespace file list at emission end (commit cec59c6)                           |
 
 ## Done (2026-11-14 Pareto execution)
 
 - ✅ CI green end-to-end: build, tests, lint (`--max-warnings 0`), strict typecheck (0 errors), dprint, CLI e2e, docs-gates job.
 - ✅ (2026-11-15) Compile-level conformance: e2e runs `go build ./...` per module + native `gofmt -l`; real unmarshaler, usage-driven imports, go.mod via `go-module-path`.
 - ✅ (2026-11-15) HTTP product chain: interface ops collected; handlers + route registration with verbs, path params (`r.PathValue`), body decoding; merge-patch bodies map to base model; `@typespec/http` in vitest harness.
+- ✅ (2026-11-15) T13 `@visibility` read-shaped emission: `visibility-mode: "read"` drops non-Read properties via the compiler `isVisible` API; design note in MAPPING-GUIDE; 5 tests.
+- ✅ (2026-11-15) T14 Go generics: template declarations emit as `type Page[T any] struct`; multi-param templates; template params resolve by name; first struct-property array support (`T[]`, `Scalar[]`); constraints emit as `any` (declare-only); e2e-verified compilable; 6 tests.
 - ✅ CLI product proof: `npm run test:e2e-cli` compiles BOTH examples with the built emitter, verifies content, gofmt conformance.
 - ✅ `TypeSpec.Go` decorator library shipped and consumed (`@go.pkg`/`@go.name`/`@go.type`/`@go.structTag`); `@error` → `Error() string`.
 - ✅ Cross-file type references (enum/union refkeys); union variants backed by models no longer duplicated.

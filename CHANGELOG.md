@@ -23,6 +23,15 @@ product chain is real, decorator modes are live.
 - **Decorator modes live:** `@go.nullable` (pointer/zeroValue),
   `@go.enumMode` (iota/string/name), `@go.name` on models/operations,
   struct-tag `Record`→string normalization, `valueof` wrapper unwrap.
+- **`@visibility` read mode:** the new `visibility-mode: "read"` emitter
+  option drops properties without `Lifecycle.Read` from generated structs
+  (evaluated with the compiler's official `isVisible` API); default mode
+  is unchanged. Design note in MAPPING-GUIDE § Visibility.
+- **Go generics:** template declarations emit as Go generic types
+  (`model Page<T>` → `type Page[T any] struct`), multi-parameter
+  templates included; parameter references resolve by name; first
+  struct-property array support (`items: T[]`); constraints emit as
+  `any` (declare-only). E2E-verified compilable under real `go build`.
 - **CI truth:** the docs-gates step was failing every run behind a
   mask; now unmasked, gate-blocking, and version-pinned to match the
   locally deployed gate build.
@@ -38,7 +47,7 @@ product chain is real, decorator modes are live.
   dropped (dprint owns formatting), dead violations scanner + counter,
   orphan root `test/` dir and never-run root test file removed.
 
-Gates: 190/190 tests (39 files) · eslint 0/0 · strict 0 · dprint clean ·
+Gates: 201/201 tests (41 files) · eslint 0/0 · strict 0 · dprint clean ·
 e2e green (`go build` + `gofmt -l` raw) · docs-gates 5/5.
 
 ## 1.0.0 — 2026-11-14

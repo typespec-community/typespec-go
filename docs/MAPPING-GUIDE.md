@@ -38,6 +38,27 @@ TypeSpec scalar names are matched case-insensitively
 string unions → `string`, number unions → `float64`, boolean unions → `bool`,
 mixed → `interface{}`.
 
+## Generics
+
+Template declarations emit as Go generic types with `any` constraints:
+
+```tsp
+model Page<T> {
+  items: T[];
+  total: int32;
+}
+```
+
+→ `type Page[T any] struct { Items []T; Total int32 }`. Multi-parameter
+templates emit each parameter with its own `any` constraint
+(`Pair[K, V]` → `type Pair[K any, V any] struct`). Type parameter
+references inside the declaration (`content: T`) resolve to the declared
+parameter name. Template CONSTRAINTS are deliberately untranslated
+(declare-only): every Go constraint is `any` until a TypeSpec→Go
+constraint mapping is designed. Template INSTANCES used as property
+types (`Box<string>`) still map to their argument type, not to a Go
+instantiation site.
+
 ## Named unions
 
 `union PaymentMethod { card: Card, … }` → sealed interface pattern:

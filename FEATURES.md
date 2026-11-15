@@ -68,12 +68,13 @@
 
 ## Advanced Patterns
 
-| Feature                                   | Status                | Evidence                                     | Notes                                  |
-| ----------------------------------------- | --------------------- | -------------------------------------------- | -------------------------------------- |
-| Model composition (`extends` → embedding) | 🟢 `FULLY_FUNCTIONAL` | `src/test/model-composition.test.ts`         |                                        |
-| Cyclic dependency handling                | 🟢 `FULLY_FUNCTIONAL` | `src/test/model-composition.test.ts`         | Pointer-breaking for recursive types   |
-| Template instances → argument types       | 🟢 `FULLY_FUNCTIONAL` | `TypeExpression` unwraps templateMapper args | Go generics emission itself is PLANNED |
-| Go generics (`[T any]`) emission          | ⚪ `PLANNED`          | —                                            |                                        |
+| Feature                                    | Status                | Evidence                                       | Notes                                    |
+| ------------------------------------------ | --------------------- | ---------------------------------------------- | ---------------------------------------- |
+| Model composition (`extends` → embedding)  | 🟢 `FULLY_FUNCTIONAL` | `src/test/model-composition.test.ts`           |                                          |
+| Cyclic dependency handling                 | 🟢 `FULLY_FUNCTIONAL` | `src/test/model-composition.test.ts`           | Pointer-breaking for recursive types     |
+| Template instances → argument types        | 🟢 `FULLY_FUNCTIONAL` | `TypeExpression` unwraps templateMapper args   | Instances map to their argument type     |
+| Go generics (`[T any]`) emission           | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-generics.test.tsx`; e2e `Page<T>` | Constraints emit as `any` (declare-only) |
+| Struct-property arrays (`T[]`, `string[]`) | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-generics.test.tsx`; e2e           | First struct-level array support         |
 
 ## Verification & Tooling
 

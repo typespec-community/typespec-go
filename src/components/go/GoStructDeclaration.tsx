@@ -126,7 +126,10 @@ export function GoStructDeclaration({
     if (goTypeOverride) {
       baseType = goTypeOverride;
       displayType = goTypeOverride;
-    } else if (isArrayInstantiation(prop.type) || (prop.type.kind === "Model" && isArrayModelType(prop.type))) {
+    } else if (
+      isArrayInstantiation(prop.type) ||
+      (prop.type.kind === "Model" && isArrayModelType(prop.type))
+    ) {
       // Array properties (T[] or Scalar[]) render inline as []Elem; the
       // Array instantiation is anonymous, so a Reference would stay
       // unresolved. Element may itself be a template parameter (T[] → []T).
@@ -147,7 +150,11 @@ export function GoStructDeclaration({
       } else if (element) {
         const elemMapped = mapTypeSpecToGoType(element);
         const elemName =
-          typeof elemMapped === "string" ? elemMapped : ("name" in element ? element.name : "");
+          typeof elemMapped === "string"
+            ? elemMapped
+            : "name" in element && typeof element.name === "string"
+              ? element.name
+              : "";
         baseType = elementPrefix + elemName;
         displayType = elementPrefix + elemName;
       } else {
