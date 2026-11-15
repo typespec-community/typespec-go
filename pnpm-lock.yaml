@@ -13,11 +13,11 @@ importers:
         version: 0.25.0
     devDependencies:
       '@alloy-js/cli':
-        specifier: ^0.25.0
-        version: 0.25.0(supports-color@7.2.0)
+        specifier: ^0.26.0
+        version: 0.26.0(supports-color@7.2.0)
       '@alloy-js/core':
-        specifier: ^0.25.0
-        version: 0.25.0
+        specifier: ^0.26.0
+        version: 0.26.0
       '@alloy-js/go':
         specifier: ^0.3.3
         version: 0.3.3
@@ -34,8 +34,8 @@ importers:
         specifier: 1.18.0
         version: 1.18.0(@types/node@26.6.6)
       '@typespec/emitter-framework':
-        specifier: ^0.21.0
-        version: 0.21.0(@alloy-js/core@0.25.0)(@alloy-js/csharp@0.24.0)(@alloy-js/python@0.5.0)(@alloy-js/typescript@0.25.0)(@typespec/compiler@1.18.0(@types/node@26.6.6))
+        specifier: ^0.22.0
+        version: 0.22.0(@alloy-js/core@0.26.0)(@alloy-js/csharp@0.25.0)(@alloy-js/python@0.6.0)(@alloy-js/typescript@0.25.0)(@typespec/compiler@1.18.0(@types/node@26.6.6))
       '@typespec/http':
         specifier: 1.18.0
         version: 1.18.0(@typespec/compiler@1.18.0(@types/node@26.6.6))
@@ -65,13 +65,10 @@ packages:
     resolution: {integrity: sha512-wwQT9G0k+MG82gOVTFDkIpH2s6BxuAuNFOrbcJhvHzIcA9xrSjIOmCMVanvhfmVwnZKp3VCL25wq9Av16xASeQ==}
     engines: {node: '>=22.0.0'}
 
-  '@alloy-js/cli@0.25.0':
-    resolution: {integrity: sha512-6ed7YYW77YMy/1f5KuURmCdis07kdOkqbNX7S1+XsT9sZqvQjlVszUlHrRSP8xBKQcnFQv6wqOtss7jW30hOCg==}
+  '@alloy-js/cli@0.26.0':
+    resolution: {integrity: sha512-tsHD1OFpJ9V7lD7Il3p9rZZyuvXoxmzWjw9eOKJG94o3ofVjBJH+9aQyEAnNxgBFCLVXOFckIl/aikm5/DbRnA==}
     engines: {node: '>=22.0.0'}
     hasBin: true
-
-  '@alloy-js/core@0.24.1':
-    resolution: {integrity: sha512-cye97/HGo0/G8XIc8UnS0PaSoSOj9DDPEiuKsXsn7xQgR1sbL+Nf0oTMZnL2fFb7mRnmULO84x5wK8R/YtReTg==}
 
   '@alloy-js/core@0.25.0':
     resolution: {integrity: sha512-VVC5/uuPKrIZ9BkHZ+UJCwA/l2lMsTVJ7ZQC5UdfU8F+db0fwINAdPkyMcpnxv5ibHQU9eVSVdirFfoW8byLsg==}
@@ -79,17 +76,17 @@ packages:
   '@alloy-js/core@0.26.0':
     resolution: {integrity: sha512-E1QloOz5kJgcmAVhOGxgaROIYRO8/B44L3WiftoFEld4SdFpwDCdYSgojjLF9THuPpezRtz8PhTfLgk4pS8SMw==}
 
-  '@alloy-js/csharp@0.24.0':
-    resolution: {integrity: sha512-TR+VAAnwbFV7YWnGSlyqL2X2/lrS3UBZ8JBKxszn7z+yk4Y5Sgs6dag3xPZMR5CsQXbxkN3gY/c4G3vqgKZf9A==}
+  '@alloy-js/csharp@0.25.0':
+    resolution: {integrity: sha512-AqCe6HXlZPWC5I1nQPU6rbSqM57HFVoxc9eO9LUvpnPA42kRQ9ZfWvdPCF4T3WAQ+tIUFEOE47MrlOuj7q4pBA==}
 
   '@alloy-js/go@0.3.3':
     resolution: {integrity: sha512-FHuNhhOUFDk0ystOJAl/4d7q+ZXr5/tgFFL0mC8DKw1tOKtuTezJXF+HJjZKwkLyrzepQ2fAy+AZAVmYM+WExA==}
 
-  '@alloy-js/msbuild@0.24.0':
-    resolution: {integrity: sha512-Y4bDr7uYEafm40GP92TdBYV4xYZA4O4AoFmES50wovTVSHp904JPU6Ct5GEsV7OG7RhrzT00oeCpJsx4bIYuFQ==}
+  '@alloy-js/msbuild@0.25.0':
+    resolution: {integrity: sha512-D97pJ9vMdIosJ9J4SAgRg/R7ZV6zbAMwp5YECq2sQCKdkpeOHl3NGFw+vsI2Xjoo9S1+Xn9D4G3u5QxPjN01Pg==}
 
-  '@alloy-js/python@0.5.0':
-    resolution: {integrity: sha512-p1O5eUFtfW5MLg4ngywnjMz43adco3+pdSLxfRFPYc452S7fStToP0jy7i9fyuLlR0o//1K9SDmfuP/VMK/Rtw==}
+  '@alloy-js/python@0.6.0':
+    resolution: {integrity: sha512-Q+1bIJeafNcqeD/6Y1CfFoUJD2a9bG8RS0HCuhnU/dcYqHA1KZqyR6yvXBSCbTCF591VKUOapk5ea64QEGJbbA==}
 
   '@alloy-js/typescript@0.25.0':
     resolution: {integrity: sha512-ilsMG/BNjNCV6YvWrN9fZwKv+auZbJJ4VGVG5tAWvEUUdIs0EZux6BYWNhYSmkNRKFhTRTeQYQjYGXiuGmO85w==}
@@ -412,9 +409,6 @@ packages:
     resolution: {integrity: sha512-bRISgCIjP20/tbWSPWMEi54QVPRZExkuD9lJL+UIxUKtwVJA8wW1Trb1jMs1RFXo1CBTNZ/5hpC9QvmKWdopKw==}
     engines: {node: '>=6.0.0'}
 
-  '@jridgewell/sourcemap-codec@1.5.5':
-    resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
-
   '@jridgewell/sourcemap-codec@1.6.0':
     resolution: {integrity: sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw==}
 
@@ -638,14 +632,14 @@ packages:
     engines: {node: '>=22.0.0'}
     hasBin: true
 
-  '@typespec/emitter-framework@0.21.0':
-    resolution: {integrity: sha512-ACVZ6cUpO+dmzA0xbBxYuYAWwkPp59kABxIES5BRvhKg873hyI7o3vM3Ni+m5FK4JWlBdw1oR4QINSNUt5rDCw==}
+  '@typespec/emitter-framework@0.22.0':
+    resolution: {integrity: sha512-2B+CFiYAhD5LbVyQDhRASMdj1zlmZVmvw/jkoxKZntUopyBaXUhgH7rIED+eEKg54c8p7SVqJ2zVdJfF0nO/Zg==}
     peerDependencies:
-      '@alloy-js/core': ^0.24.1
-      '@alloy-js/csharp': ^0.24.0
-      '@alloy-js/python': ^0.5.0
-      '@alloy-js/typescript': ^0.24.0
-      '@typespec/compiler': ^1.16.0
+      '@alloy-js/core': ^0.25.0
+      '@alloy-js/csharp': ^0.25.0
+      '@alloy-js/python': ^0.6.0
+      '@alloy-js/typescript': ^0.25.0
+      '@typespec/compiler': ^1.18.0
 
   '@typespec/http@1.18.0':
     resolution: {integrity: sha512-5RmsHcfJYIEKanRQDNYs4kRQQBtVDW46sCNdpbG1fgORzqjEP/Nkx+jFRHW99RlLwcAzX5VbrzM2TgzNCmcPfg==}
@@ -1272,7 +1266,7 @@ snapshots:
       - '@babel/core'
       - supports-color
 
-  '@alloy-js/cli@0.25.0(supports-color@7.2.0)':
+  '@alloy-js/cli@0.26.0(supports-color@7.2.0)':
     dependencies:
       '@alloy-js/babel-preset': 0.4.0(@babel/core@8.0.1)(supports-color@7.2.0)
       '@babel/core': 8.0.1
@@ -1281,19 +1275,6 @@ snapshots:
       picocolors: 1.1.1
     transitivePeerDependencies:
       - supports-color
-
-  '@alloy-js/core@0.24.1':
-    dependencies:
-      '@types/ws': 8.18.2
-      '@vue/reactivity': 3.5.45
-      cli-table3: 0.6.5
-      devalue: 5.9.4
-      pathe: 2.0.3
-      picocolors: 1.1.1
-      ws: 8.22.2
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
 
   '@alloy-js/core@0.25.0':
     dependencies:
@@ -1321,10 +1302,10 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@alloy-js/csharp@0.24.0':
+  '@alloy-js/csharp@0.25.0':
     dependencies:
-      '@alloy-js/core': 0.24.1
-      '@alloy-js/msbuild': 0.24.0
+      '@alloy-js/core': 0.25.0
+      '@alloy-js/msbuild': 0.25.0
       change-case: 5.4.4
       marked: 18.1.3
       pathe: 2.0.3
@@ -1341,9 +1322,9 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@alloy-js/msbuild@0.24.0':
+  '@alloy-js/msbuild@0.25.0':
     dependencies:
-      '@alloy-js/core': 0.24.1
+      '@alloy-js/core': 0.25.0
       change-case: 5.4.4
       marked: 18.1.3
       pathe: 2.0.3
@@ -1351,9 +1332,9 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@alloy-js/python@0.5.0':
+  '@alloy-js/python@0.6.0':
     dependencies:
-      '@alloy-js/core': 0.24.1
+      '@alloy-js/core': 0.25.0
       change-case: 5.4.4
       pathe: 2.0.3
     transitivePeerDependencies:
@@ -1399,7 +1380,7 @@ snapshots:
       import-meta-resolve: 4.2.0
       json5: 2.2.3
       obug: 2.2.1
-      semver: 7.7.3
+      semver: 7.8.6
 
   '@babel/generator@7.28.5':
     dependencies:
@@ -1715,7 +1696,7 @@ snapshots:
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
       '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/gen-mapping@0.4.0-beta.0':
@@ -1725,14 +1706,12 @@ snapshots:
 
   '@jridgewell/resolve-uri@3.1.2': {}
 
-  '@jridgewell/sourcemap-codec@1.5.5': {}
-
   '@jridgewell/sourcemap-codec@1.6.0': {}
 
   '@jridgewell/trace-mapping@0.3.31':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
 
   '@keyv/bigmap@1.3.1(keyv@5.6.0)':
     dependencies:
@@ -1939,11 +1918,11 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@typespec/emitter-framework@0.21.0(@alloy-js/core@0.25.0)(@alloy-js/csharp@0.24.0)(@alloy-js/python@0.5.0)(@alloy-js/typescript@0.25.0)(@typespec/compiler@1.18.0(@types/node@26.6.6))':
+  '@typespec/emitter-framework@0.22.0(@alloy-js/core@0.26.0)(@alloy-js/csharp@0.25.0)(@alloy-js/python@0.6.0)(@alloy-js/typescript@0.25.0)(@typespec/compiler@1.18.0(@types/node@26.6.6))':
     dependencies:
-      '@alloy-js/core': 0.25.0
-      '@alloy-js/csharp': 0.24.0
-      '@alloy-js/python': 0.5.0
+      '@alloy-js/core': 0.26.0
+      '@alloy-js/csharp': 0.25.0
+      '@alloy-js/python': 0.6.0
       '@alloy-js/typescript': 0.25.0
       '@typespec/compiler': 1.18.0(@types/node@26.6.6)
 
