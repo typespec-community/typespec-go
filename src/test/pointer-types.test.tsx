@@ -7,18 +7,18 @@ import { describe, expect, it } from "vitest";
 import { Output, render } from "@alloy-js/core";
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import { createModel, createModelWithProps, createScalar } from "../testing/mock-factory.js";
 import type { Type } from "@typespec/compiler";
 
 describe("Pointer Type Generation", () => {
   it("generates pointer for optional nested model fields", () => {
     // Create a mock model with an optional User field
-    const mockUserModel = MockFactory.createModelWithProps("User", [
-      { name: "id", type: MockFactory.createScalar("string") },
+    const mockUserModel = createModelWithProps("User", [
+      { name: "id", type: createScalar("string") },
     ]);
 
-    const mockTaskModel = MockFactory.createModelWithProps("Task", [
-      { name: "id", type: MockFactory.createScalar("string") },
+    const mockTaskModel = createModelWithProps("Task", [
+      { name: "id", type: createScalar("string") },
       { name: "assignee", type: mockUserModel, optional: true }, // Nested model
     ]);
 
@@ -43,11 +43,11 @@ describe("Pointer Type Generation", () => {
   });
 
   it("does not generate pointer for required model fields", () => {
-    const mockOwnerModel = MockFactory.createModelWithProps("User", [
-      { name: "id", type: MockFactory.createScalar("string") },
+    const mockOwnerModel = createModelWithProps("User", [
+      { name: "id", type: createScalar("string") },
     ]);
 
-    const mockTaskModel = MockFactory.createModelWithProps("Task", [
+    const mockTaskModel = createModelWithProps("Task", [
       { name: "owner", type: mockOwnerModel, optional: false }, // Required field
     ]);
 
@@ -74,10 +74,10 @@ describe("Pointer Type Generation", () => {
     const arrayType = {
       kind: "Model",
       name: "Array",
-      templateMapper: { args: [MockFactory.createModel("Task")] },
+      templateMapper: { args: [createModel("Task")] },
     } as unknown as Type;
 
-    const mockProjectModel = MockFactory.createModelWithProps("Project", [
+    const mockProjectModel = createModelWithProps("Project", [
       { name: "tasks", type: arrayType, optional: true }, // Optional but it's an array
     ]);
 

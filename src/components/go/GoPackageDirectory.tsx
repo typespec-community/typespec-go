@@ -4,7 +4,7 @@
  * Eliminates all string-based logic in favor of component-based generation
  */
 
-import type { Model, Enum, Union, Operation, Type, Program } from "@typespec/compiler";
+import type { Model, Enum, Union, Operation, Program } from "@typespec/compiler";
 import { For } from "@alloy-js/core";
 import { SourceFile as CoreSourceFile } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
@@ -15,19 +15,8 @@ import { GoUnionDeclaration } from "./GoUnionDeclaration.js";
 import { GoModFile } from "./GoModFile.js";
 import { GoInterfaceDeclaration } from "./GoInterfaceDeclaration.js";
 import { GoHandlerStub } from "./GoHandlerStub.js";
-import { capitalize } from "../../utils/strings.js";
 import type { VisibilityMode } from "../../domain/visibility.js";
-
-/**
- * Type guard to check if a TypeSpec Type is a time-related scalar
- */
-function isTimeType(type: Type): boolean {
-  if (type.kind !== "Scalar") return false;
-  const scalarName = type.name?.toLowerCase() || "";
-  return ["plaindate", "plaintime", "utcdatetime", "offsetdatetime", "duration"].includes(
-    scalarName,
-  );
-}
+import { buildPackageFileLayout } from "../../domain/package-layout.js";
 
 interface GoPackageDirectoryProps {
   /** Models to include in package */
@@ -55,29 +44,10 @@ interface GoPackageDirectoryProps {
 }
 
 /**
- * Generate proper Go module path
- */
-function getModulePath(packageName: string, modulePath?: string): string {
-  if (modulePath) {
-    return modulePath;
-  }
-
-  return "github.com/yourcompany/" + packageName;
-}
-
-/**
- * Check if unions require json/fmt imports: every union renders an
- * UnmarshalX helper that reads the discriminator via encoding/json
- * and reports failures via fmt.Errorf (see GoUnionDeclaration).
- */
-function unionsEmitUnmarshalImports(unions?: Union[]): boolean {
-  return (unions?.length ?? 0) > 0;
-}
-
-/**
  * Go Package Directory Component
- * Creates a complete Go package directory using proper Alloy-JS components
- * Supports models, enums, and unions with proper Go file organization
+ * Creates a complete Go package directory using proper Alloy-JS components.
+ * Layout decisions (which files, which imports, Service/API names) come from
+ * the pure `buildPackageFileLayout` builder; this component only renders.
  */
 export function GoPackageDirectory({
   models = [],
@@ -92,22 +62,18 @@ export function GoPackageDirectory({
   program,
   visibilityMode,
 }: GoPackageDirectoryProps) {
-  const moduleDirectory = getModulePath(packageName, modulePath);
-  const hasEnums = enums.length > 0;
-  const hasUnions = unions.length > 0;
-  const hasOperations = operations.length > 0;
-  const needsUnmarshalImports = unionsEmitUnmarshalImports(unions);
-
-  // Check if any model has time.Time fields
-  const needsTimeImport = models.some((model) => {
-    if (!model.properties) return false;
-    for (const prop of model.properties.values()) {
-      if (isTimeType(prop.type)) {
-        return true;
-      }
-    }
-    return false;
+  const layout = buildPackageFileLayout({
+    packageName,
+    modulePath,
+    models,
+    enums,
+    unions,
+    operations,
   });
+  const { moduleDirectory, serviceName, apiInterfaceName } = layout;
+  const hasEnums = layout.files.enums;
+  const hasUnions = layout.files.unions;
+  const hasOperations = layout.files.handlers;
 
   return (
     <ModuleDirectory name={moduleDirectory}>
@@ -132,7 +98,7 @@ export function GoPackageDirectory({
             ) : undefined
           }
         >
-          {needsTimeImport && (
+          {layout.imports.modelsTime && (
             <>
               <SingleImportStatement path="time" />
               {"\n\n"}
@@ -171,7 +137,7 @@ export function GoPackageDirectory({
         {hasOperations && (
           <GoHandlerStub
             operations={operations}
-            serviceName={capitalize(packageName) + "Service"}
+            serviceName={serviceName}
             packageName={packageName}
             program={program}
           />
@@ -184,7 +150,7 @@ export function GoPackageDirectory({
             <SingleImportStatement path="context" />
             {"\n\n"}
             <GoInterfaceDeclaration
-              name={capitalize(packageName) + "API"}
+              name={apiInterfaceName}
               operations={operations}
               packageName={packageName}
               program={program}
@@ -195,7 +161,7 @@ export function GoPackageDirectory({
         {/* Unions file - only if we have unions */}
         {hasUnions && (
           <SourceFile path="unions.go">
-            {needsUnmarshalImports && (
+            {layout.imports.unionsJsonFmt && (
               <>
                 <SingleImportStatement path="encoding/json" />
                 {"\n"}

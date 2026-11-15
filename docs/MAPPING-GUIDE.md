@@ -112,6 +112,11 @@ The `<Pkg>Service` struct owns the HTTP handlers and implements the
 methods take value receivers named `e`. Example for package `crud`:
 `CrudService` (receiver `s`) implements `CrudAPI`.
 
+Generated filenames are lowercase (`models.go`, `enums.go`, `handlers.go`,
+`interfaces.go`, `unions.go`, `go.mod`); any future multi-word filename
+uses snake_case (the Go norm, e.g. `route_registration.go`), never
+kebab-case (dashes are not valid in Go identifiers).
+
 ## Visibility
 
 `@visibility` on properties is evaluated with the compiler's official

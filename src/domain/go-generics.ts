@@ -20,9 +20,7 @@ export interface GoTypeParameter {
  * [{ name: "T", constraint: "any" }]. Empty for non-generic models.
  */
 export function getTemplateParameters(model: Model): GoTypeParameter[] {
-  const node = model.node as
-    | { templateParameters?: Array<{ id?: { sv?: string } }> }
-    | undefined;
+  const node = model.node as { templateParameters?: Array<{ id?: { sv?: string } }> } | undefined;
   const params = node?.templateParameters ?? [];
   const names: GoTypeParameter[] = [];
   for (const param of params) {

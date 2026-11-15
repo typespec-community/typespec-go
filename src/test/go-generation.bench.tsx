@@ -5,17 +5,23 @@
 
 import { bench, describe } from "vitest";
 import { renderGoContent } from "../testing/test-utils.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import {
+  createEnum,
+  createModel,
+  createModelWithProps,
+  createScalar,
+  createUnion,
+} from "../testing/mock-factory.js";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
 import { GoEnumDeclaration } from "../components/go/GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "../components/go/GoUnionDeclaration.js";
 
 function modelWithProps(count: number) {
-  return MockFactory.createModelWithProps(
+  return createModelWithProps(
     `Model${count}`,
     Array.from({ length: count }, (_, i) => ({
       name: `field${i}`,
-      type: MockFactory.createScalar("string"),
+      type: createScalar("string"),
     })),
   );
 }
@@ -30,7 +36,7 @@ describe("Go generation", () => {
   });
 
   bench("string enum with 8 members", () => {
-    const enumType = MockFactory.createEnum(
+    const enumType = createEnum(
       "Status",
       Array.from({ length: 8 }, (_, i) => ({ name: `member${i}`, value: `value${i}` })),
     );
@@ -38,7 +44,7 @@ describe("Go generation", () => {
   });
 
   bench("iota enum with 8 members", () => {
-    const enumType = MockFactory.createEnum(
+    const enumType = createEnum(
       "Priority",
       Array.from({ length: 8 }, (_, i) => ({ name: `member${i}`, value: i })),
     );
@@ -46,11 +52,11 @@ describe("Go generation", () => {
   });
 
   bench("sealed union with 4 variants", () => {
-    const unionType = MockFactory.createUnion("PaymentMethod", [
-      { name: "card", type: MockFactory.createModel("Card") },
-      { name: "bank", type: MockFactory.createModel("Bank") },
-      { name: "wallet", type: MockFactory.createModel("Wallet") },
-      { name: "cash", type: MockFactory.createModel("Cash") },
+    const unionType = createUnion("PaymentMethod", [
+      { name: "card", type: createModel("Card") },
+      { name: "bank", type: createModel("Bank") },
+      { name: "wallet", type: createModel("Wallet") },
+      { name: "cash", type: createModel("Cash") },
     ]);
     renderGoContent(<GoUnionDeclaration union={unionType} />);
   });

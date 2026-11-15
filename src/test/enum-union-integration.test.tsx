@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 import { getEnumValues, GoEnumDeclaration } from "../components/go/GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "../components/go/GoUnionDeclaration.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import { createEnum, createStringLiteral, createUnion } from "../testing/mock-factory.js";
 import { renderGoContent } from "../testing/test-utils.js";
 
 /**
@@ -9,7 +9,7 @@ import { renderGoContent } from "../testing/test-utils.js";
  */
 test("GoEnumDeclaration generates valid Go string enum", () => {
   // Create mock enum matching TypeSpec Enum interface
-  const mockEnum = MockFactory.createEnum("Status", [
+  const mockEnum = createEnum("Status", [
     { name: "pending", value: "pending" },
     { name: "active", value: "active" },
     { name: "completed", value: "completed" },
@@ -28,7 +28,7 @@ test("GoEnumDeclaration generates valid Go string enum", () => {
 
 test("GoEnumDeclaration generates valid Go iota enum", () => {
   // Create mock numeric enum
-  const mockEnum = MockFactory.createEnum("Priority", [
+  const mockEnum = createEnum("Priority", [
     { name: "low", value: 0 },
     { name: "medium", value: 1 },
     { name: "high", value: 2 },
@@ -44,7 +44,7 @@ test("GoEnumDeclaration generates valid Go iota enum", () => {
 });
 
 test("getEnumValues extracts enum member information", () => {
-  const mockEnum = MockFactory.createEnum("Color", [
+  const mockEnum = createEnum("Color", [
     { name: "red", value: "RED" },
     { name: "green", value: "GREEN" },
   ]);
@@ -61,9 +61,9 @@ test("getEnumValues extracts enum member information", () => {
  */
 test("GoUnionDeclaration generates sealed interface pattern", () => {
   // Create mock union matching TypeSpec Union interface
-  const mockUnion = MockFactory.createUnion("PaymentMethod", [
-    { name: "card", type: MockFactory.createStringLiteral("card") },
-    { name: "bank", type: MockFactory.createStringLiteral("bank") },
+  const mockUnion = createUnion("PaymentMethod", [
+    { name: "card", type: createStringLiteral("card") },
+    { name: "bank", type: createStringLiteral("bank") },
   ]);
 
   const result = renderGoContent(<GoUnionDeclaration union={mockUnion} />);
@@ -78,9 +78,9 @@ test("GoUnionDeclaration generates sealed interface pattern", () => {
 });
 
 test("GoUnionDeclaration generates discriminated union with unmarshaler", () => {
-  const mockUnion = MockFactory.createUnion("Event", [
-    { name: "created", type: MockFactory.createStringLiteral("created") },
-    { name: "deleted", type: MockFactory.createStringLiteral("deleted") },
+  const mockUnion = createUnion("Event", [
+    { name: "created", type: createStringLiteral("created") },
+    { name: "deleted", type: createStringLiteral("deleted") },
   ]);
 
   const result = renderGoContent(<GoUnionDeclaration union={mockUnion} discriminator="type" />);
@@ -97,7 +97,7 @@ test("GoUnionDeclaration generates discriminated union with unmarshaler", () => 
 });
 
 test("GoUnionDeclaration handles empty union gracefully", () => {
-  const emptyUnion = MockFactory.createUnion("EmptyUnion", []);
+  const emptyUnion = createUnion("EmptyUnion", []);
 
   const result = renderGoContent(<GoUnionDeclaration union={emptyUnion} />);
 

@@ -43,6 +43,13 @@ product chain is real, decorator modes are live.
   receivers, `<Pkg>Service` vs `<Pkg>API`) documented in MAPPING-GUIDE
   § Naming conventions.
 - **Coverage ratchet +5** and e2e wall-clock timing.
+- **Internal refactors (T16):** package file-layout decisions extracted
+  to the pure `buildPackageFileLayout` builder; `MockFactory` class
+  converted to named module functions; the two namespace-name→path
+  mappers unified (output directory derives from the package name);
+  clean-type-mapper reduced to zero structural casts via discriminated
+  union narrowing; generated-filename policy fixed (lowercase,
+  snake_case for multi-word).
 - **Consumer quickstart** (`docs/QUICKSTART.md`) + per-package
   generation summary log.
 - **Docs truth refresh:** FEATURES.md rewritten, ROADMAP strikes,
@@ -54,7 +61,7 @@ product chain is real, decorator modes are live.
   dropped (dprint owns formatting), dead violations scanner + counter,
   orphan root `test/` dir and never-run root test file removed.
 
-Gates: 202/202 tests (42 files) · eslint 0/0 · strict 0 · dprint clean ·
+Gates: 206/206 tests (43 files) · eslint 0/0 · strict 0 · dprint clean ·
 e2e green (`go build` + `gofmt -l` raw) · docs-gates 5/5.
 
 ## 1.0.0 — 2026-11-14

@@ -2,12 +2,12 @@ import { describe, test, expect } from "vitest";
 import { render } from "@alloy-js/core";
 import { Output } from "@alloy-js/core";
 import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import { createModel, createOperation, createScalar } from "../testing/mock-factory.js";
 
 describe("GoPackageDirectory Component", () => {
   test("generates proper package structure", () => {
-    const mockModel = MockFactory.createModel("User", {
-      id: MockFactory.createScalar("string"),
+    const mockModel = createModel("User", {
+      id: createScalar("string"),
     });
 
     const output = render(
@@ -29,7 +29,7 @@ describe("GoPackageDirectory Component", () => {
   });
 
   test("handles operations with handlers", () => {
-    const mockOperation = MockFactory.createOperation("GetUser");
+    const mockOperation = createOperation("GetUser");
 
     const output = render(
       <Output>

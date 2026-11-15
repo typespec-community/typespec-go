@@ -25,6 +25,14 @@ const DOMAIN_TYPE_PATTERNS = {
 } as const;
 
 /**
+ * Runtime-safe kind reader for untyped objects (the type guards accept
+ * `unknown` by design; this keeps the single structural cast in one place)
+ */
+function hasKind(value: object, kind: string): boolean {
+  return (value as { kind?: unknown }).kind === kind;
+}
+
+/**
  * Strong ID type information
  */
 export interface StrongIdType {
@@ -438,7 +446,7 @@ export class CleanTypeMapper {
     fieldName?: string,
   ): GoTypeMapping {
     if (typeof type === "object" && type !== null && "kind" in type) {
-      const kind = (type as { kind: string }).kind;
+      const kind = type.kind;
       const mapping = this.BUILTIN_MAPPINGS[kind];
 
       if (mapping) {
@@ -586,11 +594,9 @@ export class CleanTypeMapper {
     type: TypeSpecPropertyNode["type"],
     fieldName?: string,
   ): GoTypeMapping {
-    if (this.isTypeSpecArray(type)) {
-      const arrayType = type as { elementType?: TypeSpecPropertyNode["type"] };
-
+    if (type.kind === "array") {
       // Check if elementType exists
-      if (!arrayType.elementType) {
+      if (!type.elementType) {
         console.warn(
           `Array type missing elementType for field ${fieldName}: ${JSON.stringify(type)}`,
         );
@@ -598,7 +604,7 @@ export class CleanTypeMapper {
       }
 
       // Recursively map the element type
-      const elementMapping = this.mapTypeSpecType(arrayType.elementType, `${fieldName}Element`);
+      const elementMapping = this.mapTypeSpecType(type.elementType, `${fieldName}Element`);
 
       // Generate Go slice type: []ElementType
       const goSliceType = `[]${elementMapping.goType}`;
@@ -619,46 +625,38 @@ export class CleanTypeMapper {
    * Map TypeSpec map/record type
    */
   private static mapMapType(type: TypeSpecPropertyNode["type"], fieldName?: string): GoTypeMapping {
-    if (typeof type === "object" && type !== null && "kind" in type) {
-      const kind = (type as { kind: string }).kind;
-      if (kind === "map" || kind === "record") {
-        const mapType = type as {
-          keyType?: TypeSpecPropertyNode["type"];
-          valueType?: TypeSpecPropertyNode["type"];
-        };
-
-        // Check if keyType and valueType exist
-        if (!mapType.keyType || !mapType.valueType) {
-          console.warn(
-            `Map/record type missing keyType or valueType for field ${fieldName}: ${JSON.stringify(type)}`,
-          );
-          return { goType: "map[string]interface{}", usePointerForOptional: true };
-        }
-
-        // Map the key and value types
-        const keyMapping = this.mapTypeSpecType(mapType.keyType, `${fieldName}Key`);
-        const valueMapping = this.mapTypeSpecType(mapType.valueType, `${fieldName}Value`);
-
-        // For Go maps, keys must be comparable types
-        let goKeyType = keyMapping.goType;
-
-        // Ensure key type is comparable in Go
-        if (!this.isGoComparableType(goKeyType)) {
-          console.warn(
-            `Non-comparable map key type for field ${fieldName}: ${goKeyType}, defaulting to string`,
-          );
-          goKeyType = "string";
-        }
-
-        // Generate Go map type: map[keyType]valueType
-        const goMapType = `map[${goKeyType}]${valueMapping.goType}`;
-
-        return {
-          goType: goMapType,
-          usePointerForOptional: true, // Maps are reference types in Go
-          requiresImport: valueMapping.requiresImport || keyMapping.requiresImport,
-        };
+    if (type.kind === "map" || type.kind === "record") {
+      // Check if keyType and valueType exist
+      if (!type.keyType || !type.valueType) {
+        console.warn(
+          `Map/record type missing keyType or valueType for field ${fieldName}: ${JSON.stringify(type)}`,
+        );
+        return { goType: "map[string]interface{}", usePointerForOptional: true };
       }
+
+      // Map the key and value types
+      const keyMapping = this.mapTypeSpecType(type.keyType, `${fieldName}Key`);
+      const valueMapping = this.mapTypeSpecType(type.valueType, `${fieldName}Value`);
+
+      // For Go maps, keys must be comparable types
+      let goKeyType = keyMapping.goType;
+
+      // Ensure key type is comparable in Go
+      if (!this.isGoComparableType(goKeyType)) {
+        console.warn(
+          `Non-comparable map key type for field ${fieldName}: ${goKeyType}, defaulting to string`,
+        );
+        goKeyType = "string";
+      }
+
+      // Generate Go map type: map[keyType]valueType
+      const goMapType = `map[${goKeyType}]${valueMapping.goType}`;
+
+      return {
+        goType: goMapType,
+        usePointerForOptional: true, // Maps are reference types in Go
+        requiresImport: valueMapping.requiresImport || keyMapping.requiresImport,
+      };
     }
 
     // Return fallback type for invalid map types
@@ -706,9 +704,7 @@ export class CleanTypeMapper {
       type !== null &&
       "name" in type &&
       // Exclude model types (they have both name and kind)
-      (!("kind" in type) ||
-        ((type as { kind: string }).kind !== "model" &&
-          (type as { kind: string }).kind !== "template"))
+      (!("kind" in type) || (!hasKind(type, "model") && !hasKind(type, "template")))
     );
   }
 
@@ -718,10 +714,7 @@ export class CleanTypeMapper {
    */
   private static isTypeSpecKind(type: unknown, expectedKind: string): boolean {
     return (
-      typeof type === "object" &&
-      type !== null &&
-      "kind" in type &&
-      (type as { kind: string }).kind === expectedKind
+      typeof type === "object" && type !== null && "kind" in type && hasKind(type, expectedKind)
     );
   }
 
@@ -812,10 +805,7 @@ export class CleanTypeMapper {
    */
   private static createCacheKey(type: TypeSpecPropertyNode["type"], fieldName?: string): string {
     const kind = typeof type === "object" && type !== null ? String(type.kind) : String(type);
-    const name =
-      typeof type === "object" && type !== null && "name" in type
-        ? String((type as { name: unknown }).name)
-        : "";
+    const name = typeof type === "object" && type !== null && "name" in type ? type.name : "";
     return `${kind}:${name}:${fieldName || "unknown"}`;
   }
 

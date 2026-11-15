@@ -1,11 +1,11 @@
 import { describe, test, expect } from "vitest";
 import { GoHandlerStub } from "../components/go/GoHandlerStub.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import { createOperation } from "../testing/mock-factory.js";
 import { renderGoContent } from "../testing/test-utils.js";
 
 describe("GoHandlerStub Component", () => {
   test("generates complete HTTP handler file", () => {
-    const mockOperation = MockFactory.createOperation("CreateUser");
+    const mockOperation = createOperation("CreateUser");
 
     const output = renderGoContent(
       <GoHandlerStub operations={[mockOperation]} serviceName="UserService" packageName="api" />,
@@ -26,7 +26,7 @@ describe("GoHandlerStub Component", () => {
   });
 
   test("generates handler methods with proper signatures", () => {
-    const mockOperation = MockFactory.createOperation("GetUser");
+    const mockOperation = createOperation("GetUser");
 
     const output = renderGoContent(
       <GoHandlerStub operations={[mockOperation]} serviceName="UserService" packageName="api" />,

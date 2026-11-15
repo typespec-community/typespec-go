@@ -4,14 +4,19 @@ import {
   GoInterfaceDeclaration,
   collectOperations,
 } from "../components/go/GoInterfaceDeclaration.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import {
+  createModel,
+  createNamespace,
+  createOperation,
+  createScalar,
+} from "../testing/mock-factory.js";
 
 describe("GoInterfaceDeclaration Component", () => {
   test("generates interface from operations", () => {
-    const mockOperation = MockFactory.createOperation("getUser", {
-      returnType: MockFactory.createModel("User"),
+    const mockOperation = createOperation("getUser", {
+      returnType: createModel("User"),
       parameters: {
-        id: MockFactory.createScalar("string"),
+        id: createScalar("string"),
       },
     });
 
@@ -25,9 +30,9 @@ describe("GoInterfaceDeclaration Component", () => {
   });
 
   test("handles operations with no return type", () => {
-    const mockOperation = MockFactory.createOperation("deleteUser", {
+    const mockOperation = createOperation("deleteUser", {
       parameters: {
-        id: MockFactory.createScalar("string"),
+        id: createScalar("string"),
       },
     });
 
@@ -41,10 +46,10 @@ describe("GoInterfaceDeclaration Component", () => {
   });
 
   test("collects operations from namespace", () => {
-    const mockNamespace = MockFactory.createNamespace("TestAPI", {
+    const mockNamespace = createNamespace("TestAPI", {
       operations: {
-        getUser: MockFactory.createOperation("getUser"),
-        createUser: MockFactory.createOperation("createUser"),
+        getUser: createOperation("getUser"),
+        createUser: createOperation("createUser"),
       },
     });
 

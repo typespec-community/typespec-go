@@ -7,7 +7,7 @@ import { describe, it, expect } from "vitest";
 import { render, Output } from "@alloy-js/core";
 import { ModuleDirectory, SourceDirectory, SourceFile } from "@alloy-js/go";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import { createModelWithProps, createScalar } from "../testing/mock-factory.js";
 import type { Model } from "@typespec/compiler";
 
 function renderModel(model: Model) {
@@ -26,53 +26,53 @@ function renderModel(model: Model) {
 
 describe("Extended Scalar Mappings", () => {
   it("maps integer types correctly", () => {
-    const model = MockFactory.createModelWithProps("IntegerTypes", [
-      { name: "int8Val", type: MockFactory.createScalar("int8") },
-      { name: "int16Val", type: MockFactory.createScalar("int16") },
-      { name: "int32Val", type: MockFactory.createScalar("int32") },
-      { name: "int64Val", type: MockFactory.createScalar("int64") },
-      { name: "safeint", type: MockFactory.createScalar("safeint") },
+    const model = createModelWithProps("IntegerTypes", [
+      { name: "int8Val", type: createScalar("int8") },
+      { name: "int16Val", type: createScalar("int16") },
+      { name: "int32Val", type: createScalar("int32") },
+      { name: "int64Val", type: createScalar("int64") },
+      { name: "safeint", type: createScalar("safeint") },
     ]);
 
     expect(renderModel(model)).toBeDefined();
   });
 
   it("maps float types correctly", () => {
-    const model = MockFactory.createModelWithProps("FloatTypes", [
-      { name: "float32Val", type: MockFactory.createScalar("float32") },
-      { name: "float64Val", type: MockFactory.createScalar("float64") },
-      { name: "decimal", type: MockFactory.createScalar("decimal") },
+    const model = createModelWithProps("FloatTypes", [
+      { name: "float32Val", type: createScalar("float32") },
+      { name: "float64Val", type: createScalar("float64") },
+      { name: "decimal", type: createScalar("decimal") },
     ]);
 
     expect(renderModel(model)).toBeDefined();
   });
 
   it("maps string-based types correctly", () => {
-    const model = MockFactory.createModelWithProps("StringTypes", [
-      { name: "url", type: MockFactory.createScalar("url") },
-      { name: "uri", type: MockFactory.createScalar("uri") },
-      { name: "email", type: MockFactory.createScalar("email") },
-      { name: "uuid", type: MockFactory.createScalar("uuid") },
+    const model = createModelWithProps("StringTypes", [
+      { name: "url", type: createScalar("url") },
+      { name: "uri", type: createScalar("uri") },
+      { name: "email", type: createScalar("email") },
+      { name: "uuid", type: createScalar("uuid") },
     ]);
 
     expect(renderModel(model)).toBeDefined();
   });
 
   it("maps datetime types correctly", () => {
-    const model = MockFactory.createModelWithProps("DateTimeTypes", [
-      { name: "plainDate", type: MockFactory.createScalar("plainDate") },
-      { name: "utcDateTime", type: MockFactory.createScalar("utcDateTime") },
-      { name: "duration", type: MockFactory.createScalar("duration") },
+    const model = createModelWithProps("DateTimeTypes", [
+      { name: "plainDate", type: createScalar("plainDate") },
+      { name: "utcDateTime", type: createScalar("utcDateTime") },
+      { name: "duration", type: createScalar("duration") },
     ]);
 
     expect(renderModel(model)).toBeDefined();
   });
 
   it("maps network types correctly", () => {
-    const model = MockFactory.createModelWithProps("NetworkTypes", [
-      { name: "ipAddress", type: MockFactory.createScalar("ipAddress") },
-      { name: "ipv4", type: MockFactory.createScalar("ipv4Address") },
-      { name: "ipv6", type: MockFactory.createScalar("ipv6Address") },
+    const model = createModelWithProps("NetworkTypes", [
+      { name: "ipAddress", type: createScalar("ipAddress") },
+      { name: "ipv4", type: createScalar("ipv4Address") },
+      { name: "ipv6", type: createScalar("ipv6Address") },
     ]);
 
     expect(renderModel(model)).toBeDefined();

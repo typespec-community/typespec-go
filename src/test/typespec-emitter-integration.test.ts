@@ -1,6 +1,11 @@
 import { test, expect } from "vitest";
 import { $onEmit } from "../main.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import {
+  createEmitContext,
+  createModel,
+  createProgram,
+  createScalar,
+} from "../testing/mock-factory.js";
 
 /**
  * Test our AssetEmitter with a mock TypeSpec program
@@ -8,21 +13,21 @@ import { MockFactory } from "../testing/mock-factory.js";
  */
 test("TypeSpec AssetEmitter Integration - Mock Program", async () => {
   // Create scalars
-  const stringScalar = MockFactory.createScalar("string");
+  const stringScalar = createScalar("string");
 
   // Create a minimal mock model
-  const mockModel = MockFactory.createModel("TestUser", {
+  const mockModel = createModel("TestUser", {
     id: stringScalar,
     name: stringScalar,
   });
 
   // Create mock program with the model
-  const mockProgram = MockFactory.createProgram({
+  const mockProgram = createProgram({
     TestUser: mockModel,
   });
 
   // Create mock emit context
-  const mockContext = MockFactory.createEmitContext(mockProgram);
+  const mockContext = createEmitContext(mockProgram);
 
   // Store console output to verify execution
   const consoleOutput: string[] = [];

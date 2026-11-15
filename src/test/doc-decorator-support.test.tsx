@@ -4,7 +4,13 @@
 
 import { describe, it, expect } from "vitest";
 import { renderGoContent } from "../testing/test-utils.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import {
+  createEnum,
+  createModelWithProps,
+  createScalar,
+  createStringLiteral,
+  createUnion,
+} from "../testing/mock-factory.js";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
 import { GoEnumDeclaration } from "../components/go/GoEnumDeclaration.js";
 import { GoUnionDeclaration } from "../components/go/GoUnionDeclaration.js";
@@ -12,9 +18,9 @@ import { GoUnionDeclaration } from "../components/go/GoUnionDeclaration.js";
 describe("@doc Decorator Support", () => {
   describe("GoStructDeclaration with explicit documentation", () => {
     it("should use provided documentation prop", () => {
-      const mockModel = MockFactory.createModelWithProps("User", [
-        { name: "id", type: MockFactory.createScalar("string") },
-        { name: "name", type: MockFactory.createScalar("string") },
+      const mockModel = createModelWithProps("User", [
+        { name: "id", type: createScalar("string") },
+        { name: "name", type: createScalar("string") },
       ]);
 
       const result = renderGoContent(
@@ -27,14 +33,11 @@ describe("@doc Decorator Support", () => {
     });
 
     it("should fall back to default documentation without program", () => {
-      const mockModel = MockFactory.createModelWithProps("Task", [
-        { name: "id", type: MockFactory.createScalar("string") },
+      const mockModel = createModelWithProps("Task", [
+        { name: "id", type: createScalar("string") },
       ]);
 
-      const result = renderGoContent(
-        <GoStructDeclaration model={mockModel} />,
-        "models.go",
-      );
+      const result = renderGoContent(<GoStructDeclaration model={mockModel} />, "models.go");
 
       expect(result).toBeDefined();
     });
@@ -44,7 +47,7 @@ describe("@doc Decorator Support", () => {
     it("should generate enum correctly", () => {
       const result = renderGoContent(
         <GoEnumDeclaration
-          enum={MockFactory.createEnum("Status", [
+          enum={createEnum("Status", [
             { name: "pending", value: "pending" },
             { name: "completed", value: "completed" },
           ])}
@@ -62,9 +65,9 @@ describe("@doc Decorator Support", () => {
     it("should generate union interface comment", () => {
       const result = renderGoContent(
         <GoUnionDeclaration
-          union={MockFactory.createUnion("Result", [
-            { name: "success", type: MockFactory.createStringLiteral("success") },
-            { name: "error", type: MockFactory.createStringLiteral("error") },
+          union={createUnion("Result", [
+            { name: "success", type: createStringLiteral("success") },
+            { name: "error", type: createStringLiteral("error") },
           ])}
           packageName="api"
         />,

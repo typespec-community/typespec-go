@@ -7,15 +7,15 @@
 import { describe, expect, test } from "vitest";
 import type { DecoratorContext, ModelProperty } from "@typespec/compiler";
 import { renderGoContent } from "../testing/test-utils.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import { createModelWithProps, createProgram, createScalar } from "../testing/mock-factory.js";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
 import { $name, $structTag, $type } from "../emitter/go-decorators.js";
 
-function contextFor(program: ReturnType<typeof MockFactory.createProgram>): DecoratorContext {
+function contextFor(program: ReturnType<typeof createProgram>): DecoratorContext {
   return { program } as unknown as DecoratorContext;
 }
 
-function propertyNamed(model: ReturnType<typeof MockFactory.createModelWithProps>, name: string) {
+function propertyNamed(model: ReturnType<typeof createModelWithProps>, name: string) {
   const prop = Array.from(model.properties.values()).find((p) => p.name === name);
   if (!prop) throw new Error(`property ${name} not found`);
   return prop as ModelProperty;
@@ -23,9 +23,9 @@ function propertyNamed(model: ReturnType<typeof MockFactory.createModelWithProps
 
 describe("TypeSpec.Go decorator consumption", () => {
   test("@go.name overrides the generated field name", () => {
-    const program = MockFactory.createProgram();
-    const model = MockFactory.createModelWithProps("User", [
-      { name: "created_at", type: MockFactory.createScalar("utcDateTime") },
+    const program = createProgram();
+    const model = createModelWithProps("User", [
+      { name: "created_at", type: createScalar("utcDateTime") },
     ]);
     $name(contextFor(program), propertyNamed(model, "created_at"), "CreatedAtUTC");
 
@@ -39,9 +39,9 @@ describe("TypeSpec.Go decorator consumption", () => {
   });
 
   test("@go.type overrides the generated field type", () => {
-    const program = MockFactory.createProgram();
-    const model = MockFactory.createModelWithProps("Event", [
-      { name: "happened_at", type: MockFactory.createScalar("offsetDateTime") },
+    const program = createProgram();
+    const model = createModelWithProps("Event", [
+      { name: "happened_at", type: createScalar("offsetDateTime") },
     ]);
     $type(contextFor(program), propertyNamed(model, "happened_at"), "time.Time");
 
@@ -54,10 +54,8 @@ describe("TypeSpec.Go decorator consumption", () => {
   });
 
   test("@go.structTag overrides the generated struct tag", () => {
-    const program = MockFactory.createProgram();
-    const model = MockFactory.createModelWithProps("Item", [
-      { name: "id", type: MockFactory.createScalar("string") },
-    ]);
+    const program = createProgram();
+    const model = createModelWithProps("Item", [{ name: "id", type: createScalar("string") }]);
     $structTag(contextFor(program), propertyNamed(model, "id"), `json:"identifier" db:"pk"`);
 
     const result = renderGoContent(
@@ -70,8 +68,8 @@ describe("TypeSpec.Go decorator consumption", () => {
   });
 
   test("@error model generates an Error() string method", () => {
-    const model = MockFactory.createModelWithProps("Failure", [
-      { name: "message", type: MockFactory.createScalar("string") },
+    const model = createModelWithProps("Failure", [
+      { name: "message", type: createScalar("string") },
     ]);
     (model as unknown as { decorators: unknown[] }).decorators = [
       { decorator: { name: "$error" } },
@@ -85,8 +83,8 @@ describe("TypeSpec.Go decorator consumption", () => {
   });
 
   test("non-error model does not generate an Error() method", () => {
-    const model = MockFactory.createModelWithProps("Plain", [
-      { name: "message", type: MockFactory.createScalar("string") },
+    const model = createModelWithProps("Plain", [
+      { name: "message", type: createScalar("string") },
     ]);
 
     const result = renderGoContent(<GoStructDeclaration model={model} />, "models.go");

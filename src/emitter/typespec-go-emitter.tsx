@@ -24,18 +24,23 @@ interface NamespaceGroup {
 }
 
 /**
- * Determine output directory for a namespace
+ * Convert namespace name to Go package name
+ */
+function namespaceToPackageName(namespaceName: string): string {
+  // Convert dots to slashes and lowercase
+  return namespaceName.replace(/\./g, "/").toLowerCase();
+}
+
+/**
+ * Determine output directory for a namespace (derived from the package name,
+ * so the name→path mapping has a single source of truth)
  */
 function getOutputDirectory(namespace: Namespace | undefined, context: EmitContext): string {
   if (!namespace || namespace.name === "") {
     // Global models - output to 'api' directory
     return join(context.emitterOutputDir, "api");
   }
-
-  // Convert namespace path to directory structure
-  // Vendor.Service.API → vendor/service/api
-  const namespacePath = namespace.name.replace(/\./g, "/");
-  return join(context.emitterOutputDir, namespacePath.toLowerCase());
+  return join(context.emitterOutputDir, namespaceToPackageName(namespace.name));
 }
 
 /**
@@ -152,14 +157,6 @@ function processNestedNamespace(
       processNestedNamespace(nestedNs, namespaceGroups, ensureGroup);
     }
   }
-}
-
-/**
- * Convert namespace name to Go package name
- */
-function namespaceToPackageName(namespaceName: string): string {
-  // Convert dots to slashes and lowercase
-  return namespaceName.replace(/\./g, "/").toLowerCase();
 }
 
 /**

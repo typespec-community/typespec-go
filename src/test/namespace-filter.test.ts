@@ -7,7 +7,7 @@
 import { describe, expect, test } from "vitest";
 import type { Namespace } from "@typespec/compiler";
 import { collectTypesByNamespace } from "../emitter/typespec-go-emitter.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import { createEnum, createModel, createNamespace } from "../testing/mock-factory.js";
 
 function attachNamespaces(parent: Namespace, children: Namespace[]): Namespace {
   parent.namespaces = new Map(children.map((child) => [child.name ?? "", child]));
@@ -16,19 +16,19 @@ function attachNamespaces(parent: Namespace, children: Namespace[]): Namespace {
 
 describe("collectTypesByNamespace namespace filtering", () => {
   test("filters built-in TypeSpec library namespace", () => {
-    const typeSpecNs = MockFactory.createNamespace("TypeSpec", {
-      models: { HttpOperationResponse: MockFactory.createModel("HttpOperationResponse") },
+    const typeSpecNs = createNamespace("TypeSpec", {
+      models: { HttpOperationResponse: createModel("HttpOperationResponse") },
     });
-    const httpNs = MockFactory.createNamespace("Http", {
-      models: { HttpOperation: MockFactory.createModel("HttpOperation") },
+    const httpNs = createNamespace("Http", {
+      models: { HttpOperation: createModel("HttpOperation") },
     });
     attachNamespaces(typeSpecNs, [httpNs]);
 
-    const userNs = MockFactory.createNamespace("PetStore", {
-      models: { Pet: MockFactory.createModel("Pet") },
+    const userNs = createNamespace("PetStore", {
+      models: { Pet: createModel("Pet") },
     });
 
-    const globalNamespace = MockFactory.createNamespace("");
+    const globalNamespace = createNamespace("");
     attachNamespaces(globalNamespace, [typeSpecNs, userNs]);
 
     const groups = collectTypesByNamespace(globalNamespace);
@@ -39,14 +39,14 @@ describe("collectTypesByNamespace namespace filtering", () => {
   });
 
   test("user namespaces survive filtering", () => {
-    const modelsNs = MockFactory.createNamespace("Models", {
-      models: { User: MockFactory.createModel("User") },
+    const modelsNs = createNamespace("Models", {
+      models: { User: createModel("User") },
     });
-    const enumsNs = MockFactory.createNamespace("Enums", {
-      enums: { Status: MockFactory.createEnum("Status", [{ name: "active", value: "active" }]) },
+    const enumsNs = createNamespace("Enums", {
+      enums: { Status: createEnum("Status", [{ name: "active", value: "active" }]) },
     });
 
-    const globalNamespace = MockFactory.createNamespace("");
+    const globalNamespace = createNamespace("");
     attachNamespaces(globalNamespace, [modelsNs, enumsNs]);
 
     const groups = collectTypesByNamespace(globalNamespace);
@@ -57,8 +57,8 @@ describe("collectTypesByNamespace namespace filtering", () => {
   });
 
   test("global-namespace types still group under 'global'", () => {
-    const globalNamespace = MockFactory.createNamespace("");
-    globalNamespace.models = new Map([["Pet", MockFactory.createModel("Pet")]]);
+    const globalNamespace = createNamespace("");
+    globalNamespace.models = new Map([["Pet", createModel("Pet")]]);
 
     const groups = collectTypesByNamespace(globalNamespace);
 

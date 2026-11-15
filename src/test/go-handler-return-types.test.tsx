@@ -1,12 +1,12 @@
 import { describe, test, expect } from "vitest";
 import { GoHandlerStub } from "../components/go/GoHandlerStub.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import { createModel, createOperation } from "../testing/mock-factory.js";
 import { renderGoContent } from "../testing/test-utils.js";
 
 describe("GoHandlerStub - Return Type Extraction", () => {
   test("extracts return types from operations", () => {
-    const mockOperationWithReturn = MockFactory.createOperation("GetUser", {
-      returnType: MockFactory.createModel("User"),
+    const mockOperationWithReturn = createOperation("GetUser", {
+      returnType: createModel("User"),
     });
 
     const output = renderGoContent(
@@ -23,7 +23,7 @@ describe("GoHandlerStub - Return Type Extraction", () => {
   });
 
   test("handles operations with no return type", () => {
-    const mockOperationNoReturn = MockFactory.createOperation("DeleteUser");
+    const mockOperationNoReturn = createOperation("DeleteUser");
 
     const output = renderGoContent(
       <GoHandlerStub
@@ -38,14 +38,14 @@ describe("GoHandlerStub - Return Type Extraction", () => {
 
   test("handles operations with different return types", () => {
     const mockOperations = [
-      MockFactory.createOperation("GetUser", {
-        returnType: MockFactory.createModel("User"),
+      createOperation("GetUser", {
+        returnType: createModel("User"),
       }),
-      MockFactory.createOperation("CreateUser", {
-        returnType: MockFactory.createModel("User"),
+      createOperation("CreateUser", {
+        returnType: createModel("User"),
       }),
-      MockFactory.createOperation("ListUsers", {
-        returnType: MockFactory.createModel("UserList"),
+      createOperation("ListUsers", {
+        returnType: createModel("UserList"),
       }),
     ];
 

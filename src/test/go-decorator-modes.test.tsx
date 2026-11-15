@@ -6,17 +6,23 @@
 import { describe, expect, test } from "vitest";
 import type { DecoratorContext, EnumMember, ModelProperty, Operation } from "@typespec/compiler";
 import { renderGoContent } from "../testing/test-utils.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import {
+  createEnum,
+  createModelWithProps,
+  createOperation,
+  createProgram,
+  createScalar,
+} from "../testing/mock-factory.js";
 import { GoStructDeclaration } from "../components/go/GoStructDeclaration.js";
 import { GoEnumDeclaration } from "../components/go/GoEnumDeclaration.js";
 import { GoInterfaceDeclaration } from "../components/go/GoInterfaceDeclaration.js";
 import { $enumMode, $name, $nullable, $structTag } from "../emitter/go-decorators.js";
 
-function contextFor(program: ReturnType<typeof MockFactory.createProgram>): DecoratorContext {
+function contextFor(program: ReturnType<typeof createProgram>): DecoratorContext {
   return { program } as unknown as DecoratorContext;
 }
 
-function propertyNamed(model: ReturnType<typeof MockFactory.createModelWithProps>, name: string) {
+function propertyNamed(model: ReturnType<typeof createModelWithProps>, name: string) {
   const prop = Array.from(model.properties.values()).find((p) => p.name === name);
   if (!prop) throw new Error(`property ${name} not found`);
   return prop as ModelProperty;
@@ -28,9 +34,9 @@ function enumMemberNamed(name: string): EnumMember {
 
 describe("@go.nullable consumption", () => {
   test("pointer mode turns an optional scalar into a pointer", () => {
-    const program = MockFactory.createProgram();
-    const model = MockFactory.createModelWithProps("Note", [
-      { name: "body", type: MockFactory.createScalar("string"), optional: true },
+    const program = createProgram();
+    const model = createModelWithProps("Note", [
+      { name: "body", type: createScalar("string"), optional: true },
     ]);
     $nullable(contextFor(program), propertyNamed(model, "body"), enumMemberNamed("pointer"));
 
@@ -43,9 +49,9 @@ describe("@go.nullable consumption", () => {
   });
 
   test("zeroValue mode keeps an optional scalar flat", () => {
-    const program = MockFactory.createProgram();
-    const model = MockFactory.createModelWithProps("Note", [
-      { name: "body", type: MockFactory.createScalar("string"), optional: true },
+    const program = createProgram();
+    const model = createModelWithProps("Note", [
+      { name: "body", type: createScalar("string"), optional: true },
     ]);
     $nullable(contextFor(program), propertyNamed(model, "body"), enumMemberNamed("zeroValue"));
 
@@ -59,14 +65,12 @@ describe("@go.nullable consumption", () => {
   });
 
   test("default (no decorator) keeps optional scalars flat and models pointed", () => {
-    const program = MockFactory.createProgram();
-    const scalar = MockFactory.createModelWithProps("Plain", [
-      { name: "note", type: MockFactory.createScalar("string"), optional: true },
+    const program = createProgram();
+    const scalar = createModelWithProps("Plain", [
+      { name: "note", type: createScalar("string"), optional: true },
     ]);
-    const inner = MockFactory.createModelWithProps("Inner", []);
-    const holder = MockFactory.createModelWithProps("Holder", [
-      { name: "inner", type: inner, optional: true },
-    ]);
+    const inner = createModelWithProps("Inner", []);
+    const holder = createModelWithProps("Holder", [{ name: "inner", type: inner, optional: true }]);
 
     const scalarOut = renderGoContent(
       <GoStructDeclaration model={scalar} program={program} />,
@@ -92,8 +96,8 @@ describe("@go.enumMode consumption", () => {
   ];
 
   test("iota mode renders int-backed iota constants", () => {
-    const program = MockFactory.createProgram();
-    const enumType = MockFactory.createEnum("Priority", priorityMembers);
+    const program = createProgram();
+    const enumType = createEnum("Priority", priorityMembers);
     $enumMode(contextFor(program), enumType, enumMemberNamed("iota"));
 
     const result = renderGoContent(<GoEnumDeclaration enum={enumType} program={program} />);
@@ -104,8 +108,8 @@ describe("@go.enumMode consumption", () => {
   });
 
   test("string mode on a numeric enum renders string constants", () => {
-    const program = MockFactory.createProgram();
-    const enumType = MockFactory.createEnum("Level", priorityMembers);
+    const program = createProgram();
+    const enumType = createEnum("Level", priorityMembers);
     $enumMode(contextFor(program), enumType, enumMemberNamed("string"));
 
     const result = renderGoContent(<GoEnumDeclaration enum={enumType} program={program} />);
@@ -116,8 +120,8 @@ describe("@go.enumMode consumption", () => {
   });
 
   test("name mode uses member names as the constant values", () => {
-    const program = MockFactory.createProgram();
-    const enumType = MockFactory.createEnum("Kind", [{ name: "alpha", value: 0 }]);
+    const program = createProgram();
+    const enumType = createEnum("Kind", [{ name: "alpha", value: 0 }]);
     $enumMode(contextFor(program), enumType, enumMemberNamed("name"));
 
     const result = renderGoContent(<GoEnumDeclaration enum={enumType} program={program} />);
@@ -128,10 +132,8 @@ describe("@go.enumMode consumption", () => {
 
 describe("@go.name on declarations", () => {
   test("overrides a model type name", () => {
-    const program = MockFactory.createProgram();
-    const model = MockFactory.createModelWithProps("user_dto", [
-      { name: "id", type: MockFactory.createScalar("string") },
-    ]);
+    const program = createProgram();
+    const model = createModelWithProps("user_dto", [{ name: "id", type: createScalar("string") }]);
     $name(contextFor(program), model, "UserDTO");
 
     const result = renderGoContent(
@@ -144,8 +146,8 @@ describe("@go.name on declarations", () => {
   });
 
   test("overrides an enum type name", () => {
-    const program = MockFactory.createProgram();
-    const enumType = MockFactory.createEnum("color_kind", [{ name: "red", value: "red" }]);
+    const program = createProgram();
+    const enumType = createEnum("color_kind", [{ name: "red", value: "red" }]);
     $name(contextFor(program), enumType, "ColorKind");
 
     const result = renderGoContent(<GoEnumDeclaration enum={enumType} program={program} />);
@@ -155,8 +157,8 @@ describe("@go.name on declarations", () => {
   });
 
   test("overrides an operation method name in the API interface", () => {
-    const program = MockFactory.createProgram();
-    const operation = MockFactory.createOperation("fetch_by_id") as Operation;
+    const program = createProgram();
+    const operation = createOperation("fetch_by_id") as Operation;
     $name(contextFor(program), operation, "FetchByID");
 
     const result = renderGoContent(
@@ -171,10 +173,8 @@ describe("@go.name on declarations", () => {
 
 describe("@go.structTag Record form", () => {
   test("serializes a Record-shaped tag model to a raw tag string", () => {
-    const program = MockFactory.createProgram();
-    const model = MockFactory.createModelWithProps("Item", [
-      { name: "id", type: MockFactory.createScalar("string") },
-    ]);
+    const program = createProgram();
+    const model = createModelWithProps("Item", [{ name: "id", type: createScalar("string") }]);
 
     const recordTag = {
       properties: new Map([

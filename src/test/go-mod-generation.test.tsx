@@ -8,7 +8,7 @@ import { Output, render } from "@alloy-js/core";
 import type { OutputDirectory } from "@alloy-js/core";
 import { GoModFile } from "../components/go/GoModFile.js";
 import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
-import { MockFactory } from "../testing/mock-factory.js";
+import { createModelWithProps, createScalar } from "../testing/mock-factory.js";
 
 function collectFiles(dir: OutputDirectory): Array<{ path: string; content: string }> {
   const files: Array<{ path: string; content: string }> = [];
@@ -70,9 +70,7 @@ describe("GoModFile Generation", () => {
   });
 
   it("GoPackageDirectory emits go.mod as plain module text without a package clause", () => {
-    const model = MockFactory.createModelWithProps("Widget", [
-      { name: "id", type: MockFactory.createScalar("string") },
-    ]);
+    const model = createModelWithProps("Widget", [{ name: "id", type: createScalar("string") }]);
 
     const tree = render(
       <Output>
