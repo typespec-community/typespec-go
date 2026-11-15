@@ -83,11 +83,20 @@ export function collectTypesByNamespace(globalNamespace: Namespace): Map<string,
     group.unions.push(union);
   }
 
-  // Collect operations from global namespace
+  // Collect operations from global namespace, including operations declared
+  // inside interfaces (the standard TypeSpec shape for REST services).
   for (const [_name, operation] of globalNamespace.operations) {
     const groupName = operation.namespace?.name || "global";
     const group = ensureGroup(groupName, operation.namespace);
     group.operations.push(operation);
+  }
+
+  for (const [_name, interfaceType] of globalNamespace.interfaces ?? []) {
+    const groupName = interfaceType.namespace?.name || "global";
+    const group = ensureGroup(groupName, interfaceType.namespace);
+    for (const operation of interfaceType.operations.values()) {
+      group.operations.push(operation);
+    }
   }
 
   // Process nested namespaces, skipping built-in library namespaces
@@ -117,13 +126,23 @@ function processNestedNamespace(
   const nsEnums = [...namespace.enums.values()];
   const nsUnions = [...namespace.unions.values()];
   const nsOperations = [...namespace.operations.values()];
+  const nsInterfaceOperations = [...(namespace.interfaces?.values() ?? [])].flatMap(
+    (interfaceType) => [...interfaceType.operations.values()],
+  );
 
-  if (nsModels.length > 0 || nsEnums.length > 0 || nsUnions.length > 0 || nsOperations.length > 0) {
+  if (
+    nsModels.length > 0 ||
+    nsEnums.length > 0 ||
+    nsUnions.length > 0 ||
+    nsOperations.length > 0 ||
+    nsInterfaceOperations.length > 0
+  ) {
     const group = ensureGroup(namespace.name, namespace);
     group.models.push(...nsModels);
     group.enums.push(...nsEnums);
     group.unions.push(...nsUnions);
     group.operations.push(...nsOperations);
+    group.operations.push(...nsInterfaceOperations);
   }
 
   // Recurse into nested namespaces

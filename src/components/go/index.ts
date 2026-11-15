@@ -11,6 +11,5 @@ export * from "./GoUnionDeclaration.js";
 export * from "./GoPackageDirectory.js";
 export * from "./GoModFile.js";
 export * from "./GoHandlerMethodComponent.js";
-export * from "./GoRouteRegistrationComponent.js";
 export * from "./GoHandlerStub.js";
 export * from "./GoPackage.js";

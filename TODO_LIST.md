@@ -13,29 +13,33 @@
 
 ## High Impact
 
-| Task                                                                      | Status    | Impact | Effort | Evidence                                                                                                                                                                                                            |
-| ------------------------------------------------------------------------- | --------- | ------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| HTTP decorator extraction end-to-end (`@route`/`@get`/`@post` → handlers) | 🔴 `TODO` | High   | 3h     | Interface operations are NOT collected (`collectTypesByNamespace` never walks `namespace.interfaces`; `totalOperations: 0` in the basic-example emission log), so no handler files can be generated from real specs |
-| Consume `@go.nullable` and `@go.enumMode` in generation                   | 🔴 `TODO` | High   | 2h     | Declared in `lib/main.tsp`, JS bindings exist (`src/emitter/go-decorators.ts`); no consumption point in components yet                                                                                              |
-| `@visibility` processing in generated output                              | 🔴 `TODO` | High   | 3h     | `@visibility(Lifecycle.Read)` on properties compiles but does not filter output; needs a defined read/update/create model before coding                                                                             |
+| Task                                                                      | Status    | Impact | Effort | Evidence                                                                                                                                                                   |
+| ------------------------------------------------------------------------- | --------- | ------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTTP decorator extraction end-to-end (`@route`/`@get`/`@post` → handlers) | ✅ `DONE` | High   | 3h     | 2026-11-15: interfaces walk shipped; handlers/interfaces.go generated with real routes (`/widgets/{id}`), verbs, PathValue + body-decode closures; e2e-verified compilable |
+| Consume `@go.nullable` and `@go.enumMode` in generation                   | 🔴 `TODO` | High   | 2h     | Declared in `lib/main.tsp`, JS bindings exist (`src/emitter/go-decorators.ts`); no consumption point in components yet                                                     |
+| `@visibility` processing in generated output                              | 🔴 `TODO` | High   | 3h     | `@visibility(Lifecycle.Read)` on properties compiles but does not filter output; needs a defined read/update/create model before coding                                    |
 
 ## Medium Impact
 
-| Task                                                                               | Status           | Impact | Effort | Evidence                                                                                                                                       |
-| ---------------------------------------------------------------------------------- | ---------------- | ------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Discriminated-union unmarshaler (real implementation, not placeholder)             | ✅ `DONE`        | Med    | 3h     | 2026-11-15: real `UnmarshalX` via `json.Unmarshal` + `fmt.Errorf`; `go build ./...` gate added to e2e (both examples compile)                  |
-| Generated-doc comments: one doc block per package, not per type                    | 🟡 `IN_PROGRESS` | Med    | 1h     | `// Go types from TypeSpec namespace: X` repeats above every struct (`GoStructDeclaration` default doc)                                        |
-| Cover `typespec/http` in the CI test harness                                       | 🔴 `TODO`        | Med    | 2h     | `createTester(libraries: [])` everywhere; HTTP fixtures compile only via `tsp` e2e, not vitest                                                 |
-| Union interface body indentation + blank-line separation (gofmt -l clean natively) | ✅ `DONE`        | Med    | 2h     | 2026-11-15: gofmt-style column alignment + decl separators; e2e `gofmt -l` clean on RAW output, `-w` normalize step removed                    |
-| Fix `// //` double doc-comment slash bug in union/enum docs                        | 🔴 `TODO`        | Med    | 30min  | Generated `unions.go` shows `// // PaymentMethod is a sealed interface` (interfaceDoc prepends `//`, renderer adds another)                    |
-| Fix unused-import emission in generated unions.go                                  | ✅ `DONE`        | Med    | 1h     | 2026-11-15: imports now usage-driven (`encoding/json` + `fmt` consumed by the real unmarshaler); go.mod generation via `go-module-path` option |
-| Remove `.docs-gates-preflight.json` from git; gitignore it                         | 🔴 `TODO`        | Low    | 5min   | Committed accidentally in `6f5bfb1` via `git add -A` — tool artifact, not repo content                                                         |
-| Investigate `.go.mod.lock` (0-byte file at repo root)                              | 🔴 `TODO`        | Low    | 5min   | Present since before 2026-11-14; purpose unknown, never documented                                                                             |
-| CI: cache the docs-gates go install or vendor the binary                           | 🔴 `TODO`        | Low    | 30min  | CI downloads the module every run; also verify the step actually succeeds (continue-on-error masks failure)                                    |
+| Task                                                                               | Status           | Impact | Effort | Evidence                                                                                                                                                        |
+| ---------------------------------------------------------------------------------- | ---------------- | ------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Discriminated-union unmarshaler (real implementation, not placeholder)             | ✅ `DONE`        | Med    | 3h     | 2026-11-15: real `UnmarshalX` via `json.Unmarshal` + `fmt.Errorf`; `go build ./...` gate added to e2e (both examples compile)                                   |
+| Generated-doc comments: one doc block per package, not per type                    | 🟡 `IN_PROGRESS` | Med    | 1h     | `// Go types from TypeSpec namespace: X` repeats above every struct (`GoStructDeclaration` default doc)                                                         |
+| Cover `typespec/http` in the CI test harness                                       | ✅ `DONE`        | Med    | 2h     | 2026-11-15: `createTester(libraries: ["@typespec/http"])` works (repo-root baseDir); `src/test/http-harness.test.tsx` asserts collector + generation end to end |
+| Union interface body indentation + blank-line separation (gofmt -l clean natively) | ✅ `DONE`        | Med    | 2h     | 2026-11-15: gofmt-style column alignment + decl separators; e2e `gofmt -l` clean on RAW output, `-w` normalize step removed                                     |
+| Fix `// //` double doc-comment slash bug in union/enum docs                        | 🔴 `TODO`        | Med    | 30min  | Generated `unions.go` shows `// // PaymentMethod is a sealed interface` (interfaceDoc prepends `//`, renderer adds another)                                     |
+| Fix unused-import emission in generated unions.go                                  | ✅ `DONE`        | Med    | 1h     | 2026-11-15: imports now usage-driven (`encoding/json` + `fmt` consumed by the real unmarshaler); go.mod generation via `go-module-path` option                  |
+| Remove `.docs-gates-preflight.json` from git; gitignore it                         | 🔴 `TODO`        | Low    | 5min   | Committed accidentally in `6f5bfb1` via `git add -A` — tool artifact, not repo content                                                                          |
+| Investigate `.go.mod.lock` (0-byte file at repo root)                              | 🔴 `TODO`        | Low    | 5min   | Present since before 2026-11-14; purpose unknown, never documented                                                                                              |
+| CI: cache the docs-gates go install or vendor the binary                           | 🔴 `TODO`        | Low    | 30min  | CI downloads the module every run; also verify the step actually succeeds (continue-on-error masks failure)                                                     |
+| Unify `getOutputDirectory` + `namespaceToPackageName` (two name→path mappers)      | 🔴 `TODO`        | Low    | 30min  | `typespec-go-emitter.tsx` keeps two parallel namespace-name→path mappers; consolidate into one to prevent drift (status-report f37, Plan II T16/M56)            |
+| Consumer quickstart doc + emitter generation-summary log                           | 🔴 `TODO`        | Med    | 60min  | Verbatim crud example (install → tspconfig → output) for consumers; INFO-level per-namespace file list at emission end (Plan II T18/M62–M63, status f43/f48)    |
 
 ## Done (2026-11-14 Pareto execution)
 
 - ✅ CI green end-to-end: build, tests, lint (`--max-warnings 0`), strict typecheck (0 errors), dprint, CLI e2e, docs-gates job.
+- ✅ (2026-11-15) Compile-level conformance: e2e runs `go build ./...` per module + native `gofmt -l`; real unmarshaler, usage-driven imports, go.mod via `go-module-path`.
+- ✅ (2026-11-15) HTTP product chain: interface ops collected; handlers + route registration with verbs, path params (`r.PathValue`), body decoding; merge-patch bodies map to base model; `@typespec/http` in vitest harness.
 - ✅ CLI product proof: `npm run test:e2e-cli` compiles BOTH examples with the built emitter, verifies content, gofmt conformance.
 - ✅ `TypeSpec.Go` decorator library shipped and consumed (`@go.pkg`/`@go.name`/`@go.type`/`@go.structTag`); `@error` → `Error() string`.
 - ✅ Cross-file type references (enum/union refkeys); union variants backed by models no longer duplicated.
@@ -52,7 +56,7 @@
 
 | Check                                                    | Result                                  |
 | -------------------------------------------------------- | --------------------------------------- |
-| `npm run test:typespec`                                  | ✅ 178/178 tests, 39 files              |
+| `npm run test:typespec`                                  | ✅ 180/180 tests, 38 files              |
 | `npm run build` (alloy + dist pruning)                   | ✅ passes                               |
 | Built emitter loads under Node ESM                       | ✅ `node -e "import('./dist/main.js')"` |
 | `npm run test:e2e-cli` (both examples, go build + gofmt) | ✅ green                                |

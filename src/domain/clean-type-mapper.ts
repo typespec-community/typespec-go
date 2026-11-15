@@ -806,10 +806,17 @@ export class CleanTypeMapper {
 
   /**
    * Create cache key for type mapping
+   *
+   * Real TypeSpec types carry circular parent references, so the key is built
+   * from the discriminating primitive fields instead of JSON.stringify.
    */
   private static createCacheKey(type: TypeSpecPropertyNode["type"], fieldName?: string): string {
-    const typeString = JSON.stringify(type);
-    return `${typeString}:${fieldName || "unknown"}`;
+    const kind = typeof type === "object" && type !== null ? String(type.kind) : String(type);
+    const name =
+      typeof type === "object" && type !== null && "name" in type
+        ? String((type as { name: unknown }).name)
+        : "";
+    return `${kind}:${name}:${fieldName || "unknown"}`;
   }
 
   /**

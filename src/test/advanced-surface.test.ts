@@ -31,7 +31,10 @@ describe("advanced type surface through the namespace collector", () => {
     `);
 
     expect(groups.has("Inventory")).toBe(true);
-    const names = groups.get("Inventory")?.models.map((m) => m.name).toSorted();
+    const names = groups
+      .get("Inventory")
+      ?.models.map((m) => m.name)
+      .toSorted();
     expect(names).toContain("Crate");
   });
 
@@ -82,5 +85,24 @@ describe("advanced type surface through the namespace collector", () => {
     const receipt = groups.get("Payments")?.models.find((m) => m.name === "Receipt");
     expect(receipt).toBeDefined();
     expect(Array.from(receipt?.properties.values() ?? [])[0]?.type.kind).toBe("Union");
+  });
+
+  test("interface operations reach the namespace group", async () => {
+    const { groups } = await collect(`
+      namespace Store {
+        model Widget {
+          id: string;
+        }
+        interface Widgets {
+          list(): Widget[];
+          read(id: string): Widget;
+        }
+      }
+    `);
+
+    const group = groups.get("Store");
+    expect(group).toBeDefined();
+    const opNames = group?.operations.map((op) => op.name).toSorted();
+    expect(opNames).toEqual(["list", "read"]);
   });
 });

@@ -115,6 +115,12 @@ const expectations = [
   ["Status    OrderStatus", true, "named enum cross-file reference resolves"],
   ["Payment   PaymentMethod", true, "named union cross-file reference resolves"],
   ["func (e OrderError) Error() string", true, "@error model generates error interface"],
+  ["func (s *DemoserviceService) listHandler(", true, "interface op becomes handler method"],
+  ['mux.HandleFunc("/widgets"', true, "@route path lands in registration"],
+  ['mux.HandleFunc("/widgets/{id}"', true, "parameterized route registered"],
+  ['r.PathValue("id")', true, "path params extracted from request"],
+  ["json.NewDecoder(r.Body).Decode(&widget)", true, "body params decoded from request"],
+  ["context.Background()", true, "handler context adapted"],
 ];
 
 for (const [needle, expected, why] of expectations) {

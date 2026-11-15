@@ -61,8 +61,8 @@ describe("GoHandlerStub - Return Type Extraction", () => {
     expect(output).toContain("ListUsersHandler");
     // Note: Route patterns are generated, exact format may vary
     expect(output).toContain("HandleFunc");
-    expect(output).toContain("GetUserHandler)");
-    expect(output).toContain("CreateUserHandler)");
-    expect(output).toContain("ListUsersHandler)");
+    expect(output).toContain("s.GetUserHandler(context.Background(), w, r)");
+    expect(output).toContain("s.CreateUserHandler(context.Background(), w, r)");
+    expect(output).toContain("s.ListUsersHandler(context.Background(), w, r)");
   });
 });

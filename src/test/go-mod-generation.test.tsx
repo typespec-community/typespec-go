@@ -40,7 +40,7 @@ describe("GoModFile Generation", () => {
     });
 
     expect(result).toContain("module github.com/test/pkg");
-    expect(result).toContain("go 1.21"); // Default version
+    expect(result).toContain("go 1.22");
   });
 
   it("generates go.mod with require statements", () => {

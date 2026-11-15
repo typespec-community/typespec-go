@@ -5,11 +5,12 @@
  */
 
 import type { Operation, Program, Namespace } from "@typespec/compiler";
+import { Scope } from "@alloy-js/core";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import { TypeExpression } from "../TypeExpression.js";
 import * as go from "@alloy-js/go";
-const { InterfaceDeclaration, InterfaceFunction } = go;
+const { InterfaceDeclaration, FunctionParameters, LineComment, createFunctionScope } = go;
 
 interface GoInterfaceDeclarationProps {
   /** Interface name */
@@ -64,14 +65,26 @@ export function GoInterfaceDeclaration({
   return (
     <go.TypeDeclaration name={name} doc={interfaceDoc}>
       <InterfaceDeclaration>
-        {methods.map((method) => (
-          <InterfaceFunction
-            name={method.name}
-            parameters={method.parameters}
-            returns={buildGoSignature(method.returns)}
-            doc={method.doc}
-          />
-        ))}
+        {methods.map((method, index) => {
+          const signature = buildGoSignature(method.returns);
+          const functionScope = createFunctionScope();
+          return (
+            <>
+              {index > 0 && "\n"}
+              {method.doc && (
+                <>
+                  <LineComment>{method.doc}</LineComment>
+                  {"\n"}
+                </>
+              )}
+              <Scope value={functionScope}>
+                {method.name}
+                <FunctionParameters parameters={method.parameters} />
+                {signature !== "" && ` ${signature}`}
+              </Scope>
+            </>
+          );
+        })}
       </InterfaceDeclaration>
     </go.TypeDeclaration>
   );

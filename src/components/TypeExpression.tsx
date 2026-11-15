@@ -61,6 +61,21 @@ function getArrayElementType(model: Model & { indexer: { key: Scalar; value: Typ
 }
 
 /**
+ * Narrows a template argument (Type | Value | IndeterminateEntity) to a Type
+ */
+function extractTypeFromTemplateArg(arg: unknown): Type | undefined {
+  if (arg && typeof arg === "object" && "kind" in arg) {
+    const kind = (arg as { kind: unknown }).kind;
+    if (
+      ["Model", "Scalar", "Enum", "Union", "String", "Boolean", "Number"].includes(String(kind))
+    ) {
+      return arg as Type;
+    }
+  }
+  return undefined;
+}
+
+/**
  * Type Expression Component
  * Converts TypeSpec types to proper Go type strings
  * Uses domain layer (CleanTypeMapper) for type mappings
@@ -84,6 +99,24 @@ export function TypeExpression({ type, fieldName }: TypeExpressionProps): string
         fieldName: fieldName ? `${fieldName}Element` : undefined,
       });
       return "[]" + elementGoType;
+    }
+
+    // Template instances (e.g. MergePatchUpdate<Widget>, Box<string>) are not
+    // generated as their own Go types; map to the underlying template argument.
+    if (type.templateMapper && type.templateMapper.args && type.templateMapper.args.length > 0) {
+      const firstArg = type.templateMapper.args[0];
+      const argType = extractTypeFromTemplateArg(firstArg);
+      if (argType) {
+        return TypeExpression({ type: argType, fieldName });
+      }
+    }
+
+    // Http.MergePatchUpdate<Widget> instances are named "WidgetMergePatchUpdate"
+    // by the compiler (arg+template naming) and carry no templateMapper at
+    // runtime. A merge-patch body IS the base model, so map to it.
+    const mergePatchSuffix = "MergePatchUpdate";
+    if (type.name.length > mergePatchSuffix.length && type.name.endsWith(mergePatchSuffix)) {
+      return type.name.slice(0, type.name.length - mergePatchSuffix.length);
     }
 
     return type.name || "interface{}";

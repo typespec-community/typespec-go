@@ -85,7 +85,7 @@ export function GoPackageDirectory({
   packageDocumentation,
   modulePath,
   generateGoMod = false,
-  goVersion = "1.21",
+  goVersion = "1.22",
   program,
 }: GoPackageDirectoryProps) {
   const moduleDirectory = getModulePath(packageName, modulePath);
@@ -165,9 +165,11 @@ export function GoPackageDirectory({
         {/* Interfaces file - only if we have operations */}
         {hasOperations && (
           <SourceFile path="interfaces.go">
-            {/* Service interfaces generated from TypeSpec operations */}
+            {/* API contract interface (handlers struct owns the Service name) */}
+            <SingleImportStatement path="context" />
+            {"\n\n"}
             <GoInterfaceDeclaration
-              name={capitalize(packageName) + "Service"}
+              name={capitalize(packageName) + "API"}
               operations={operations}
               packageName={packageName}
               program={program}
