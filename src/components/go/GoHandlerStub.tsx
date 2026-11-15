@@ -160,20 +160,23 @@ export function GoHandlerStub({
   );
 
   // Generate Go file structure using 100% Alloy-JS components
+  // goimports convention: one sorted std-lib group
+  const handlerImports = ["context", "log", "net/http"];
+  if (needsJsonImport) {
+    handlerImports.push("encoding/json");
+  }
+  handlerImports.sort();
   return (
     <SourceFile path="handlers.go">
       {/* Usage-driven imports: framework trio always, json only for bodies */}
-      <SingleImportStatement path="context" />
-      {"\n"}
-      {needsJsonImport && (
-        <>
-          <SingleImportStatement path="encoding/json" />
-          {"\n"}
-        </>
-      )}
-      <SingleImportStatement path="net/http" />
-      {"\n"}
-      <SingleImportStatement path="log" />
+      <For each={handlerImports}>
+        {(importPath: string, importIndex: number) => (
+          <>
+            {importIndex > 0 && "\n"}
+            <SingleImportStatement path={importPath} />
+          </>
+        )}
+      </For>
       {"\n\n"}
 
       {/* Service struct declaration */}

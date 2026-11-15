@@ -90,6 +90,12 @@ export function TypeExpression({ type, fieldName }: TypeExpressionProps): string
     return mapping.goType || "interface{}";
   }
 
+  // Property references (id: Widget.id) resolve to the referenced
+  // property's type, e.g. the string scalar behind Widget.id
+  if (type.kind === "ModelProperty") {
+    return TypeExpression({ type: type.type, fieldName });
+  }
+
   // Handle Model types (user-defined structs)
   if (isModel(type)) {
     // Handle array models (Models with indexers)
