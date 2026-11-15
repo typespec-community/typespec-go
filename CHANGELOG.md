@@ -1,8 +1,41 @@
 # TypeSpec Go Emitter - Changelog
 
-**Last Updated:** 2026-11-14
+**Last Updated:** 2026-11-15
 
 ---
+
+## [Unreleased]
+
+Post-1.0.0 sprint (Pareto Plan II): generated Go now compiles, the HTTP
+product chain is real, decorator modes are live.
+
+- **Compile-level Go conformance:** generated output passes
+  `go build ./...` and native `gofmt -l` on RAW output for both examples.
+  Struct column alignment, iota const groups, union `UnmarshalX`
+  (probe struct + per-variant decode + `fmt.Errorf`), interface methods
+  without `func` (alloy bug workaround), package-doc hoisting, trailing
+  blank line fixes.
+- **HTTP product chain:** interface discovery in the emitter walk,
+  parameter-aware route registration (path params via closures +
+  `r.PathValue`, query params via `Get`, body decode with conditional
+  `encoding/json` import), `<Pkg>API` contract vs `<Pkg>Service`
+  struct split, handler stubs with corrected nesting.
+- **Decorator modes live:** `@go.nullable` (pointer/zeroValue),
+  `@go.enumMode` (iota/string/name), `@go.name` on models/operations,
+  struct-tag `Record`→string normalization, `valueof` wrapper unwrap.
+- **CI truth:** the docs-gates step was failing every run behind a
+  mask; now unmasked, gate-blocking, and version-pinned to match the
+  locally deployed gate build.
+- **Coverage ratchet +5** and e2e wall-clock timing.
+- **Consumer quickstart** (`docs/QUICKSTART.md`) + per-package
+  generation summary log.
+- **Docs truth refresh:** FEATURES.md rewritten, ROADMAP strikes,
+  API-REFERENCE routed as historical, TODO_LIST dated verdicts.
+- **Release rehearsal:** `npm pack` tarball smoke test green;
+  `v1.0.0-rc.1` annotated tag created locally (intentionally unpushed).
+
+Gates: 190/190 tests (39 files) · eslint 0/0 · strict 0 · dprint clean ·
+e2e green (`go build` + `gofmt -l` raw) · docs-gates 5/5.
 
 ## 1.0.0 — 2026-11-14
 
