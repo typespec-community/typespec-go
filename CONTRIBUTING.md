@@ -196,10 +196,20 @@ describe("🔥 GoModel Component", () => {
 
 #### Test Standards
 
-- **Build Before Test:** `just build` must pass first
+- **Build Before Test:** `npm run build` must pass first
 - **100% Pass Rate:** All tests must pass before committing
 - **Component Integration:** Test component rendering, not just logic
-- **Mock Factories:** Use provided mock factories (see `src/test/mocks/`)
+- **Mock Factories:** Use `MockFactory` in `src/testing/mock-factory.ts`
+- **Format:** dprint owns formatting — run `npx dprint fmt` (the legacy
+  prettier script was removed)
+
+#### Coverage Ratchet
+
+`npm run test:coverage` enforces v8 coverage thresholds in
+`vitest.config.js`. The ratchet: **45% statements, 35% branches, 53%
+functions, 45% lines** (ratcheted +5 from 40/30/48/40 on 2026-11-15;
+actuals at ratchet time: 51/42/58/51). When coverage rises materially,
+raise the thresholds with it — never lower them.
 
 ---
 

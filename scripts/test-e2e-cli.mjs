@@ -48,6 +48,7 @@ const examples = ["examples/basic/main.tsp", "examples/crud/main.tsp"];
 const generatedFiles = [];
 const seenGoFiles = new Set();
 const moduleRoots = [];
+const compileWallClockMs = {};
 
 function findGoMod(dir) {
   for (const entry of readdirSync(dir).toSorted()) {
@@ -66,6 +67,7 @@ for (const example of examples) {
   const exampleOutput = join(outputDir, example.replaceAll("/", "_"));
   mkdirSync(exampleOutput, { recursive: true });
   const moduleSlug = example.split("/")[1];
+  const compileStarted = performance.now();
   const result = spawnSync(
     tspBin,
     [
@@ -80,6 +82,7 @@ for (const example of examples) {
     ],
     { encoding: "utf8", cwd: repoRoot },
   );
+  compileWallClockMs[example] = Math.round(performance.now() - compileStarted);
   if (result.status !== 0) {
     console.error(result.stdout);
     console.error(result.stderr);
@@ -139,6 +142,11 @@ for (const [needle, expected, why] of expectations) {
 
 console.log(`✅ e2e-cli: tsp compile produced ${generatedFiles.length} Go file(s):`);
 for (const file of generatedFiles) console.log(`   ${file}`);
+console.log(
+  `⏱️  e2e-cli: compile wall-clock (ms): ${Object.entries(compileWallClockMs)
+    .map(([example, ms]) => `${example}=${ms}`)
+    .join(", ")}`,
+);
 
 // Go build conformance: the RAW generated output (before any gofmt
 // normalization) must compile as a Go module — this is the product's
