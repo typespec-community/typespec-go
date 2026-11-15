@@ -188,6 +188,10 @@ export async function $onEmit(context: EmitContext): Promise<void> {
       globalNamespace: globalNamespace.name,
     });
 
+    const rawModulePath: unknown = context.options["go-module-path"];
+    const goModulePath =
+      typeof rawModulePath === "string" && rawModulePath !== "" ? rawModulePath : undefined;
+
     // Collect all types grouped by namespace
     const namespaceGroups = collectTypesByNamespace(globalNamespace);
 
@@ -279,6 +283,8 @@ export async function $onEmit(context: EmitContext): Promise<void> {
             packageName={packageName}
             packageDocumentation={packageDocumentation}
             program={program}
+            modulePath={goModulePath}
+            generateGoMod={goModulePath !== undefined}
           />
         </Output>,
         outputDirectory,

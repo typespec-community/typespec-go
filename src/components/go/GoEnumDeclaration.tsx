@@ -9,7 +9,7 @@ import type { Enum, Program } from "@typespec/compiler";
 import { capitalize } from "../../utils/strings.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import * as go from "@alloy-js/go";
-import { GoStringLiteral } from "./core/index.js";
+import { GoReturn, GoStringLiteral, GoSwitch, GoCase, GoDefault } from "./core/index.js";
 const {
   FunctionDeclaration,
   FunctionReceiver,
@@ -42,67 +42,67 @@ export function GoEnumDeclaration({
   const typeName = enumType.name || "UnnamedEnum";
   const members = Array.from(enumType.members?.values() || []);
 
-  // Get documentation from @doc decorator (reserved for future use)
-  const _doc = program ? getDocumentation(program, enumType) : undefined;
+  // Get documentation from @doc decorator
+  const doc = program ? getDocumentation(program, enumType) : undefined;
 
   // Determine if this is a string enum or numeric enum
   const isStringEnum = members.some((m) => typeof m.value === "string");
+  const constName = (member: { name: string }): string => typeName + capitalize(member.name);
+  const nameWidth = Math.max(0, ...members.map((m) => constName(m).length));
 
   return (
     <>
-      <TypeDeclaration name={typeName} refkey={refkey(enumType)}>
+      <TypeDeclaration name={typeName} refkey={refkey(enumType)} doc={doc}>
         {isStringEnum ? "string" : "int"}
       </TypeDeclaration>
-      {"\n"}
-      {!useIota && (
-        <VariableDeclarationGroup>
-          {members.map((member) => (
-            <VariableDeclaration name={typeName + capitalize(member.name)} type={typeName}>
-              {isStringEnum ? (
-                <GoStringLiteral value={String(member.value)} />
-              ) : (
-                String(member.value)
-              )}
-            </VariableDeclaration>
-          ))}
-        </VariableDeclarationGroup>
-      )}
-      {"\n"}
-      {useIota && (
-        <VariableDeclarationGroup>
-          {members.map((member, index) => (
-            <VariableDeclaration name={typeName + capitalize(member.name)} type={typeName}>
-              {index === 0 ? "iota" : null}
-            </VariableDeclaration>
-          ))}
-        </VariableDeclarationGroup>
-      )}
-      {"\n"}
+      {"\n\n"}
+      <VariableDeclarationGroup>
+        {members.map((member) => (
+          <VariableDeclaration
+            name={useIota ? constName(member) : constName(member).padEnd(nameWidth)}
+            type={typeName}
+          >
+            {useIota ? (
+              members.indexOf(member) === 0 ? (
+                "iota"
+              ) : null
+            ) : isStringEnum ? (
+              <GoStringLiteral value={String(member.value)} />
+            ) : (
+              String(member.value)
+            )}
+          </VariableDeclaration>
+        ))}
+      </VariableDeclarationGroup>
+      {"\n\n"}
       {isStringEnum && (
         <FunctionDeclaration
           name="String"
           returns="string"
           receiver={<FunctionReceiver name="e" type={typeName} />}
         >
-          {"\n  return string(e)"}
+          <GoReturn value="string(e)" />
         </FunctionDeclaration>
       )}
-      {"\n"}
+      {"\n\n"}
       <FunctionDeclaration
         name="IsValid"
         returns="bool"
         receiver={<FunctionReceiver name="e" type={typeName} />}
       >
-        {"\n  switch e {"}
-        {members.map((member) => (
-          <>
-            {"\n    case " + typeName + capitalize(member.name) + ":"}
-            {"\n      return true"}
-          </>
-        ))}
-        {"\n    default:"}
-        {"\n      return false"}
-        {"\n  }"}
+        <GoSwitch value="e">
+          {members.map((member) => (
+            <>
+              <GoCase value={constName(member)}>
+                <GoReturn value="true" />
+              </GoCase>
+              {"\n"}
+            </>
+          ))}
+          <GoDefault>
+            <GoReturn value="false" />
+          </GoDefault>
+        </GoSwitch>
       </FunctionDeclaration>
     </>
   );

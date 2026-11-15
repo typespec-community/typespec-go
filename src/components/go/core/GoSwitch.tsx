@@ -28,9 +28,11 @@ export interface GoSwitchProps {
  * GoSwitch - A Go switch statement component using Alloy-JS code template literals
  */
 export function GoSwitch(props: GoSwitchProps) {
-  return code`switch ${props.value} {
-${props.children}
-}`;
+  return code`
+    switch ${props.value} {
+    ${props.children}
+    }
+  `;
 }
 
 export interface GoCaseProps {
@@ -44,8 +46,10 @@ export interface GoCaseProps {
  * GoCase - A case clause in a switch statement using Alloy-JS code template literals
  */
 export function GoCase(props: GoCaseProps) {
-  return code`case ${props.value}:
-${props.children}`;
+  return code`
+    case ${props.value}:
+      ${props.children}
+  `;
 }
 
 export interface GoDefaultProps {
@@ -57,8 +61,10 @@ export interface GoDefaultProps {
  * GoDefault - The default clause in a switch statement using Alloy-JS code template literals
  */
 export function GoDefault(props: GoDefaultProps) {
-  return code`default:
-${props.children}`;
+  return code`
+    default:
+      ${props.children}
+  `;
 }
 
 // STC-wrapped versions for JSX compatibility

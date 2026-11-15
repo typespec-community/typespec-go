@@ -16,6 +16,6 @@ test("GoStructDeclaration isolation test", () => {
   const result = renderGoContent(<GoStructDeclaration model={mockModel} />, "models.go");
 
   expect(result).toContain("type TestUser struct");
-  expect(result).toContain('ID string `json:"id"`');
+  expect(result).toContain('ID   string `json:"id"`');
   expect(result).toContain('Name string `json:"name"`');
 });

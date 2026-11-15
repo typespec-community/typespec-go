@@ -6,6 +6,7 @@
 
 import type { Model, Enum, Union, Operation, Type, Program } from "@typespec/compiler";
 import { For } from "@alloy-js/core";
+import { SourceFile as CoreSourceFile } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
 const { ModuleDirectory, SourceDirectory, SourceFile, SingleImportStatement } = go;
 import { GoStructDeclaration } from "./GoStructDeclaration.js";
@@ -62,11 +63,12 @@ function getModulePath(packageName: string, modulePath?: string): string {
 }
 
 /**
- * Check if union types require fmt package for error formatting
+ * Check if unions require json/fmt imports: every union renders an
+ * UnmarshalX helper that reads the discriminator via encoding/json
+ * and reports failures via fmt.Errorf (see GoUnionDeclaration).
  */
-function needsFmtPackage(unions?: Union[]): boolean {
-  // Unions with discriminators need fmt.Errorf
-  return unions?.some((u) => u.variants && u.variants.size > 0) ?? false;
+function unionsEmitUnmarshalImports(unions?: Union[]): boolean {
+  return (unions?.length ?? 0) > 0;
 }
 
 /**
@@ -90,7 +92,7 @@ export function GoPackageDirectory({
   const hasEnums = enums.length > 0;
   const hasUnions = unions.length > 0;
   const hasOperations = operations.length > 0;
-  const needsFmt = needsFmtPackage(unions);
+  const needsUnmarshalImports = unionsEmitUnmarshalImports(unions);
 
   // Check if any model has time.Time fields
   const needsTimeImport = models.some((model) => {
@@ -105,24 +107,33 @@ export function GoPackageDirectory({
 
   return (
     <ModuleDirectory name={moduleDirectory}>
-      {/* go.mod file at module root */}
+      {/* go.mod is plain module text, not Go source: rendered with the
+          core SourceFile so no package clause or package scope applies */}
       {generateGoMod && (
-        <SourceFile path="go.mod">
+        <CoreSourceFile path="go.mod" filetype="text">
           <GoModFile modulePath={moduleDirectory} goVersion={goVersion} />
-        </SourceFile>
+        </CoreSourceFile>
       )}
       <SourceDirectory path={packageName}>
         {/* Main models file with proper import block */}
         <SourceFile path="models.go">
-          {needsTimeImport && <SingleImportStatement path="time" />}
+          {needsTimeImport && (
+            <>
+              <SingleImportStatement path="time" />
+              {"\n\n"}
+            </>
+          )}
           <For each={models}>
-            {(model: Model) => (
-              <GoStructDeclaration
-                model={model}
-                packageName={packageName}
-                documentation={packageDocumentation}
-                program={program}
-              />
+            {(model: Model, index: number) => (
+              <>
+                {index > 0 && "\n"}
+                <GoStructDeclaration
+                  model={model}
+                  packageName={packageName}
+                  documentation={packageDocumentation}
+                  program={program}
+                />
+              </>
             )}
           </For>
         </SourceFile>
@@ -131,8 +142,11 @@ export function GoPackageDirectory({
         {hasEnums && (
           <SourceFile path="enums.go">
             <For each={enums}>
-              {(enumType: Enum) => (
-                <GoEnumDeclaration enum={enumType} packageName={packageName} program={program} />
+              {(enumType: Enum, index: number) => (
+                <>
+                  {index > 0 && "\n"}
+                  <GoEnumDeclaration enum={enumType} packageName={packageName} program={program} />
+                </>
               )}
             </For>
           </SourceFile>
@@ -164,23 +178,25 @@ export function GoPackageDirectory({
         {/* Unions file - only if we have unions */}
         {hasUnions && (
           <SourceFile path="unions.go">
-            {needsFmt ? (
+            {needsUnmarshalImports && (
               <>
                 <SingleImportStatement path="encoding/json" />
                 {"\n"}
                 <SingleImportStatement path="fmt" />
+                {"\n\n"}
               </>
-            ) : (
-              <SingleImportStatement path="encoding/json" />
             )}
             <For each={unions}>
-              {(union: Union) => (
-                <GoUnionDeclaration
-                  union={union}
-                  packageName={packageName}
-                  discriminator="type"
-                  program={program}
-                />
+              {(union: Union, index: number) => (
+                <>
+                  {index > 0 && "\n"}
+                  <GoUnionDeclaration
+                    union={union}
+                    packageName={packageName}
+                    discriminator="type"
+                    program={program}
+                  />
+                </>
               )}
             </For>
           </SourceFile>

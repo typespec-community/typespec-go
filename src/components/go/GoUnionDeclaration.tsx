@@ -5,11 +5,17 @@
  */
 
 import type { Program, Union, Type } from "@typespec/compiler";
-import { TypeDeclaration, InterfaceDeclaration, FunctionDeclaration, Reference } from "@alloy-js/go";
+import {
+  TypeDeclaration,
+  InterfaceDeclaration,
+  FunctionDeclaration,
+  Reference,
+  VariableDeclaration,
+} from "@alloy-js/go";
 import { refkey } from "@alloy-js/core";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import { capitalize } from "../../utils/strings.js";
-import { GoReturn, GoStringLiteral } from "./core/index.js";
+import { GoReturn, GoStringLiteral, GoIf, GoSwitch, GoCase, GoDefault } from "./core/index.js";
 
 interface GoUnionDeclarationProps {
   /** TypeSpec union to convert to Go interface */
@@ -90,12 +96,12 @@ export function GoUnionDeclaration({
             <>
               {"\n"}
               <FunctionDeclaration
-              name={methodReceiverName}
-              receiver={<Reference refkey={refkey(variantModel)} />}
-              returns={discriminator ? "string" : undefined}
-            >
-              {discriminator && <GoReturn value={`"${String(variant.name)}"`} />}
-            </FunctionDeclaration>
+                name={methodReceiverName}
+                receiver={<Reference refkey={refkey(variantModel)} />}
+                returns={discriminator ? "string" : undefined}
+              >
+                {discriminator && <GoReturn value={`"${String(variant.name)}"`} />}
+              </FunctionDeclaration>
             </>
           );
         }
@@ -129,12 +135,58 @@ export function GoUnionDeclaration({
         <FunctionDeclaration
           name={"Unmarshal" + typeName}
           parameters={[{ name: "data", type: "[]byte" }]}
-          returns="error"
+          returns="(any, error)"
         >
-          {"// Unmarshaler implementation"}
-          {"// This would need to unmarshal into a temp struct to get the discriminator"}
-          {"// and then unmarshal into the correct variant"}
-          <GoReturn value="nil" />
+          <VariableDeclaration
+            name="probe"
+            type={
+              <>
+                {"struct {\n\t"}
+                {"Type string "}
+                <GoStringLiteral raw value={`json:"${discriminator}"`} />
+                {"\n}"}
+              </>
+            }
+          />
+          {"\n"}
+          <GoIf condition="err := json.Unmarshal(data, &probe); err != nil">
+            <GoReturn value={`nil, fmt.Errorf("unmarshal ${typeName} discriminator: %w", err)`} />
+          </GoIf>
+          {"\n"}
+          <GoSwitch value="probe.Type">
+            {variants.map((variant) => {
+              const variantType = variant.type;
+              const variantModel = variantType.kind === "Model" ? variantType : undefined;
+              const variantStructName = capitalize(String(variant.name));
+              const variantTypeName = variantModel ? (
+                <Reference refkey={refkey(variantModel)} />
+              ) : (
+                variantStructName
+              );
+
+              return (
+                <>
+                  <GoCase value={`"${String(variant.name)}"`}>
+                    <VariableDeclaration name="v" type={variantTypeName} />
+                    {"\n"}
+                    <GoIf condition="err := json.Unmarshal(data, &v); err != nil">
+                      <GoReturn
+                        value={`nil, fmt.Errorf("unmarshal ${variantStructName}: %w", err)`}
+                      />
+                    </GoIf>
+                    {"\n"}
+                    <GoReturn value="v, nil" />
+                  </GoCase>
+                  {"\n"}
+                </>
+              );
+            })}
+            <GoDefault>
+              <GoReturn
+                value={`nil, fmt.Errorf("unknown ${typeName} discriminator %q", probe.Type)`}
+              />
+            </GoDefault>
+          </GoSwitch>
         </FunctionDeclaration>
       )}
     </>

@@ -15,16 +15,20 @@ export interface GoIfProps {
  */
 export function GoIf(props: GoIfProps) {
   if (props.else) {
-    return code`if ${props.condition} {
-${props.children}
-} else {
-${props.else}
-}`;
+    return code`
+      if ${props.condition} {
+        ${props.children}
+      } else {
+        ${props.else}
+      }
+    `;
   }
 
-  return code`if ${props.condition} {
-${props.children}
-}`;
+  return code`
+    if ${props.condition} {
+      ${props.children}
+    }
+  `;
 }
 
 export interface GoElseIfProps {
@@ -38,9 +42,11 @@ export interface GoElseIfProps {
  * GoElseIf - An else-if clause
  */
 export function GoElseIf(props: GoElseIfProps) {
-  return code`else if ${props.condition} {
-${props.children}
-}`;
+  return code`
+    else if ${props.condition} {
+      ${props.children}
+    }
+  `;
 }
 
 // STC-wrapped versions for JSX compatibility

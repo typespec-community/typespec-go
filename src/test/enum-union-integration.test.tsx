@@ -19,8 +19,8 @@ test("GoEnumDeclaration generates valid Go string enum", () => {
 
   // Verify Go code structure
   expect(goFile).toContain("type Status string");
-  expect(goFile).toContain("StatusPending Status");
-  expect(goFile).toContain("StatusActive Status");
+  expect(goFile).toContain("StatusPending   Status");
+  expect(goFile).toContain("StatusActive    Status");
   expect(goFile).toContain("StatusCompleted Status");
   expect(goFile).toContain("func (e Status) String() string");
   expect(goFile).toContain("func (e Status) IsValid() bool");
@@ -83,16 +83,17 @@ test("GoUnionDeclaration generates discriminated union with unmarshaler", () => 
     { name: "deleted", type: MockFactory.createStringLiteral("deleted") },
   ]);
 
-  const result = renderGoContent(
-    <GoUnionDeclaration union={mockUnion} discriminator="type" />,
-  );
+  const result = renderGoContent(<GoUnionDeclaration union={mockUnion} discriminator="type" />);
 
   // Verify discriminated union features
   expect(result).toContain("GetType() string");
   expect(result).toContain('`json:"type"`');
-  expect(result).toContain("func UnmarshalEvent(data []byte)");
-  // Placeholder implementation for now
-  expect(result).toContain("Unmarshaler implementation");
+  expect(result).toContain("func UnmarshalEvent(data []byte) (any, error)");
+  expect(result).toContain("json.Unmarshal(data, &probe)");
+  expect(result).toContain('fmt.Errorf("unmarshal Event discriminator: %w", err)');
+  expect(result).toContain('fmt.Errorf("unknown Event discriminator %q", probe.Type)');
+  expect(result).toContain('case "created":');
+  expect(result).toContain('case "deleted":');
 });
 
 test("GoUnionDeclaration handles empty union gracefully", () => {

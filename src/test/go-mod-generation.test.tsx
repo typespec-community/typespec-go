@@ -4,7 +4,24 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { Output, render } from "@alloy-js/core";
+import type { OutputDirectory } from "@alloy-js/core";
 import { GoModFile } from "../components/go/GoModFile.js";
+import { GoPackageDirectory } from "../components/go/GoPackageDirectory.js";
+import { MockFactory } from "../testing/mock-factory.js";
+
+function collectFiles(dir: OutputDirectory): Array<{ path: string; content: string }> {
+  const files: Array<{ path: string; content: string }> = [];
+  for (const entry of dir.contents) {
+    if (!("contents" in entry)) continue;
+    if (Array.isArray(entry.contents)) {
+      files.push(...collectFiles(entry as OutputDirectory));
+    } else {
+      files.push({ path: entry.path, content: entry.contents });
+    }
+  }
+  return files;
+}
 
 describe("GoModFile Generation", () => {
   it("generates basic go.mod with module and go version", () => {
@@ -50,5 +67,28 @@ describe("GoModFile Generation", () => {
     });
 
     expect(result).not.toContain("require");
+  });
+
+  it("GoPackageDirectory emits go.mod as plain module text without a package clause", () => {
+    const model = MockFactory.createModelWithProps("Widget", [
+      { name: "id", type: MockFactory.createScalar("string") },
+    ]);
+
+    const tree = render(
+      <Output>
+        <GoPackageDirectory
+          models={[model]}
+          packageName="api"
+          modulePath="example.com/sdk"
+          generateGoMod={true}
+        />
+      </Output>,
+    );
+    const files = collectFiles(tree as OutputDirectory);
+    const goMod = files.find((file) => file.path === "go.mod");
+
+    expect(goMod).toBeDefined();
+    expect(goMod?.content).toContain("module example.com/sdk");
+    expect(goMod?.content).not.toContain("package ");
   });
 });
