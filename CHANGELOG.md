@@ -33,6 +33,10 @@ product chain is real, decorator modes are live.
   API-REFERENCE routed as historical, TODO_LIST dated verdicts.
 - **Release rehearsal:** `npm pack` tarball smoke test green;
   `v1.0.0-rc.1` annotated tag created locally (intentionally unpushed).
+- **Root hygiene:** single lockfile (`bun.lock`; pnpm artifacts and
+  mise pnpm usage removed), legacy `prettier` config + devDependency
+  dropped (dprint owns formatting), dead violations scanner + counter,
+  orphan root `test/` dir and never-run root test file removed.
 
 Gates: 190/190 tests (39 files) · eslint 0/0 · strict 0 · dprint clean ·
 e2e green (`go build` + `gofmt -l` raw) · docs-gates 5/5.

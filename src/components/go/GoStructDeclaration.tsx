@@ -5,6 +5,7 @@
  */
 
 import type { Model, ModelProperty, Program, Type, Union } from "@typespec/compiler";
+import { isArrayModelType } from "@typespec/compiler";
 import type { JSX } from "@alloy-js/core/jsx-runtime";
 import {
   FunctionDeclaration,
@@ -25,6 +26,12 @@ import {
 } from "../../emitter/go-decorators.js";
 import { getDocumentation } from "../../utils/typespec-utils.js";
 import { filterVisibleProperties, type VisibilityMode } from "../../domain/visibility.js";
+import {
+  getArrayElementType,
+  getTemplateParameters,
+  isArrayInstantiation,
+  templateParameterGoName,
+} from "../../domain/go-generics.js";
 
 interface GoStructDeclarationProps {
   /** TypeSpec model to convert to Go struct */
@@ -119,10 +126,45 @@ export function GoStructDeclaration({
     if (goTypeOverride) {
       baseType = goTypeOverride;
       displayType = goTypeOverride;
+    } else if (isArrayInstantiation(prop.type) || (prop.type.kind === "Model" && isArrayModelType(prop.type))) {
+      // Array properties (T[] or Scalar[]) render inline as []Elem; the
+      // Array instantiation is anonymous, so a Reference would stay
+      // unresolved. Element may itself be a template parameter (T[] → []T).
+      const element = getArrayElementType(prop.type);
+      const elementPrefix = "[]";
+      if (element?.kind === "TemplateParameter") {
+        const elemName = templateParameterGoName(element);
+        baseType = elementPrefix + elemName;
+        displayType = elementPrefix + elemName;
+      } else if (element && (element.kind === "Model" || element.kind === "Enum")) {
+        baseType = (
+          <>
+            {elementPrefix}
+            <Reference refkey={refkey(element)} />
+          </>
+        );
+        displayType = elementPrefix + element.name;
+      } else if (element) {
+        const elemMapped = mapTypeSpecToGoType(element);
+        const elemName =
+          typeof elemMapped === "string" ? elemMapped : ("name" in element ? element.name : "");
+        baseType = elementPrefix + elemName;
+        displayType = elementPrefix + elemName;
+      } else {
+        const fallback = mapTypeSpecToGoType(prop.type);
+        baseType = typeof fallback === "string" ? fallback : elementPrefix + prop.type.name;
+        displayType = typeof fallback === "string" ? fallback : "";
+      }
     } else if (prop.type.kind === "Model" || prop.type.kind === "Enum") {
       // Referenced declarations resolve to their symbol name
       baseType = <Reference refkey={typeRef} />;
       displayType = prop.type.name;
+    } else if (prop.type.kind === "TemplateParameter") {
+      // Template parameter references (content: T inside Box<T>) resolve
+      // to the declared parameter name
+      const paramName = templateParameterGoName(prop.type);
+      baseType = paramName;
+      displayType = paramName;
     } else {
       const mapped = mapTypeSpecToGoType(prop.type);
       baseType = mapped;
@@ -158,10 +200,22 @@ export function GoStructDeclaration({
   const nameWidth = Math.max(0, ...members.map((m) => m.fieldName.length));
   const typeWidth = Math.max(0, ...members.map((m) => m.displayType.length));
 
+  // Template declarations (model Box<T>) emit as Go generics via
+  // typeParameters; constraints map to `any` until translation is designed.
+  const typeParameters = getTemplateParameters(model).map((param) => ({
+    name: param.name,
+    constraint: param.constraint,
+  }));
+
   // Generate struct fields using Alloy-JS components with <For> iteration
   return (
     <>
-      <TypeDeclaration name={goModelName} refkey={modelRef} doc={modelDoc}>
+      <TypeDeclaration
+        name={goModelName}
+        refkey={modelRef}
+        doc={modelDoc}
+        typeParameters={typeParameters}
+      >
         <StructDeclaration>
           <For each={members}>
             {(member: MemberLayout) => (

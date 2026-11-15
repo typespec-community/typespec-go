@@ -5,8 +5,9 @@
  */
 
 import type { Type, Model, Scalar, Union } from "@typespec/compiler";
-import { isNullType } from "@typespec/compiler";
+import { isArrayModelType, isNullType } from "@typespec/compiler";
 import { CleanTypeMapper } from "../domain/clean-type-mapper.js";
+import { templateParameterGoName } from "../domain/go-generics.js";
 
 /**
  * Props for TypeExpression component
@@ -33,10 +34,10 @@ function isModel(type: Type): type is Model {
 }
 
 /**
- * Type guard for Model types with array indexers
+ * Type guard for array models (T[] sugar or Array<T> instantiations)
  */
 function isArrayModel(type: Model): type is Model & { indexer: { key: Scalar; value: Type } } {
-  return !!type.indexer;
+  return isArrayModelType(type);
 }
 
 /**
@@ -142,7 +143,7 @@ export function TypeExpression({ type, fieldName }: TypeExpressionProps): string
 
   // Handle Template instantiations (List<T>, Map<K,V>)
   if (isTemplateParameter(type)) {
-    return "interface{}";
+    return templateParameterGoName(type);
   }
 
   // Fallback for unknown types

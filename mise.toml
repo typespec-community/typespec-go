@@ -3,17 +3,15 @@ quiet = true
 
 [tools]
 node = "25.1.0"
-"aqua:pnpm/pnpm" = "10.20.0"
-"pnpm:@typespec/compiler" = "1.5.0"
 watchexec = "2.3.2"
 
 [tasks.build]
 description = "Build the emitter"
-run = ["pnpm dlx alloy build"]
+run = ["npm run build"]
 
 [tasks.test]
 description = "Run tests"
-run = ["node --test 'dist/test**/*.test.js'"]
+run = ["npm run test:typespec"]
 
 [tasks.dev]
 description = "Run the development servers and workers"

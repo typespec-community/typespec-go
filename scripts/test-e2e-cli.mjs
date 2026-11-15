@@ -132,6 +132,8 @@ const expectations = [
     true,
     "package doc hoisted above package clause",
   ],
+  ["type Page[T any] struct", true, "template model emits as Go generic"],
+  ["Items []T", true, "template parameter type resolves inside generic struct"],
 ];
 
 for (const [needle, expected, why] of expectations) {

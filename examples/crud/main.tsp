@@ -53,3 +53,8 @@ model OrderError {
   message: string;
   code: int32;
 }
+
+model Page<T> {
+  items: T[];
+  total: int32;
+}

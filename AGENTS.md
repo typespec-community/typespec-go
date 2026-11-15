@@ -821,6 +821,7 @@ Before committing ANY changes, verify:
 
 - **`go run` inside this repo fails** — root `go.mod` is a placeholder (`module <module-path>`). Run Go tooling from outside the repo or fix the module path first.
 - **npm scripts are canonical and shell-agnostic** — `npm run build` runs `alloy build && node scripts/prune-dist.mjs`; npm puts `node_modules/.bin` on `PATH`, so these work in nix shells (no `bunx`) and CI alike.
+- **Single lockfile: bun only** — `pnpm-lock.yaml`/`pnpm-workspace.yaml` removed 2026-11-15; `bun.lock` + `bun install` are the sole dependency source of truth (CI uses bun). BuildFlow's `pnpm-audit`/`lockfile-check` JS audit lanes are therefore intentionally dark here until a bun-audit provider exists upstream (BuildFlow extension task, not per-repo tooling).
 - **CI build crash (current)** — alloy CLI reads `ts.sys.getCurrentDirectory` at load time; TypeScript 7.0.2 in the dependency tree breaks it. Local build works; see TODO_LIST before assuming the emitter is broken.
 - **`alloy build` vs `tsc`** — `alloy build` is the only sanctioned build (overrides tsconfig JSX handling); expect a TS5011 `rootDir` warning line, then "Build completed with 0 errors".
 - **Strict check ≠ build** — `npm run build:check` (`tsc --noEmit --strict`) currently reports 28 errors while `alloy build` and `vitest` pass. Don't conflate them when judging "is it broken?".
