@@ -4,9 +4,8 @@
  * Eliminates all string-based code generation in favor of component composition
  */
 
-import { code } from "@alloy-js/core";
+import { code, For, refkey } from "@alloy-js/core";
 import type { Operation, Program } from "@typespec/compiler";
-import { refkey } from "@alloy-js/core";
 import * as go from "@alloy-js/go";
 const {
   SourceFile,
