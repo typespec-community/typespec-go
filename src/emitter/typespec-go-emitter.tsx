@@ -260,76 +260,84 @@ export async function $onEmit(context: EmitContext): Promise<void> {
 
       const packageName = namespaceToPackageName(namespaceName);
 
-      // @go.pkg overrides the output package path for this namespace
-      const goPkgPath = namespace ? getGoPackageName(program, namespace) : undefined;
-      const outputDirectory = goPkgPath
-        ? join(context.emitterOutputDir, ...goPkgPath.split("/").map((p) => p.toLowerCase()))
-        : getOutputDirectory(namespace, context);
-      const packageDocumentation = `Go types from TypeSpec namespace: ${namespaceName}`;
+      try {
+        // @go.pkg overrides the output package path for this namespace
+        const goPkgPath = namespace ? getGoPackageName(program, namespace) : undefined;
+        const outputDirectory = goPkgPath
+          ? join(context.emitterOutputDir, ...goPkgPath.split("/").map((p) => p.toLowerCase()))
+          : getOutputDirectory(namespace, context);
+        const packageDocumentation = `Go types from TypeSpec namespace: ${namespaceName}`;
 
-      Logger.info(
-        LogContext.TYPESPEC_INTEGRATION,
-        `Generating package '${packageName}' from namespace '${namespaceName}'`,
-        {
+        Logger.info(
+          LogContext.TYPESPEC_INTEGRATION,
+          `Generating package '${packageName}' from namespace '${namespaceName}'`,
+          {
+            outputDirectory,
+            typeCount,
+            modelCount: models.length,
+            enumCount: enums.length,
+            unionCount: unions.length,
+            operationCount: operations.length,
+          },
+        );
+
+        if (models.length > 0) {
+          Logger.debug(LogContext.GO_GENERATION, "Models to generate", {
+            models: models.map((m) => m.name),
+          });
+          totalModels += models.length;
+        }
+        if (enums.length > 0) {
+          Logger.debug(LogContext.GO_GENERATION, "Enums to generate", {
+            enums: enums.map((e) => e.name),
+          });
+          totalEnums += enums.length;
+        }
+        if (unions.length > 0) {
+          Logger.debug(LogContext.GO_GENERATION, "Unions to generate", {
+            unions: unions.map((u) => u.name || "Anonymous"),
+          });
+          totalUnions += unions.length;
+        }
+        if (operations.length > 0) {
+          Logger.debug(LogContext.GO_GENERATION, "Operations to generate", {
+            operations: operations.map((o) => o.name),
+          });
+          totalOperations += operations.length;
+        }
+
+        // Generate JSX Output using professional component architecture
+        const writtenFiles = await writeRenderedOutput(
+          program,
+          <Output>
+            <GoPackageDirectory
+              models={models}
+              enums={enums}
+              unions={unions}
+              operations={operations}
+              packageName={packageName}
+              packageDocumentation={packageDocumentation}
+              program={program}
+              modulePath={goModulePath}
+              generateGoMod={goModulePath !== undefined}
+              visibilityMode={visibilityMode}
+            />
+          </Output>,
           outputDirectory,
-          typeCount,
-          modelCount: models.length,
-          enumCount: enums.length,
-          unionCount: unions.length,
-          operationCount: operations.length,
-        },
-      );
+        );
 
-      if (models.length > 0) {
-        Logger.debug(LogContext.GO_GENERATION, "Models to generate", {
-          models: models.map((m) => m.name),
+        Logger.info(LogContext.GO_GENERATION, `Package '${packageName}' written`, {
+          outputDirectory,
+          files: writtenFiles,
+          fileCount: writtenFiles.length,
         });
-        totalModels += models.length;
+      } catch (error) {
+        throw new Error(
+          `Failed to generate Go package for namespace '${namespaceName}' (package '${packageName}'): ` +
+            `${error instanceof Error ? error.message : String(error)}`,
+          { cause: error },
+        );
       }
-      if (enums.length > 0) {
-        Logger.debug(LogContext.GO_GENERATION, "Enums to generate", {
-          enums: enums.map((e) => e.name),
-        });
-        totalEnums += enums.length;
-      }
-      if (unions.length > 0) {
-        Logger.debug(LogContext.GO_GENERATION, "Unions to generate", {
-          unions: unions.map((u) => u.name || "Anonymous"),
-        });
-        totalUnions += unions.length;
-      }
-      if (operations.length > 0) {
-        Logger.debug(LogContext.GO_GENERATION, "Operations to generate", {
-          operations: operations.map((o) => o.name),
-        });
-        totalOperations += operations.length;
-      }
-
-      // Generate JSX Output using professional component architecture
-      const writtenFiles = await writeRenderedOutput(
-        program,
-        <Output>
-          <GoPackageDirectory
-            models={models}
-            enums={enums}
-            unions={unions}
-            operations={operations}
-            packageName={packageName}
-            packageDocumentation={packageDocumentation}
-            program={program}
-            modulePath={goModulePath}
-            generateGoMod={goModulePath !== undefined}
-            visibilityMode={visibilityMode}
-          />
-        </Output>,
-        outputDirectory,
-      );
-
-      Logger.info(LogContext.GO_GENERATION, `Package '${packageName}' written`, {
-        outputDirectory,
-        files: writtenFiles,
-        fileCount: writtenFiles.length,
-      });
     }
 
     Logger.info(LogContext.TYPESPEC_INTEGRATION, "TypeSpec Go emission completed successfully", {

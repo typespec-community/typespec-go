@@ -92,6 +92,26 @@ so the type satisfies Go's `error` interface.
 `namespace Vendor.Service.API` → package path `vendor/service/api`. Override
 with `@go.pkg("github.com/org/repo/custom")`.
 
+## Naming conventions
+
+Generated Go identifiers follow fixed conventions derived from the package
+name (the last path segment of the namespace or `@go.pkg` override,
+capitalized):
+
+| Artifact                           | Name                      | Receiver |
+| ---------------------------------- | ------------------------- | -------- |
+| Handler struct (`handlers.go`)     | `<Pkg>Service`            | `s`      |
+| Handler methods                    | `<operation.name>Handler` | `s`      |
+| Service constructor                | `New<Pkg>Service`         | -        |
+| API contract (`interfaces.go`)     | `<Pkg>API`                | -        |
+| Enum methods (`String`, `IsValid`) | -                         | `e`      |
+| `@error` model `Error()` method    | -                         | `e`      |
+
+The `<Pkg>Service` struct owns the HTTP handlers and implements the
+`<Pkg>API` interface; handlers take `s *<Pkg>Service`, enum and error
+methods take value receivers named `e`. Example for package `crud`:
+`CrudService` (receiver `s`) implements `CrudAPI`.
+
 ## Visibility
 
 `@visibility` on properties is evaluated with the compiler's official

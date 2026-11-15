@@ -35,6 +35,13 @@ product chain is real, decorator modes are live.
 - **CI truth:** the docs-gates step was failing every run behind a
   mask; now unmasked, gate-blocking, and version-pinned to match the
   locally deployed gate build.
+- **Error clarity:** per-namespace generation failures now name the
+  failing namespace and Go package (original error preserved as
+  `cause`); property-reference parameters (`@path id: Widget.id`)
+  unwrap to their concrete types instead of `interface{}`; handler
+  imports emit as one sorted std group; naming conventions (`s`/`e`
+  receivers, `<Pkg>Service` vs `<Pkg>API`) documented in MAPPING-GUIDE
+  § Naming conventions.
 - **Coverage ratchet +5** and e2e wall-clock timing.
 - **Consumer quickstart** (`docs/QUICKSTART.md`) + per-package
   generation summary log.
@@ -47,7 +54,7 @@ product chain is real, decorator modes are live.
   dropped (dprint owns formatting), dead violations scanner + counter,
   orphan root `test/` dir and never-run root test file removed.
 
-Gates: 201/201 tests (41 files) · eslint 0/0 · strict 0 · dprint clean ·
+Gates: 202/202 tests (42 files) · eslint 0/0 · strict 0 · dprint clean ·
 e2e green (`go build` + `gofmt -l` raw) · docs-gates 5/5.
 
 ## 1.0.0 — 2026-11-14
