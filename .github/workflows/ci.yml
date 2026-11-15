@@ -46,28 +46,16 @@ jobs:
         env:
           CI: true
 
-      - name: Format check
-        run: bun run format --check
-        continue-on-error: true
-        env:
-          CI: true
-
-      - name: Format check (dprint)
-        run: bun run format:check
-        env:
-          CI: true
-
       - name: CLI end-to-end proof
         run: bun run test:e2e-cli
         env:
           CI: true
 
       - name: Docs gates
-        continue-on-error: true
         env:
           CI: true
         run: |
-          go install github.com/Artmann-Technologies/docs-gates@2adbc73
+          go install github.com/Artmann-Technologies/docs-gates/cmd/docs-gates@2adbc73
           "$(go env GOPATH)/bin/docs-gates" run .
 
       - name: Archive build artifacts

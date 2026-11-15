@@ -12,13 +12,11 @@
   },
   "scripts": {
     "build": "alloy build && node scripts/prune-dist.mjs",
-    "build:webpack": "tsc --project tsconfig.json && bunx webpack --mode=development",
     "build:check": "tsc --noEmit --strict",
     "test": "vitest",
     "test:typespec": "vitest --run --testTimeout 30000",
     "lint": "eslint src/ --ext .ts --max-warnings 0",
     "lint:fix": "eslint src/ --ext .ts --fix",
-    "format": "prettier src/ --write",
     "test:e2e-cli": "node scripts/test-e2e-cli.mjs",
     "format:check": "dprint check",
     "test:coverage": "vitest --run --coverage.enabled --testTimeout 30000"
