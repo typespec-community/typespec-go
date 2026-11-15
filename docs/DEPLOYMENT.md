@@ -50,7 +50,25 @@ emit:
 options:
   "@typespec-community/typespec-go":
     emitter-output-dir: "{output-dir}/go"
+    # optional: emit go.mod so `go build` works in the output tree
+    go-module-path: "example.com/my-api"
 ```
 
 `import "@typespec-community/typespec-go";` in your `.tsp` file brings the
 `TypeSpec.Go` decorators into scope.
+
+## Rehearsal findings (2026-11-15, v1.0.0-rc.1)
+
+The release steps above were rehearsed locally; findings:
+
+1. **Install-from-tarball smoke test is green.** `npm pack` (73.5 kB,
+   114 files) installed into a fresh consumer project; `tsp compile` of
+   the crud example produced packages that pass `go build ./...` and
+   `gofmt -l` with the tarball-only installation.
+2. **`emitter-output-dir` must be absolute.** Relative CLI values are
+   rejected by TypeSpec config validation (`config-path-absolute`);
+   use `{cwd}/out` or `{project-root}/...` when invoking `tsp compile`
+   with `--option` overrides.
+3. **Publish remains owner-gated.** The local annotated `v1.0.0-rc.1`
+   tag is intentionally NOT pushed; `npm publish` and the final
+   `v1.0.0` tag push require explicit owner approval.
