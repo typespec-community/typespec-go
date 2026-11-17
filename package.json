@@ -41,7 +41,7 @@
     "@vitest/coverage-v8": "5.1.0",
     "dprint": "^0.64.3",
     "eslint": "^10.15.0",
-    "typescript": "6.0.2",
+    "typescript": "7.0.2",
     "vitest": "^4.1.4"
   },
   "peerDependencies": {

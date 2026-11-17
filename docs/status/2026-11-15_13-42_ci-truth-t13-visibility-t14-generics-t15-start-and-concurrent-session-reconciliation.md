@@ -96,11 +96,13 @@ for both examples) · pnpm-audit 0 errors · docs-gates 5/5 · CI run
 ## b) PARTIALLY DONE
 
 1. **T15 (2 of 4 sub-items).** DONE: property-ref parameter resolution +
-   sorted handler imports. NOT DONE: (a) per-namespace try/catch in the
+   sorted handler imports. ~~NOT DONE: (a) per-namespace try/catch in the
    emitter so generation failures name the namespace/package (the only
    enriched error today is the visibility-mode validation), (b) receiver
    naming + `Service` vs `API` convention documented in MAPPING-GUIDE,
-   (c) TODO_LIST T15 rows not yet flipped.
+   (c) TODO_LIST T15 rows not yet flipped.~~ done at `02b3e9f` (wrap + test
+   `emitter-error-context.test.ts`, MAPPING-GUIDE § Naming conventions, rows
+   flipped)
 2. **T22 dependabot.** Investigated (stale PR, root cause known) but the
    recreation-through-full-gates has not been executed.
 3. **Freshness reconciliation for THIS report.** §f below must be harvested
@@ -109,9 +111,10 @@ for both examples) · pnpm-audit 0 errors · docs-gates 5/5 · CI run
 
 ## c) NOT STARTED
 
-- **T16 refactors:** unify `getOutputDirectory`/`namespaceToPackageName`,
+- ~~**T16 refactors:** unify `getOutputDirectory`/`namespaceToPackageName`,
   MockFactory → module functions, file-layout builder extraction,
-  clean-type-mapper cast reduction, filename-case decision.
+  clean-type-mapper cast reduction, filename-case decision.~~ all five done
+  at `4990924` (see 16:55 report §a)
 - **T17 example #3:** versioned multi-namespace API + discriminated-union
   fixture exercising GetType + unmarshal in CI.
 - **T20 npm publish:** owner-gated (§g Q1 below).

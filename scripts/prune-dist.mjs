@@ -12,14 +12,14 @@ const testDir = join(distDir, "test");
 rmSync(testDir, { recursive: true, force: true });
 
 function pruneJsx(dir) {
-  for (const entry of readdirSync(dir)) {
-    const full = join(dir, entry);
-    if (statSync(full).isDirectory()) {
-      pruneJsx(full);
-    } else if (entry.endsWith(".jsx")) {
-      unlinkSync(full);
-    }
-  }
+	for (const entry of readdirSync(dir)) {
+		const full = join(dir, entry);
+		if (statSync(full).isDirectory()) {
+			pruneJsx(full);
+		} else if (entry.endsWith(".jsx")) {
+			unlinkSync(full);
+		}
+	}
 }
 pruneJsx(distDir);
 
