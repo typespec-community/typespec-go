@@ -1,6 +1,6 @@
 # TypeSpec Go Emitter - Changelog
 
-**Last Updated:** 2026-11-15
+**Last Updated:** 2026-11-19
 
 ---
 
@@ -60,6 +60,12 @@ product chain is real, decorator modes are live.
   mise pnpm usage removed), legacy `prettier` config + devDependency
   dropped (dprint owns formatting), dead violations scanner + counter,
   orphan root `test/` dir and never-run root test file removed.
+- **Dependency reconciliation:** re-pinned `typescript` to 6.0.2
+  (TypeScript 7.0.2 crashes the alloy CLI — `ts.sys` undefined at load —
+  and sits outside the `@typescript-eslint` peer range `<6.1.0`;
+  restores the `d289c86` intent pending an alloy-side fix); landed the
+  concurrent-session patch bumps eslint/@typescript-eslint 8.73.0 and
+  coverage-v8 5.1.1.
 
 Gates: 206/206 tests (43 files) · eslint 0/0 · strict 0 · dprint clean ·
 e2e green (`go build` + `gofmt -l` raw) · docs-gates 5/5.
