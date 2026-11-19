@@ -1,6 +1,6 @@
 # TypeSpec Go Emitter - Agent Development Guide
 
-**Last Updated:** 2026-11-13\
+**Last Updated:** 2026-11-19\
 **Version:** 2.0 - TypeSpec AssetEmitter Edition
 
 ---
@@ -303,13 +303,14 @@ src/
 │   │   ├── GoModel.tsx             # Struct generation (Alloy Go)
 │   │   ├── GoEnumDeclaration.tsx    # Enum generation (Alloy Go)
 │   │   ├── GoUnionDeclaration.tsx    # Union generation (Alloy Go)
-│   │   ├── GoPackageDirectory.tsx   # Package organization (Alloy Core)
+│   │   ├── GoPackageDirectory.tsx   # Package organization (renders package-layout)
+│   │   ├── GoPackage.tsx            # Go package wrapper (Alloy Core)
 │   │   ├── GoStructDeclaration.tsx   # Struct declaration (Alloy Go)
 │   │   ├── GoInterfaceDeclaration.tsx # Interface generation (Alloy Go)
 │   │   ├── GoModFile.tsx            # Go mod generation (Alloy Go)
-│   │   ├── GoHandlerMethodComponent.tsx # HTTP handlers (Alloy Go)
-│   │   ├── GoRouteRegistrationComponent.tsx # Route reg (Alloy Go)
-│   │   ├── GoHandlerStub.tsx        # Handler stubs (Alloy Go)
+│   │   ├── GoHandlerMethodComponent.tsx # HTTP handler methods + route reg (Alloy Go)
+│   │   ├── GoHandlerStub.tsx        # Handler stubs + RegisterRoutes (Alloy Go)
+│   │   ├── core/                    # Shared component helpers
 │   │   └── index.ts                 # Component exports (DISABLED - NO RE-EXPORTS)
 │   └── TypeExpression.tsx             # Type mapping component (Alloy Core)
 ├── domain/             # Business logic - SUPPORTS ALLOY COMPONENTS
@@ -427,12 +428,12 @@ bunx vitest run src/test/integration-*.test.ts
 bunx vitest run src/test/integration-*.test.ts
 ```
 
-### **Test Status (Current: 2026-11-13, HEAD `8205ea3`)**
+### **Test Status (Current: 2026-11-19, CI run 44608275473 on HEAD `3bed34a`)**
 
-- **Pass Rate:** 177/177 tests passing, 37 files (`npm run test:typespec`)
+- **Pass Rate:** 206/206 tests passing, 43 files (`npm run test:typespec`)
 - **✅ Real TypeSpec integration:** `src/test/integration-typespec-compiler-working.test.ts` (createTester API) + 4 more integration suites
 - **✅ Production type safety:** zero `any` in `src/components`, `src/domain`, `src/emitter`
-- **✅ CI green:** full pipeline (build, tests, lint, strict check, dprint, CLI e2e, docs-gates) — TS pinned to 6.0.2
+- **✅ CI green:** full pipeline (build, tests, lint, strict check, dprint, CLI e2e, docs-gates) — TS pinned to 6.0.2, alloy 0.26
 - **✅ Lint:** 0 errors, 0 warnings (`eslint --max-warnings 0`)
 - **✅ Strict check:** `npm run build:check` passes with 0 errors
 
@@ -720,22 +721,23 @@ npx dprint fmt    # formatting
 
 ---
 
-## 🎯 🚨 DEVELOPMENT PRIORITIES (2026-11-13)
+## 🎯 🚨 DEVELOPMENT PRIORITIES (2026-11-19)
 
-Full sprint list with evidence: [TODO_LIST.md](./TODO_LIST.md).
+Full sprint list with evidence: [TODO_LIST.md](./TODO_LIST.md); execution
+order lives in docs/planning/2026-11-19_20-36_PARETO-CI-RECOVERY-AND-PRODUCT-COMPLETION.md.
 
-1. **🔴 Fix red CI build** — `bunx alloy build` crash on CI (alloy CLI × TS 7.0.2)
-2. **🔴 Clear 13 lint errors** in test-support files (`no-explicit-any`)
-3. **🔴 Make `npm run build:check` pass** — 28 strict-mode errors
-4. **🟡 Verify CLI end-to-end** `tsp compile` generation
-5. **🟡 Add coverage reporting**
+1. ~~Fix red CI build~~ — DONE 2026-11-19 at `5a3ce93` (TS 6.0.2 re-pin, CI green)
+2. ~~Clear 13 lint errors~~ — DONE (eslint 0/0 at HEAD)
+3. ~~Make `npm run build:check` pass~~ — DONE (strict 0 at HEAD)
+4. ~~Verify CLI end-to-end~~ — DONE (`test:e2e-cli` gates go build + gofmt)
+5. 🟡 Add coverage reporting
 
 ### **Quality Gates - ALLOY REQUIREMENTS**
 
-- **TypeScript Strict:** zero errors required (build passes today; strict check has 28 known errors — TODO_LIST)
-- **ESLint:** zero errors required (13 known `any` errors in test-support files — TODO_LIST)
+- **TypeScript Strict:** zero errors required (`build:check` passes at HEAD)
+- **ESLint:** zero errors required (0/0 at HEAD)
 - **Alloy Components:** 100% component-based, zero string generation
-- **Tests:** 100% pass rate (177/177)
+- **Tests:** 100% pass rate (206/206)
 
 ---
 
@@ -755,7 +757,7 @@ Full sprint list with evidence: [TODO_LIST.md](./TODO_LIST.md).
 - `src/components/go/GoUnionDeclaration.tsx` - **Union generation (Alloy Go)**
 - `src/components/go/GoPackageDirectory.tsx` - **Package organization (Alloy Core)**
 - `src/components/go/GoInterfaceDeclaration.tsx` - **Interface generation (Alloy Go)**
-- `src/components/go/GoRouteRegistrationComponent.tsx` - **HTTP routing (Alloy Go)**
+- `src/components/go/GoHandlerStub.tsx` - **HTTP routing (RegisterRoutes lives here; Alloy Go)**
 
 ### **🔥 ALLOY Testing Examples**
 
@@ -817,14 +819,15 @@ Before committing ANY changes, verify:
 
 ---
 
-## ⚠️ NON-OBVIOUS GOTCHAS (verified 2026-11-13)
+## ⚠️ NON-OBVIOUS GOTCHAS (verified 2026-11-19)
 
 - **`go run` inside this repo fails** — root `go.mod` is a placeholder (`module <module-path>`). Run Go tooling from outside the repo or fix the module path first.
 - **npm scripts are canonical and shell-agnostic** — `npm run build` runs `alloy build && node scripts/prune-dist.mjs`; npm puts `node_modules/.bin` on `PATH`, so these work in nix shells (no `bunx`) and CI alike.
 - **Single lockfile: bun only** — `pnpm-lock.yaml`/`pnpm-workspace.yaml` removed 2026-11-15; `bun.lock` + `bun install` are the sole dependency source of truth (CI uses bun). BuildFlow's `pnpm-audit`/`lockfile-check` JS audit lanes are therefore intentionally dark here until a bun-audit provider exists upstream (BuildFlow extension task, not per-repo tooling).
-- **CI build crash (current)** — alloy CLI reads `ts.sys.getCurrentDirectory` at load time; TypeScript 7.0.2 in the dependency tree breaks it. Local build works; see TODO_LIST before assuming the emitter is broken.
+- **TypeScript pin: 6.0.2, do not bump to 7** — alloy CLI 0.26 FIXED the old `ts.sys` crash (verified 2026-11-19 at `3bed34a`: build + 206/206 tests + strict tsc all pass under TS 7.0.2), but typescript-eslint 8.73.0 hard-refuses TS 7.0 (upstream typescript-eslint#10940 tracks TS >=7.1). Bump TS only after typescript-eslint ships support.
+- **No expression-position generic arrows in `.ts` files** — the alloy 0.26/Babel 8 chain parses JSX-enabled `.ts` as TSX, so `<T>(...) =>` in a `.ts` file fails `alloy build` with "Unexpected token `>`". Use contextually-typed non-generic arrows (see `MockPerfReporter` in `src/testing/mock-factory.ts`) or function declarations. `.tsx` files are unaffected.
+- **Babel overrides are load-bearing** — `package.json` overrides pin `@babel/core` 8.0.1 + `@babel/plugin-syntax-jsx` ^8.0.1 because alloy CLI 0.26 requires Babel 8 while its published 0.2.1 plugins still declare ^7 peers. Removing either override breaks `alloy build` (AST-shape mismatch or assertVersion crash).
 - **`alloy build` vs `tsc`** — `alloy build` is the only sanctioned build (overrides tsconfig JSX handling); expect a TS5011 `rootDir` warning line, then "Build completed with 0 errors".
-- **Strict check ≠ build** — `npm run build:check` (`tsc --noEmit --strict`) currently reports 28 errors while `alloy build` and `vitest` pass. Don't conflate them when judging "is it broken?".
 - **docs-gates ritual** — `docs-gates run .` (freshness/annotate/routing/cadence) guards `docs/`; historical reports get annotated inline (`~~item~~ done at <hash>`) then archived under `docs/status/archived/` with a `> **Live remainder:**` banner.
 - **dprint formats markdown** — table edits in root docs get re-wrapped; strike PER CELL in tables (never span pipes) and re-run `check-rows` after any formatter pass.
 
@@ -846,7 +849,7 @@ Before committing ANY changes, verify:
 - **100% Component-Based:** All Go code generated through Alloy components
 - **Zero String Generation:** No template literals or string concatenation for code
 - **Type Safety:** zero TypeScript errors required before merge (strict-check debt tracked in TODO_LIST)
-- **Test Success:** 100% test pass rate (177/177)
+- **Test Success:** 100% test pass rate (206/206)
 - **Performance:** benchmark suite pending (ROADMAP)
 
 ---
