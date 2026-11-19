@@ -398,11 +398,13 @@ export function createNamespace(
 export function createEmitContext(program?: Program): EmitContext {
   const prog = program || createProgram();
 
-  // Minimal mock PerfReporter
+  // Minimal mock PerfReporter; non-generic arrows (contextual typing from
+  // MockPerfReporter) because the babel-8 parser under `alloy build` reads
+  // expression-position `<T>` in a .ts file as JSX.
   const mockPerf: MockPerfReporter = {
     startTimer: () => ({ end: () => 0 }),
-    time: <T>(_: string, fn: () => T) => fn(),
-    timeAsync: <T>(_: string, fn: () => Promise<T>) => fn(),
+    time: (_, fn) => fn(),
+    timeAsync: (_, fn) => fn(),
     report: () => {},
     getDuration: () => 0,
     toJSON: () => ({}),

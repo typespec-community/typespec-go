@@ -66,6 +66,20 @@ product chain is real, decorator modes are live.
   restores the `d289c86` intent pending an alloy-side fix); landed the
   concurrent-session patch bumps eslint/@typescript-eslint 8.73.0 and
   coverage-v8 5.1.1.
+- **Alloy toolchain 0.26:** `@alloy-js/core` 0.26.0, `@alloy-js/go`
+  0.3.3, `@alloy-js/cli` 0.26.0, `@alloy-js/typescript` 0.26.0,
+  `@alloy-js/rollup-plugin` 0.2.0, `@typespec/emitter-framework` 0.22.0.
+  Babel chain moved to core 8.0.1 + plugin-syntax-jsx 8.0.1 via
+  overrides (alloy CLI 0.26 requires Babel 8; its published 0.2.1
+  plugins still declare ^7 peers). `ts.sys` crash **verified fixed**
+  under TS 7.0.2 with alloy 0.26 (build + 206/206 tests + strict tsc
+  all green), but typescript-eslint 8.73.0 hard-refuses TS 7.0
+  (upstream tracking typescript-eslint#10940 for TS 7.1) — so the
+  `typescript` pin stays at 6.0.2 until typescript-eslint ships TS 7
+  support. Side effects: `.ts` files must not use expression-position
+  generic arrows (`<T>(...) =>`, parsed as JSX by the Babel 8 chain) —
+  `MockPerfReporter` mock now uses contextually-typed non-generic
+  arrows; e2e compile wall-clock roughly halved (975→555 ms basic).
 
 Gates: 206/206 tests (43 files) · eslint 0/0 · strict 0 · dprint clean ·
 e2e green (`go build` + `gofmt -l` raw) · docs-gates 5/5.
