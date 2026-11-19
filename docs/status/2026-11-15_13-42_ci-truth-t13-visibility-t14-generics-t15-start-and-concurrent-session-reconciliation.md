@@ -187,10 +187,10 @@ for both examples) · pnpm-audit 0 errors · docs-gates 5/5 · CI run
 
 ## f) NEXT (priority order)
 
-1. T15 remainder: per-namespace error-context wrapping in the emitter (20 min).
-2. T15 remainder: receiver naming + `<Pkg>Service` vs `<Pkg>API` conventions
-   section in MAPPING-GUIDE (15 min).
-3. T15 remainder: flip TODO_LIST rows with dated verdicts (5 min).
+1. ~~T15 remainder: per-namespace error-context wrapping in the emitter (20 min).~~ done at `02b3e9f`
+2. ~~T15 remainder: receiver naming + `<Pkg>Service` vs `<Pkg>API` conventions
+   section in MAPPING-GUIDE (15 min).~~ done at `02b3e9f`
+3. ~~T15 remainder: flip TODO_LIST rows with dated verdicts (5 min).~~ done at `02b3e9f`
 4. Harvest §f1–f3 of THIS report into TODO_LIST so freshness stays green (5 min).
 5. T22: recreate the dependabot group bump (alloy 0.26, emitter-framework
    0.22) on the CURRENT tree through the full local gate set; report whether
@@ -206,11 +206,11 @@ for both examples) · pnpm-audit 0 errors · docs-gates 5/5 · CI run
    gate-enforced (20 min).
 10. Runtime handler smoke test: mount RegisterRoutes in a Go test, GET +
     POST with body (30 min).
-11. T16: unify `getOutputDirectory`/`namespaceToPackageName` (30 min).
-12. T16: MockFactory class → module functions (30 min).
-13. T16: file-layout builder extraction from GoPackageDirectory (40 min).
-14. T16: clean-type-mapper cast reduction sweep (30 min).
-15. T16: filename-case decision (kebab vs snake for generated files) (15 min).
+11. ~~T16: unify `getOutputDirectory`/`namespaceToPackageName` (30 min).~~ done at `4990924`
+12. ~~T16: MockFactory class → module functions (30 min).~~ done at `4990924`
+13. ~~T16: file-layout builder extraction from GoPackageDirectory (40 min).~~ done at `4990924`
+14. ~~T16: clean-type-mapper cast reduction sweep (30 min).~~ done at `4990924`
+15. ~~T16: filename-case decision (kebab vs snake for generated files) (15 min).~~ done at `4990924` (snake_case, MAPPING-GUIDE)
 16. Decide the stale dependabot PR #13: close with a pointer to the
     recreation commit (5 min).
 17. README: `visibility-mode` + `go-module-path` options, decorator table,

@@ -15,9 +15,9 @@ Three commits, each gate-verified and CI-green:
    - Per-namespace try/catch in `$onEmit`: generation failures now rethrow as
      `Failed to generate Go package for namespace 'X' (package 'y'): <cause>`
      with the original error preserved as `cause` (ES2022 ErrorOptions).
-   - New test `src/test/emitter-error-context.test.ts`: `vi.mock`s
-     GoPackageDirectory to throw, asserts the enriched message AND the cause
-     identity. Test count 201 → 202.
+  - New test `src/test/emitter-error-context.test.ts` uses `vi.mock` on
+    GoPackageDirectory to throw, asserting the enriched message AND the cause
+    identity. Test count 201 → 202.
    - MAPPING-GUIDE § Naming conventions (new section): receiver table (`s` for
      handlers, `e` for enum/error methods), `<Pkg>Service` (handlers.go) vs
      `<Pkg>API` (interfaces.go), handler methods named `<operation.name>Handler`
@@ -227,3 +227,24 @@ incidents, in order of severity:
 - 13:42 report §f13 (file-layout builder): done at `4990924`
 - 13:42 report §f14 (cast reduction): done at `4990924`
 - 13:42 report §f15 (filename-case decision): done at `4990924`
+
+## Addendum — 2026-11-19 (post-publication events)
+
+This report is a point-in-time snapshot of 2026-11-15 ~16:55; the header
+claim "HEAD `4990924`, CI GREEN" was true then and is historical now:
+
+- **2026-11-17 (`45fa15e`, concurrent session):** TypeScript was upgraded
+  6.0.2 → 7.0.2 again — the exact crash recipe reverted at `d289c86`. CI run
+  44059374575 fails at `alloy build` with the documented signature
+  (`TypeError: Cannot read properties of undefined (reading
+  'getCurrentDirectory')` — alloy CLI 0.22 × TS 7). **CI has been red on
+  HEAD since 2026-11-17.** This session's commit also swept this report, the
+  TODO_LIST harvest rows, and the 13:42 §b1/§c annotations (all uncommitted
+  at the time) into its commit.
+- Local gates do NOT catch this: the local `node_modules` still holds the
+  stale TS 6.0.2 install (the trap documented in AGENTS.md).
+- A further in-flight, uncommitted `package.json`/`bun.lock` diff (eslint
+  8.73.0, coverage-v8 5.1.1) belongs to that session — untouched here.
+- Disposition: pinned as TODO_LIST "Re-land TS 6.0.2 pin (or fix alloy×TS7)"
+  — owner question 2 below still stands unanswered.
+
