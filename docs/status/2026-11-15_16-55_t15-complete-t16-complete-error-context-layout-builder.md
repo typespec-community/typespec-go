@@ -141,8 +141,8 @@ incidents, in order of severity:
    branch).
 5. Interface signature assertions in the e2e net (interfaces.go must not
    contain `interface{}` for scalar path params).
-6. Add `goimports -l` to `scripts/test-e2e-cli.mjs` so import grouping is
-   gate-enforced.
+6. ~~Add `goimports -l` to `scripts/test-e2e-cli.mjs` so import grouping is
+   gate-enforced~~ done 2026-11-20: gate landed (with install hint on ENOENT), `GoImportGroup` emits goimports-native blocks.
 7. Runtime handler smoke test: mount RegisterRoutes in a Go test, GET + POST
    with body.
 8. minimatch audit finding: override to a patched version in package.json

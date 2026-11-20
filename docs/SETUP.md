@@ -1,16 +1,42 @@
 # TypeSpec Go Emitter - Setup Guide
 
+Verified against the code on 2026-11-20. For end-consumer setup (using the
+emitter from a TypeSpec project), start with [QUICKSTART](./QUICKSTART.md);
+this guide covers working ON the emitter.
+
 ## Prerequisites
 
 - Node.js 18+
-- Bun (recommended) or npm/yarn
-- TypeScript 5+
+- bun (package manager; the only lockfile is `bun.lock`)
+- TypeScript 6 (repo pins 6.0.2 — do NOT bump to 7 until typescript-eslint
+  supports it; see AGENTS.md)
+- Go toolchain (for the e2e gates: `go build`, `gofmt`, `go test`)
+- `goimports` on PATH (e2e conformance gate; `go install
+  golang.org/x/tools/cmd/goimports@v0.53.0`)
 
-## Installation
+## Install
 
 ```bash
 bun install
 ```
+
+## Canonical commands (npm scripts)
+
+npm scripts are the shell-agnostic source of truth (npm puts
+`node_modules/.bin` on PATH, so they work in nix shells and CI alike):
+
+```bash
+npm run build          # alloy build + dist pruning (the ONLY sanctioned build)
+npm run test:typespec  # vitest single run (182 tests, 41 files)
+npm run lint           # eslint --max-warnings 0
+npm run build:check    # tsc --noEmit --strict
+npm run format:check   # dprint check (markdown/json/yaml) + oxfmt (src/)
+npm run test:coverage  # v8 coverage vs thresholds 58/46/65/58
+npm run test:e2e-cli   # 3 examples: tsp compile → needles → go build →
+                       #   runtime smoke test → gofmt/goimports gates
+```
+
+Watch mode for tests: `npm run test` (plain vitest watch).
 
 ## Configuration
 
@@ -54,28 +80,8 @@ The Alloy-JS framework requires Babel plugin transformation for JSX:
 
 ### Test Setup File
 
-Create `src/test/vitest.setup.ts`:
-
-```typescript
-import "@alloy-js/core/testing";
-```
-
-This loads custom Vitest matchers (`toRenderTo`, `toStrictEqualOutput`, etc.).
-
-## Running Tests
-
-```bash
-bun test          # Watch mode
-bunx vitest run   # Single run
-bunx vitest run src/test/components-basic.test.tsx  # Run specific file
-```
-
-## Building
-
-```bash
-bunx alloy build   # Build emitter
-bunx tsc --noEmit  # Type check only
-```
+`src/test/vitest.setup.ts` imports `@alloy-js/core/testing`, which loads the
+custom Vitest matchers (`toRenderTo`, `toStrictEqualOutput`, etc.).
 
 ## Common Issues
 
@@ -101,11 +107,13 @@ bunx tsc --noEmit  # Type check only
 </Output>
 ```
 
-### Issue: TypeScript compilation errors
+### Issue: `<T>(...) =>` arrow fails `alloy build` in a `.ts` file
 
-**Symptom**: Type errors when running `tsc --noEmit`
+**Symptom**: "Unexpected token `>`" during alloy build
 
-**Solution**: Ensure all imports are correct and types are available
+**Solution**: alloy 0.26/Babel 8 parses JSX-enabled `.ts` as TSX, so
+expression-position generic arrows are illegal there. Use contextually-typed
+non-generic arrows or function declarations (`.tsx` files are unaffected).
 
 ## Architecture
 
@@ -119,14 +127,18 @@ Output
               └─ [Go Components]
 ```
 
+See [ARCHITECTURE](./ARCHITECTURE.md) for the full pipeline and
+[COMPONENTS](../COMPONENTS.md) for the component inventory.
+
 ### Domain Layer
 
 - **Location**: `src/domain/`
-- **Purpose**: Single source of truth for type mapping
-- **Key Component**: `CleanTypeMapper`
-- **Usage**: Import into components, use `CleanTypeMapper.mapTypeSpecType()`
+- **Purpose**: single source of truth for TypeSpec → Go primitives
+  (`go-primitive-types.ts`), type mapping (`CleanTypeMapper.mapTypeSpecType`,
+  static), package file layout (`buildPackageFileLayout`), visibility
+  filtering, structured logging
 
-### Component Pattern
+### Component Test Pattern
 
 ```tsx
 import { renderGoContent } from "../testing/test-utils.js";

@@ -2,7 +2,7 @@
 
 > Long-term direction and raw ideas, not yet refined into actionable tasks.
 > Short-term bounded work lives in [TODO_LIST.md](./TODO_LIST.md).
-> **Last updated:** 2026-11-15
+> **Last updated:** 2026-11-20
 
 ---
 
@@ -16,7 +16,9 @@ fully-typed Go packages through a 100% Alloy-JS component architecture.
 
 ### Go Generics from TypeSpec Templates
 
-- Template models with Go generics support (generator-level support exists — see `src/test/model-composition.test.ts`; full emission end-to-end is the gap)
+- Template models with Go generics support, emitted end-to-end (scoping
+  exists at the mapper level — `src/domain/go-generics.ts` — but full
+  emission is the gap)
 - Type parameter mapping
 - Generic constraint generation
 
@@ -34,7 +36,9 @@ fully-typed Go packages through a 100% Alloy-JS component architecture.
 
 ### Model Inheritance/Composition (emitter-level)
 
-- Struct embedding generation through the main emitter path (works via `StandaloneGoGenerator` today)
+- ~~Struct embedding generation~~ — **NOT implemented** in the live emitter
+  path; the historical evidence exercised the removed ghost scaffold.
+  Re-attempt requires real-emitter tests first (FEATURES Known limits).
 - Interface composition
 - Type hierarchy translation
 
@@ -42,16 +46,18 @@ fully-typed Go packages through a 100% Alloy-JS component architecture.
 
 - ~~`@typespec/http` library loading inside the test harness~~ — **shipped 2026-11-15** (`src/test/http-harness.test.tsx`)
 - ~~Handler/route generation from `@route`/`@get`/`@post` specs~~ — **shipped 2026-11-15** (interfaces walk + handlers + route registration, e2e-verified)
-- Runtime behavior tests for generated handlers (mount `RegisterRoutes`, fire requests)
+- ~~Runtime behavior tests for generated handlers~~ — **shipped 2026-11-20** (e2e smoke gate: mounts `RegisterRoutes`, fires GET/POST/DELETE, asserts 405)
 - Full CRUD service generation from a real `.tsp` service via `tsp compile`
-- Test-surface expansion: TypeSpec visibility system, generics, more cross-file cases
+- Test-surface expansion: generics edge cases, more cross-file cases
 
 ---
 
 ## 🔧 Technical Debt (future)
 
 - **Phantom type warnings** in generated code — consider branded types for common scalars (Email, Age, …)
-- ~~**Coverage reporting** — no visibility~~ — **shipped 2026-11-14/15**: `test:coverage` with ratcheted thresholds (45/35/53/45)
+- ~~**Coverage reporting**~~ — **shipped**: `test:coverage` gate; provider
+  re-pinned to vitest lockstep and thresholds ratcheted to the measured
+  floor 58/46/65/58 on 2026-11-20
 
 ---
 
@@ -69,13 +75,12 @@ fully-typed Go packages through a 100% Alloy-JS component architecture.
 - Hot-reload during TypeSpec development
 - Visual type graph visualization
 - Component error boundaries (structured, per-component error recovery in the generation pipeline; routed from 2025-12-06..08 reports)
-- Error-recovery tests and improved TypeSpec validation error-message clarity (routed from 2025-12 reports)
 - More idiomatic generated Go code (lint the generator against Go idiom guides)
 - ~~Repo community plumbing: CODEOWNERS, issue templates~~ — **shipped 2026-11-14**
 
 ### Documentation site & guides (routed from 2026-01 reports)
 
-- ~~`docs/ARCHITECTURE.md`~~ — **shipped 2026-11-14** (plus DEPLOYMENT/TROUBLESHOOTING/MAPPING-GUIDE/QUICKSTART)
+- ~~`docs/ARCHITECTURE.md`~~ — **shipped 2026-11-14** (plus DEPLOYMENT/TROUBLESHOOTING/MAPPING-GUIDE/QUICKSTART/API-REFERENCE/SETUP)
 - Public documentation site (Astro/Starlight pattern)
 - Real-world examples and a TypeSpec → Go migration guide
 
@@ -92,63 +97,43 @@ fully-typed Go packages through a 100% Alloy-JS component architecture.
 - Plugin system for extensions
 - Tagged v1.0 release with npm publish flow — v1.0.0 version-bumped and
   release-rehearsal ready; publish + tag push await explicit owner approval
+  (re-cut v1.0.0 vs v1.1.0 decision pending, T20)
 
 ---
 
-## 🧠 Raw ideas backlog (2026-11-14 docs sweep session)
+## 🧠 Raw ideas backlog (refreshed 2026-11-20)
 
-Unrefined observations from the 2026-11-14 docs-health sweep — brainstorm, not
-commitments. Refined, bounded work belongs in TODO_LIST.md.
+Supersedes the 2026-11-14 sweep list: items resolved since are struck or
+removed. Brainstorm, not commitments — refined, bounded work belongs in
+TODO_LIST.md.
 
-### Ghost systems / dead weight
+### Open
 
-- Consolidate `CALL_GRAPH.md` and `CALL_GRAPH_ACTUAL.md` (split-brain pair at repo root)
-- Decide the fate of `StandaloneGoGenerator` (tested via `src/test/model-composition.test.ts` but not wired into the emitter path — ghost system: integrate or fence it)
-- Delete or convert `src/test/test-minimal.tsx`, `test-components.tsx`, `test-components-directly.tsx` (not picked up by vitest's `*.test.*` glob, carry strict-mode errors)
-- Clean up stray `src/test/temp-e2e-test/` directory
-- Audit root-level historical reports (`PROJECT-COMPLETION-REPORT.md`, `PROJECT_SPLIT_EXECUTIVE_REPORT.md`, `EXECUTION_PLAN.md`, `IMPROVEMENT_PLAN.md`, `PARTS.md`, `DEDUPLICATION_STATUS.md`, `INTEGRATION_REALITY_CHECK.md`) — annotate or archive like the docs/status corpus
-- Resolve `docs/status.md` vs `docs/status/` naming confusion
-- Review `docs/github-issues-plan.md` staleness
-- Normalize the pre-canon `docs/status/archived-2025-12-04/` layer under the modern archive gates (check-rows/bare-rows)
-- Retire or re-sanction the deprecated `justfile` (global policy: flake/npm scripts own automation)
-
-### Build, CI, tooling
-
-- Set `rootDir` in tsconfig to silence the TS 7 TS5011 warning
 - Exclude `.config/metadata.yaml` from dprint (re-formats every run, churns the tree)
-- Wire docs-gates into CI so the docs ritual is enforced, not remembered
-- Add dprint format check to CI (CI only checks prettier over `src/` today)
-- Make CI run an E2E job that compiles a real `.tsp` file through the built emitter
-- Pick up the open dependabot branch (`dependabot/npm_and_yarn/minor-and-patch-a08edd544e`)
-- Reconcile dependency vs peerDependency versioning for `@typespec/compiler` (`^1.18.0` vs `1.18.0`)
-- Document vitest `jsx: "preserve"` as the single JSX-config source of truth (tsconfig vs vitest.config vs alloy plugin)
-
-### Generated-output quality
-
-- Verify and then re-claim gofmt/goimports/gofumpt conformance of generated Go (claim was removed from README as unverified; a conformance test would make it true)
-- Verify the README `tspconfig.yaml` emitter options example actually parses (`base-package` etc.)
-- Recount COMPONENTS.md coverage claims (12 primary + 5 helpers) against `src/components/go/`
-- Add generated-output snapshot tests to catch regressions in emitted Go shape
-
-### Feature surface (long-term)
-
-- `@go.name` / `@go.type` / `@go.tag` / `@go.package` decorator support
-- `@error` model handling
-- `@visibility` decorator processing
-- Go generics emission end-to-end from TypeSpec templates
-- Discriminated-union error chains
-- Multi-file output splitting (per-type files) with test coverage
-- Performance benchmark suite for component generation
+- Reconcile dependency vs peerDependency versioning for `@typespec/compiler`
 - Component error boundaries in the generation pipeline
-- TypeSpec validation error-message clarity
-- More idiomatic generated Go (idiom lint pass on the generator)
-- Repo community plumbing: `.github/CODEOWNERS`, `.github/ISSUE_TEMPLATE`
-- `docs/ARCHITECTURE.md`, deployment guide, troubleshooting guide
-- TypeSpec → Go migration guide
-- Real-world example projects beyond `examples/basic/`
-- Test-surface expansion: visibility system, template types, cross-file references, HTTP metadata extraction
-- Examples & tutorials; video/blog content; conference talks
-- Tagged v1.0 release with npm publish flow
+- TS7 endgame: bump typescript when typescript-eslint ships support (tracked in AGENTS.md gotcha)
+- Component-per-type file splitting with test coverage
+- Generated-output snapshot tests to catch regressions in emitted Go shape
+- Owner-gated (see 2026-11-20 18:15 report §g): return-union shape for
+  operation return types (strip-`@error` → `*Widget` vs `Result[T]`, A5);
+  publish verdict (T20); concurrency convention doc
+- Real-world example projects beyond `examples/` trio
+- Public documentation site
+
+### Resolved since 2026-11-14 (evidence in git history)
+
+- ~~Ghost scaffold `StandaloneGoGenerator`~~ — deleted 2026-11-20 (ghost sweep, 2229 lines)
+- ~~`dev/` scratch tree~~ — deleted 2026-11-20 (broken imports of the removed scaffold)
+- ~~Stray test files (`test-minimal.tsx`, …), `temp-e2e-test/`~~ — removed
+- ~~CALL_GRAPH split-brain pair~~ — consolidated
+- ~~docs-gates in CI~~ — **enforced** (unmasked, gate-blocking)
+- ~~E2E job in CI compiling real `.tsp` files~~ — **shipped** (`test:e2e-cli`, 3 examples + go build + smoke + gofmt/goimports)
+- ~~gofmt/goimports conformance of generated Go~~ — **proven** (e2e gates; `GoImportGroup` emits goimports-native blocks)
+- ~~README emitter-options example parse risk~~ — rewritten with verified options (`go-module-path`, `visibility-mode`)
+- ~~COMPONENTS.md coverage recount~~ — done 2026-11-20 (11 primary + 5 helpers)
+- ~~`justfile` retirement~~ — deleted; npm scripts canonical
+- ~~rootDir TS5011 warning~~ — tsconfig sets `rootDir: ./src`
 
 ---
 

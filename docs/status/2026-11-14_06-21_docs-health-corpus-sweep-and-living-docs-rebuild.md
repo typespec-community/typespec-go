@@ -114,12 +114,12 @@ Items 1-11 are bounded TODO_LIST rows; 12-50 are ROADMAP raw ideas (brainstorm, 
 15. Clean up stray src/test/temp-e2e-test/ directory
 16. Audit root-level historical reports (PROJECT-COMPLETION-REPORT.md and six siblings) — annotate or archive
 17. Resolve docs/status.md vs docs/status/ naming confusion
-18. Review docs/github-issues-plan.md staleness
+18. ~~Review docs/github-issues-plan.md staleness~~ done 2026-11-20: file removed from the repo (archived copy remains at docs/status/archived/2025-09_github-issues-plan.md)
 19. Normalize the archived-2025-12-04 layer under modern archive gates
 20. Retire or re-sanction the deprecated justfile
 21. Set rootDir in tsconfig to silence the TS 7 TS5011 warning
 22. Exclude .config/metadata.yaml from dprint
-23. Wire docs-gates into CI
+23. ~~Wire docs-gates into CI~~ done: docs-gates step unmasked + gate-blocking in ci.yml (2026-11-15 lineage, PATH fix `e4a76f9`)
 24. Add dprint format check to CI
 25. CI E2E job compiling a real .tsp file through the built emitter
 26. Pick up the open dependabot branch
@@ -139,8 +139,8 @@ Items 1-11 are bounded TODO_LIST rows; 12-50 are ROADMAP raw ideas (brainstorm, 
 40. Component error boundaries in the generation pipeline
 41. TypeSpec validation error-message clarity
 42. More idiomatic generated Go (idiom lint pass on the generator)
-43. .github/CODEOWNERS
-44. .github/ISSUE_TEMPLATE
+43. ~~.github/CODEOWNERS~~ done at `1e4141f` (file present)
+44. ~~.github/ISSUE_TEMPLATE~~ done at `1e4141f` (bug_report.md present)
 45. docs/ARCHITECTURE.md
 46. Deployment guide and troubleshooting guide
 47. TypeSpec → Go migration guide
