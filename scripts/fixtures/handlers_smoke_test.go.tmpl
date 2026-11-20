@@ -1,0 +1,70 @@
+package demoservice
+
+import (
+	"io"
+	"log"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+)
+
+// TestRegisterRoutesSmoke mounts the generated route table on a real mux
+// (Go's ServeMux panics on duplicate pattern registration) and exercises
+// GET/POST/DELETE round trips through the generated request adapters.
+func TestRegisterRoutesSmoke(t *testing.T) {
+	svc := NewDemoserviceService(log.New(io.Discard, "", 0))
+	mux := http.NewServeMux()
+	svc.RegisterRoutes(mux)
+	server := httptest.NewServer(mux)
+	defer server.Close()
+
+	get, err := http.Get(server.URL + "/widgets")
+	if err != nil {
+		t.Fatalf("GET /widgets failed: %v", err)
+	}
+	get.Body.Close()
+	if get.StatusCode != http.StatusNotImplemented {
+		t.Fatalf("GET /widgets: got %d, want 501", get.StatusCode)
+	}
+
+	post, err := http.Post(server.URL+"/widgets", "application/json", strings.NewReader(`{"id":"w1","weight":1,"color":"red"}`))
+	if err != nil {
+		t.Fatalf("POST /widgets failed: %v", err)
+	}
+	post.Body.Close()
+	if post.StatusCode != http.StatusNotImplemented {
+		t.Fatalf("POST /widgets: got %d, want 501", post.StatusCode)
+	}
+
+	read, err := http.Get(server.URL + "/widgets/w1")
+	if err != nil {
+		t.Fatalf("GET /widgets/{id} failed: %v", err)
+	}
+	read.Body.Close()
+	if read.StatusCode != http.StatusNotImplemented {
+		t.Fatalf("GET /widgets/w1: got %d, want 501", read.StatusCode)
+	}
+
+	delReq, err := http.NewRequest(http.MethodDelete, server.URL+"/widgets/w1", nil)
+	if err != nil {
+		t.Fatalf("build DELETE request failed: %v", err)
+	}
+	del, err := http.DefaultClient.Do(delReq)
+	if err != nil {
+		t.Fatalf("DELETE /widgets/{id} failed: %v", err)
+	}
+	del.Body.Close()
+	if del.StatusCode != http.StatusNotImplemented {
+		t.Fatalf("DELETE /widgets/w1: got %d, want 501", del.StatusCode)
+	}
+
+	mismatch, err := http.Get(server.URL + "/widgets/w1/analyze")
+	if err != nil {
+		t.Fatalf("GET /widgets/{id}/analyze failed: %v", err)
+	}
+	mismatch.Body.Close()
+	if mismatch.StatusCode != http.StatusMethodNotAllowed {
+		t.Fatalf("GET on POST-only route: got %d, want 405", mismatch.StatusCode)
+	}
+}

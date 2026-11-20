@@ -48,6 +48,11 @@ jobs:
         env:
           CI: true
 
+      - name: Install goimports (e2e conformance gate)
+        run: go install golang.org/x/tools/cmd/goimports@v0.53.0
+        env:
+          CI: true
+
       - name: CLI end-to-end proof
         run: bun run test:e2e-cli
         env:

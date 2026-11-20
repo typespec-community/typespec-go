@@ -9,6 +9,16 @@
 Post-1.0.0 sprint (Pareto Plan II): generated Go now compiles, the HTTP
 product chain is real, decorator modes are live.
 
+- **Runtime route-registration fix (bug):** `RegisterRoutes` emitted one
+  `mux.HandleFunc` PER HANDLER, so routes shared by several methods
+  (`/widgets`, `/widgets/{id}`) were registered multiple times — Go's
+  `http.ServeMux` panics at runtime on duplicate patterns. Generated
+  servers compiled clean but panicked on first mount. Routes now emit
+  one registration per pattern with a `switch r.Method` dispatch and a
+  405 fallback for unknown methods. The new e2e runtime smoke test
+  (`go test ./...` against the generated basic package: GET/POST/
+  DELETE round trips + 405 on a POST-only route) fails on the old
+  shape (verified) and passes on the new one.
 - **Goimports-native import blocks:** new `GoImportGroup` component
   emits import blocks the way goimports writes them (one import →
   single statement, several → sorted tab-indented group), so

@@ -11,6 +11,7 @@ import {
 	mkdirSync,
 	readdirSync,
 	readFileSync,
+	copyFileSync,
 	rmSync,
 	statSync,
 	symlinkSync,
@@ -148,14 +149,31 @@ const expectations = [
 	["Items []T", true, "template parameter type resolves inside generic struct"],
 	// Goimports-native import groups + API-contract parameter typing
 	[
-		"import (\n\t\"context\"\n\t\"encoding/json\"\n\t\"log\"\n\t\"net/http\"\n)",
+		'import (\n\t"context"\n\t"encoding/json"\n\t"log"\n\t"net/http"\n)',
 		true,
 		"handler imports emit as one sorted goimports-style group",
 	],
-	["Read(ctx context.Context, id string)", true, "scalar path params keep their type in the API contract"],
-	["Create(ctx context.Context, widget Widget)", true, "body params keep the model type in the API contract"],
+	[
+		"Read(ctx context.Context, id string)",
+		true,
+		"scalar path params keep their type in the API contract",
+	],
+	[
+		"Create(ctx context.Context, widget Widget)",
+		true,
+		"body params keep the model type in the API contract",
+	],
 	["id interface{}", false, "scalar path params never degrade to interface{}"],
 	["widget interface{}", false, "body params never degrade to interface{}"],
+	// Route registration: one mux pattern per route, dispatching on method
+	["switch r.Method {", true, "shared routes dispatch on HTTP method"],
+	["case http.MethodGet:", true, "GET case uses the Go http.Method constant"],
+	["case http.MethodPost:", true, "POST case uses the Go http.Method constant"],
+	[
+		'http.Error(w, "method not allowed", http.StatusMethodNotAllowed)',
+		true,
+		"unknown methods get 405",
+	],
 	// T17 example #3: versioned namespaces + discriminated unions
 	["package v1", true, "versioned namespace V1 becomes package v1"],
 	["package v2", true, "versioned namespace V2 becomes package v2"],
@@ -210,6 +228,25 @@ for (const { example, root } of moduleRoots) {
 	}
 }
 console.log("✅ e2e-cli: generated Go compiles (go build ./... green on all module roots)");
+
+// Runtime smoke test: mount the generated route table on a real mux and
+// exercise GET/POST/DELETE round trips (A7). Go's ServeMux PANICS on
+// duplicate pattern registration — a defect `go build` cannot see — so
+// this gate is the only proof the generated routes actually run.
+const smokeFixture = join(repoRoot, "scripts", "fixtures", "handlers_smoke_test.go.tmpl");
+const basicModule = moduleRoots.find((m) => m.example === "examples/basic/main.tsp");
+if (!basicModule) fail("basic example module root missing (smoke test cannot be placed)");
+const smokeTarget = join(basicModule.root, "demoservice", "handlers_smoke_test.go");
+copyFileSync(smokeFixture, smokeTarget);
+const goTest = spawnSync("go", ["test", "./..."], { encoding: "utf8", cwd: basicModule.root });
+if (goTest.status !== 0) {
+	console.error(goTest.stdout);
+	console.error(goTest.stderr);
+	fail("generated routes fail the runtime smoke test (go test ./...)");
+}
+console.log(
+	"✅ e2e-cli: generated routes pass the runtime smoke test (RegisterRoutes + method dispatch)",
+);
 
 // Go conformance: generated code must be syntactically valid Go (gofmt -e)
 // and natively gofmt-clean (gofmt -l) — no normalization step: the emitter's

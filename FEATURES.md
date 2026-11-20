@@ -44,15 +44,16 @@
 
 ## HTTP & APIs
 
-| Feature                                      | Status                | Evidence                                        | Notes                                              |
-| -------------------------------------------- | --------------------- | ----------------------------------------------- | -------------------------------------------------- |
-| Interface operations collected               | 🟢 `FULLY_FUNCTIONAL` | `src/test/advanced-surface.test.ts` (walk test) | `namespace.interfaces` walked recursively          |
-| Handler methods from `@route`/`@get`/`@post` | 🟢 `FULLY_FUNCTIONAL` | e2e basic example `handlers.go` compiles        | Real routes + verbs; framework trio signature      |
-| Route registration with request adaptation   | 🟢 `FULLY_FUNCTIONAL` | e2e asserts `r.PathValue`, body decode closures | `encoding/json` import only when body params exist |
-| API contract interface                       | 🟢 `FULLY_FUNCTIONAL` | `src/test/http-harness.test.tsx`                | No `func` keyword inside interface bodies          |
-| MergePatchUpdate bodies → base model         | 🟢 `FULLY_FUNCTIONAL` | `src/test/http-harness.test.tsx`                | Compiler names instances `<Arg>MergePatchUpdate`   |
-| `@typespec/http` in vitest harness           | 🟢 `FULLY_FUNCTIONAL` | `src/test/http-harness.test.tsx`                | `createTester(libraries)` with repo-root baseDir   |
-| Return-type extraction                       | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-handler-return-types.test.tsx`     |                                                    |
+| Feature                                      | Status                | Evidence                                          | Notes                                                                                                |
+| -------------------------------------------- | --------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Interface operations collected               | 🟢 `FULLY_FUNCTIONAL` | `src/test/advanced-surface.test.ts` (walk test)   | `namespace.interfaces` walked recursively                                                            |
+| Handler methods from `@route`/`@get`/`@post` | 🟢 `FULLY_FUNCTIONAL` | e2e basic example `handlers.go` compiles          | Real routes + verbs; framework trio signature                                                        |
+| Route registration with request adaptation   | 🟢 `FULLY_FUNCTIONAL` | e2e asserts `r.PathValue`, body decode closures   | One mux pattern per route, `switch r.Method` dispatch, 405 fallback (ServeMux duplicate-panic fixed) |
+| API contract interface                       | 🟢 `FULLY_FUNCTIONAL` | `src/test/http-harness.test.tsx`                  | No `func` keyword inside interface bodies                                                            |
+| MergePatchUpdate bodies → base model         | 🟢 `FULLY_FUNCTIONAL` | `src/test/http-harness.test.tsx`                  | Compiler names instances `<Arg>MergePatchUpdate`                                                     |
+| `@typespec/http` in vitest harness           | 🟢 `FULLY_FUNCTIONAL` | `src/test/http-harness.test.tsx`                  | `createTester(libraries)` with repo-root baseDir                                                     |
+| Return-type extraction                       | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-handler-return-types.test.tsx`       |                                                                                                      |
+| Runtime route smoke test (e2e)               | 🟢 `FULLY_FUNCTIONAL` | `go test ./...` gate in e2e (GET/POST/DELETE/405) | Catches ServeMux duplicate-registration panics                                                       |
 
 ## Decorators (TypeSpec.Go)
 

@@ -52,28 +52,44 @@ function handlerArgument(p: HttpParameter): { preludes: string[]; expr: string }
  * One mux.HandleFunc registration: a wrapping closure that adapts the raw
  * request (context, path/query values, decoded body) into handler arguments.
  */
-function routeRegistration(handler: GoHandlerMethod, isFirst: boolean): Children {
-  const preludes: string[] = [];
-  const args: string[] = [];
-  for (const p of handler.parameters) {
-    const adapted = handlerArgument(p);
-    preludes.push(...adapted.preludes);
-    args.push(adapted.expr);
-  }
+/**
+ * One mux.HandleFunc registration per distinct route pattern: a wrapping
+ * closure that adapts the raw request (context, path/query values, decoded
+ * body) into handler arguments. Handlers sharing a pattern dispatch on
+ * r.Method — Go's ServeMux panics at runtime on duplicate registrations,
+ * so per-handler registrations are never emitted.
+ */
+function routeRegistrationGroup(route: string, routeHandlers: GoHandlerMethod[]): Children {
+  const cases = routeHandlers.map((handler) => {
+    const preludes: string[] = [];
+    const args: string[] = [];
+    for (const p of handler.parameters) {
+      const adapted = handlerArgument(p);
+      preludes.push(...adapted.preludes);
+      args.push(adapted.expr);
+    }
+    const body = [
+      ...preludes.map((line) => "\t\t" + line),
+      "\t\ts." + handler.name + "(" + args.join(", ") + ")",
+    ];
+    const goMethodConst =
+      "http.Method" + handler.httpMethod.charAt(0) + handler.httpMethod.slice(1).toLowerCase();
+    return "\tcase " + goMethodConst + ":\n" + body.join("\n");
+  });
 
   return (
     <>
-      {!isFirst && "\n"}
-      {`mux.HandleFunc("${handler.route}", func(w http.ResponseWriter, r *http.Request) {`}
+      {`mux.HandleFunc("${route}", func(w http.ResponseWriter, r *http.Request) {`}
       {"\n"}
-      {preludes.map((line, index) => (
-        <>
-          {index > 0 && "\n"}
-          {"\t" + line}
-        </>
-      ))}
-      {preludes.length > 0 && "\n"}
-      {`\ts.${handler.name}(${args.join(", ")})`}
+      {"\tswitch r.Method {"}
+      {"\n"}
+      {cases.join("\n")}
+      {"\n"}
+      {"\tdefault:"}
+      {"\n"}
+      {`\t\thttp.Error(w, "method not allowed", http.StatusMethodNotAllowed)`}
+      {"\n"}
+      {"\t}"}
       {"\n"}
       {"})"}
     </>
@@ -194,7 +210,26 @@ export function GoHandlerStub({
         doc="RegisterRoutes registers all handlers with given router"
         parameters={[{ name: "mux", type: "*http.ServeMux" }]}
       >
-        {handlers.map((handler, index) => routeRegistration(handler, index === 0))}
+        {/* One mux pattern per route, method-dispatched: Go's ServeMux
+            panics on duplicate pattern registrations, so per-handler
+            registrations are never emitted. */}
+        {(() => {
+          const routes = new Map<string, GoHandlerMethod[]>();
+          for (const handler of handlers) {
+            const existing = routes.get(handler.route);
+            if (existing) {
+              existing.push(handler);
+            } else {
+              routes.set(handler.route, [handler]);
+            }
+          }
+          return [...routes.values()].map((routeHandlers, index) => (
+            <>
+              {index > 0 && "\n"}
+              {routeRegistrationGroup(routeHandlers[0].route, routeHandlers)}
+            </>
+          ));
+        })()}
       </FunctionDeclaration>
 
       {/* Service constructor */}
