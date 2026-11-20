@@ -92,6 +92,21 @@ model NotFound { message: string }
 → plain struct plus `func (e NotFound) Error() string { return e.Message }`,
 so the type satisfies Go's `error` interface.
 
+## Return types (design note, implementation owner-gated)
+
+Interface operations and handler stubs currently return
+`(interface{}, error)` for every operation — the return type is not yet
+modeled. The planned semantics (A5): when an operation's return type is
+a union whose variants include `@error` models, strip the error
+variants and emit the remaining shape — a single non-error model
+`Widget` becomes `*Widget` (`nil` when absent), multiple variants become
+the sealed union interface. `Result[T]`-style generics were considered
+and set aside as unidiomatic for Go handlers.
+
+**Open owner decision (Q3):** strip-`@error`-to-`*Widget` vs
+`Result[T]`. Implementation starts only after that verdict; the design
+above is the recommended default.
+
 ## Namespaces
 
 `namespace Vendor.Service.API` → package path `vendor/service/api`. Override

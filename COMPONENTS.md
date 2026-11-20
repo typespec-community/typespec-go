@@ -1,7 +1,7 @@
 # TypeSpec Go Emitter - Components Documentation
 
-**Last Updated:** January 2, 2026
-**Version:** 1.0 - Component Reference Edition
+**Last Updated:** 2026-11-20
+**Version:** 1.1 - Component Reference Edition
 
 ---
 
@@ -22,19 +22,21 @@ The TypeSpec Go Emitter uses **100% Alloy-JS component-based architecture**. All
 
 ### Primary Components (11)
 
-| Component                      | Purpose                            | Status              |
-| ------------------------------ | ---------------------------------- | ------------------- |
-| `GoModel`                      | Basic model to struct conversion   | ✅ Production Ready |
-| `GoStructDeclaration`          | Advanced struct with documentation | ✅ Production Ready |
-| `GoEnumDeclaration`            | String and iota enum generation    | ✅ Production Ready |
-| `GoUnionDeclaration`           | Sealed interface pattern           | ✅ Production Ready |
-| `GoInterfaceDeclaration`       | Service interface generation       | ✅ Production Ready |
-| `GoModFile`                    | Go module file generation          | ✅ Production Ready |
-| `GoPackageDirectory`           | Package organization               | ✅ Production Ready |
-| `GoPackage`                    | Package wrapper with imports       | ✅ Production Ready |
-| `GoHandlerStub`                | HTTP handler generation            | ✅ Production Ready |
-| `GoHandlerMethodComponent`     | Handler method logic               | ✅ Production Ready |
-| `GoRouteRegistrationComponent` | Route registration                 | ✅ Production Ready |
+| Component                  | Purpose                                  | Status              |
+| -------------------------- | ---------------------------------------- | ------------------- |
+| `GoModel`                  | Basic model to struct conversion         | ✅ Production Ready |
+| `GoStructDeclaration`      | Advanced struct with documentation       | ✅ Production Ready |
+| `GoEnumDeclaration`        | String and iota enum generation          | ✅ Production Ready |
+| `GoUnionDeclaration`       | Sealed interface pattern                 | ✅ Production Ready |
+| `GoInterfaceDeclaration`   | Service interface generation             | ✅ Production Ready |
+| `GoModFile`                | Go module file generation                | ✅ Production Ready |
+| `GoPackageDirectory`       | Package organization                     | ✅ Production Ready |
+| `GoPackage`                | Package wrapper with imports             | ✅ Production Ready |
+| `GoHandlerStub`            | HTTP handler generation + RegisterRoutes | ✅ Production Ready |
+| `GoHandlerMethodComponent` | Handler method logic                     | ✅ Production Ready |
+| `GoImportGroup`            | goimports-native import blocks           | ✅ Production Ready |
+
+Plus `TypeExpression` (`src/components/TypeExpression.tsx`): the TypeSpec → Go type-mapping component feeding struct members, interface methods, and union variants.
 
 ### Core Helper Components (5)
 
@@ -650,51 +652,45 @@ const output = render(
 
 ---
 
-### GoRouteRegistrationComponent
+### GoImportGroup
 
-**Purpose:** Generates route registration function
-**File:** `src/components/go/GoRouteRegistrationComponent.tsx`
+**Purpose:** Renders a Go import block the goimports-native way
+**File:** `src/components/go/GoImportGroup.tsx`
 
 #### Props
 
 ```typescript
-type GoRouteRegistrationComponentProps = {
-  handlers: GoHandlerMethod[]; // Handler methods to register
-  serviceName: string; // Service name for receiver
-};
+interface GoImportGroupProps {
+  paths: string[]; // import paths; sorted internally
+}
 ```
 
 #### Usage
 
 ```typescript
-import { GoRouteRegistrationComponent } from "./src/components/go/GoRouteRegistrationComponent.js";
+import { GoImportGroup } from "./src/components/go/GoImportGroup.js";
 
-const output = render(
-  <GoRouteRegistrationComponent
-    serviceName="UserService"
-    handlers={[
-      { name: "GetUserHandler", route: "/users/{id}" },
-      { name: "CreateUserHandler", route: "/users" }
-    ]}
-  />
-);
+const output = renderGoContent(<GoImportGroup paths={["net/http", "context"]} />);
 ```
 
 #### Generated Go Code
 
+One path renders a single statement; several render a sorted grouped
+block (what `goimports -l` expects):
+
 ```go
-// RegisterRoutes registers all handlers with given router
-func (s *UserService) RegisterRoutes(mux *http.ServeMux) {
-  mux.HandleFunc("/users/{id}", s.GetUserHandler)
-  mux.HandleFunc("/users", s.CreateUserHandler)
-}
+import (
+	"context"
+	"net/http"
+)
 ```
 
 #### Features
 
-- **ServeMux Integration:** Standard library HTTP routing
-- **Receiver Pattern:** Method receiver for service struct
-- **Multiple Routes:** Registers all handlers in one function
+- **goimports-native:** raw e2e output passes `goimports -l` untouched
+- **Usage-driven:** callers pass exactly the paths consumed by the file
+- **Component composition:** alloy `Indent` + `For`; route registration
+  itself lives in `GoHandlerStub` (one mux pattern per route, method-dispatched)
 
 ---
 

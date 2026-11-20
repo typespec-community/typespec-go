@@ -71,6 +71,33 @@ Generated Go packages mirror your TypeSpec namespaces: a namespace
 `Vendor.Service.API` becomes package path `vendor/service/api`. Output goes to
 `emitter-output-dir` (a standard TypeSpec emitter option).
 
+### Emitter options
+
+| Option               | Values                  | Effect                                                          |
+| -------------------- | ----------------------- | --------------------------------------------------------------- |
+| `emitter-output-dir` | any path                | Where generated packages are written (standard TypeSpec option) |
+| `go-module-path`     | Go module path          | Emits a `go.mod` at the `@go.pkg` base (e.g. `example.com/api`) |
+| `visibility-mode`    | `all` (default), `read` | `read` drops properties without `Lifecycle.Read` from structs   |
+
+### Decorators (`using TypeSpec.Go;`)
+
+| Decorator           | Target                           | Effect                                                        |
+| ------------------- | -------------------------------- | ------------------------------------------------------------- |
+| `@go.pkg("path")`   | namespace                        | Output package path (versioned namespaces → sibling packages) |
+| `@go.name("X")`     | model, property, enum, operation | Override the generated Go identifier                          |
+| `@go.type("T")`     | any type                         | Override the generated Go type expression                     |
+| `@go.structTag(…)`  | property                         | Custom struct tag (string or Record form)                     |
+| `@go.nullable(…)`   | property                         | Optional scalar as pointer or flat zero value                 |
+| `@go.enumMode(…)`   | enum                             | String constants, `iota` group, or plain names                |
+| `@error` (TypeSpec) | model                            | Adds `Error() string`, satisfying Go's `error`                |
+
+### Naming contract
+
+Each package generates a `<Pkg>Service` struct owning the HTTP handlers
+(receiver `s`) implementing the `<Pkg>API` contract interface; enum and
+error methods use receiver `e`. Full mapping rules, union shapes, and
+worked examples live in [docs/MAPPING-GUIDE.md](./docs/MAPPING-GUIDE.md).
+
 ---
 
 ## Architecture
@@ -186,7 +213,7 @@ Verified 2026-11-13 (HEAD `8205ea3`). Full inventory with evidence:
 - [FEATURES.md](FEATURES.md) — Honest feature inventory with evidence
 - [TODO_LIST.md](TODO_LIST.md) — Current actionable work
 - [CHANGELOG.md](CHANGELOG.md) — What shipped, when
-- [COMPONENTS.md](COMPONENTS.md) — Component reference (12 primary + 5 helpers)
+- [COMPONENTS.md](COMPONENTS.md) — Component reference (11 primary + 5 core helpers)
 - [docs/](docs/) — Setup, API reference, and type mapping guides
 
 ---
