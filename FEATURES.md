@@ -72,8 +72,6 @@
 
 | Feature                                    | Status                | Evidence                                       | Notes                                    |
 | ------------------------------------------ | --------------------- | ---------------------------------------------- | ---------------------------------------- |
-| Model composition (`extends` → embedding)  | 🟢 `FULLY_FUNCTIONAL` | `src/test/model-composition.test.ts`           |                                          |
-| Cyclic dependency handling                 | 🟢 `FULLY_FUNCTIONAL` | `src/test/model-composition.test.ts`           | Pointer-breaking for recursive types     |
 | Template instances → argument types        | 🟢 `FULLY_FUNCTIONAL` | `TypeExpression` unwraps templateMapper args   | Instances map to their argument type     |
 | Go generics (`[T any]`) emission           | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-generics.test.tsx`; e2e `Page<T>` | Constraints emit as `any` (declare-only) |
 | Struct-property arrays (`T[]`, `string[]`) | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-generics.test.tsx`; e2e           | First struct-level array support         |
@@ -82,7 +80,7 @@
 
 | Feature                              | Status                | Evidence                                                | Notes                                                    |
 | ------------------------------------ | --------------------- | ------------------------------------------------------- | -------------------------------------------------------- |
-| Test infrastructure (vitest)         | 🟢 `FULLY_FUNCTIONAL` | 210/210 tests, 45 files                                 | Alloy matchers via `src/test/vitest.setup.ts`            |
+| Test infrastructure (vitest)         | 🟢 `FULLY_FUNCTIONAL` | 182/182 tests, 41 files                                 | Alloy matchers via `src/test/vitest.setup.ts`            |
 | Compile-level conformance (e2e)      | 🟢 `FULLY_FUNCTIONAL` | `scripts/test-e2e-cli.mjs`: `go build ./...` per module | Raw output; all three examples, every commit             |
 | Native gofmt conformance (e2e)       | 🟢 `FULLY_FUNCTIONAL` | `gofmt -l` clean on raw output; `-w` step removed       |                                                          |
 | Goimports conformance (e2e)          | 🟢 `FULLY_FUNCTIONAL` | `goimports -l` gate in e2e; `GoImportGroup` component   | Import blocks emitted goimports-native (sorted group)    |
@@ -112,7 +110,9 @@
 - `MergePatchUpdate<T>` mapping is name-suffix based (compiler instances
   carry no templateMapper); a user model genuinely named
   `XMergePatchUpdate` would unwrap — documented tradeoff.
-- Handlers are compile-verified stubs (`StatusNotImplemented`); runtime
-  behavior testing is queued.
+- Model composition (`extends` → embedding) and cyclic
+  pointer-breaking are NOT implemented in the live emitter; the only
+  prior evidence was a removed ghost-generator test suite (2026-11-20
+  sweep). Re-implement against the real pipeline when needed.
 - CI docs-gates module caching (install cost ~seconds) deliberately
   deferred.

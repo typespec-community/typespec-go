@@ -428,9 +428,9 @@ bunx vitest run src/test/integration-*.test.ts
 bunx vitest run src/test/integration-*.test.ts
 ```
 
-### **Test Status (Current: 2026-11-19, CI run 44608275473 on HEAD `3bed34a`)**
+### **Test Status (Current: 2026-11-20, post ghost-sweep)**
 
-- **Pass Rate:** 206/206 tests passing, 43 files (`npm run test:typespec`)
+- **Pass Rate:** 182/182 tests passing, 41 files (`npm run test:typespec`)
 - **✅ Real TypeSpec integration:** `src/test/integration-typespec-compiler-working.test.ts` (createTester API) + 4 more integration suites
 - **✅ Production type safety:** zero `any` in `src/components`, `src/domain`, `src/emitter`
 - **✅ CI green:** full pipeline (build, tests, lint, strict check, dprint, CLI e2e, docs-gates) — TS pinned to 6.0.2, alloy 0.26
@@ -737,7 +737,7 @@ order lives in docs/planning/2026-11-19_20-36_PARETO-CI-RECOVERY-AND-PRODUCT-COM
 - **TypeScript Strict:** zero errors required (`build:check` passes at HEAD)
 - **ESLint:** zero errors required (0/0 at HEAD)
 - **Alloy Components:** 100% component-based, zero string generation
-- **Tests:** 100% pass rate (206/206)
+- **Tests:** 100% pass rate (182/182)
 
 ---
 
@@ -849,7 +849,7 @@ Before committing ANY changes, verify:
 - **100% Component-Based:** All Go code generated through Alloy components
 - **Zero String Generation:** No template literals or string concatenation for code
 - **Type Safety:** zero TypeScript errors required before merge (strict-check debt tracked in TODO_LIST)
-- **Test Success:** 100% test pass rate (206/206)
+- **Test Success:** 100% test pass rate (182/182)
 - **Performance:** benchmark suite pending (ROADMAP)
 
 ---

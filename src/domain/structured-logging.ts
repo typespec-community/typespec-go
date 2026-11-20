@@ -17,7 +17,6 @@ export enum LogContext {
   TYPESPEC_INTEGRATION = "typespec-integration",
   GO_GENERATION = "go-generation",
   ERROR_HANDLING = "error-handling",
-  BDD_FRAMEWORK = "bdd-framework",
   DOMAIN_VALIDATION = "domain-validation",
   SYSTEM_PERFORMANCE = "system-performance",
 }
@@ -208,7 +207,6 @@ export class DevelopmentLogger {
     [LogContext.TYPESPEC_INTEGRATION]: "🔍",
     [LogContext.GO_GENERATION]: "🔧",
     [LogContext.ERROR_HANDLING]: "❌",
-    [LogContext.BDD_FRAMEWORK]: "🧪",
     [LogContext.DOMAIN_VALIDATION]: "📋",
     [LogContext.SYSTEM_PERFORMANCE]: "⚡",
   };

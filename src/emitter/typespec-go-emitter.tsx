@@ -113,7 +113,7 @@ export function collectTypesByNamespace(globalNamespace: Namespace): Map<string,
       });
       continue;
     }
-    processNestedNamespace(namespace, namespaceGroups, ensureGroup);
+    processNestedNamespace(namespace, ensureGroup);
   }
 
   return namespaceGroups;
@@ -124,7 +124,6 @@ export function collectTypesByNamespace(globalNamespace: Namespace): Map<string,
  */
 function processNestedNamespace(
   namespace: Namespace,
-  namespaceGroups: Map<string, NamespaceGroup>,
   ensureGroup: (name: string, namespace?: Namespace) => NamespaceGroup,
 ): void {
   // Collect models from this namespace
@@ -154,7 +153,7 @@ function processNestedNamespace(
   // Recurse into nested namespaces
   if (namespace.namespaces && namespace.namespaces.size > 0) {
     for (const nestedNs of namespace.namespaces.values()) {
-      processNestedNamespace(nestedNs, namespaceGroups, ensureGroup);
+      processNestedNamespace(nestedNs, ensureGroup);
     }
   }
 }
@@ -198,6 +197,141 @@ async function writeRenderedOutput(
 /**
  * Main TypeSpec emitter entry point
  */
+interface ParsedEmitterOptions {
+  goModulePath: string | undefined;
+  visibilityMode: VisibilityMode;
+}
+
+/**
+ * Parse and validate emitter options (tspconfig.yaml / --option flags).
+ * Throws a fix-upfront error for unsupported visibility modes.
+ */
+function parseEmitterOptions(context: EmitContext): ParsedEmitterOptions {
+  const rawModulePath: unknown = context.options["go-module-path"];
+  const goModulePath =
+    typeof rawModulePath === "string" && rawModulePath !== "" ? rawModulePath : undefined;
+
+  const rawVisibilityMode: unknown = context.options["visibility-mode"];
+  const candidateMode: string =
+    typeof rawVisibilityMode === "string" && rawVisibilityMode !== "" ? rawVisibilityMode : "all";
+  if (!isVisibilityMode(candidateMode)) {
+    throw new Error(
+      `Invalid emitter option 'visibility-mode': "${candidateMode}" is not supported. ` +
+        `Expected one of: ${VISIBILITY_MODES.join(", ")}. ` +
+        `Fix the option in tspconfig.yaml or the --option flag.`,
+    );
+  }
+  return { goModulePath, visibilityMode: candidateMode };
+}
+
+interface NamespaceTypeCounts {
+  models: number;
+  enums: number;
+  unions: number;
+  operations: number;
+}
+
+/**
+ * Generate one namespace's Go package: resolve the output directory
+ * (@go.pkg override or namespace path), render the component tree, and
+ * write every file. Errors are rethrown with the namespace and package
+ * names (original error preserved as `cause`).
+ */
+async function generateNamespacePackage(
+  program: EmitContext["program"],
+  context: EmitContext,
+  namespaceName: string,
+  group: NamespaceGroup,
+  options: ParsedEmitterOptions,
+): Promise<NamespaceTypeCounts> {
+  const { namespace, models, enums, unions, operations } = group;
+  const packageName = namespaceToPackageName(namespaceName);
+
+  try {
+    // @go.pkg overrides the output package path for this namespace
+    const goPkgPath = namespace ? getGoPackageName(program, namespace) : undefined;
+    const outputDirectory = goPkgPath
+      ? join(context.emitterOutputDir, ...goPkgPath.split("/").map((p) => p.toLowerCase()))
+      : getOutputDirectory(namespace, context);
+    const packageDocumentation = `Go types from TypeSpec namespace: ${namespaceName}`;
+
+    Logger.info(
+      LogContext.TYPESPEC_INTEGRATION,
+      `Generating package '${packageName}' from namespace '${namespaceName}'`,
+      {
+        outputDirectory,
+        modelCount: models.length,
+        enumCount: enums.length,
+        unionCount: unions.length,
+        operationCount: operations.length,
+      },
+    );
+
+    if (models.length > 0) {
+      Logger.debug(LogContext.GO_GENERATION, "Models to generate", {
+        models: models.map((m) => m.name),
+      });
+    }
+    if (enums.length > 0) {
+      Logger.debug(LogContext.GO_GENERATION, "Enums to generate", {
+        enums: enums.map((e) => e.name),
+      });
+    }
+    if (unions.length > 0) {
+      Logger.debug(LogContext.GO_GENERATION, "Unions to generate", {
+        unions: unions.map((u) => u.name || "Anonymous"),
+      });
+    }
+    if (operations.length > 0) {
+      Logger.debug(LogContext.GO_GENERATION, "Operations to generate", {
+        operations: operations.map((o) => o.name),
+      });
+    }
+
+    // Generate JSX Output using professional component architecture
+    const writtenFiles = await writeRenderedOutput(
+      program,
+      <Output>
+        <GoPackageDirectory
+          models={models}
+          enums={enums}
+          unions={unions}
+          operations={operations}
+          packageName={packageName}
+          packageDocumentation={packageDocumentation}
+          program={program}
+          modulePath={options.goModulePath}
+          generateGoMod={options.goModulePath !== undefined}
+          visibilityMode={options.visibilityMode}
+        />
+      </Output>,
+      outputDirectory,
+    );
+
+    Logger.info(LogContext.GO_GENERATION, `Package '${packageName}' written`, {
+      outputDirectory,
+      files: writtenFiles,
+      fileCount: writtenFiles.length,
+    });
+
+    return {
+      models: models.length,
+      enums: enums.length,
+      unions: unions.length,
+      operations: operations.length,
+    };
+  } catch (error) {
+    throw new Error(
+      `Failed to generate Go package for namespace '${namespaceName}' (package '${packageName}'): ` +
+        `${error instanceof Error ? error.message : String(error)}`,
+      { cause: error },
+    );
+  }
+}
+
+/**
+ * Main TypeSpec emitter entry point
+ */
 export async function $onEmit(context: EmitContext): Promise<void> {
   try {
     const program = context.program;
@@ -207,21 +341,7 @@ export async function $onEmit(context: EmitContext): Promise<void> {
       globalNamespace: globalNamespace.name,
     });
 
-    const rawModulePath: unknown = context.options["go-module-path"];
-    const goModulePath =
-      typeof rawModulePath === "string" && rawModulePath !== "" ? rawModulePath : undefined;
-
-    const rawVisibilityMode: unknown = context.options["visibility-mode"];
-    const candidateMode: string =
-      typeof rawVisibilityMode === "string" && rawVisibilityMode !== "" ? rawVisibilityMode : "all";
-    if (!isVisibilityMode(candidateMode)) {
-      throw new Error(
-        `Invalid emitter option 'visibility-mode': "${candidateMode}" is not supported. ` +
-          `Expected one of: ${VISIBILITY_MODES.join(", ")}. ` +
-          `Fix the option in tspconfig.yaml or the --option flag.`,
-      );
-    }
-    const visibilityMode: VisibilityMode = candidateMode;
+    const options = parseEmitterOptions(context);
 
     // Collect all types grouped by namespace
     const namespaceGroups = collectTypesByNamespace(globalNamespace);
@@ -236,16 +356,11 @@ export async function $onEmit(context: EmitContext): Promise<void> {
       `Processing ${namespaceGroups.size} namespace groups`,
     );
 
-    // Track statistics
-    let totalModels = 0;
-    let totalEnums = 0;
-    let totalUnions = 0;
-    let totalOperations = 0;
-
-    // Process each namespace as separate Go package
+    // Process each namespace as a separate Go package
+    const totals: NamespaceTypeCounts = { models: 0, enums: 0, unions: 0, operations: 0 };
     for (const [namespaceName, group] of namespaceGroups) {
-      const { namespace, models, enums, unions, operations } = group;
-      const typeCount = models.length + enums.length + unions.length + operations.length;
+      const typeCount =
+        group.models.length + group.enums.length + group.unions.length + group.operations.length;
 
       if (typeCount === 0) {
         Logger.warn(
@@ -255,94 +370,25 @@ export async function $onEmit(context: EmitContext): Promise<void> {
         continue;
       }
 
-      const packageName = namespaceToPackageName(namespaceName);
-
-      try {
-        // @go.pkg overrides the output package path for this namespace
-        const goPkgPath = namespace ? getGoPackageName(program, namespace) : undefined;
-        const outputDirectory = goPkgPath
-          ? join(context.emitterOutputDir, ...goPkgPath.split("/").map((p) => p.toLowerCase()))
-          : getOutputDirectory(namespace, context);
-        const packageDocumentation = `Go types from TypeSpec namespace: ${namespaceName}`;
-
-        Logger.info(
-          LogContext.TYPESPEC_INTEGRATION,
-          `Generating package '${packageName}' from namespace '${namespaceName}'`,
-          {
-            outputDirectory,
-            typeCount,
-            modelCount: models.length,
-            enumCount: enums.length,
-            unionCount: unions.length,
-            operationCount: operations.length,
-          },
-        );
-
-        if (models.length > 0) {
-          Logger.debug(LogContext.GO_GENERATION, "Models to generate", {
-            models: models.map((m) => m.name),
-          });
-          totalModels += models.length;
-        }
-        if (enums.length > 0) {
-          Logger.debug(LogContext.GO_GENERATION, "Enums to generate", {
-            enums: enums.map((e) => e.name),
-          });
-          totalEnums += enums.length;
-        }
-        if (unions.length > 0) {
-          Logger.debug(LogContext.GO_GENERATION, "Unions to generate", {
-            unions: unions.map((u) => u.name || "Anonymous"),
-          });
-          totalUnions += unions.length;
-        }
-        if (operations.length > 0) {
-          Logger.debug(LogContext.GO_GENERATION, "Operations to generate", {
-            operations: operations.map((o) => o.name),
-          });
-          totalOperations += operations.length;
-        }
-
-        // Generate JSX Output using professional component architecture
-        const writtenFiles = await writeRenderedOutput(
-          program,
-          <Output>
-            <GoPackageDirectory
-              models={models}
-              enums={enums}
-              unions={unions}
-              operations={operations}
-              packageName={packageName}
-              packageDocumentation={packageDocumentation}
-              program={program}
-              modulePath={goModulePath}
-              generateGoMod={goModulePath !== undefined}
-              visibilityMode={visibilityMode}
-            />
-          </Output>,
-          outputDirectory,
-        );
-
-        Logger.info(LogContext.GO_GENERATION, `Package '${packageName}' written`, {
-          outputDirectory,
-          files: writtenFiles,
-          fileCount: writtenFiles.length,
-        });
-      } catch (error) {
-        throw new Error(
-          `Failed to generate Go package for namespace '${namespaceName}' (package '${packageName}'): ` +
-            `${error instanceof Error ? error.message : String(error)}`,
-          { cause: error },
-        );
-      }
+      const counts = await generateNamespacePackage(
+        program,
+        context,
+        namespaceName,
+        group,
+        options,
+      );
+      totals.models += counts.models;
+      totals.enums += counts.enums;
+      totals.unions += counts.unions;
+      totals.operations += counts.operations;
     }
 
     Logger.info(LogContext.TYPESPEC_INTEGRATION, "TypeSpec Go emission completed successfully", {
       namespaceCount: namespaceGroups.size,
-      totalModels,
-      totalEnums,
-      totalUnions,
-      totalOperations,
+      totalModels: totals.models,
+      totalEnums: totals.enums,
+      totalUnions: totals.unions,
+      totalOperations: totals.operations,
     });
   } catch (error) {
     Logger.error(

@@ -30,7 +30,6 @@ export const $lib = {
     "discriminated-unions": "Impossible states unrepresentable",
     "proper-uint-usage": "Never-negative values use unsigned integers",
     "enums-instead-of-booleans": "Clear state representation",
-    "unified-errors": "Single source of truth for error handling",
     "structured-logging": "Production-ready observability with context",
     "domain-driven": "Business logic encoded in type system",
     "component-architecture": "Modern, maintainable JSX-based generation",
