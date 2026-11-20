@@ -16,30 +16,31 @@
 
 ## Core Type System
 
-| Feature                                        | Status                | Evidence                                                  | Notes                                           |
-| ---------------------------------------------- | --------------------- | --------------------------------------------------------- | ----------------------------------------------- |
-| Basic model → Go struct                        | 🟢 `FULLY_FUNCTIONAL` | `src/test/struct-isolated.test.tsx`                       | JSON-tagged, gofmt-aligned columns              |
-| Scalar mapping (int8-64, uint8-64, float32/64) | 🟢 `FULLY_FUNCTIONAL` | `src/test/extended-scalars.test.tsx`                      | Kernel: `src/domain/go-primitive-types.ts`      |
-| Optional props → pointers                      | 🟢 `FULLY_FUNCTIONAL` | `src/test/pointer-types.test.tsx`                         | `*T` + `omitempty`; override via `@go.nullable` |
-| JSON tag generation                            | 🟢 `FULLY_FUNCTIONAL` | `src/test/components-basic.test.tsx`                      | PascalCase → json name                          |
-| Array/slice types                              | 🟢 `FULLY_FUNCTIONAL` | `src/test/array-type-generation.test.ts`                  | `T[]` → `[]T`                                   |
-| Map/record types                               | 🟢 `FULLY_FUNCTIONAL` | `src/test/map-type-generation.test.ts`                    | `Record<K,V>` → `map[K]V`                       |
-| Time/duration types                            | 🟢 `FULLY_FUNCTIONAL` | `src/test/extended-scalars.test.tsx`                      | `utcDateTime` → `time.Time`, auto-import        |
-| Enum generation                                | 🟢 `FULLY_FUNCTIONAL` | `src/test/enum-union-integration.test.tsx`                | String + iota consts; `IsValid`/`String`        |
-| Union generation + real unmarshaler            | 🟢 `FULLY_FUNCTIONAL` | e2e crud `unions.go` compiles; `UnmarshalX` uses json+fmt | Discriminated unions; cross-file refs           |
-| `@doc` decorator support                       | 🟢 `FULLY_FUNCTIONAL` | `src/test/doc-decorator-support.test.tsx`                 | No `// //` double-slash bug                     |
-| Native gofmt-clean output                      | 🟢 `FULLY_FUNCTIONAL` | e2e `gofmt -l` green on RAW output (no normalize step)    | Column alignment + decl separators              |
+| Feature                                        | Status                | Evidence                                                        | Notes                                                    |
+| ---------------------------------------------- | --------------------- | --------------------------------------------------------------- | -------------------------------------------------------- |
+| Basic model → Go struct                        | 🟢 `FULLY_FUNCTIONAL` | `src/test/struct-isolated.test.tsx`                             | JSON-tagged, gofmt-aligned columns                       |
+| Scalar mapping (int8-64, uint8-64, float32/64) | 🟢 `FULLY_FUNCTIONAL` | `src/test/extended-scalars.test.tsx`                            | Kernel: `src/domain/go-primitive-types.ts`               |
+| Optional props → pointers                      | 🟢 `FULLY_FUNCTIONAL` | `src/test/pointer-types.test.tsx`                               | `*T` + `omitempty`; override via `@go.nullable`          |
+| JSON tag generation                            | 🟢 `FULLY_FUNCTIONAL` | `src/test/components-basic.test.tsx`                            | PascalCase → json name                                   |
+| Array/slice types                              | 🟢 `FULLY_FUNCTIONAL` | `src/test/array-type-generation.test.ts`                        | `T[]` → `[]T`                                            |
+| Map/record types                               | 🟢 `FULLY_FUNCTIONAL` | `src/test/map-type-generation.test.ts`                          | `Record<K,V>` → `map[K]V`                                |
+| Time/duration types                            | 🟢 `FULLY_FUNCTIONAL` | `src/test/extended-scalars.test.tsx`                            | `utcDateTime` → `time.Time`, auto-import                 |
+| Enum generation                                | 🟢 `FULLY_FUNCTIONAL` | `src/test/enum-union-integration.test.tsx`                      | String + iota consts; `IsValid`/`String`                 |
+| Union generation + real unmarshaler            | 🟢 `FULLY_FUNCTIONAL` | e2e crud + versioned `unions.go` compile; `UnmarshalX` json+fmt | Discriminated unions; cross-file refs; version isolation |
+| `@doc` decorator support                       | 🟢 `FULLY_FUNCTIONAL` | `src/test/doc-decorator-support.test.tsx`                       | No `// //` double-slash bug                              |
+| Native gofmt-clean output                      | 🟢 `FULLY_FUNCTIONAL` | e2e `gofmt -l` green on RAW output (no normalize step)          | Column alignment + decl separators                       |
 
 ## Code Organization
 
-| Feature                     | Status                | Evidence                                     | Notes                                        |
-| --------------------------- | --------------------- | -------------------------------------------- | -------------------------------------------- |
-| `go.mod` generation         | 🟢 `FULLY_FUNCTIONAL` | `go-module-path` emitter option; e2e builds  | Plain module text, no package clause         |
-| Package directory structure | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-package-directory.test.tsx`     | Per-namespace packages                       |
-| Interface declaration       | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-interface-declaration.test.tsx` | `<Pkg>API` contract; `<Pkg>Service` handlers |
-| Namespace → package mapping | 🟢 `FULLY_FUNCTIONAL` | e2e both examples                            | `Vendor.Service` → nested packages           |
-| Package doc comment         | 🟢 `FULLY_FUNCTIONAL` | models.go header above package clause        | One doc block per package, not per type      |
-| Generation summary log      | 🟢 `FULLY_FUNCTIONAL` | INFO log: output dir + file list per package |                                              |
+| Feature                                 | Status                | Evidence                                     | Notes                                                                                                    |
+| --------------------------------------- | --------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `go.mod` generation                     | 🟢 `FULLY_FUNCTIONAL` | `go-module-path` emitter option; e2e builds  | Plain module text, no package clause                                                                     |
+| Package directory structure             | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-package-directory.test.tsx`     | Per-namespace packages                                                                                   |
+| Interface declaration                   | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-interface-declaration.test.tsx` | `<Pkg>API` contract; `<Pkg>Service` handlers                                                             |
+| Namespace → package mapping             | 🟢 `FULLY_FUNCTIONAL` | e2e all three examples                       | `Vendor.Service` → nested packages                                                                       |
+| Versioned namespaces → sibling packages | 🟢 `FULLY_FUNCTIONAL` | `examples/versioned/main.tsp` + e2e          | `Petstore.V1`/`.V2` → `v1`/`v2` under one `@pkg` base, one `go.mod`; V2-only variants never leak into V1 |
+| Package doc comment                     | 🟢 `FULLY_FUNCTIONAL` | models.go header above package clause        | One doc block per package, not per type                                                                  |
+| Generation summary log                  | 🟢 `FULLY_FUNCTIONAL` | INFO log: output dir + file list per package |                                                                                                          |
 
 ## HTTP & APIs
 
@@ -80,8 +81,8 @@
 
 | Feature                              | Status                | Evidence                                                | Notes                                                    |
 | ------------------------------------ | --------------------- | ------------------------------------------------------- | -------------------------------------------------------- |
-| Test infrastructure (vitest)         | 🟢 `FULLY_FUNCTIONAL` | 190/190 tests, 39 files                                 | Alloy matchers via `src/test/vitest.setup.ts`            |
-| Compile-level conformance (e2e)      | 🟢 `FULLY_FUNCTIONAL` | `scripts/test-e2e-cli.mjs`: `go build ./...` per module | Raw output; both examples, every commit                  |
+| Test infrastructure (vitest)         | 🟢 `FULLY_FUNCTIONAL` | 206/206 tests, 43 files                                 | Alloy matchers via `src/test/vitest.setup.ts`            |
+| Compile-level conformance (e2e)      | 🟢 `FULLY_FUNCTIONAL` | `scripts/test-e2e-cli.mjs`: `go build ./...` per module | Raw output; all three examples, every commit             |
 | Native gofmt conformance (e2e)       | 🟢 `FULLY_FUNCTIONAL` | `gofmt -l` clean on raw output; `-w` step removed       |                                                          |
 | Coverage ratchet                     | 🟢 `FULLY_FUNCTIONAL` | `vitest.config.js` thresholds 45/35/53/45               | Documented in CONTRIBUTING.md                            |
 | Benchmarks                           | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-generation.bench.tsx`; e2e wall-clock log  |                                                          |

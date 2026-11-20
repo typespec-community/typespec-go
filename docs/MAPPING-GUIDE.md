@@ -61,15 +61,20 @@ instantiation site.
 
 ## Named unions
 
-`union PaymentMethod { card: Card, … }` → sealed interface pattern:
+`union PaymentMethod { creditCard: CreditCard, … }` → sealed interface
+pattern with a `GetType()` discriminator accessor and a JSON unmarshaler
+(`UnmarshalPaymentMethod`): probe struct reads the discriminator,
+per-variant decode returns the concrete variant, unknown discriminators
+error with `fmt.Errorf`:
 
 ```go
-type PaymentMethod interface { isPaymentMethod() }
-type Card struct { … }
-func (Card) isPaymentMethod()
+type PaymentMethod interface { GetType() string }
+func (CreditCard) GetType() string { return "creditCard" }
+func UnmarshalPaymentMethod(data []byte) (any, error)
 ```
 
-With a discriminator, a `GetType() string` accessor is generated.
+Discriminator strings are the variant names. Working example:
+[examples/crud/main.tsp](../examples/crud/main.tsp).
 
 ## Enums
 
@@ -91,6 +96,13 @@ so the type satisfies Go's `error` interface.
 
 `namespace Vendor.Service.API` → package path `vendor/service/api`. Override
 with `@go.pkg("github.com/org/repo/custom")`.
+
+Versioned namespaces each become their own package: `namespace
+Petstore.V1` + `namespace Petstore.V2` → sibling packages `v1` and `v2`
+under the shared `@go.pkg` base, with ONE `go.mod` at the base. Each
+version's types are fully independent — a union variant added in V2
+never leaks into V1's generated code. Working example:
+[examples/versioned/main.tsp](../examples/versioned/main.tsp).
 
 ## Naming conventions
 

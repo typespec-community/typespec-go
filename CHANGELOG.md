@@ -1,6 +1,6 @@
 # TypeSpec Go Emitter - Changelog
 
-**Last Updated:** 2026-11-19
+**Last Updated:** 2026-11-20
 
 ---
 
@@ -9,6 +9,14 @@
 Post-1.0.0 sprint (Pareto Plan II): generated Go now compiles, the HTTP
 product chain is real, decorator modes are live.
 
+- **Versioned-namespace example + discriminated-union proof:** the new
+  third e2e example (`examples/versioned/main.tsp`) compiles
+  `Petstore.V1` + `Petstore.V2` into sibling packages `v1`/`v2` under one
+  shared `@pkg` base (single `go.mod`) and proves version isolation:
+  V2's added `Lizard` union variant and `capacity` field never leak into
+  V1's generated code (negative needle + per-file assertions in the e2e).
+  MAPPING-GUIDE § Named unions corrected to the real shape
+  (`GetType()` + `UnmarshalX`, no `isPaymentMethod`).
 - **Compile-level Go conformance:** generated output passes
   `go build ./...` and native `gofmt -l` on RAW output for both examples.
   Struct column alignment, iota const groups, union `UnmarshalX`

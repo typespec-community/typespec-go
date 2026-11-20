@@ -44,7 +44,11 @@ rmSync(outputDir, { recursive: true, force: true });
 mkdirSync(outputDir, { recursive: true });
 
 const tspBin = join(repoRoot, "node_modules", ".bin", "tsp");
-const examples = ["examples/basic/main.tsp", "examples/crud/main.tsp"];
+const examples = [
+	"examples/basic/main.tsp",
+	"examples/crud/main.tsp",
+	"examples/versioned/main.tsp",
+];
 const generatedFiles = [];
 const seenGoFiles = new Set();
 const moduleRoots = [];
@@ -105,6 +109,14 @@ function collectGoFilesInto(dir, into) {
 	}
 }
 
+function collectGoModFilesInto(dir, into) {
+	for (const entry of readdirSync(dir).toSorted()) {
+		const full = join(dir, entry);
+		if (statSync(full).isDirectory()) collectGoModFilesInto(full, into);
+		else if (entry === "go.mod") into.push(full);
+	}
+}
+
 if (generatedFiles.length === 0) fail("no .go files generated");
 
 const content = generatedFiles.map((f) => readFileSync(f, "utf8")).join("\n");
@@ -134,6 +146,13 @@ const expectations = [
 	],
 	["type Page[T any] struct", true, "template model emits as Go generic"],
 	["Items []T", true, "template parameter type resolves inside generic struct"],
+	// T17 example #3: versioned namespaces + discriminated unions
+	["package v1", true, "versioned namespace V1 becomes package v1"],
+	["package v2", true, "versioned namespace V2 becomes package v2"],
+	["type Pet interface", true, "discriminated union emits sealed interface"],
+	["func UnmarshalPet(data []byte)", true, "discriminated union emits unmarshaler"],
+	['case "lizard"', true, "V2-only union variant discriminator registered"],
+	["Capacity  int32", true, "V2-only field generated"],
 ];
 
 for (const [needle, expected, why] of expectations) {
@@ -141,6 +160,25 @@ for (const [needle, expected, why] of expectations) {
 	if (expected && !present) fail(`generated output missing '${needle}' (${why})`);
 	if (!expected && present) fail(`generated output must not contain '${needle}' (${why})`);
 }
+
+// T17: version isolation — each version's unions.go must know exactly its own
+// variant set (V1 predates Lizard), and the shared @pkg base must yield ONE
+// module root with both version packages inside it.
+const unionsByPath = new Map(
+	generatedFiles.filter((f) => f.endsWith("unions.go")).map((f) => [f, readFileSync(f, "utf8")]),
+);
+const v1Unions = [...unionsByPath].find(([f]) => f.includes("/api/v1/unions.go"));
+const v2Unions = [...unionsByPath].find(([f]) => f.includes("/api/v2/unions.go"));
+if (!v1Unions || !v2Unions) fail("versioned unions.go files missing under /api/v1 and /api/v2");
+if (!v1Unions[1].includes('case "dog"')) fail("v1 unions.go missing dog variant");
+if (v1Unions[1].includes("lizard"))
+	fail("v1 unions.go must not contain lizard (V1 predates the variant)");
+if (!v2Unions[1].includes('case "lizard"')) fail("v2 unions.go missing lizard variant");
+const versionedOutput = join(outputDir, "examples_versioned_main.tsp");
+const versionedGoMods = [];
+collectGoModFilesInto(versionedOutput, versionedGoMods);
+if (versionedGoMods.length !== 1)
+	fail(`expected exactly 1 go.mod in versioned example, found ${versionedGoMods.length}`);
 
 console.log(`✅ e2e-cli: tsp compile produced ${generatedFiles.length} Go file(s):`);
 for (const file of generatedFiles) console.log(`   ${file}`);
