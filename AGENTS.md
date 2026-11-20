@@ -323,8 +323,7 @@ src/
 │   └── TypeSpecContext.tsx           # TypeSpec compiler context
 ├── utils/              # Utilities SUPPORTING ALLOY COMPONENTS
 │   ├── strings.ts                     # String utilities (NO CODE GEN)
-│   ├── typespec-utils.ts              # TypeSpec helpers
-│   └── bdd-framework.ts              # Testing framework
+│   └── typespec-utils.ts              # TypeSpec helpers
 └── emitter/            # Main AssetEmitter - ORCHESTRATES ALLOY COMPONENTS
     └── typespec-go-emitter.tsx         # Primary export (Alloy orchestration)
 ```
@@ -763,7 +762,7 @@ order lives in docs/planning/2026-11-19_20-36_PARETO-CI-RECOVERY-AND-PRODUCT-COM
 
 - `src/test/components-basic.test.tsx` - **Component testing pattern**
 - `src/test/integration-working-e2e.test.ts` - **E2E Alloy component integration**
-- `src/test/typespec-integration-basic.test.ts` - **TypeSpec + Alloy integration**
+- `src/test/go-import-group.test.tsx` - **Component test for the import-block component**
 - `src/components/go/index.ts` - **Component exports (all components re-exported)**
 
 ### **Type Integration**
@@ -776,7 +775,7 @@ order lives in docs/planning/2026-11-19_20-36_PARETO-CI-RECOVERY-AND-PRODUCT-COM
 
 - `src/test/integration-working-e2e.test.ts` - E2E workflow
 - `src/test/components-basic.test.tsx` - Component testing pattern
-- `src/test/typespec-integration-basic.test.ts` - TypeSpec integration
+- `src/test/go-pkg-error-context.test.ts` - @go.pkg namespace-context error proof
 
 ---
 
