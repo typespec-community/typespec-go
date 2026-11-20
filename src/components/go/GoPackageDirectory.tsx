@@ -15,6 +15,7 @@ import { GoUnionDeclaration } from "./GoUnionDeclaration.js";
 import { GoModFile } from "./GoModFile.js";
 import { GoInterfaceDeclaration } from "./GoInterfaceDeclaration.js";
 import { GoHandlerStub } from "./GoHandlerStub.js";
+import { GoImportGroup } from "./GoImportGroup.js";
 import type { VisibilityMode } from "../../domain/visibility.js";
 import { buildPackageFileLayout } from "../../domain/package-layout.js";
 
@@ -163,9 +164,7 @@ export function GoPackageDirectory({
           <SourceFile path="unions.go">
             {layout.imports.unionsJsonFmt && (
               <>
-                <SingleImportStatement path="encoding/json" />
-                {"\n"}
-                <SingleImportStatement path="fmt" />
+                <GoImportGroup paths={["encoding/json", "fmt"]} />
                 {"\n\n"}
               </>
             )}

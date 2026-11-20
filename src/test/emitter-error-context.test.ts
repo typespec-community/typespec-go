@@ -13,11 +13,15 @@ const { componentFailure } = vi.hoisted(() => ({
   componentFailure: new Error("component exploded"),
 }));
 
-vi.mock("../components/go/GoPackageDirectory.js", () => ({
-  GoPackageDirectory: () => {
-    throw componentFailure;
-  },
-}));
+vi.mock("../components/go/GoPackageDirectory.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../components/go/GoPackageDirectory.js")>();
+  return {
+    ...actual,
+    GoPackageDirectory: () => {
+      throw componentFailure;
+    },
+  };
+});
 
 describe("Emitter per-namespace error context", () => {
   test("names the namespace and package and preserves the cause", async () => {

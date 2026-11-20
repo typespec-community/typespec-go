@@ -9,6 +9,13 @@
 Post-1.0.0 sprint (Pareto Plan II): generated Go now compiles, the HTTP
 product chain is real, decorator modes are live.
 
+- **Goimports-native import blocks:** new `GoImportGroup` component
+  emits import blocks the way goimports writes them (one import →
+  single statement, several → sorted tab-indented group), so
+  handlers.go and unions.go are goimports-clean as emitted. The e2e
+  proof now gates on `goimports -l` staying empty (install hint on
+  missing binary) and locks the API contract's parameter typing with
+  negative `interface{}` needles.
 - **Versioned-namespace example + discriminated-union proof:** the new
   third e2e example (`examples/versioned/main.tsp`) compiles
   `Petstore.V1` + `Petstore.V2` into sibling packages `v1`/`v2` under one

@@ -81,9 +81,10 @@
 
 | Feature                              | Status                | Evidence                                                | Notes                                                    |
 | ------------------------------------ | --------------------- | ------------------------------------------------------- | -------------------------------------------------------- |
-| Test infrastructure (vitest)         | 🟢 `FULLY_FUNCTIONAL` | 206/206 tests, 43 files                                 | Alloy matchers via `src/test/vitest.setup.ts`            |
+| Test infrastructure (vitest)         | 🟢 `FULLY_FUNCTIONAL` | 210/210 tests, 45 files                                 | Alloy matchers via `src/test/vitest.setup.ts`            |
 | Compile-level conformance (e2e)      | 🟢 `FULLY_FUNCTIONAL` | `scripts/test-e2e-cli.mjs`: `go build ./...` per module | Raw output; all three examples, every commit             |
 | Native gofmt conformance (e2e)       | 🟢 `FULLY_FUNCTIONAL` | `gofmt -l` clean on raw output; `-w` step removed       |                                                          |
+| Goimports conformance (e2e)          | 🟢 `FULLY_FUNCTIONAL` | `goimports -l` gate in e2e; `GoImportGroup` component   | Import blocks emitted goimports-native (sorted group)    |
 | Coverage ratchet                     | 🟢 `FULLY_FUNCTIONAL` | `vitest.config.js` thresholds 45/35/53/45               | Documented in CONTRIBUTING.md                            |
 | Benchmarks                           | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-generation.bench.tsx`; e2e wall-clock log  |                                                          |
 | CI workflow                          | 🟢 `FULLY_FUNCTIONAL` | `.github/workflows/ci.yml`                              | docs-gates step unmasked + install path fixed 2026-11-15 |

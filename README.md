@@ -129,12 +129,16 @@ npm run build:check
 # Coverage report
 npm run test:coverage
 
-# CLI end-to-end proof (tsp compile -> Go on disk + gofmt check)
+# CLI end-to-end proof (tsp compile -> Go on disk + gofmt/goimports check)
 npm run test:e2e-cli
 
 # Format check (dprint)
 npm run format:check
 ```
+
+> The e2e proof requires `go` and `goimports` on PATH (`go install
+> golang.org/x/tools/cmd/goimports@latest`). Generated code must be
+> gofmt- AND goimports-clean as emitted; the gate fails on any reformat.
 
 ### Project Structure
 

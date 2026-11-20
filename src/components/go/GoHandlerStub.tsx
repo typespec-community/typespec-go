@@ -4,7 +4,7 @@
  * Eliminates all string-based code generation in favor of component composition
  */
 
-import { code, For, refkey } from "@alloy-js/core";
+import { code, refkey } from "@alloy-js/core";
 import type { Operation, Program } from "@typespec/compiler";
 import * as go from "@alloy-js/go";
 const {
@@ -14,13 +14,13 @@ const {
   FunctionDeclaration,
   LineComment,
   FunctionReceiver,
-  SingleImportStatement,
 } = go;
 import { extractHttpMetadata } from "../../utils/typespec-http-utils.js";
 import type { HttpParameter } from "../../utils/typespec-http-utils.js";
 import type { GoHandlerMethod } from "./GoHandlerMethod.js";
 import { extractReturnType } from "../../services/go-return-type-extractor.js";
 import { GoHandlerMethodComponent } from "./GoHandlerMethodComponent.js";
+import { GoImportGroup } from "./GoImportGroup.js";
 import type { Children } from "@alloy-js/core";
 
 /**
@@ -168,14 +168,7 @@ export function GoHandlerStub({
   return (
     <SourceFile path="handlers.go">
       {/* Usage-driven imports: framework trio always, json only for bodies */}
-      <For each={handlerImports}>
-        {(importPath: string, importIndex: number) => (
-          <>
-            {importIndex > 0 && "\n"}
-            <SingleImportStatement path={importPath} />
-          </>
-        )}
-      </For>
+      <GoImportGroup paths={handlerImports} />
       {"\n\n"}
 
       {/* Service struct declaration */}

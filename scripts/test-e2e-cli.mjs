@@ -146,6 +146,16 @@ const expectations = [
 	],
 	["type Page[T any] struct", true, "template model emits as Go generic"],
 	["Items []T", true, "template parameter type resolves inside generic struct"],
+	// Goimports-native import groups + API-contract parameter typing
+	[
+		"import (\n\t\"context\"\n\t\"encoding/json\"\n\t\"log\"\n\t\"net/http\"\n)",
+		true,
+		"handler imports emit as one sorted goimports-style group",
+	],
+	["Read(ctx context.Context, id string)", true, "scalar path params keep their type in the API contract"],
+	["Create(ctx context.Context, widget Widget)", true, "body params keep the model type in the API contract"],
+	["id interface{}", false, "scalar path params never degrade to interface{}"],
+	["widget interface{}", false, "body params never degrade to interface{}"],
 	// T17 example #3: versioned namespaces + discriminated unions
 	["package v1", true, "versioned namespace V1 becomes package v1"],
 	["package v2", true, "versioned namespace V2 becomes package v2"],
@@ -215,5 +225,19 @@ if (listed.status !== 0 || listed.stdout.trim() !== "") {
 	fail("generated Go is not natively gofmt-clean (gofmt -l)");
 }
 console.log("✅ e2e-cli: generated Go is natively gofmt-clean");
+
+// goimports conformance: import blocks must be goimports-native (one sorted
+// group) so consumer `goimports` runs are no-ops on generated code.
+const goimportsCheck = spawnSync("goimports", ["-l", ...generatedFiles], { encoding: "utf8" });
+if (goimportsCheck.error) {
+	fail(
+		`goimports not available (${goimportsCheck.error.message}); install it: go install golang.org/x/tools/cmd/goimports@latest`,
+	);
+}
+if (goimportsCheck.status !== 0 || goimportsCheck.stdout.trim() !== "") {
+	console.error(`goimports -l flagged:\n${goimportsCheck.stdout}`);
+	fail("generated Go is not goimports-clean (goimports -l)");
+}
+console.log("✅ e2e-cli: generated Go is goimports-clean");
 
 rmSync(outputDir, { recursive: true, force: true });
