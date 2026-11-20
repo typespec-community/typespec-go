@@ -78,19 +78,19 @@
 
 ## Verification & Tooling
 
-| Feature                              | Status                | Evidence                                                | Notes                                                    |
-| ------------------------------------ | --------------------- | ------------------------------------------------------- | -------------------------------------------------------- |
-| Test infrastructure (vitest)         | 🟢 `FULLY_FUNCTIONAL` | 182/182 tests, 41 files                                 | Alloy matchers via `src/test/vitest.setup.ts`            |
-| Compile-level conformance (e2e)      | 🟢 `FULLY_FUNCTIONAL` | `scripts/test-e2e-cli.mjs`: `go build ./...` per module | Raw output; all three examples, every commit             |
-| Native gofmt conformance (e2e)       | 🟢 `FULLY_FUNCTIONAL` | `gofmt -l` clean on raw output; `-w` step removed       |                                                          |
-| Goimports conformance (e2e)          | 🟢 `FULLY_FUNCTIONAL` | `goimports -l` gate in e2e; `GoImportGroup` component   | Import blocks emitted goimports-native (sorted group)    |
-| Coverage ratchet                     | 🟢 `FULLY_FUNCTIONAL` | `vitest.config.js` thresholds 45/35/53/45               | Documented in CONTRIBUTING.md                            |
-| Benchmarks                           | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-generation.bench.tsx`; e2e wall-clock log  |                                                          |
-| CI workflow                          | 🟢 `FULLY_FUNCTIONAL` | `.github/workflows/ci.yml`                              | docs-gates step unmasked + install path fixed 2026-11-15 |
-| Lint (eslint `--max-warnings 0`)     | 🟢 `FULLY_FUNCTIONAL` | `npm run lint`                                          | 0 errors, 0 warnings                                     |
-| Strict type check                    | 🟢 `FULLY_FUNCTIONAL` | `npm run build:check`                                   | 0 errors                                                 |
-| Zero `any` in production code        | 🟢 `FULLY_FUNCTIONAL` | `src/components`, `src/domain`, `src/emitter`           |                                                          |
-| docs-gates (freshness/audit/routing) | 🟢 `FULLY_FUNCTIONAL` | `docs-gates run .` 5/5 locally; CI now unmasked         |                                                          |
+| Feature                              | Status                | Evidence                                                                                                                        | Notes                                                    |
+| ------------------------------------ | --------------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Test infrastructure (vitest)         | 🟢 `FULLY_FUNCTIONAL` | 182/182 tests, 41 files                                                                                                         | Alloy matchers via `src/test/vitest.setup.ts`            |
+| Compile-level conformance (e2e)      | 🟢 `FULLY_FUNCTIONAL` | `scripts/test-e2e-cli.mjs`: `go build ./...` per module                                                                         | Raw output; all three examples, every commit             |
+| Native gofmt conformance (e2e)       | 🟢 `FULLY_FUNCTIONAL` | `gofmt -l` clean on raw output; `-w` step removed                                                                               |                                                          |
+| Goimports conformance (e2e)          | 🟢 `FULLY_FUNCTIONAL` | `goimports -l` gate in e2e; `GoImportGroup` component                                                                           | Import blocks emitted goimports-native (sorted group)    |
+| Coverage ratchet                     | 🟢 `FULLY_FUNCTIONAL` | `vitest.config.js` thresholds 58/46/65/58; actuals 61.7/49.5/70.9/61.9 (2026-11-20; provider version must match vitest exactly) | Documented in CONTRIBUTING.md                            |
+| Benchmarks                           | 🟢 `FULLY_FUNCTIONAL` | `src/test/go-generation.bench.tsx`; e2e wall-clock log                                                                          |                                                          |
+| CI workflow                          | 🟢 `FULLY_FUNCTIONAL` | `.github/workflows/ci.yml`                                                                                                      | docs-gates step unmasked + install path fixed 2026-11-15 |
+| Lint (eslint `--max-warnings 0`)     | 🟢 `FULLY_FUNCTIONAL` | `npm run lint`                                                                                                                  | 0 errors, 0 warnings                                     |
+| Strict type check                    | 🟢 `FULLY_FUNCTIONAL` | `npm run build:check`                                                                                                           | 0 errors                                                 |
+| Zero `any` in production code        | 🟢 `FULLY_FUNCTIONAL` | `src/components`, `src/domain`, `src/emitter`                                                                                   |                                                          |
+| docs-gates (freshness/audit/routing) | 🟢 `FULLY_FUNCTIONAL` | `docs-gates run .` 5/5 locally; CI now unmasked                                                                                 |                                                          |
 
 ## Documentation
 

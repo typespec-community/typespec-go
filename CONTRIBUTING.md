@@ -206,10 +206,15 @@ describe("🔥 GoModel Component", () => {
 #### Coverage Ratchet
 
 `npm run test:coverage` enforces v8 coverage thresholds in
-`vitest.config.js`. The ratchet: **45% statements, 35% branches, 53%
-functions, 45% lines** (ratcheted +5 from 40/30/48/40 on 2026-11-15;
-actuals at ratchet time: 51/42/58/51). When coverage rises materially,
-raise the thresholds with it — never lower them.
+`vitest.config.js`. The ratchet: **58% statements, 46% branches, 65%
+functions, 58% lines** (ratcheted from 45/35/53/45 on 2026-11-20;
+actuals at ratchet time: 61.7/49.5/70.9/61.9). When coverage rises
+materially, raise the thresholds with it — never lower them.
+
+The coverage provider must match the vitest version exactly
+(`@vitest/coverage-v8@<same-version-as-vitest>`); a mismatched major
+silently fails every test with `coverageFilesDirectory is required`
+and reports 0% across the board.
 
 ---
 

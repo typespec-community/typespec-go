@@ -67,7 +67,13 @@ product chain is real, decorator modes are live.
   imports emit as one sorted std group; naming conventions (`s`/`e`
   receivers, `<Pkg>Service` vs `<Pkg>API`) documented in MAPPING-GUIDE
   § Naming conventions.
-- **Coverage ratchet +5** and e2e wall-clock timing.
+- **Coverage gate actually works:** `@vitest/coverage-v8` had drifted
+  to major 5 against vitest 4, so `test:coverage` failed every test
+  with `coverageFilesDirectory is required` and reported 0% across
+  the board. Provider re-pinned to match vitest (4.1.12) and the
+  thresholds ratcheted from 45/35/53/45 to the honest measured floor
+  58/46/65/58 (actuals 61.7/49.5/70.9/61.9), plus e2e wall-clock
+  timing.
 - **Internal refactors (T16):** package file-layout decisions extracted
   to the pure `buildPackageFileLayout` builder; `MockFactory` class
   converted to named module functions; the two namespace-name→path

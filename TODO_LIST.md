@@ -75,17 +75,17 @@
 
 ## Verified baseline (2026-11-14, 3× consecutive stable runs)
 
-| Check                                                    | Result                                  |
-| -------------------------------------------------------- | --------------------------------------- |
-| `npm run test:typespec`                                  | ✅ 180/180 tests, 38 files              |
-| `npm run build` (alloy + dist pruning)                   | ✅ passes                               |
-| Built emitter loads under Node ESM                       | ✅ `node -e "import('./dist/main.js')"` |
-| `npm run test:e2e-cli` (both examples, go build + gofmt) | ✅ green                                |
-| CI (GitHub Actions)                                      | ✅ green (run 43614262527)              |
-| `npm run lint`                                           | ✅ 0 errors, 0 warnings                 |
-| `npm run build:check`                                    | ✅ 0 errors                             |
-| `npm run test:coverage` (thresholds 40/30/48/40)         | ✅ 43.5% lines                          |
-| `dprint check` / `docs-gates run .`                      | ✅ green / 5/5 PASS                     |
+| Check                                                    | Result                                                                              |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `npm run test:typespec`                                  | ✅ 180/180 tests, 38 files                                                          |
+| `npm run build` (alloy + dist pruning)                   | ✅ passes                                                                           |
+| Built emitter loads under Node ESM                       | ✅ `node -e "import('./dist/main.js')"`                                             |
+| `npm run test:e2e-cli` (both examples, go build + gofmt) | ✅ green                                                                            |
+| CI (GitHub Actions)                                      | ✅ green (run 43614262527)                                                          |
+| `npm run lint`                                           | ✅ 0 errors, 0 warnings                                                             |
+| `npm run build:check`                                    | ✅ 0 errors                                                                         |
+| `npm run test:coverage` (thresholds 58/46/65/58)         | ✅ 61.7/49.5/70.9/61.9 (fixed 2026-11-20: coverage-v8 major-mismatched with vitest) |
+| `dprint check` / `docs-gates run .`                      | ✅ green / 5/5 PASS                                                                 |
 
 ## Quick Links
 
