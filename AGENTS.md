@@ -820,7 +820,7 @@ Before committing ANY changes, verify:
 
 ## ⚠️ NON-OBVIOUS GOTCHAS (verified 2026-11-19)
 
-- **`go run` inside this repo fails** — root `go.mod` is a placeholder (`module <module-path>`). Run Go tooling from outside the repo or fix the module path first.
+- **Root `go.mod` has no Go packages by design** — module path is real (`github.com/typespec-community/typespec-go`, go 1.26) and `go vet`/`go build` exit 0 with "matched no packages"; it exists so generated-output validation and BuildFlow's Go lanes have a module manifest. The ghost-era `dev/` scratch tree (debug scripts importing the deleted `standalone-generator`) was removed 2026-11-20 — recoverable in history if needed.
 - **npm scripts are canonical and shell-agnostic** — `npm run build` runs `alloy build && node scripts/prune-dist.mjs`; npm puts `node_modules/.bin` on `PATH`, so these work in nix shells (no `bunx`) and CI alike.
 - **Single lockfile: bun only** — `pnpm-lock.yaml`/`pnpm-workspace.yaml` removed 2026-11-15; `bun.lock` + `bun install` are the sole dependency source of truth (CI uses bun). BuildFlow's `pnpm-audit`/`lockfile-check` JS audit lanes are therefore intentionally dark here until a bun-audit provider exists upstream (BuildFlow extension task, not per-repo tooling).
 - **TypeScript pin: 6.0.2, do not bump to 7** — alloy CLI 0.26 FIXED the old `ts.sys` crash (verified 2026-11-19 at `3bed34a`: build + 206/206 tests + strict tsc all pass under TS 7.0.2), but typescript-eslint 8.73.0 hard-refuses TS 7.0 (upstream typescript-eslint#10940 tracks TS >=7.1). Bump TS only after typescript-eslint ships support.
