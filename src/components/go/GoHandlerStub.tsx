@@ -17,6 +17,7 @@ const {
 } = go;
 import { extractHttpMetadata } from "../../utils/typespec-http-utils.js";
 import type { HttpParameter } from "../../utils/typespec-http-utils.js";
+import { Logger, LogContext } from "../../domain/structured-logging.js";
 import type { GoHandlerMethod } from "./GoHandlerMethod.js";
 import { extractReturnType } from "../../services/go-return-type-extractor.js";
 import { GoHandlerMethodComponent } from "./GoHandlerMethodComponent.js";
@@ -48,10 +49,6 @@ function handlerArgument(p: HttpParameter): { preludes: string[]; expr: string }
   return { preludes: [], expr: `*new(${p.goType})` };
 }
 
-/**
- * One mux.HandleFunc registration: a wrapping closure that adapts the raw
- * request (context, path/query values, decoded body) into handler arguments.
- */
 /**
  * One mux.HandleFunc registration per distinct route pattern: a wrapping
  * closure that adapts the raw request (context, path/query values, decoded
@@ -131,7 +128,11 @@ export function GoHandlerStub({
         const returnTypeInfo = extractReturnType(operation);
         returnType = returnTypeInfo.type || "interface{}";
       } catch (error) {
-        console.warn("Failed to extract return type for " + operation.name + ":", error);
+        Logger.warn(
+          LogContext.GO_GENERATION,
+          "Failed to extract return type for " + operation.name,
+          { cause: String(error), fallback: "interface{}" },
+        );
         returnType = "interface{}";
       }
     }
@@ -223,10 +224,15 @@ export function GoHandlerStub({
               routes.set(handler.route, [handler]);
             }
           }
-          return [...routes.values()].map((routeHandlers, index) => (
+          // Stable alphabetical route order: output is deterministic
+          // regardless of interface declaration order.
+          const sortedRoutes = [...routes.entries()].sort(([a], [b]) =>
+            a < b ? -1 : a > b ? 1 : 0,
+          );
+          return sortedRoutes.map(([route, routeHandlers], index) => (
             <>
               {index > 0 && "\n"}
-              {routeRegistrationGroup(routeHandlers[0].route, routeHandlers)}
+              {routeRegistrationGroup(route, routeHandlers)}
             </>
           ));
         })()}

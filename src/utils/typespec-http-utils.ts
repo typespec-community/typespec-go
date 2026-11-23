@@ -47,12 +47,27 @@ export function extractHttpMetadata(
   operation: Operation,
   program: Program,
 ): HttpOperationMetadata | null {
-  // Get HTTP operation using TypeSpec HTTP library
+  // Get HTTP operation using TypeSpec HTTP library. Diagnostics are
+  // surfaced (never silent): resolution problems would otherwise degrade
+  // to the verb/path fallbacks without a trace.
   const httpOpResult = getHttpOperation(program, operation);
   if (!httpOpResult) {
     return null;
   }
-  const [httpOp] = httpOpResult;
+  const [httpOp, httpDiagnostics] = httpOpResult;
+  if (httpDiagnostics && httpDiagnostics.length > 0) {
+    Logger.warn(
+      LogContext.TYPESPEC_INTEGRATION,
+      `HTTP metadata resolution diagnostics for operation '${operation.name}'`,
+      {
+        diagnostics: httpDiagnostics.map((d) => ({
+          code: d.code,
+          message: d.message,
+          severity: String(d.severity),
+        })),
+      },
+    );
+  }
 
   // Extract HTTP method
   const method = httpOp.verb || "POST";
